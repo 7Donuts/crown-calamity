@@ -1,4 +1,4 @@
-# Crown & Calamity: playable solo prototype v0.11.0
+# Crown & Calamity: playable solo prototype v0.12.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -28,7 +28,17 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## New in v0.11.0: the stuffie text pass
+## New in v0.12.0: reading the telegraph, Special Editions, Hazard notes, and a Night Shift prototype
+
+These changes follow the reconciled plan in [design 37](design/37_Aligned_Recommendations.md). Saves stay compatible: every new field is additive and defaulted, there is no save format change, and v1 to v4 saves still import.
+
+- **Reading the telegraph pays.** Guarding a declared heavy attack (Hunker down (Defend), Brace, Guardstrike, Sidestep or Wardcast) now prevents 65% of it instead of 35% and opens the enemy: your next exchange's damaging action cannot glance and deals 25% more damage. The larger of Opening and Expose applies, never both, and Opening expires after one exchange whether used or not. Normal hits are still guarded at 35% with no Opening, so ordinary repetition remains valid play. Blade-and-charm characters get Sidestep (a 0.80× precision strike plus a guard, 12 stamina, Driving Strike mastery) where shield users have Guardstrike. Armor or ward, guard and barrier together never prevent more than 85% of one hit; only a successful Disrupt cancels a response. The rules live in `dist/telegraph.js`, and `tests/telegraph-balance.test.mjs` keeps "respond to heavies" at or ahead of "always strike" for every kit and ordinary enemy.
+- **Special Edition hunts.** After six victories over the same enemy, an optional Special Edition is offered on the hunting list with its affix (Reinforced packaging, Extra stuffed, Squeaky or Static-charged), its stat changes and its reward (XP ×1.25, coins ×1.4, one extra material) shown before the first exchange. The regular hunt stays one tap away, declining never rerolls or resets the offer, and winning resets that enemy's meter. There is no Luck influence and no change to equipment drop chance; affixes keep a level-appropriate character's win rate at 85% or better in seeded tests.
+- **Hazard notes and local records.** Every win is filed in the Field Guide. At 10 wins a lore page opens, at 30 the full move pattern with the heavy move marked, and at 100 a stamp with your hit chance and expected damage. Notes are information only. Local records (this device only) track fewest exchanges, least Stuffing (Health) lost and no-damage clears per enemy, with a "New personal best" note in the victory report; they are private, not ranked, and earn nothing.
+- **Titles.** Wear one earned Merit badge (Achievement) as a display-only title, chosen on the character sheet.
+- **Night Shift prototype (Playtest Lab only).** An opt-in run where you choose each hunt, collect unfiled Overtime receipts (+10% per win in a row, up to +60%, coins and materials only), take one Break, pick a boon at Midnight snack check-ins after 3, 6 and 9 wins, and clock out to file the receipts. A defeat forfeits only the unfiled bonus; the usual carried-coin loss and wound apply. Nothing is timed and nothing accrues while you are away. The lab never touches campaign saves. These are prototype rules pending owner decisions (design 37, questions 4 and 5).
+
+## v0.11.0: the stuffie text pass
 
 Crown & Calamity is now told as a stuffie story, as a **display-only text pass**. Players and every non-monster character are stuffies; the four races read as toy brands (Cuddleworth Classics, Sturdy Stitch Workwear, Floppables by Pellet & Pip, Lullabrite Nightlight Pals) with taglines, passive names, and B.U.R.S.A.R. care-tag readings on the creation screen. B.U.R.S.A.R. is the Bureau of Unclaimed Residents, Stuffies And Repairs, and it speaks through each stuffie's care tag.
 
@@ -203,4 +213,4 @@ This is still a local solo prototype. Login, server-authoritative actions/random
 
 The automated suite covers combat, mastery/loadout rules, multipart XP and migration, all nine gear slots, shop prices and atomic spending, upgrade/affix removal on sale, roster creation/switch/import isolation, authored contract objectives/reward idempotency, physical skills without a focus, and live save round-trips. It also packages the complete offline HTML, syntax-checks it, and boots/navigates its UI using a minimal DOM test harness.
 
-The DOM test harness has no layout engine, so layout is guarded only by a stylesheet-cascade test for the phone combat panel (it resolves the real CSS at fixed viewports); it does not render pixels. v0.11.0 was also checked by hand in Chromium at 360×740, 390×844, and 1280×900. Real-device visual and accessibility testing remains outstanding. The current release passes 190 test cases (`npm test`), including lab storage isolation, seeded replay, timing, telemetry limits, vendor comparisons, complete art coverage/crops, metadata integrity, and both standalone game pages. Gallery and art-preview embedding are checked separately.
+The DOM test harness has no layout engine, so layout is guarded only by a stylesheet-cascade test for the phone combat panel (it resolves the real CSS at fixed viewports); it does not render pixels. v0.11.0 and v0.12.0 were also checked by hand in Chromium at 360×740, 390×844, and 1280×900. Real-device visual and accessibility testing remains outstanding. The current release passes 270 test cases (`npm test`), including lab storage isolation, seeded replay, timing, telemetry limits, vendor comparisons, complete art coverage/crops, metadata integrity, and both standalone game pages. Gallery and art-preview embedding are checked separately.
