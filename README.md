@@ -28,6 +28,20 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
+## Current art study — Soft Pixel
+
+User feedback rejected the earlier ornate, highly detailed boards. The current exploration is softer pixel art: rounded characters, broad color groups, a muted slate/teal/moss palette, warm lanterns, and small decorative idle loops. The game’s production artwork has not been replaced by this study.
+
+Open `design/soft-pixel/index.html` to inspect the scene and a four-frame rat at UI size. Pause the motion or switch sprite size; reduced-motion preferences keep the sprite still. This page is independent of the game and never reads or writes campaign saves. The generated frames are concept references and still need palette/grid/alignment cleanup for production.
+
+```sh
+python3 scripts-soft-pixel-preview.py
+```
+
+This creates the independent offline `Crown-and-Calamity-Soft-Pixel-Preview.html`. The source ZIP includes its source page, unchanged image studies, and generator; the generated preview is excluded to avoid duplicating its embedded images.
+
+See [Soft Pixel direction](design/28_Soft_Pixel_Direction.md). The earlier five boards remain as historical exploration.
+
 ## New in v0.6.0 — a clearer market and menu structure
 
 - **Dedicated Quay market:** three vendors have separate weapon, armor, and curio stock. Buy lists hide items already owned; sell lists show only eligible unequipped gear. Compare a vendor item beside the gear in its target slot before buying, including either accessory slot, the offhand reserved by two-handed weapons, and projected build totals. Buying still adds base gear to the Satchel without equipping it.
@@ -118,4 +132,4 @@ This is still a local solo prototype. Login, server-authoritative actions/random
 
 The automated suite covers combat, mastery/loadout rules, multipart XP and migration, all nine gear slots, shop prices and atomic spending, upgrade/affix removal on sale, roster creation/switch/import isolation, authored contract objectives/reward idempotency, physical skills without a focus, and live save round-trips. It also packages the complete offline HTML, syntax-checks it, and boots/navigates its UI using a minimal DOM test harness.
 
-The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 107 test cases, including lab storage isolation, seeded replay, timing, telemetry limits, the offline art-gallery script, and both standalone game pages.
+The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 107 test cases, including lab storage isolation, seeded replay, timing, telemetry limits, vendor filtering/comparisons, and both standalone game pages. Gallery and art-preview embedding are checked separately.

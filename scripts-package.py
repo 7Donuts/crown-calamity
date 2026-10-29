@@ -110,7 +110,7 @@ with zipfile.ZipFile(root / f'Crown-and-Calamity-v{version}.zip', 'w', zipfile.Z
         relative = file.relative_to(root)
         if file.name.startswith('Crown-and-Calamity-v') and file.suffix == '.html':
             continue
-        if file.name == 'Crown-and-Calamity-Art-Directions.html':
+        if file.name in {'Crown-and-Calamity-Art-Directions.html', 'Crown-and-Calamity-Soft-Pixel-Preview.html'}:
             continue
         if file.is_file() and not any(part in relative.parts for part in ['.git','.openai','node_modules','artifacts','__pycache__']) and file.suffix not in ['.zip','.pyc'] and not file.name.startswith('.env'):
             archive.write(file, relative)

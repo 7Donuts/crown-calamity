@@ -1,10 +1,10 @@
-# Crown & Calamity art direction proposals
+# Crown & Calamity art direction proposals — earlier exploration
 
-These five original concept boards let us compare a unified art style before commissioning or producing game assets. Each board uses the same four-part layout and subject brief: the Bracken Quay canal-side weapon stall, a paper-scrap Ledger Rat, a sword/shield/focus set, and an empty rune-frame with three small gear or merchant glyphs. They are visual proposals, not selected production art. No player portraits or readable interface copy are included.
+This earlier study was superseded by the user’s preference for a simpler, softer pixel style; see [Soft Pixel direction](28_Soft_Pixel_Direction.md). These five original concept boards let us compare a unified art style before commissioning or producing game assets. Each board uses the same four-part layout and subject brief: the Bracken Quay canal-side weapon stall, a paper-scrap Ledger Rat, a sword/shield/focus set, and an empty rune-frame with three small gear or merchant glyphs. They are visual proposals, not selected production art. No player portraits or readable interface copy are included.
 
 The shared palette anchors the comparison in dark umber, antique brass, restrained verdigris teal, and parchment highlights. The boards were generated at 1536 × 1024 pixels. They are kept as supplied, without cropping, retouching, or other image editing.
 
-## 01 — Etched Brass (recommended starting direction)
+## 01 — Etched Brass (earlier recommendation)
 
 ![Etched Brass concept board](art-proposals/01-etched-brass.png)
 
@@ -36,7 +36,7 @@ Crisp pixel clusters preserve readable silhouettes and create a clear bridge bet
 
 ## Comparison and next step
 
-Etched Brass is the recommended starting point because it gives the project a coherent language for scenes, creatures, equipment, and interface ornament while retaining a distinctive material feel. Pixel Relic is the strongest alternative if compact, repeatable sprites become the priority. Painted Grimoire favors atmosphere, Illuminated Ledger favors in-world symbolism, and Runic Projection favors magical interface identity. A production choice should be tested at actual mobile display sizes before extending any direction into a full asset set.
+This initial study recommended Etched Brass because it gives the project a coherent language for scenes, creatures, equipment, and interface ornament while retaining a distinctive material feel. Pixel Relic is the strongest alternative if compact, repeatable sprites become the priority. Painted Grimoire favors atmosphere, Illuminated Ledger favors in-world symbolism, and Runic Projection favors magical interface identity. A production choice should be tested at actual mobile display sizes before extending any direction into a full asset set.
 
 ## Image provenance
 
