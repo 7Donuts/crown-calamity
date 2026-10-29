@@ -4,6 +4,10 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import * as G from '../dist/engine.js';
 import * as C from '../dist/characters.js';
+import * as Creator from '../dist/character-creator.js';
+import * as Races from '../dist/races.js';
+import * as CharacterArt from '../dist/character-art.js';
+import * as RelicUI from '../dist/relic-ui.js';
 import * as StoryUI from '../dist/story-ui.js';
 import * as MarketUI from '../dist/market-ui.js';
 import { MENU_ICONS } from '../dist/menu-icons.js';
@@ -172,7 +176,7 @@ function createApp(initialSave, { clock = { now: 0 }, timers = [], metrics = { e
     actionDelayRemaining: state => G.actionDelayRemaining(state, clock.now)
   };
   const context = {
-    __GAME_ENGINE__: game, __CHARACTER_MODULE__: C, __STORY_UI__: StoryUI, __MARKET_UI__: MarketUI,
+    __GAME_ENGINE__: game, __CHARACTER_MODULE__: C, __CHARACTER_CREATOR__:Creator, __RACES__:Races, __CHARACTER_ART__:CharacterArt, __RELIC_UI__:RelicUI, __STORY_UI__: StoryUI, __MARKET_UI__: MarketUI,
     __MENU_ICONS__: MENU_ICONS, __UI_ICONS__: UI_ICONS, __ENEMY_ART__: EnemyArt, __ITEM_ART__: ItemArt,
     __WORLD_UI__: WorldUI,
     localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
@@ -184,6 +188,10 @@ function createApp(initialSave, { clock = { now: 0 }, timers = [], metrics = { e
   };
   return readFile(new URL('../dist/app.js', import.meta.url), 'utf8').then(source => {
     const transformed = source
+      .replace("import * as Creator from './character-creator.js';", 'const Creator=globalThis.__CHARACTER_CREATOR__;')
+      .replace("import {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS} from './races.js';", 'const {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS}=globalThis.__RACES__;')
+      .replace("import {renderCharacterArt} from './character-art.js';", 'const {renderCharacterArt}=globalThis.__CHARACTER_ART__;')
+      .replace("import * as RUI from './relic-ui.js';", 'const RUI=globalThis.__RELIC_UI__;')
       .replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';", 'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;')
       .replace("import * as G from './engine.js';", 'const G=globalThis.__GAME_ENGINE__;')
       .replace("import * as C from './characters.js';", 'const C=globalThis.__CHARACTER_MODULE__;')

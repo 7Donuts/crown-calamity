@@ -500,6 +500,22 @@
         36
       ],
       "provenance": "Original hand-authored grids with runtime dimension and palette validation; slate, teal, moss, cream and amber palette from ART-DIRECTION.md."
+    },
+    {
+      "id": "race-portraits",
+      "src": "character-art.js",
+      "purpose": "Layered customizable portraits for four races and Male/Female presentation",
+      "sha256": "af71dd008adbb59cccce0ae08e22d3ef028830ed7a1725c26add603a8fe0bdf0",
+      "width": 48,
+      "height": 64,
+      "mode": "SVG rect layers",
+      "alpha": true,
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "provenance": "Original stepped pixel character layers and safe enumerated palettes. Four race silhouettes, all hairstyles and colors available to either presentation. Appearance data lives in races.js; portrait frame is logical48 by64."
     }
   ]
 }

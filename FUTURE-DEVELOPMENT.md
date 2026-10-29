@@ -81,3 +81,9 @@ These requirements guide future architecture. They do not expand the current pro
 ### Equipment streak and reactive HUD
 
 Production servers must own the per-character equipment-miss counter, the natural drop roll, duplicate conversion, and the sixth-victory guarantee as part of the same atomic victory grant. Saved local counters and client animations are not evidence of rewards. Client last-hunt preference is presentation only; validate enemy access on every server encounter request. Real-time combat feedback must be driven by accepted server results and event IDs so reconnection or a rerender cannot replay a reward grant.
+
+### Races, relic echoes, and recovery authority
+
+A production server must validate race selection and any legacy one-time heritage adoption, maintain the common attribute budget, and apply passives from stable race IDs. Appearance must remain enumerated cosmetic data. Socket unlocks, owned base relics, per-socket licenses, escalating duplicate prices, and relic-derived stats must be server-calculated; selling a base relic with active echoes must fail atomically.
+
+The same authoritative clock must govern encounter spacing, normal rest readiness, and post-defeat wounds. Death coin loss must be granted once with its loss receipt; reconnecting cannot charge again. Rest may update readiness while offline but never automatically pays out resources: the explicit completion action must validate the deadline, wounds, and current maxima. Respec, allocation, equipment and ancestry edits must not create current-resource gains.

@@ -79,7 +79,7 @@ import * as G from '../dist/engine.js';
   for(const kit of Object.keys(G.STARTER_KITS)){
     const c=G.createCharacter({name:'  Mina  ',race:'Stonekin',origin:'Lockwright',kit});
     assert.ok(c,kit);
-    assert.equal(c.name,'Mina');assert.equal(c.race,'Stonekin');assert.equal(c.origin,'Lockwright');
+    assert.equal(c.name,'Mina');assert.equal(c.race,'Cobblekin');assert.equal(c.raceId,'cobblekin');assert.equal(c.origin,'Lockwright');
     assert.equal(c.coins,20);assert.equal(c.level,1);assert.equal(c.part,1);
     assert.equal(Object.values(c.stats).reduce((a,b)=>a+b,0),68);
     assert.deepEqual(c.bag.sort(),[...G.STARTER_KITS[kit].gear,'coat'].sort());
@@ -117,8 +117,8 @@ import * as G from '../dist/engine.js';
   const used=G.exchange(breaker,'guardstrike',()=>0,0);
   assert.equal(used.ok,true);
   assert.ok(breaker.fight.hp<hp);
-  assert.equal(breaker.mp,3,'Guardstrike spends no mana');
-  assert.equal(breaker.sp,44,'Guardstrike spends 10 stamina then restores the standard 4');
+  assert.equal(breaker.mp,0,'Guardstrike spends no mana and completed exchanges grant no mana');
+  assert.equal(breaker.sp,38,'Guardstrike spends 12 stamina and completed exchanges grant no stamina');
 
   const duelist=G.createCharacter({kit:'duelist'});
   assert.deepEqual(G.primaryActions(duelist).combined,'guardstrike');

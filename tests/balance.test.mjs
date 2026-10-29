@@ -26,8 +26,8 @@ test('balance audit compares five level-one/five/ten allocations at equal invest
 test('one-point marginal audit follows the live totals formulas and keeps Luck bounded',()=>{
   const audit=marginalAudit({level:5,stats:{mig:8,fin:8,int:8,vit:8,wil:8,ins:8,lck:8}});
   assert.deepEqual(audit.mig.totals,{hp:0,mp:0,sp:0,physicalAcc:0,spellAcc:0,evasion:0,heavyPower:2,precisionPower:0,spellPower:0,mendHealing:0});
-  assert.equal(audit.fin.totals.physicalAcc,2);assert.equal(audit.fin.totals.sp,2);assert.equal(audit.fin.totals.evasion,1);assert.ok(audit.fin.critChance>0);
-  assert.deepEqual(audit.int.totals,{hp:0,mp:2,sp:0,physicalAcc:0,spellAcc:0,evasion:0,heavyPower:0,precisionPower:0,spellPower:2,mendHealing:2});
+  assert.equal(audit.fin.totals.physicalAcc,2);assert.equal(audit.fin.totals.sp,1);assert.equal(audit.fin.totals.evasion,1);assert.ok(audit.fin.critChance>0);
+  assert.deepEqual(audit.int.totals,{hp:0,mp:1,sp:0,physicalAcc:0,spellAcc:0,evasion:0,heavyPower:0,precisionPower:0,spellPower:2,mendHealing:2});
   assert.equal(audit.vit.totals.hp,10);assert.equal(audit.wil.totals.hp,4);assert.equal(audit.ins.totals.evasion,2);
   assert.equal(audit.lck.totals.critChance,undefined);assert.ok(audit.lck.critChance>0);assert.ok(audit.lck.equipmentDropChance>0);
   const highLuck=marginalAudit({level:10,stats:{mig:8,fin:8,int:8,vit:8,wil:8,ins:8,lck:56}});

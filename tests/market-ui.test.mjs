@@ -8,7 +8,7 @@ const copy = value => structuredClone(value);
 const noBrokenValues = html => assert.equal(/\b(?:undefined|NaN)\b/.test(html), false);
 
 test('equal-base weapons expose their different scaling and expected attack before purchase',()=>{
-  const s=G.createCharacter({kit:'caster'}),before=copy(s);
+  const s=G.createCharacter({race:'emberling',kit:'caster'}),before=copy(s);
   const data=stockComparison(s,'sword');
   assert.deepEqual(data.rows[0],{label:'Attack scaling',before:'Intellect',after:'Might'});
   assert.ok(data.attack.before>data.attack.after,'a caster loses free Attack output by switching equal-base rod to Might sword');

@@ -7,7 +7,7 @@ export const ABILITIES={
  aegis:{id:'aegis',name:'Aegis',kind:'active',attunement:2,mp:0,sp:12,desc:'Raise a barrier for two enemy responses. Barrier is capped at 30% maximum health.',requires:{level:5,quest:2},mastery:['Barrier grows by 8 per rank']},
  expose:{id:'expose',name:'Expose',kind:'active',attunement:1,mp:0,sp:8,desc:'Expose the enemy: your next damaging action in the following exchange deals 20% more damage.',requires:{level:4,quest:1},mastery:['Bonus damage grows by 5% per rank']},
  reservoir:{id:'reservoir',name:'Reservoir',kind:'passive',attunement:2,desc:'A useful Guard charges your next Arc Bolt for 10% more raw damage.',requires:{level:2,quest:1,usefulGuards:2,questOrGuards:true},mastery:[]},
- prepared:{id:'prepared',name:'Prepared',kind:'passive',attunement:1,desc:'Begin each encounter with 10 extra mana and stamina.',requires:{level:1},mastery:[]},
+ prepared:{id:'prepared',name:'Prepared',kind:'passive',attunement:1,desc:'Begin each encounter with 3 extra mana and stamina.',requires:{level:1},mastery:[]},
  footing:{id:'footing',name:'Sure Footing',kind:'passive',attunement:1,desc:'+8 evasion.',requires:{level:2,quest:1},mastery:[]}
 };
 export const MASTERY_CHOICES={arc:{economy:"Arc Bolt costs 9 mana.",power:"Arc Bolt deals 15% more damage."},brace:{barrier:"Brace barrier is 15 points larger.",recovery:"Brace cooldown is 1 exchange shorter."},disrupt:{power:"Disrupt deals 15% more damage.",immunity:"Successful Disrupts shorten interrupt immunity by 1 exchange."},mend:{healing:"Mend heals 15% more.",recovery:"Mend cooldown is 1 exchange shorter."}};

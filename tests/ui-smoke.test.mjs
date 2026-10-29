@@ -4,6 +4,10 @@ import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import * as G from '../dist/engine.js';
 import * as C from '../dist/characters.js';
+import * as Creator from '../dist/character-creator.js';
+import * as Races from '../dist/races.js';
+import * as CharacterArt from '../dist/character-art.js';
+import * as RelicUI from '../dist/relic-ui.js';
 import * as StoryUI from '../dist/story-ui.js';
 import * as MarketUI from '../dist/market-ui.js';
 import {MENU_ICONS} from '../dist/menu-icons.js';
@@ -15,13 +19,15 @@ import * as BattleReport from '../dist/battle-report.js';
 import * as WorldUI from '../dist/world-ui.js';
 
 function bootApp(initialSave=G.fresh()) {
+  const fakeClock={now:Date.now()};
+  const uiTestState={encounterScrolls:0,windowScrolls:0,desktopLayout:true};
   const elements = new Map();
   const makeElement = () => ({
-    innerHTML:'', textContent:'', value:'', files:[], open:false, style:{setProperty(){}}, attributes:{},
+    innerHTML:'', textContent:'', value:'', files:[], open:false, style:{setProperty(){}}, attributes:{}, dataset:{},
     classList:{add(){},remove(){},toggle(){}}, addEventListener(){}, querySelector(){return makeElement();}, querySelectorAll(){return [];},
     setAttribute(name,value){this.attributes[name]=String(value);}, getAttribute(name){return this.attributes[name]??null;}, toggleAttribute(name,force){if(force)this.attributes[name]='';else delete this.attributes[name];},
     showModal(){this.open=true;}, close(){this.open=false;}, focus(){}, click(){},
-    getBoundingClientRect(){return {left:0,right:0,top:0,bottom:0};}
+    getBoundingClientRect(){return {left:0,right:0,top:0,bottom:0};}, scrollIntoView(){uiTestState.encounterScrolls++;}
   });
   const getElement = selector => {
     if (!elements.has(selector)) elements.set(selector, makeElement());
@@ -33,20 +39,28 @@ function bootApp(initialSave=G.fresh()) {
     addEventListener(type,handler){(this.listeners[type]??=[]).push(handler);}, listeners:{}
   };
   const storage = new Map(initialSave?[["crown-calamity-v1",JSON.stringify(initialSave)]]:[]);
+  const currentTime=()=>Math.max(fakeClock.now,Date.now());
+  const game={...G,
+    startFight:(s,id,source)=>G.startFight(s,id,source,currentTime()),
+    exchange:(s,key,rng)=>G.exchange(s,key,rng,currentTime()),
+    restStatus:s=>G.restStatus(s,fakeClock.now),
+    beginRest:s=>G.beginRest(s,fakeClock.now),
+    finishRest:s=>G.finishRest(s,fakeClock.now)
+  };
   const context = {
-    __GAME_ENGINE__:G, __CHARACTER_MODULE__:C, __STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, __UI_ICONS__:UI_ICONS, __ENEMY_ART__:EnemyArt, __ITEM_ART__:ItemArt, __CHARACTER_SHEET__:CharacterSheet, __BATTLE_REPORT__:BattleReport, __WORLD_UI__:WorldUI, document,
+    __GAME_ENGINE__:game, __FAKE_CLOCK__:fakeClock, __UI_TEST_STATE__:uiTestState, __CHARACTER_MODULE__:C, __CHARACTER_CREATOR__:Creator, __RACES__:Races, __CHARACTER_ART__:CharacterArt, __RELIC_UI__:RelicUI, __STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, __UI_ICONS__:UI_ICONS, __ENEMY_ART__:EnemyArt, __ITEM_ART__:ItemArt, __CHARACTER_SHEET__:CharacterSheet, __BATTLE_REPORT__:BattleReport, __WORLD_UI__:WorldUI, document,
     localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},
-    window:{scrollTo(){}}, console,
+    window:{scrollTo(){uiTestState.windowScrolls++;},matchMedia(query){return {matches:query.includes('min-width')?uiTestState.desktopLayout:false};}}, console,
     Blob, URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},
     setTimeout:()=>1, clearTimeout(){}, Math, JSON, Object, Array, String, Number, Promise,
     structuredClone
   };
   const src = readFile(new URL('../dist/app.js',import.meta.url),'utf8');
   return src.then(source=>{
-    const transformed = source.replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';",'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
-    const testExports = `\nglobalThis.__uiTest={act,render,getState:()=>state,getRoster:()=>roster,setState:v=>{state=v;},setView:v=>{view=v;},getView:()=>view,getModal:()=>$('#modal'),getApp:()=>$('#app'),getToast:()=>$('#toast')};`;
+    const transformed = source.replace("import * as Creator from './character-creator.js';",'const Creator=globalThis.__CHARACTER_CREATOR__;').replace("import {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS} from './races.js';",'const {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS}=globalThis.__RACES__;').replace("import {renderCharacterArt} from './character-art.js';",'const {renderCharacterArt}=globalThis.__CHARACTER_ART__;').replace("import * as RUI from './relic-ui.js';",'const RUI=globalThis.__RELIC_UI__;').replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';",'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
+    const testExports = `\nglobalThis.__uiTest={act,render,getState:()=>state,getRoster:()=>roster,setState:v=>{state=v;},setView:v=>{view=v;},getView:()=>view,getModal:()=>$('#modal'),getApp:()=>$('#app'),getToast:()=>$('#toast'),advanceClock:ms=>{globalThis.__FAKE_CLOCK__.now+=ms;},setClock:ms=>{globalThis.__FAKE_CLOCK__.now=ms;},startFight:(...args)=>G.startFight(...args),exchange:(...args)=>G.exchange(...args),scrollCount:()=>globalThis.__UI_TEST_STATE__.encounterScrolls,windowScrollCount:()=>globalThis.__UI_TEST_STATE__.windowScrolls,setDesktop:v=>{globalThis.__UI_TEST_STATE__.desktopLayout=v;},setField:(selector,value)=>{const e=$(selector);if(e)e.value=value;},changeCreatorField:(key,value)=>{const e=$('[data-creator-field="'+key+'"]');e.dataset.creatorField=key;e.value=value;for(const fn of document.listeners.change||[])fn({target:e});}};`;
     vm.runInNewContext(transformed+testExports,context,{filename:'dist/app.js'});
-    return {ui:context.__uiTest,storage,elements,getElement};
+    return {ui:context.__uiTest,storage,elements,getElement,game};
   });
 }
 
@@ -71,25 +85,50 @@ test('the shared Rest control works from town screens and cannot heal during an 
     matches(recovery(),/data-action="rest"[^>]*>.*Rest at the Quay/);
     assert.doesNotMatch(recovery(),/\bdisabled\b/);
     await ui.act('rest');
+    const restDeadline=s.restReadyAt;
+    assert.ok(restDeadline>0,'Rest records a pending completion time');
+    assert.deepEqual([s.hp,s.mp,s.sp],[1,0,0],'starting a rest does not heal immediately');
+    assert.equal(ui.startFight(s,'rats'),false,'a pending rest blocks fight start');
+    await ui.act('rest');
+    assert.deepEqual([s.hp,s.mp,s.sp],[1,0,0],'an early completion attempt leaves resources unchanged');
+    ui.advanceClock(8000);
+    await ui.act('rest');
     const totals=G.totals(s);
     assert.deepEqual([s.hp,s.mp,s.sp],[totals.hp,totals.mp,totals.sp]);
+    assert.equal(s.restReadyAt,0,'only explicit completion clears the pending rest');
     assert.deepEqual({xp:s.xp,coins:s.coins,exchanges:s.totalExchanges,points:s.points},before,'town rest grants no rewards or exchanges');
   }
-  assert.equal(G.startFight(s,'rats'),true);
+  assert.equal(ui.startFight(s,'rats'),true);
   s.hp=1;s.mp=0;s.sp=0;ui.render();
   matches(recovery(),/data-action="rest"[^>]*disabled/);
   await ui.act('rest');
   assert.deepEqual([s.hp,s.mp,s.sp],[1,0,0],'disabled controls and direct handler calls cannot heal in combat');
-  assert.equal(G.exchange(s,'guard',()=>.5,1000).defeat,true);
+  assert.equal(ui.exchange(s,'guard',()=>.5).defeat,true);
   const nextActionAt=s.nextActionAt;
   ui.render();assert.doesNotMatch(recovery(),/\bdisabled\b/);
   await ui.act('rest');
-  assert.equal(s.hp,G.totals(s).hp,'Rest is available after defeat');
+  const woundDeadline=s.woundedUntil;
+  assert.equal(s.restReadyAt,woundDeadline,'a post-defeat rest shares the wound deadline');
+  assert.equal(s.hp,0,'starting recovery while wounded does not revive the character early');
+  ui.setClock(woundDeadline);
+  await ui.act('rest');
+  assert.equal(s.hp,G.totals(s).hp,'the explicit rest completion restores resources after the wound expires');
   assert.equal(s.nextActionAt,nextActionAt,'rest cannot bypass the shared combat delay');
   s.delve={node:0,path:null,campUsed:false};s.hp=1;ui.render();
   matches(recovery(),/disabled/);
   matches(recovery(),/Available after leaving the Works/);
   await ui.act('rest');assert.equal(s.hp,1,'town rest does not bypass the limited delve camp');
+});
+
+test('starting an encounter focuses desktop controls and returns mobile players to the top',async()=>{
+  const desktop=await bootApp();
+  await desktop.ui.act('hunt:rats');
+  assert.equal(desktop.ui.scrollCount(),1,'desktop hunt entry brings combat controls into view');
+  assert.equal(desktop.ui.windowScrollCount(),0,'desktop hunt entry does not jump the whole page');
+  const mobile=await bootApp();mobile.ui.setDesktop(false);
+  await mobile.ui.act('hunt:rats');
+  assert.equal(mobile.ui.scrollCount(),0,'mobile hunt entry does not target desktop controls');
+  assert.equal(mobile.ui.windowScrollCount(),1,'mobile hunt entry scrolls to the top');
 });
 
 test('the actual UI action handlers carry a rescue build through character, gear, shop, workbench, and save flows', async () => {
@@ -220,18 +259,58 @@ test('the character gear page retains every slot while Satchel keeps spare equip
   matches(ui.getModal().innerHTML,/Occupied by your two-handed Lockwarden’s Breach Pike/);
 });
 
+test('relic resonance UI reviews each unlock and copy license without replacing core gear slots',async()=>{
+  const s=G.fresh();s.coins=20_000;s.bag.push('signet','seal');s.gear.relic='signet';
+  const {ui}=await bootApp(s);
+  await ui.act('nav:character');await ui.act('char-tab:gear');
+  assert.equal(Object.keys(G.SLOTS).length,9,'echoes do not add ordinary gear slots');
+  assert.match(ui.getApp().innerHTML,/CORE RELIC · FULL EFFECT/);
+  for(const index of [1,2,3])assert.match(ui.getApp().innerHTML,new RegExp(`ECHO ${index} · LOCKED`));
+
+  const unlockCosts=[250,1250,6250];
+  for(let index=0;index<unlockCosts.length;index++){
+    await ui.act(`relic-unlock:${index}`);
+    assert.match(ui.getModal().innerHTML,new RegExp(`Cost: ${unlockCosts[index]} coins`));
+    await ui.act(`relic-unlock-confirm:${index}`);
+    assert.equal(ui.getState().relicSockets[index].unlocked,true);
+  }
+  const copyCosts=[150,600,2400];
+  for(let index=0;index<copyCosts.length;index++){
+    await ui.act(`relic-attune:${index}:signet`);
+    assert.match(ui.getModal().innerHTML,new RegExp(`Cost: ${copyCosts[index]} coins`));
+    await ui.act(`relic-attune-confirm:${index}:signet`);
+    assert.equal(ui.getState().relicSockets[index].relicId,'signet');
+  }
+  assert.deepEqual(ui.getState().relicSockets.map(socket=>socket.relicId),['signet','signet','signet']);
+  assert.equal(G.totals(ui.getState()).echoBonuses.ward,7,'same-as-core echoes add 50%, 25%, and 12.5% in socket order');
+});
+
 test('first-run wizard creates a local character and the roster preserves progress when creating and switching characters', async()=>{
   const {ui,storage,getElement}=await bootApp(null);
   noBrokenText(ui.getApp().innerHTML,'new character wizard');
-  contains(ui.getApp().innerHTML,'Who is joining the ledger?');
+  contains(ui.getApp().innerHTML,'Make your adventurer');
   for(const id of ['new-name','new-race','new-origin','new-kit'])assert.ok(ui.getApp().innerHTML.includes(`id="${id}"`),id);
-  getElement('#new-name').value='Ada';getElement('#new-race').value='Stonekin';getElement('#new-origin').value='Canal clerk';getElement('#new-kit').value='caster';
+  await ui.act('creator-race:reedling');await ui.act('creator-kit:caster');
+  getElement('#new-name').value='Ada';getElement('#new-race').value='reedling';getElement('#new-origin').value='Canal clerk';getElement('#new-kit').value='caster';
+  ui.changeCreatorField('hairColor','copper');
   await ui.act('create-character');
-  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().race,'Stonekin');assert.equal(ui.getState().origin,'Canal clerk');
+  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().race,'Reedlings');assert.equal(ui.getState().raceId,'reedling');assert.equal(ui.getState().origin,'Canal clerk');
   assert.equal(ui.getState().coins,20);assert.deepEqual([...ui.getState().bag],['rod','focus','coat']);
+  assert.deepEqual(ui.getState().stats,Races.RACES.reedling.stats);
+  assert.equal(ui.getState().appearance.hairColor,'copper');
   noBrokenText(ui.getApp().innerHTML,'created character');
   assert.equal(ui.getRoster().characters.length,1);
   assert.ok(storage.has('crown-calamity-roster-v1'));
+
+  await ui.act('nav:character');await ui.act('identity');
+  ui.setField('#name-input','Ada');ui.setField('#origin-input','Canal clerk');
+  ui.changeCreatorField('appearance-eyeColor','teal');
+  await ui.act('save-identity');
+  assert.equal(ui.getState().appearance.hairColor,'copper');
+  assert.equal(ui.getState().appearance.eyeColor,'teal');
+  const savedRoster=C.loadRoster(storage.get('crown-calamity-roster-v1'));
+  assert.equal(C.activeCharacter(savedRoster).appearance.eyeColor,'teal','identity appearance survives a serialized roster reload');
+  assert.equal(G.loadSave(JSON.stringify(ui.getState())).appearance.hairColor,'copper','appearance survives save import normalization');
 
   // Add a concrete change before switching, so the test proves the old adventure is saved.
   await ui.act('nav:bag');await ui.act('bag-tab:shop');await ui.act('vendor:armorer');await ui.act('buy-preview:workgloves');await ui.act('buy-confirm:workgloves');

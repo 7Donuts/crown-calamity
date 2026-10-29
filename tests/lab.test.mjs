@@ -49,7 +49,7 @@ import * as Lab from '../dist/lab.js';
   assert.equal(report.counters.playerInputs,4);
   assert.equal(report.counters.deniedInputs,1);
   assert.equal(report.counters.rounds,2);
-  assert.equal(report.counters.manaSpent,12);
+  assert.equal(report.counters.manaSpent,16);
   assert.equal(report.counters.damageAttempted,s.damageAttempted);
   assert.equal(report.counters.hpLost,s.hpLost);
   assert.equal(report.telemetryNotes.hpLost.includes('not incoming enemy damage'),true);
@@ -126,7 +126,7 @@ import * as Lab from '../dist/lab.js';
   assert.equal(s.rounds,0,'scenario setup does not resolve an exchange');
   assert.equal(Lab.labAction(s,'guardstrike',0).ok,true);
   const report=Lab.labSummary(s);
-  assert.equal(report.counters.staminaSpent,10);
+  assert.equal(report.counters.staminaSpent,12);
   assert.equal(report.counters.manaSpent,0);
 }
 

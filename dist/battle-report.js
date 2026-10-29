@@ -24,8 +24,8 @@ function glyph(name, className = '') {
   return `<svg class="pixel-glyph battle-glyph${className ? ` ${className}` : ''}" viewBox="0 0 24 24" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${path}</svg>`;
 }
 
-function actionButton(action, label, className = '') {
-  return `<button type="button" class="${className}" data-action="${esc(action)}">${label}</button>`;
+function actionButton(action, label, className = '', disabled = false) {
+  return `<button type="button" class="${className}" data-action="${esc(action)}" ${disabled?'disabled':''}>${label}</button>`;
 }
 
 function enemyFor(state, id = state?.fight?.enemy ?? state?.last?.enemy) {
@@ -112,9 +112,9 @@ function resultActions(state, receipt, enemy) {
   } else if (won && enemy?.id === 'boss') {
     primary = actionButton('nav:story', `${glyph('journal')}<span>Report back to Mara →</span>`, 'primary');
   } else if (won && enemy) {
-    primary = actionButton(`hunt:${enemy.id}`, `${glyph('hunt')}<span>Hunt again →</span>`, 'primary');
+    const rest=G.restStatus(state);primary = actionButton(`hunt:${enemy.id}`, `${glyph('hunt')}<span>Hunt again →</span>`, 'primary',rest.active||rest.wounded||state.hp<=0);
   } else {
-    primary = actionButton('rest', `${glyph('rest')}<span>Recover at the Quay</span>`, 'primary');
+    const rest=G.restStatus(state);primary=actionButton('rest',`${glyph('camp')}<span>${rest.active?rest.remainingMs>0?'Resting · '+Math.ceil(rest.remainingMs/1000)+'s':'Finish resting':'Recover at the Quay · 8s'}</span>`,'primary',rest.active&&rest.remainingMs>0);
   }
   const secondary = !state.delve
     ? actionButton('clear-outcome', `${glyph('chevron')}<span>Choose another hunt</span>`, 'subtle')
@@ -154,6 +154,7 @@ export function renderEncounterOutcome(state, { celebrate = false } = {}) {
         <p>${esc(detail)}</p>
       </div>
     </div>
+    ${defeated?`<p class="recovery-receipt">${Number.isFinite(receipt.coinsLost)?`Recovery crew fee: <strong>${receipt.coinsLost} coins</strong>. `:''}Your levels and gear are safe. A short rest will put you back on your feet; recovery takes at least 12 seconds after a knockout.</p>`:''}
     ${won?renderStoryNudge(state):''}
     ${rewardBlock}
     ${resultActions(state, receipt, enemy)}

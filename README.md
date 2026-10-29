@@ -1,8 +1,8 @@
-# Crown & Calamity — playable solo prototype v0.9.0
+# Crown & Calamity — playable solo prototype v0.10.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
-An original, mobile-first, text-first LitRPG set below Bracken Quay. One explicit action resolves one combat exchange. There is no idle or offline advancement. Characters have no portraits; enemies have original illustrations.
+An original, mobile-first, text-first LitRPG set below Bracken Quay. One explicit action resolves one combat exchange. There is no idle or offline advancement. Characters now have customizable pixel portraits alongside the illustrated enemies and equipment.
 
 ## Run and package
 
@@ -27,6 +27,20 @@ python scripts-package.py
 Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy sprites, item atlas, emblem, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Records → Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
+
+## New in v0.10.0 — heritage, relic echoes, and deliberate recovery
+
+Create a **Quayfolk**, **Cobblekin**, **Reedling**, or **Emberling** adventurer. Each race supplies a 68-point starting spread, a named passive, and a descriptive quirk; all attributes remain at least 8. Choose a simple Sword & shield, Blade & charm, or Rod & focus kit independently. Male/Female presentation, five hairstyles, and hair/eye/skin palettes update a real layered pixel portrait and persist with the character. Appearance has no combat effect. See [race and identity rules](design/30_Races_and_Identity.md).
+
+Older saves keep their invested attributes and all progress. Edit identity offers a **one-time heritage adoption** to add a racial passive without rebaking those attributes; cosmetic appearance stays editable. Free early respecs still reclaim the twelve points above the seven-attribute minimum.
+
+The nine core gear slots remain, with **three optional relic echo sockets** beneath the equipment map. Socket unlocks cost 250 / 1,250 / 6,250 coins. For current relics, new licenses of the same type cost 150 / 600 / 2,400 coins across sockets; clearing never refunds or discounts another socket. Reattuning an already licensed relic in the same socket is free. Echoes copy diminishing flat bonuses and share the base item's upgrades; they do not repeat the Seal barrier trigger. A bare Seal needs an upgrade/reforge that adds flat bonuses before an echo can be licensed. All costs and effect strengths are reviewed before spending. See [relic resonance](design/31_Relic_Resonance.md).
+
+Early mana and stamina reserves are smaller, expensive actions cost more, and exchanges no longer refill both resources for free. Basic Attack stays free; guarded responses restore 2 stamina. Recover spends an exchange for 8 mana / 10 stamina while the enemy responds. Prepared grants only 3 mana / 3 stamina on encounter entry. Attribute and gear changes raise capacity without granting current resources, preventing free-heal respec loops.
+
+Town rest now takes **8 seconds**, has no coin fee, and requires a final tap to finish. There is no automatic healing while waiting or loading a save. Defeat costs **5% of carried coins, capped at 50**, plus a **12-second recovery window**; levels and gear are safe. A rest started during recovery shares the longer deadline instead of stacking waits. Encounters and delves cannot begin during pending rest or wounds. See [resources and recovery](design/32_Resources_and_Recovery.md).
+
+Starting a desktop encounter scrolls the combat actions into view, respecting reduced motion. Mobile keeps its existing combat layout. Tests cover all four races with every supported starter kit against the opening rats, appearance combinations, recovery timing, relic costs and stacking, save compatibility, and actual UI flows. Equal budgets and these starter checks are a foundation for balance; full PvP tuning remains future work.
 
 ## New in v0.9.0 — clearer goals and a livelier Quay
 

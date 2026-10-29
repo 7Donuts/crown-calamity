@@ -124,3 +124,12 @@
   #app .sheet-attribute-name { font-size: 13px; }
   #app .sheet-stat-list { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
+#app .sheet-identity { grid-template-columns: 96px minmax(0,1fr) auto; }
+#app .sheet-identity-mark { width: 96px; height: 128px; background: none; }
+#app .sheet-identity-mark .character-art, #app .sheet-identity-mark svg { display: block; width: 96px; height: 128px; image-rendering: pixelated; }
+#app .sheet-lineage { display: flex; flex-wrap: wrap; gap: 5px 12px; padding: 8px 0 14px; color: #344954; font-size: 14px; }
+#app .sheet-lineage strong { color: #245653; }
+@media(max-width:740px){ #app .sheet-identity { grid-template-columns: 64px minmax(0,1fr) auto; } #app .sheet-identity-mark, #app .sheet-identity-mark svg { width: 64px; height: 86px; } }
+@media(max-width:420px){ #app .sheet-identity { grid-template-columns: 64px minmax(0,1fr); } }
+
+#app .sheet-racial-trait { flex-basis: 100%; font-style: italic; }

@@ -136,7 +136,8 @@ function resaleValue(s,id){
 export function sellPreview(s,id){
   const item=ITEMS[id],price=item?resaleValue(s,id):0;
   const equipped=Object.values(s?.gear||{}).includes(id);
-  let reason=!item?'Unknown item.':LOCKED(s)?'Selling is unavailable during a fight or delve.':!owned(s,id)?'You do not own this item.':equipped?'Unequip this item before selling it.':null;
+  const activeEcho=s?.relicSockets?.some(socket=>socket?.unlocked&&socket.relicId===id);
+  let reason=!item?'Unknown item.':LOCKED(s)?'Selling is unavailable during a fight or delve.':!owned(s,id)?'You do not own this item.':equipped?'Unequip this item before selling it.':activeEcho?'Clear all active echo sockets using this relic before selling it.':null;
   return {allowed:!reason,reason,price,item:item?resolveItem(s,id):null,id};
 }
 export function sellItem(s,id){
