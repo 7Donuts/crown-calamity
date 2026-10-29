@@ -21,7 +21,7 @@ async function bootLab(){
   return {ui:context.__test,get,downloads,copied};
 }
 
-test('the disposable UI opens all seven scenarios, shows the correct goals, and never accesses campaign storage',async()=>{
+test('the disposable UI opens all eight scenarios, shows the correct goals, and never accesses campaign storage',async()=>{
   const {ui,get}=await bootLab();
   assert.match(get('#lab-app').innerHTML,/provisional balance/);
   for(const scenario of L.LAB_SCENARIOS){
@@ -30,6 +30,12 @@ test('the disposable UI opens all seven scenarios, shows the correct goals, and 
     assert.equal(ui.getSession().scenarioId,scenario.id);
     assert.equal(/\b(?:undefined|NaN)\b/.test(get('#lab-app').innerHTML),false,scenario.id);
     if(scenario.id==='return_orientation')assert.match(get('#lab-app').innerHTML,/Lint Trap Rescue/);
+    if(scenario.id==='build_equipment')assert.match(get('#lab-app').innerHTML,/Chapter 2 shop stock/);
+    if(scenario.id==='level_cap_progress'){
+      assert.match(get('#lab-app').innerHTML,/Level 50 · Cap reached/);
+      assert.match(get('#lab-app').innerHTML,/Level cap · No further XP or attribute-point rewards/);
+      assert.doesNotMatch(get('#lab-app').innerHTML,/\b(?:level part|Stitch counter)\b/i);
+    }
     ui.handleAction('start-hunt');
     assert.equal(ui.getSession().character.fight.enemy,scenario.enemy);
     assert.match(get('#lab-app').innerHTML,/data-action="lab-action:attack"/);
@@ -69,12 +75,18 @@ test('lab shop and equip controls use the same affordability and ownership rules
   const {ui,get}=await bootLab();
   get('#scenario-select').value='build_equipment';get('#kit-select').value='caster';get('#seed-input').value='shop';
   ui.handleAction('start-session');
-  const s=ui.getSession();s.character.coins=5000;const price=G.buyPreview(s.character,'oilskin').price;
-  ui.handleAction('lab-buy:oilskin');
+  const s=ui.getSession();s.character.coins=5000;const sidegrade=Object.keys(G.ITEMS).find(id=>G.buyPreview(s.character,id).allowed&&G.buyPreview(s.character,id).chapterRequired===2&&G.ITEMS[id].slot==='body');
+  assert.ok(sidegrade,'fixture exposes a Chapter 2 body sidegrade using normal preview access');
+  const chapterLocked=Object.keys(G.ITEMS).find(id=>G.buyPreview(s.character,id).chapterRequired===3);
+  assert.ok(chapterLocked);assert.ok(get('#lab-app').innerHTML.includes(`data-action="lab-buy:${chapterLocked}" class="subtle" disabled`));
+  assert.match(get('#lab-app').innerHTML,/This stock opens in Chapter 3/);
+  const catalogName=G.ITEMS[sidegrade].name,price=G.buyPreview(s.character,sidegrade).price;
+  ui.handleAction('lab-buy:'+sidegrade);
   assert.equal(s.character.coins,5000-price);
-  assert.ok(s.character.bag.includes('oilskin'));
-  ui.handleAction('lab-equip:oilskin:body');
-  assert.equal(s.character.gear.body,'oilskin');
+  assert.ok(s.character.bag.includes(sidegrade));
+  assert.ok(get('#lab-app').innerHTML.includes(catalogName));
+  ui.handleAction(`lab-equip:${sidegrade}:body`);
+  assert.equal(s.character.gear.body,sidegrade);
   assert.equal(/\b(?:undefined|NaN)\b/.test(get('#lab-app').innerHTML),false);
 });
 
@@ -93,14 +105,16 @@ test('the Night Shift scenario clocks in, shows the risk, offers a stored boon c
   assert.match(html(),/Clock in \(start Night Shift\)/);
   assert.match(html(),/Nothing is timed and nothing accrues while you are away/);
   assert.equal(/\bundefined\b|\bNaN\b/.test(html()),false);
-  assert.equal(/\bbank\b|guild|circle|holdings|Care Instructions|toy box/i.test(html()),false,'reserved vocabulary stays out of the Shift text');
+  assert.equal(/\b(?:bank|guild|circle|holdings)\b|Care Instructions|toy box/i.test(html()),false,'reserved vocabulary stays out of the Shift text');
   ui.handleAction('shift-start');
   const s=ui.getSession();
   assert.equal(s.shift.status,'open');
   assert.match(html(),/Unfiled receipts at risk before the next fight: nothing yet/);
   assert.match(html(),/Take your one Break \(heals 35% of each resource\)/);
   assert.match(html(),/Locked during a Night Shift/);
-  assert.match(html(),/data-action="lab-buy:sword" class="subtle" disabled/);
+  const unowned=Object.keys(G.ITEMS).find(id=>G.ITEMS[id].price&&!s.character.bag.includes(id));
+  assert.ok(unowned);assert.ok(html().includes(`data-action="lab-buy:${unowned}" class="subtle" disabled`));
+  assert.ok(html().includes(G.ITEMS[unowned].name),'shop labels come from the current catalog');
   const win=()=>{ui.handleAction('shift-fight:rats');assert.ok(s.character.fight);assert.match(html(),/Go still \(Withdraw\) ends this fight and resets the streak, and keeps your unfiled receipts/);s.character.fight.hp=1;s.character.nextActionAt=0;ui.handleAction('lab-action:attack');assert.equal(s.character.fight,null);};
   win();
   assert.match(html(),/Unfiled receipts at risk before the next fight: nothing yet/,'the first win adds no Overtime');

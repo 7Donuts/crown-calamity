@@ -18,13 +18,43 @@ function finishDrainage(s,choice='coins'){
 
 test('catalog and overview expose a staged authored introduction',()=>{
   const s=make();normalizeStory(s);
-  assert.equal(Object.keys(STORY_CONTRACTS).length,9);
+  assert.equal(Object.keys(STORY_CONTRACTS).length,29);
   assert.equal(storyState(s).stage,0);assert.equal(storyState(s).stageLabel,'Meet Mara at the lower stair');
   assert.deepEqual(availableContracts(s),[]);
   assert.equal(storyAction(s,'meet_mara').action,'meet_mara');
   assert.equal(storyState(s).stage,1);assert.deepEqual(availableContracts(s).map(x=>x.id),['proof_of_trouble']);
   assert.equal(storyAction(s,'meet_mara'),false);
   assert.deepEqual(availableStoryActions(s),[]);
+});
+
+test('chapter two opens from the claimed municipal finale and advances only after its explicit boss claim',()=>{
+  const s=make({level:50,quest:5,story:{accepted:[],completed:['municipal_works'],events:{victories:{},actions:{mara_met:1},seen:[]},choices:{},baselines:{},legacyReady:[]}});
+  normalizeStory(s);
+  assert.equal(storyState(s).campaign.current,2);
+  assert.equal(acceptContract(s,'arcade_finale'),false,'the finale stays gated behind chapter objectives');
+  assert.ok(acceptContract(s,'arcade_lights'));
+  assert.ok(acceptContract(s,'token_tally'));
+  completeObjective(s,'arcade_dust',3);
+  assert.equal(availableStoryActions(s)[0].id,'arcade_lights_on');
+  assert.ok(storyAction(s,'arcade_lights_on'));
+  const lightsReceipt=claimContract(s,'arcade_lights');assert.ok(lightsReceipt);assert.equal(lightsReceipt.storyAdvance.unlockedChapter,null);
+  victory(s,'arcade_marble');
+  const minorReceipt=claimContract(s,'token_tally');assert.ok(minorReceipt);assert.equal(minorReceipt.storyAdvance.unlockedChapter,null);
+  assert.ok(acceptContract(s,'arcade_challenge'));
+  completeObjective(s,'arcade_marble',2);completeObjective(s,'arcade_racer',2);
+  assert.ok(claimContract(s,'arcade_challenge'));
+  assert.equal(availableContracts(s).some(c=>c.id==='arcade_finale'),true);
+  assert.ok(acceptContract(s,'arcade_finale'));
+  assert.equal(contractStatus(s,'arcade_finale').ready,false);
+  assert.equal(availableStoryActions(s)[0].id,'arcade_last_cabinet');
+  assert.ok(storyAction(s,'arcade_last_cabinet'));
+  assert.equal(contractStatus(s,'arcade_finale').ready,false,'the story interaction is not a boss victory');
+  victory(s,'arcade_boss');
+  assert.equal(contractStatus(s,'arcade_finale').ready,true);
+  const receipt=claimContract(s,'arcade_finale');
+  assert.ok(receipt);assert.equal(receipt.majorIndex,null);assert.equal(receipt.storyAdvance.unlockedChapter,3);assert.equal(s.quest,5);
+  assert.equal(storyState(s).campaign.current,3);
+  assert.equal(acceptContract(s,'garden_wayfinding'),true);
 });
 
 test('minor contract counts only victories after acceptance and claims once',()=>{
@@ -71,8 +101,8 @@ test('permit, optional runic minor, gate, records, and municipal route form the 
   s.delve={node:0};assert.ok(recordStoryEvent(s,{type:'delve_enter'}));assert.ok(recordStoryEvent(s,{type:'delve_path',path:'records'}));
   assert.ok(victory(s,'inspector'));assert.ok(victory(s,'boss'));s.delve=null;
   assert.equal(contractStatus(s,'municipal_works').ready,true);
-  const receipt=claimContract(s,'municipal_works');assert.equal(receipt.majorIndex,4);assert.equal(receipt.storyAdvance.branch,'records');assert.equal(s.materials['Stamped brass'],1);
-  assert.equal(storyState(s).majorCompleted,5);assert.equal(availableContracts(s).filter(c=>c.kind==='major').length,0);
+  const receipt=claimContract(s,'municipal_works');assert.equal(receipt.majorIndex,4);assert.equal(receipt.storyAdvance.branch,'records');assert.equal(receipt.storyAdvance.unlockedChapter,2);assert.equal(s.materials['Stamped brass'],1);
+  assert.equal(storyState(s).campaign.current,2);assert.equal(storyState(s).majorCompleted,0);assert.ok(availableContracts(s).some(c=>c.id==='arcade_lights'));
 });
 
 test('overflow route remains a distinct, recorded branch and yields its authored material',()=>{

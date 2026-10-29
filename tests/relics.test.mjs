@@ -7,7 +7,7 @@ import {
 } from '../dist/relics.js';
 
 function state(overrides = {}) {
-  return { coins: 10000, level: 10, bag: ['signet', 'seal'], gear: { relic: null }, hp: 100, ...overrides };
+  return { coins: 10000, level: 10, story:{completed:['municipal_works','arcade_finale','garden_finale','attic_finale']}, bag: ['signet', 'seal'], gear: { relic: null }, hp: 100, ...overrides };
 }
 
 test('unlock progression has explicit sequential costs and spends atomically', () => {
@@ -23,6 +23,17 @@ test('unlock progression has explicit sequential costs and spends atomically', (
   assert.equal(s.coins, 200000-first);
   assert.equal(unlockRelicPreview(s, 1).coinCost, first*5);
   assert.equal(unlockRelic(s, 1).ok, true);
+});
+
+test('new echo unlocks require their chapter while paid legacy sockets stay active',()=>{
+  const early=state({story:{completed:[]},coins:1_000_000});
+  const preview=unlockRelicPreview(early,0);
+  assert.equal(preview.allowed,false);assert.equal(preview.chapterRequired,2);assert.match(preview.reason,/Chapter 2/);
+  const paid=state({story:{completed:[]},coins:1_000_000,relicSockets:[{unlocked:true,relicId:'signet',copiesPaid:{signet:1}}]});
+  assert.equal(attuneRelicPreview(paid,0,'signet').allowed,false,'same socket cannot duplicate an active relic');
+  assert.equal(clearRelic(paid,0).ok,true);
+  assert.equal(attuneRelicPreview(paid,0,'signet').allowed,true,'a paid legacy license remains reusable');
+  assert.equal(attuneRelic(paid,0,'signet').ok,true);
 });
 
 test('copy attunement validates owned relics, charges exponentially, and scales duplicates', () => {

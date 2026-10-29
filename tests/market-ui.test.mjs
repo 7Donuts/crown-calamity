@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as G from '../dist/engine.js';
 import { ITEMS } from '../dist/gear.js';
-import { renderMarket, renderStockComparison, stockComparison } from '../dist/market-ui.js';
+import { renderMarket, renderStockComparison, stockComparison, strictlyDominatesWeapon } from '../dist/market-ui.js';
 
 const copy = value => structuredClone(value);
 const noBrokenValues = html => assert.equal(/\b(?:undefined|NaN)\b/.test(html), false);
@@ -23,12 +23,13 @@ test('equal-base weapons expose their different scaling and expected attack befo
 test('market rendering hides owned buy stock and does not expose a gear sidebar', () => {
   const s = G.fresh();
   const before = copy(s);
-  const html = renderMarket(s, { vendorId: 'weaponsmith', mode: 'buy' });
+  const html = renderMarket(s, { vendorId: 'weaponsmith', mode: 'buy', filters: { showOtherStyles: true, showLowerTiers: true } });
   assert.match(html, /market-page/);
-  assert.match(html, /owned items hidden/);
+  assert.match(html, /owned stock hidden/);
   assert.doesNotMatch(html, /Inspector’s Rod/);
   assert.doesNotMatch(html, /Current gear|current equipment|build sidebar|side-column/i);
-  assert.match(html, /data-action="market-compare:floodrod"/);
+  assert.match(html, /data-action="market-compare:lullabyRod"/);
+  assert.match(html,/Future collections/);
   assert.doesNotMatch(html, /data-stock-id="sword"/);
   assert.deepEqual(s, before, 'rendering is a pure inspection');
   noBrokenValues(html);
@@ -46,7 +47,7 @@ test('comparison shows base unmodified stock and never changes the save', () => 
   assert.deepEqual(s, before);
   const rendered = renderStockComparison(s, 'sword');
   assert.equal(rendered.title, ITEMS.sword.name);
-  assert.match(rendered.body, /Canal-Iron Sword/);
+  assert.match(rendered.body, /Lost-Button Bonker/);
   assert.doesNotMatch(rendered.body, /Keen Canal-Iron|of Might \+3/);
   noBrokenValues(rendered.body);
 });
@@ -108,17 +109,41 @@ test('offhand comparison while wielding a pike is blocked without illegal total 
   noBrokenValues(modal.body);
 });
 
-test('high-tier stock remains comparable and purchasable at any level when affordable',()=>{
+test('future chapter stock can be compared, while purchase remains locked by chapter receipt',()=>{
   const s=G.fresh();s.level=1;s.coins=100000;
   const data=stockComparison(s,'ironsword');
-  assert.ok(data);assert.equal(data.preview.allowed,true);
+  assert.ok(data);assert.equal(data.preview.allowed,false);assert.match(data.preview.reason,/Chapter 2/);
   assert.equal(data.item.tier,6);
   assert.ok(data.changes.length>0,'the item still has an inspectable build projection');
   const modal=renderStockComparison(s,'ironsword');
-  assert.match(modal.body,/Lockwarden’s Sword/);
-  assert.match(modal.body,/VENDOR ITEM · TIER 6/);
+  assert.match(modal.body,/Toy-Guard Club/);
+  assert.match(modal.body,/VENDOR ITEM · GRADE 6/);
   assert.doesNotMatch(modal.body,/Requires level/);
   assert.match(modal.body,/Review purchase · \d+ coins/);
-  assert.doesNotMatch(modal.body,/disabled/);
+  assert.match(modal.body,/disabled/);
   noBrokenValues(modal.body);
+});
+
+
+test('weapon lists default to equipped scaling and grade, retain sidegrades, and hide only strict same-style downgrades',()=>{
+  const s=G.createCharacter({kit:'caster'});
+  const html=renderMarket(s,{vendorId:'weaponsmith',mode:'buy'});
+  assert.match(html,/data-stock-id="lullabyRod"/);
+  assert.doesNotMatch(html,/data-stock-id="sword"/);
+  assert.match(html,/data-action="shop-filter:other"/);
+  assert.match(html,/data-action="shop-filter:tiers"/);
+  assert.equal(strictlyDominatesWeapon(s,'lullabyRod','rod'),true);
+  assert.equal(strictlyDominatesWeapon(s,'rod','sword'),false,'a different channel stays visible');
+  s.itemMods.lullabyRod={upgrade:3,prefix:'keen',suffix:'of_might'};
+  assert.equal(strictlyDominatesWeapon(s,'lullabyRod','rod'),true,'equipped effective upgrades and affixes are included');
+});
+
+test('future chapter collections stay compact and relic descriptions retain conditional benefits',()=>{
+  const s=G.fresh();s.coins=1_000_000;
+  const html=renderMarket(s,{vendorId:'curio',mode:'buy'});
+  assert.match(html,/Future collections/);
+  assert.match(html,/The Lost Toy Arcade/);
+  assert.doesNotMatch(html,/data-stock-id="floodrod"/);
+  const relics=renderMarket(s,{vendorId:'curio',mode:'buy',filters:{showOtherStyles:true,showLowerTiers:true}});
+  assert.match(relics,/Recover restores 2 extra Sparkle/i);
 });

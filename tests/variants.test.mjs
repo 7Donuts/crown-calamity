@@ -12,7 +12,7 @@ const SOLID = () => .5;            // never glances, never crits, never drops eq
 const ALWAYS_GLANCE = () => .999;
 let clock = 3e12;
 const tick = () => (clock += 1000);
-const ORDINARY = G.ENEMIES.filter(e => e.id !== 'boss');
+const ORDINARY = G.ENEMIES.filter(e => G.enemyChapter(e.id) === 1 && e.id !== 'boss');
 const enemy = id => G.ENEMIES.find(e => e.id === id);
 
 function fresh(level = 7) {
@@ -79,7 +79,7 @@ test('the meter advances only on accepted hunt victories, one per victory, and n
   assert.equal(s.variantMeters.crab ?? 0, 0, 'delve victories never advance a meter');
   assert.equal(s.fight, null);
   // The boss has no meter at all.
-  const b = fresh(10); G.startFight(b, 'boss', 'delve', tick()); b.fight.hp = 1;
+  const b = fresh(10); b.delve={node:4,path:'records',campUsed:true}; G.startFight(b, 'boss', 'delve', tick()); b.fight.hp = 1;
   assert.equal(G.exchange(b, 'attack', SOLID, tick()).victory, true);
   assert.equal('boss' in b.variantMeters, false);
 });
@@ -193,7 +193,7 @@ test('flagged rewards are bounded multipliers plus one extra material; pity, mas
   assert.equal(kill(a, false).victory, true); assert.equal(kill(b, true).victory, true);
   const base = enemy('rats');
   assert.equal(b.last.xp, Math.floor(a.last.xp * 1.25));
-  assert.equal(b.last.coins, Math.floor(base.coins * 1.4)); assert.ok(b.last.coins > a.last.coins);
+  assert.equal(b.last.coins, Math.floor(base.coins * 1.4)); assert.ok(b.last.coins >= a.last.coins, 'whole-coin rounding may retain a one-coin base reward');
   assert.equal(a.materials[base.material], 1); assert.equal(b.materials[base.material], 2, 'plus 1 extra of the enemy’s material');
   assert.equal(b.coins - a.coins, b.last.coins - a.last.coins);
   assert.deepEqual(b.last.bonus, { xp: b.last.xp - a.last.xp, coins: b.last.coins - a.last.coins, materials: 1 });
@@ -202,7 +202,7 @@ test('flagged rewards are bounded multipliers plus one extra material; pity, mas
   assert.equal(b.kills.rats, a.kills.rats); assert.deepEqual(b.mastery, a.mastery, 'mastery marks count like any other victory');
   const objective = s => G.contractStatus(s, 'proof_of_trouble').objectives[0].current;
   assert.equal(objective(a), 1); assert.equal(objective(b), 1, 'story objectives count a flagged victory once');
-  assert.match(b.log[0].text, /\+12 coins · 2 × /, 'the log reports the extra material');
+  assert.ok(b.log[0].text.includes(`+${b.last.coins} coins · 2 × `), 'the log reports the actual coins and extra material');
   assert.equal('bonus' in a.last, false); assert.equal('variant' in a.last, false, 'regular receipts are unchanged');
 });
 
@@ -307,7 +307,7 @@ test('boss and delve fights never carry a variant, and forged boss or delve data
   assert.equal(back.fight.hp, enemy('crab').hp);
   const forged = structuredClone(back); forged.fight.variant = { id: 'stuffed', version: 1 };
   assert.equal('variant' in roundTrip(forged).fight, false, 'a variant forged onto a delve fight is dropped');
-  const boss = fresh(10); G.startFight(boss, 'boss', 'delve', tick());
+  const boss = fresh(10); boss.delve={node:4,path:'records',campUsed:true}; G.startFight(boss, 'boss', 'delve', tick());
   boss.fight.variant = { id: 'stuffed', version: 1 }; boss.fight.variantState = { barrier: 0, charged: false };
   const loaded = roundTrip(boss); assert.equal('variant' in loaded.fight, false); assert.equal('variantState' in loaded.fight, false);
 });

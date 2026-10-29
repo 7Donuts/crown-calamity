@@ -1,16 +1,18 @@
 // Optional echo sockets for owned relic items. The core gear.relic slot remains
 // authoritative for the original full-strength relic and its unique proc.
 import { ITEMS, effectiveItem } from './gear.js';
+import { currentChapter, chapterUnlocked } from './campaign.js';
 
 export const RELIC_SOCKET_COUNT = 3;
 export const RELIC_UNLOCK_COSTS = Object.freeze([5000, 25000, 125000]);
+export const RELIC_UNLOCK_CHAPTERS = Object.freeze([2, 3, 4]);
 export const RELIC_EFFECT_SCALES = Object.freeze([0.5, 0.25, 0.125]);
 export const RELIC_COPY_BASE_COST = 150;
 export const RELIC_COPY_MULTIPLIER = 4;
 // Echoes may strengthen an authored effect, but never create another trigger.
 export const RELIC_EFFECTS = Object.freeze({
-  signet: { name: 'Tide Ledger', desc: 'Recover restores 2 extra Sparkle (mana).' },
-  seal: { name: 'Superintendent’s Seal', desc: 'The first useful Guard each fight grants 15 barrier.' },
+  signet: { name: 'Tide-Thread Ledger', desc: 'Recover restores 2 extra Sparkle (mana).' },
+  seal: { name: 'Keeper’s Button', desc: 'The first useful Guard each fight grants 15 barrier.' },
   threadSpool: { name: 'Spare Thread', desc: 'The first useful Guard each fight restores 2 Bounce (stamina).' },
   patchworkHeart: { name: 'Patchwork Heart', desc: 'Victory restores 5% of missing Stuffing (health).' },
   luckyButton: { name: 'Lucky Button', desc: 'Victory grants 5% extra coins.' },
@@ -67,13 +69,14 @@ export function relicSlots(s) {
 
 export function unlockRelicPreview(s, slot) {
   const sockets = ensured(s) || [];
-  const index = Number(slot), cost = RELIC_UNLOCK_COSTS[index];
+  const index = Number(slot), cost = RELIC_UNLOCK_COSTS[index], chapterRequired=RELIC_UNLOCK_CHAPTERS[index];
   let reason = !Number.isInteger(index) || index < 0 || index >= RELIC_SOCKET_COUNT ? 'Unknown relic socket.'
     : locked(s) ? lockReason(s)
       : sockets[index]?.unlocked ? 'That relic socket is already unlocked.'
         : index > 0 && !sockets[index - 1]?.unlocked ? 'Unlock the previous socket first.'
-          : (s.coins || 0) < cost ? 'You cannot afford this socket.' : null;
-  return { allowed: !reason, reason, slot: index, coinCost: cost ?? 0, nextCost: RELIC_UNLOCK_COSTS[index + 1] ?? null };
+          : !chapterUnlocked(s, chapterRequired) ? `This keychain loop opens in Chapter ${chapterRequired}.`
+            : (s.coins || 0) < cost ? 'You cannot afford this socket.' : null;
+  return { allowed: !reason, reason, slot: index, coinCost: cost ?? 0, nextCost: RELIC_UNLOCK_COSTS[index + 1] ?? null, chapterRequired:chapterRequired??null, chapterCurrent:currentChapter(s) };
 }
 
 export function unlockRelic(s, slot) {

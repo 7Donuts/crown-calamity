@@ -1,7 +1,9 @@
-export const LEVEL_CAP=10;
+export const LEVEL_CAP=50;
 
 export function xpNeeded(level){
   const l=Math.max(1,Math.floor(Number(level)||1));
+  // The established levels 1–9 are unchanged. The same smooth quadratic
+  // continues through the five-chapter campaign, reaching 63,804 XP at 50.
   return (100+40*(l-1)+8*(l-1)**2)*3;
 }
 
@@ -43,7 +45,7 @@ export function migrateLegacyProgression(s){
   if(sourceVersion<4){
     const oldLevelXP=100+40*(s.level-1)+8*(s.level-1)**2;
     const oldXP=Math.max(0,Number.isFinite(s.xp)?s.xp:0);
-    if(s.level>=LEVEL_CAP){s.xp=0;}
+    if(s.level>=10){s.xp=0;}
     else{
       const fraction=Math.max(0,Math.min(1,oldXP/oldLevelXP));
       s.xp=Math.min(xpNeeded(s.level)-1,Math.round(fraction*xpNeeded(s.level)));
@@ -51,7 +53,7 @@ export function migrateLegacyProgression(s){
       s.points=(Number.isInteger(s.points)?s.points:0)+paid;
     }
   }else{
-    paid=s.level>=LEVEL_CAP?0:Math.max(0,Math.min(3,Math.floor(Number(s.part)||1)-1));
+    paid=s.level>=10?0:Math.max(0,Math.min(3,Math.floor(Number(s.part)||1)-1));
   }
   s.levelPointsPaid=paid;
   delete s.part;

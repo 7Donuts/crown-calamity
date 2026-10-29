@@ -1,7 +1,8 @@
 // Case files, local records and titles (design 37, R3 and R7c/R7d). Display and bookkeeping only.
 // Nothing in here changes a combat number: case files unlock information, records are private and unrewarded,
-// and a title is a label over an achievement the character already earned. This module has no imports so the
-// engine can use it without a cycle; the engine supplies enemy data and the shared action profile when it builds views.
+// and a title is a label over an achievement the character already earned. Only pure encounter data is imported;
+// the engine supplies the shared action profile when it builds views.
+import { CAMPAIGN_ENEMIES } from './campaign-enemies.js';
 //
 // Save shapes (all additive, defaulted when absent, no save version change):
 //   caseFiles: { [enemyId]: { wins, fewestExchanges?, leastLost?, noDamage? } }   victories counted from zero, no backfill
@@ -13,7 +14,30 @@ export const CASE_MILESTONES = Object.freeze([10, 30, 100]);
 export const CASE_MAX_WINS = 999999;
 const CASE_MAX_EXCHANGES = 9999;
 
-// Narrow by design: each lore page is for one of the seven current enemy ids. A test pins this list to ENEMIES.
+const REGIONAL_NOTICES = Object.freeze({
+  arcade_dust: 'Dust bunnies do not accept tokens. This one would like to negotiate.',
+  arcade_crane: 'You are an adventurer, not a prize. Please repeat this to the claw.',
+  arcade_marble: 'Lost your marbles? We have found several. They are charging.',
+  arcade_racer: 'No brakes were included. Neither was a responsible adult.',
+  arcade_boss: 'The machine says everyone is a winner. Its accounting differs.',
+  garden_ant: 'Picnic permits are issued individually. The ants brought a committee.',
+  garden_snail: 'Your complaint is moving through the system at snail speed.',
+  garden_sprinkler: 'Water-resistant does not mean enthusiastic about it.',
+  garden_magpie: 'Buttons attached to your face are not unattended valuables.',
+  garden_boss: 'Garden ornaments are for looking at. This one has other plans.',
+  attic_moth: 'The sweater is not a buffet. We have informed the moth.',
+  attic_box: 'Contents may have settled. Contents may also have teeth.',
+  attic_clock: 'Please wind responsibly. This clock has wound itself into a mood.',
+  attic_hugger: 'Hugs remain optional, regardless of blanket size.',
+  attic_boss: 'Rock gently. The warranty does not cover being rocked back.',
+  fair_mask: 'Two smiles, one admission price, several unanswered questions.',
+  fair_carousel: 'Riders must be this brave to dismount while moving.',
+  fair_ticket: 'No refunds. Especially for tickets that eat the customer.',
+  fair_ringmaster: 'Applause is appreciated. Cymbals are currently compulsory.',
+  fair_boss: 'The grand prize would like to take you home. Clarify who owns whom.'
+});
+
+// Every current enemy has an information page; none grants a statistical bonus.
 export const CASE_LORE = Object.freeze({
   rats: Object.freeze({
     page: 'They are not malicious, only moving in. Every nest in the Lint Trap Canals is built from something that used to be someone’s: a mitten, a button, the soft part of a stuffie who stood still too long. The swarm tests you with two small nibbles, then rushes the whole nest at your stuffing.',
@@ -49,7 +73,12 @@ export const CASE_LORE = Object.freeze({
     page: 'The washer at the heart of the Laundry Works, acting Superintendent because nobody else applied. The Spin Cycle agitates, rinses and spins in that order, a fixed routine that has curdled into a grudge. Below a third of its drum it panics: doors open, drawers open, and the drain gets very emergency.',
     bursar: 'NOTICE · Cycle complete. Please remove your stuffie promptly to prevent wrinkles.',
     notes: Object.freeze({})
-  })
+  }),
+  ...Object.fromEntries(CAMPAIGN_ENEMIES.map(enemy => [enemy.id, Object.freeze({
+    page: `${enemy.blurb} Encounters in ${enemy.location} have their own familiar rhythm. Watch for ${enemy.pattern[enemy.heavy].toLowerCase()}, the declared heavy move; a timely Guard or interruption can leave a surprisingly large problem looking rather small. Your field notes belong to this creature, wherever you next meet it.`,
+    bursar: `NOTICE · ${REGIONAL_NOTICES[enemy.id]}`,
+    notes: Object.freeze({})
+  })]))
 });
 export const CASE_ENEMY_IDS = Object.freeze(Object.keys(CASE_LORE));
 export const CASE_STAMP = 'FILED · 100';

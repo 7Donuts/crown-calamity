@@ -74,7 +74,16 @@ export const ITEM_ART = Object.freeze({
   thimblePendant:frames.pendant,spoolBracelet:frames.pendant,teaCharm:frames.canalstone,
   toyCompass:frames.ring,buttonLocket:frames.ring,bellPendant:frames.pendant,ribbonBrooch:frames.pendant,
   threadSpool:frames.materials,patchworkHeart:frames.signet,luckyButton:frames.canalstone,dreamBell:frames.signet,
-  thimbleGuard:frames.signet,amberMarble:frames.canalstone,ribbonKnot:frames.pendant,stuffingSatchel:frames.toolkit
+  thimbleGuard:frames.signet,amberMarble:frames.canalstone,ribbonKnot:frames.pendant,stuffingSatchel:frames.toolkit,
+  thimblePike:frames.pike,spoolSpear:frames.sword,buttonBashers:frames.sword,thimbleMaul:frames.sword,pincushionPounder:frames.sword,
+  bobbinClub:frames.sword,kettleDrumHammer:frames.sword,patchworkRam:frames.sword,thimbleKnocker:frames.sword,quiltedSledge:frames.sword,
+  pinwheelRapier:frames.blade,needleFoil:frames.blade,ribbonStiletto:frames.blade,safetyPinLance:frames.blade,glassBeadDart:frames.blade,
+  embroideryStiletto:frames.blade,satinSeamRipper:frames.blade,clockworkBodkin:frames.blade,starButtonStiletto:frames.blade,moonThreadNeedle:frames.blade,
+  thimbleChime:frames.focusRod,buttonStarWand:frames.focusRod,ribbonLoomRod:frames.focusRod,bedtimeBobbin:frames.focusRod,starryPincushion:frames.focusRod,
+  moonKiteWand:frames.focusRod,plushCometScepter:frames.focusRod,thimbleOrchestraRod:frames.focusRod,lanternThreadStaff:frames.focusRod,velvetNightWand:frames.focusRod,
+  fairgroundMaul:frames.sword,carouselClub:frames.sword,ticketPuncher:frames.sword,ringmasterDrum:frames.sword,velvetBumper:frames.sword,
+  cometPin:frames.blade,carouselLance:frames.blade,ticketNeedle:frames.blade,velvetSeamRipper:frames.blade,ringmasterPin:frames.blade,
+  fairgroundFirefly:frames.focusRod,carouselMoon:frames.focusRod,velvetCometRod:frames.focusRod,ticketStarWand:frames.focusRod,midnightCarousel:frames.focusRod
 });
 
 const sizes = new Set(['small', 'medium', 'large']);

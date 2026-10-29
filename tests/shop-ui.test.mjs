@@ -16,34 +16,54 @@ test('separate vendor menus compare through an overlay and purchased stock disap
   contains(ui.getApp().innerHTML,'data-action="vendor:armorer"');
   contains(ui.getApp().innerHTML,'data-action="vendor:curio"');
   assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="rod"|Inspector’s Rod|side-column|EQUIPPED BUILD/,'Buy only displays vendor stock');
-  contains(ui.getApp().innerHTML,'data-action="market-compare:sword"');
+  contains(ui.getApp().innerHTML,'data-action="market-compare:lullabyRod"');
   assert.match(ui.getApp().innerHTML,/class="vendor-card vendor-row"/,'gear is shown in a compact row');
   assert.match(ui.getApp().innerHTML,/class="vendor-item-stats"/,'the row includes concise item stats');
-  assert.match(ui.getApp().innerHTML,/class="subtle vendor-compare-action" aria-label="Compare Canal-Iron Sword"/,'Compare remains accessible as an icon action');
+  assert.match(ui.getApp().innerHTML,/class="subtle vendor-compare-action" aria-label="Compare Lullaby Baton"/,'Compare remains accessible as an icon action');
   const before=structuredClone(ui.getState());
-  await ui.act('market-compare:sword');
+  await ui.act('market-compare:lullabyRod');
   assert.equal(ui.getModal().open,true);
-  contains(ui.getModal().innerHTML,'Inspector’s Rod');
-  contains(ui.getModal().innerHTML,'Canal-Iron Sword');
+  contains(ui.getModal().innerHTML,'Squeaker-Glass Wand');
+  contains(ui.getModal().innerHTML,'Lullaby Baton');
   contains(ui.getModal().innerHTML,'YOUR GEAR');contains(ui.getModal().innerHTML,'VENDOR ITEM');
   assert.deepEqual(ui.getState(),before,'comparison changes neither equipment nor money');
-  await ui.act('buy-preview:sword');
+  await ui.act('buy-preview:lullabyRod');
   assert.deepEqual(ui.getState(),before,'review does not spend');
-  await ui.act('buy-confirm:sword');
-  assert.equal(ui.getState().coins,500-G.ITEMS.sword.price);
+  await ui.act('buy-confirm:lullabyRod');
+  assert.equal(ui.getState().coins,500-G.ITEMS.lullabyRod.price);
   assert.equal(ui.getState().gear.weapon,'rod');
-  assert.ok(ui.getState().bag.includes('sword'));
-  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="sword"/,'owned gear disappears from Buy');
+  assert.ok(ui.getState().bag.includes('lullabyRod'));
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="lullabyRod"/,'owned gear disappears from Buy');
   await ui.act('shop-tab:sell');
-  contains(ui.getApp().innerHTML,'data-stock-id="sword"');
+  contains(ui.getApp().innerHTML,'data-stock-id="lullabyRod"');
   assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="rod"/,'equipped gear stays out of Sell');
-  await ui.act('sell-preview:sword');await ui.act('sell-confirm:sword');
+  await ui.act('sell-preview:lullabyRod');await ui.act('sell-confirm:lullabyRod');
   await ui.act('shop-tab:buy');
-  contains(ui.getApp().innerHTML,'data-stock-id="sword"');
+  contains(ui.getApp().innerHTML,'data-stock-id="lullabyRod"');
   await ui.act('vendor:armorer');
   contains(ui.getApp().innerHTML,'data-stock-id="workgloves"');
-  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="sword"/);
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="lullabyRod"/);
   noMissing(ui.getApp().innerHTML);
+});
+
+
+test('weapon filters follow the equipped channel, toggle other styles, and chapter travel changes hunting targets',async()=>{
+  const save=G.createCharacter({name:'Nell',kit:'caster'});save.level=11;save.story.completed.push('municipal_works');
+  const {ui}=await bootWithSave(save);
+  const first=ui.getApp().innerHTML;
+  assert.match(first,/data-action="chapter:2"/);assert.match(first,/data-action="hunt:arcade_dust"/);
+  assert.doesNotMatch(first,/data-action="hunt:rats"/);
+  await ui.act('chapter:1');
+  assert.match(ui.getApp().innerHTML,/data-action="hunt:rats"/);
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-action="hunt:arcade_dust"/);
+  await ui.act('chapter:2');
+  assert.match(ui.getApp().innerHTML,/data-action="hunt:arcade_dust"/);
+  await ui.act('nav:market');
+  assert.match(ui.getApp().innerHTML,/data-stock-id="lullabyRod"/);
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="sword"/);
+  await ui.act('shop-filter:other');
+  assert.match(ui.getApp().innerHTML,/data-stock-id="sword"/);
+  assert.doesNotMatch(ui.getApp().innerHTML,/\bundefined\b|\bNaN\b/);
 });
 
 test('mobile has a direct World destination and retains Chronicle, Field Guide and save tools',async()=>{
@@ -59,7 +79,7 @@ test('mobile has a direct World destination and retains Chronicle, Field Guide a
   await ui.act('nav:journal');
   assert.match(ui.getApp().innerHTML,/<div class="tabs records-tabs"[\s\S]*?data-action="nav:guide"/);
   await ui.act('nav:guide');
-  contains(ui.getApp().innerHTML,'Save format v5');
+  contains(ui.getApp().innerHTML,'Save format v6. Imports v1 through v6.');
   contains(ui.getApp().innerHTML,'data-action="export"');
   contains(ui.getApp().innerHTML,'data-action="import"');
   contains(ui.getApp().innerHTML,'class="guide-section guide-topic"');
@@ -175,4 +195,18 @@ test('mobile market actions retain tap size without full-width button rows',asyn
   assert.match(mobile,/vendor-compare-action \{[^}]*width: 48px/);
   assert.match(mobile,/vendor-actions \{ flex-wrap: nowrap/);
   assert.doesNotMatch(mobile,/vendor-actions \{ grid-column: 2 \/ -1/,'the action group stays beside the item row');
+});
+
+test('chapter travel, shop filters, and bottom navigation retain mobile touch targets without horizontal rows',async()=>{
+  const css=await readFile(new URL('../dist/menu.css',import.meta.url),'utf8');
+  assert.match(css,/#app \.chapter-travel-list\s*\{[^}]*minmax\(0,1fr\)/s);
+  assert.match(css,/#app \.shop-filter-row button\s*\{[^}]*min-height:\s*48px/s);
+  assert.match(css,/#app \.mobile-nav\s*\{[^}]*grid-template-columns:\s*repeat\(6,minmax\(0,1fr\)\)/s);
+  assert.match(css,/#app \.mobile-nav button\s*\{[^}]*min-width:\s*0/s);
+  const {ui}=await bootWithSave(G.fresh());
+  await ui.act('nav:market');
+  assert.match(ui.getApp().innerHTML,/aria-label="Weapon scaling style"/);
+  assert.match(ui.getApp().innerHTML,/aria-pressed="true"/);
+  assert.match(ui.getApp().innerHTML,/Show lower grades/);
+  assert.match(ui.getApp().innerHTML,/Show owned stock/);
 });

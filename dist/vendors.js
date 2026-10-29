@@ -23,10 +23,10 @@ export function baseVendorItem(id) {
 }
 
 // Rows retain unavailable previews so the UI can explain tier and lock state.
-export function vendorStock(state, vendorId, mode = 'buy') {
+export function vendorStock(state, vendorId, mode = 'buy', { showOwned = false } = {}) {
   if (!VENDORS[vendorId] || !['buy', 'sell'].includes(mode)) return [];
   const ids = mode === 'buy'
-    ? Object.keys(ITEMS).filter(id => ITEMS[id].price && !(state?.bag || []).includes(id))
+    ? Object.keys(ITEMS).filter(id => ITEMS[id].price && (showOwned || !(state?.bag || []).includes(id)))
     : [...new Set(state?.bag || [])].filter(id => {
       const item = ITEMS[id];
       return item && classifyVendor(item) === vendorId && !Object.values(state?.gear || {}).includes(id);

@@ -1,7 +1,8 @@
 // Authored contract progression. The engine is responsible for calling
 // recordStoryEvent only from real victory/delve actions and granting receipt XP.
+import { CHAPTERS, chapterUnlocked, currentChapter, campaignStatus } from './campaign.js';
 const MAJOR_IDS=['drainage_inspection','permit_with_teeth','bent_gate','someone_expendable','municipal_works'];
-const ENEMY_IDS=new Set(['rats','scavenger','wisp','crab','inspector','hound','boss']);
+const ENEMY_IDS=new Set(CHAPTERS.flatMap(chapter=>[...chapter.enemyIds,chapter.bossId]));
 const req=(type,id,label,min=1)=>({type,id,label,min});
 const win=(id,label,enemy,target=1)=>({id,label,source:'victories',enemy,target});
 const act=(id,label,action)=>({id,label,source:'actions',action,target:1});
@@ -64,6 +65,126 @@ export const STORY_CONTRACTS=Object.freeze({
     requirements:[req('completed','someone_expendable','Complete Tagged for Sale'),req('level','6','Reach level 6',6)],
     objectives:[act('descent','Enter the Laundry Works','delve_enter'),{id:'route',label:'Choose the Lost & Found Ledger or the Drain Valve',source:'route',target:1},{id:'guardian',label:'Defeat the guard on the chosen route',source:'routeVictory',target:1},win('superintendent','Stop The Spin Cycle','boss',1)],
     reward:{xp:240,coins:60,materials:{}}
+  },
+  arcade_lights:{
+    id:'arcade_lights',chapterId:2,kind:'major',title:'The Arcade Wakes Up',employer:'Tansy Ticketpaws',chapter:'The Lost Toy Arcade',
+    text:'The arcade’s sign still blinks OPEN, though the doors have been shut for years. Sweep the dust-bunnies from the token chute and help Tansy get one cabinet glowing again.',
+    requirements:[req('chapter','2','Complete the Laundry Works finale')],objectives:[win('dust','Clear dust from the token chute','arcade_dust',3),act('lights','Switch on the prize counter','arcade_lights_on')],
+    reward:{xp:360,coins:82,materials:{'Arcade tokens':2}}
+  },
+  token_tally:{
+    id:'token_tally',chapterId:2,kind:'minor',title:'A Very Serious Token Count',employer:'Tansy Ticketpaws',chapter:'The Lost Toy Arcade',
+    text:'Tansy needs to know whether the old tokens are still lucky. Count a few from the cabinet dust and bring them back in a neat, non-chewable pile.',
+    requirements:[req('chapter','2','Open the Lost Toy Arcade')],objectives:[win('dust','Find tokens in arcade dust','arcade_dust',2),win('marbles','Recover loose cabinet marbles','arcade_marble',1)],
+    reward:{xp:105,coins:32,materials:{'Arcade tokens':1}}
+  },
+  crane_calibration:{
+    id:'crane_calibration',chapterId:2,kind:'minor',title:'The Claw Needs a Nap',employer:'Tansy Ticketpaws',chapter:'The Lost Toy Arcade',
+    text:'The prize crane keeps dropping its prizes directly onto its own feet. Retrieve two plush prizes and Tansy will adjust the claw’s grip (and its attitude).',
+    requirements:[req('completed','arcade_lights','Complete The Arcade Wakes Up')],objectives:[win('crane_prizes','Retrieve prizes from the crane cabinet','arcade_crane',2)],
+    reward:{xp:120,coins:38,materials:{'Arcade tokens':1}}
+  },
+  arcade_challenge:{
+    id:'arcade_challenge',chapterId:2,kind:'major',title:'One Last High Score',employer:'Tansy Ticketpaws',chapter:'The Lost Toy Arcade',
+    text:'A marble cabinet and a racing game have both started keeping score. Beat their little champions, collect the final token, and find out who has been writing “STUFFIE: 0” on the board.',
+    requirements:[req('completed','arcade_lights','Restore power to the arcade')],objectives:[win('marbles','Beat the marble cabinet champion','arcade_marble',2),win('racers','Outrace the wind-up racers','arcade_racer',2)],
+    reward:{xp:450,coins:110,materials:{'Arcade tokens':3}}
+  },
+  arcade_finale:{
+    id:'arcade_finale',chapterId:2,kind:'major',title:'The House Keeps the Hugs',employer:'Tansy Ticketpaws',chapter:'The Lost Toy Arcade',
+    text:'The high-score initials belong to the arcade’s old prize keeper. Set the last cabinet spinning, face the keeper, and make sure every plush prize comes home with its name tag.',
+    requirements:[req('completed','arcade_challenge','Finish the arcade challenge')],objectives:[act('last_cabinet','Start the last cabinet','arcade_last_cabinet'),win('keeper','Defeat the arcade prize keeper','arcade_boss',1)],
+    reward:{xp:650,coins:180,materials:{'Arcade tokens':5}}
+  },
+  garden_wayfinding:{
+    id:'garden_wayfinding',chapterId:3,kind:'major',title:'Through the Giant Garden',employer:'Rue Rootwhisker',chapter:'Garden of Very Big Things',
+    text:'The garden gate opens onto grass taller than a lighthouse. Help Rue clear a safe path past the ant scouts, then mark a route with bright scraps of ribbon.',
+    requirements:[req('chapter','3','Complete The Lost Toy Arcade finale')],objectives:[win('ants','Send the ant scouts home','garden_ant',3),act('ribbon_path','Mark the safe path with ribbon','garden_path_marked')],
+    reward:{xp:760,coins:220,materials:{'Garden twine':2}}
+  },
+  garden_post:{
+    id:'garden_post',chapterId:3,kind:'minor',title:'A Postcard from Down Here',employer:'Rue Rootwhisker',chapter:'Garden of Very Big Things',
+    text:'Rue’s mailbox is a hollow acorn. Deliver a postcard without letting the snail mail it back to its sender.',
+    requirements:[req('chapter','3','Open the giant garden')],objectives:[win('snails','Outpace the garden snails','garden_snail',2)],
+    reward:{xp:190,coins:58,materials:{'Garden twine':1}}
+  },
+  sprinkler_diplomacy:{
+    id:'sprinkler_diplomacy',chapterId:3,kind:'minor',title:'The Sprinkler Has Opinions',employer:'Rue Rootwhisker',chapter:'Garden of Very Big Things',
+    text:'The sprinkler has declared the path a “no-dry-paws zone.” Calm its rotating argument and rescue the seed packets it is guarding.',
+    requirements:[req('completed','garden_wayfinding','Mark a safe garden path')],objectives:[win('sprinkler','Get past the argumentative sprinkler','garden_sprinkler',2)],
+    reward:{xp:215,coins:66,materials:{'Garden twine':1}}
+  },
+  garden_canopy:{
+    id:'garden_canopy',chapterId:3,kind:'major',title:'The Magpie’s Nest of Shiny Things',employer:'Rue Rootwhisker',chapter:'Garden of Very Big Things',
+    text:'A magpie has gathered every ribbon marker into a nest above the clouds. Climb the stems, recover the route markers, and leave the bird a button that is not attached to anyone.',
+    requirements:[req('completed','garden_wayfinding','Find the way through the garden')],objectives:[win('magpie','Recover ribbon markers from the magpie','garden_magpie',2),win('snails_again','Clear the stem ladder of snails','garden_snail',2)],
+    reward:{xp:910,coins:270,materials:{'Garden twine':3}}
+  },
+  garden_finale:{
+    id:'garden_finale',chapterId:3,kind:'major',title:'A Garden for Every Size',employer:'Rue Rootwhisker',chapter:'Garden of Very Big Things',
+    text:'The garden’s keeper has mistaken the path markers for an invitation to prune the whole world. Water the tiny acorn gate, then ask it very firmly to stop.',
+    requirements:[req('completed','garden_canopy','Recover the garden markers')],objectives:[act('acorn_gate','Open the acorn gate','garden_gate_open'),win('keeper','Defeat the garden keeper','garden_boss',1)],
+    reward:{xp:1250,coins:360,materials:{'Garden twine':5}}
+  },
+  attic_sorting:{
+    id:'attic_sorting',chapterId:4,kind:'major',title:'Boxes with No Labels',employer:'Mallow Mothwing',chapter:'The Attic of Unclaimed Hugs',
+    text:'Mallow keeps the attic’s lost-and-found, though the boxes have stacked themselves into a small and judgmental mountain. Sort the moth-eaten pile and rescue the missing name tags.',
+    requirements:[req('chapter','4','Complete the Garden of Very Big Things finale')],objectives:[win('moths','Clear moths from the name-tag shelf','attic_moth',3),win('boxes','Search the shifting boxes','attic_box',2)],
+    reward:{xp:1450,coins:430,materials:{'Attic ribbon':2}}
+  },
+  attic_lullaby:{
+    id:'attic_lullaby',chapterId:4,kind:'minor',title:'The Clock Wants a Bedtime Story',employer:'Mallow Mothwing',chapter:'The Attic of Unclaimed Hugs',
+    text:'The old clock has not slept in a hundred years and keeps chiming at the dust. Tell it a story with a soft ending by fetching its winding key.',
+    requirements:[req('chapter','4','Open the attic')],objectives:[win('clocks','Find the clock’s winding key','attic_clock',2)],
+    reward:{xp:340,coins:96,materials:{'Attic ribbon':1}}
+  },
+  attic_hug_delivery:{
+    id:'attic_hug_delivery',chapterId:4,kind:'minor',title:'Return to Sender (With a Hug)',employer:'Mallow Mothwing',chapter:'The Attic of Unclaimed Hugs',
+    text:'A box of unclaimed hugs has escaped its shelf. Catch the runaway parcels before they smother the labeled boxes in affection.',
+    requirements:[req('completed','attic_sorting','Sort the unclaimed boxes')],objectives:[win('hugger_minor','Catch runaway hug parcels','attic_hugger',2)],
+    reward:{xp:385,coins:112,materials:{'Attic ribbon':1}}
+  },
+  attic_clockwork:{
+    id:'attic_clockwork',chapterId:4,kind:'major',title:'The Hour Between Ticks',employer:'Mallow Mothwing',chapter:'The Attic of Unclaimed Hugs',
+    text:'A clock has lost the hour when everyone got tucked in. Find its hands, settle the boxes that keep rearranging the shelves, and give Mallow’s old lullaby time to work.',
+    requirements:[req('completed','attic_sorting','Find the missing name tags')],objectives:[win('clockwork','Quiet the attic clocks','attic_clock',3),win('boxes_again','Settle the shifting boxes','attic_box',2)],
+    reward:{xp:1750,coins:520,materials:{'Attic ribbon':3}}
+  },
+  attic_finale:{
+    id:'attic_finale',chapterId:4,kind:'major',title:'Every Hug Has a Home',employer:'Mallow Mothwing',chapter:'The Attic of Unclaimed Hugs',
+    text:'The attic’s keeper has wrapped itself around every forgotten keepsake. Unlatch the soft trunk, face the lonely guardian, and let the hugs find their way to the stuffies who need them.',
+    requirements:[req('completed','attic_clockwork','Restore the missing hour')],objectives:[act('soft_trunk','Unlatch the soft trunk','attic_trunk_open'),win('guardian','Free the attic guardian','attic_boss',1)],
+    reward:{xp:2350,coins:700,materials:{'Attic ribbon':5}}
+  },
+  fair_arrival:{
+    id:'fair_arrival',chapterId:5,kind:'major',title:'Beneath the Velvet Lights',employer:'Lulu Lanternloop',chapter:'The Velvet Night Fair',
+    text:'The night fair appears only when the moon is wearing its silver button. Lulu has lost the entrance tickets; find them, calm the painted masks, and keep a paw on your friends.',
+    requirements:[req('chapter','5','Complete The Attic of Unclaimed Hugs finale')],objectives:[win('masks','Quiet the painted masks','fair_mask',3),win('tickets','Find the lost entrance tickets','fair_ticket',2)],
+    reward:{xp:2800,coins:850,materials:{'Velvet tickets':2}}
+  },
+  fair_carousel_minor:{
+    id:'fair_carousel_minor',chapterId:5,kind:'minor',title:'One More Turn, Please',employer:'Lulu Lanternloop',chapter:'The Velvet Night Fair',
+    text:'The carousel’s painted horses are dizzy from going around all evening. Help them find a graceful stop and bring Lulu the brass stop-pin.',
+    requirements:[req('chapter','5','Enter the night fair')],objectives:[win('carousel_minor','Stop the runaway carousel','fair_carousel',2)],
+    reward:{xp:620,coins:185,materials:{'Velvet tickets':1}}
+  },
+  fair_ringmaster_audit:{
+    id:'fair_ringmaster_audit',chapterId:5,kind:'minor',title:'The Ringmaster’s Tiny Ledger',employer:'Lulu Lanternloop',chapter:'The Velvet Night Fair',
+    text:'The ringmaster has recorded every ticket except the one it is holding. Recover the ledger and point out the arithmetic with a very patient paw.',
+    requirements:[req('completed','fair_arrival','Find the fair entrance')],objectives:[win('ringmaster_minor','Recover the ringmaster’s ledger','fair_ringmaster',1)],
+    reward:{xp:700,coins:210,materials:{'Velvet tickets':1}}
+  },
+  fair_last_act:{
+    id:'fair_last_act',chapterId:5,kind:'major',title:'The Show Must Come Home',employer:'Lulu Lanternloop',chapter:'The Velvet Night Fair',
+    text:'The carousel is turning too fast, the ticket booth is empty, and every mask is watching the same dark tent. Gather the last tickets and make a safe path for the fair’s final parade.',
+    requirements:[req('completed','fair_arrival','Bring the fair to life')],objectives:[win('carousel','Slow the silver carousel','fair_carousel',2),win('tickets_again','Collect the final ticket stubs','fair_ticket',2)],
+    reward:{xp:3400,coins:1020,materials:{'Velvet tickets':3}}
+  },
+  fair_finale:{
+    id:'fair_finale',chapterId:5,kind:'major',title:'When the Last Lantern Fades',employer:'Lulu Lanternloop',chapter:'The Velvet Night Fair',
+    text:'The fair’s ringmaster has kept the lanterns burning long after every guest went home. Light the velvet lantern together, face the final act, and choose when this lovely night is ready to end.',
+    requirements:[req('completed','fair_last_act','Prepare the final parade')],objectives:[act('velvet_lantern','Light the velvet lantern','fair_lantern_lit'),win('final_act','End the final act','fair_boss',1)],
+    reward:{xp:4600,coins:1400,materials:{'Velvet tickets':5}}
   }
 });
 
@@ -77,7 +198,7 @@ function complete(s,id){return s.story.completed.includes(id);}
 function eventMet(s,id,min=1){return count(s.story.events.actions,id)>=min;}
 function requirementRows(s,id){
  const c=STORY_CONTRACTS[id],st=s.story,legacy=st.legacyReady.includes(id);
- return c.requirements.map(r=>{let met=false;if(r.type==='completed')met=complete(s,r.id);else if(r.type==='level')met=(s.level||1)>=r.min;else if(r.type==='action')met=eventMet(s,r.id,r.min);if(legacy)met=true;return {id:r.id,type:r.type,label:r.label,required:r.min||1,current:r.type==='level'?(s.level||1):r.type==='completed'?(complete(s,r.id)?1:0):count(st.events.actions,r.id),met};});
+ return c.requirements.map(r=>{let met=false;if(r.type==='completed')met=complete(s,r.id);else if(r.type==='level')met=(s.level||1)>=r.min;else if(r.type==='chapter')met=chapterUnlocked(s,Number(r.id));else if(r.type==='action')met=eventMet(s,r.id,r.min);if(legacy)met=true;return {id:r.id,type:r.type,label:r.label,required:r.min||1,current:r.type==='level'?(s.level||1):r.type==='chapter'?(chapterUnlocked(s,Number(r.id))?1:0):r.type==='completed'?(complete(s,r.id)?1:0):count(st.events.actions,r.id),met};});
 }
 function baseline(s,id,group,key){return count(s.story.baselines?.[id]?.[group],key);}
 function objectiveValue(s,id,obj){
@@ -95,13 +216,16 @@ function objectiveRows(s,id){
 }
 function prereqsMet(s,id){return requirementRows(s,id).every(r=>r.met);}
 function stageFor(s){
- const st=s.story;if(!eventMet(s,'mara_met'))return 0;if(!complete(s,'proof_of_trouble'))return 1;if(!complete(s,'drainage_inspection'))return 2;
+ const st=s.story,chapterId=currentChapter(s);
+ if(chapterId>1){const majors=Object.values(STORY_CONTRACTS).filter(c=>c.kind==='major'&&c.chapterId===chapterId);return majors.filter(c=>complete(s,c.id)).length;}
+ if(!eventMet(s,'mara_met'))return 0;if(!complete(s,'proof_of_trouble'))return 1;if(!complete(s,'drainage_inspection'))return 2;
  const completedMajors=MAJOR_IDS.filter(id=>complete(s,id)).length;return 2+completedMajors;
 }
 export function contractStatus(s,id){
  if(!s||!STORY_CONTRACTS[id])return null;ensureStory(s);const c=STORY_CONTRACTS[id],requirements=requirementRows(s,id),objectives=objectiveRows(s,id);
  const accepted=s.story.accepted.includes(id),completed=s.story.completed.includes(id),legacy=s.story.legacyReady.includes(id);
- return {id,title:c.title,text:c.text,employer:c.employer,chapter:c.chapter,kind:c.kind,majorIndex:c.majorIndex??null,available:!accepted&&!completed&&prereqsMet(s,id),active:accepted,ready:accepted&&(legacy||objectives.every(o=>o.done)),completed,requirements,objectives,reward:{...c.reward,materials:{...c.reward.materials}}};
+ const chapterId=c.chapterId??1;
+ return {id,title:c.title,text:c.text,employer:c.employer,chapter:c.chapter,chapterId,kind:c.kind,majorIndex:c.majorIndex??null,available:!accepted&&!completed&&chapterUnlocked(s,chapterId)&&prereqsMet(s,id),active:accepted,ready:accepted&&(legacy||objectives.every(o=>o.done)),completed,requirements,objectives,reward:{...c.reward,materials:{...c.reward.materials}}};
 }
 export function activeContracts(s){if(!s)return [];ensureStory(s);return s.story.accepted.map(id=>contractStatus(s,id)).filter(Boolean);}
 // The enemy an accepted contract still needs defeated (first incomplete victory objective), or null.
@@ -116,9 +240,13 @@ export function contractHuntTarget(s,eligible=()=>true){
 }
 export function availableContracts(s){if(!s)return [];ensureStory(s);return CONTRACT_IDS.map(id=>contractStatus(s,id)).filter(c=>c?.available);}
 export function storyState(s){
- if(!s)return null;ensureStory(s);const stage=stageFor(s),nextMajor=MAJOR_IDS.find(id=>!complete(s,id));
+ if(!s)return null;ensureStory(s);const stage=stageFor(s),nextMajor=MAJOR_IDS.find(id=>!complete(s,id)),campaign=campaignStatus(s);
  const stages=['Meet Mara at the lower stair','Prove the rats are gathering','Rescue Mara from the suds-filled passage','Recover the access seal','Reset the Claw Gate','Find the missing crew records','Enter the Laundry Works'];
- return {chapter:'The Work Beneath the Quay',title:stage===0?'A paw beneath the stair':stage===1?'Proof before promises':stage===2?'The passage is still full of suds':STORY_CONTRACTS[nextMajor]?.title||'Fluffington Quay can breathe',stage,stageLabel:nextMajor?stages[Math.min(stage,stages.length-1)]:'Below the Rinse Line completed',introStage:stage,majorCompleted:MAJOR_IDS.filter(id=>complete(s,id)).length,majorTotal:MAJOR_TOTAL,nextMajor:nextMajor?contractStatus(s,nextMajor):null,active:activeContracts(s),available:availableContracts(s),completed:[...s.story.completed]};
+ const chapter=CHAPTERS[campaign.current-1];
+ const chapterMajors=Object.values(STORY_CONTRACTS).filter(c=>c.kind==='major'&&(c.chapterId??1)===campaign.current),chapterCompleted=chapterMajors.filter(c=>complete(s,c.id)).length;
+ const currentMajor=chapterMajors.find(c=>!complete(s,c.id));
+ const title=campaign.current===1?(stage===0?'A paw beneath the stair':stage===1?'Proof before promises':stage===2?'The passage is still full of suds':STORY_CONTRACTS[nextMajor]?.title||'Fluffington Quay can breathe'):currentMajor?.title||chapter.name;
+ return {chapter:chapter.name,chapterId:chapter.id,title,subtitle:chapter.subtitle,stage,stageLabel:campaign.current===1?(nextMajor?stages[Math.min(stage,stages.length-1)]:'Below the Rinse Line completed'):(currentMajor?.title||`${chapter.name} completed`),introStage:stage,majorCompleted:campaign.current===1?MAJOR_IDS.filter(id=>complete(s,id)).length:chapterCompleted,majorTotal:campaign.current===1?MAJOR_TOTAL:chapterMajors.length,nextMajor:currentMajor?contractStatus(s,currentMajor.id):null,active:activeContracts(s),available:availableContracts(s),completed:[...s.story.completed],campaign};
 }
 export function acceptContract(s,id){
  if(!s||locked(s)||!STORY_CONTRACTS[id])return false;ensureStory(s);const status=contractStatus(s,id);if(!status?.available)return false;
@@ -130,10 +258,17 @@ const ACTIONS={
  rescue_mara:{label:'Bring Mara to safety',contract:'drainage_inspection',requiresAction:'passage_secured',event:'mara_rescued',text:'You pull Mara clear of the passage. She wrings out an ear, then points toward the Static Arch: “The raccoons have the access seal. They opened something they should not have.”'},
  return_permit:{label:'Return the access seal',contract:'permit_with_teeth',objectives:[{id:'scavengers',enemy:'scavenger',target:3,label:'Rummage Raccoons'},{id:'wisps',enemy:'wisp',target:2,label:'Static Cling Wisps'}],event:'permit_returned',text:'Mara turns the access seal over in her paws. The static ward gutters out with a small, sad fizz. “Good. Now the gate can be reached without asking the thing for permission.”'},
  reset_gate:{label:'Reset the Claw Gate',contract:'bent_gate',objectives:[{id:'crabs',enemy:'crab',target:3,label:'Clawback Crabs'}],event:'gate_reset',text:'With the crab driven off, you reset the gate runners. The suds settle enough for Mara to inspect the Lost & Found Dock.'},
- recover_records:{label:'Recover the crew ledger',contract:'someone_expendable',objectives:[{id:'inspector',enemy:'inspector',target:1,label:'Lost & Found Appraisers'}],event:'records_recovered',text:'You retrieve the Lost & Found Ledger. It lists the missing Seam Crew as “surplus stock,” then notes they were tagged and sent down to the Laundry Works.'}
+ recover_records:{label:'Recover the crew ledger',contract:'someone_expendable',objectives:[{id:'inspector',enemy:'inspector',target:1,label:'Lost & Found Appraisers'}],event:'records_recovered',text:'You retrieve the Lost & Found Ledger. It lists the missing Seam Crew as “surplus stock,” then notes they were tagged and sent down to the Laundry Works.'},
+ arcade_lights_on:{label:'Switch on the prize counter',contract:'arcade_lights',objective:'lights',event:'arcade_lights_on',text:'The counter buzzes awake. One bulb flickers into a smiley face, and Tansy Ticketpaws declares the arcade officially “mostly operational.”'},
+ arcade_last_cabinet:{label:'Start the last cabinet',contract:'arcade_finale',objective:'last_cabinet',event:'arcade_last_cabinet',text:'The last cabinet whirs to life. Its tiny screen reads: PLAYER ONE, PLEASE BE GENTLE.'},
+ garden_path_marked:{label:'Mark the safe path with ribbon',contract:'garden_wayfinding',objective:'ribbon_path',event:'garden_path_marked',text:'You tie bright ribbon around the tall stems. Rue can see the path from the gate, and the ants march away in a very orderly line.'},
+ garden_gate_open:{label:'Open the acorn gate',contract:'garden_finale',objective:'acorn_gate',event:'garden_gate_open',text:'The acorn gate creaks open and releases a warm puff of cinnamon-scented air. Something enormous politely asks who is there.'},
+ attic_trunk_open:{label:'Unlatch the soft trunk',contract:'attic_finale',objective:'soft_trunk',event:'attic_trunk_open',text:'The soft trunk opens with a sigh and a small avalanche of spare blankets. Mallow gives you a brave little nod.'},
+ fair_lantern_lit:{label:'Light the velvet lantern',contract:'fair_finale',objective:'velvet_lantern',event:'fair_lantern_lit',text:'The velvet lantern glows without burning a whisker. The fair’s music slows to a lullaby, and the ringmaster steps into the ring.'}
 };
 function actionContractReady(s,def){
  if(!def.contract)return true;if(!s.story.accepted.includes(def.contract)||s.story.completed.includes(def.contract))return false;
+ if(def.objective){const c=STORY_CONTRACTS[def.contract],index=c.objectives.findIndex(o=>o.id===def.objective),rows=objectiveRows(s,def.contract);return index>=0&&!rows[index].done&&rows.slice(0,index).every(row=>row.done)&&!eventMet(s,def.event);}
  if(def.requiresAction&&!eventMet(s,def.requiresAction))return false;
  for(const req of def.objectives||[]){const have=objectiveValue(s,def.contract,{source:'victories',enemy:req.enemy});if(have<req.target)return false;}
  return !eventMet(s,def.event);
@@ -141,6 +276,7 @@ function actionContractReady(s,def){
 function actionReason(s,def){
  if(!def.contract){if(!def.allowed?.(s))return 'You have already spoken with Mara.';return locked(s)?'Return to town before taking this story action.':null;}
  if(!s.story.accepted.includes(def.contract)||s.story.completed.includes(def.contract))return 'Accept the related contract first.';
+ if(def.objective){const c=STORY_CONTRACTS[def.contract],index=c.objectives.findIndex(o=>o.id===def.objective),rows=objectiveRows(s,def.contract);if(index<0)return 'This story step is unavailable.';if(rows[index].done)return 'This story step is already complete.';const before=rows.slice(0,index).find(row=>!row.done);if(before)return `Complete “${before.label}” first.`;}
  if(def.requiresAction&&!eventMet(s,def.requiresAction))return 'Secure the passage first.';
  for(const req of def.objectives||[]){const have=objectiveValue(s,def.contract,{source:'victories',enemy:req.enemy});if(have<req.target)return `Defeat ${req.target-have} more ${req.label} first.`;}
  if(eventMet(s,def.event))return 'This story step is already complete.';
@@ -150,12 +286,15 @@ function actionReason(s,def){
 export function availableStoryActions(s){
  if(!s)return [];ensureStory(s);const st=s.story;
  if(!eventMet(s,'mara_met')){const d=ACTIONS.meet_mara;return [{id:'meet_mara',label:d.label,text:d.text,enabled:!locked(s),reason:locked(s)?'Return to town before taking this story action.':null}];}
- let key=null;
- if(st.accepted.includes('drainage_inspection'))key=eventMet(s,'passage_secured')?'rescue_mara':'secure_passage';
- else if(st.accepted.includes('permit_with_teeth'))key='return_permit';
- else if(st.accepted.includes('bent_gate'))key='reset_gate';
- else if(st.accepted.includes('someone_expendable'))key='recover_records';
- if(!key)return [];const d=ACTIONS[key],reason=actionReason(s,d);return [{id:key,label:d.label,text:d.text,enabled:!reason,reason}];
+ for(const id of st.accepted){
+  const contract=STORY_CONTRACTS[id];
+  const nextAction=contract?.objectives.find((objective,index)=>objective.source==='actions'&&!objectiveRows(s,id)[index].done);
+  if(!nextAction)continue;
+  const key=({passage_secured:'secure_passage',mara_rescued:'rescue_mara',permit_returned:'return_permit',gate_reset:'reset_gate',records_recovered:'recover_records'})[nextAction.action]||nextAction.action||({passage:'secure_passage',mara:'rescue_mara',seal:'return_permit',gate:'reset_gate',records:'recover_records'})[nextAction.id];
+  const d=ACTIONS[key];if(!d)continue;const reason=actionReason(s,d);return [{id:key,label:d.label,text:d.text,enabled:!reason,reason}];
+ }
+ // Legacy-ready action contracts remain reportable without replaying their scene.
+ return [];
 }
 export function storyAction(s,key){
  if(!s||!ACTIONS[key])return false;ensureStory(s);const def=ACTIONS[key];if(actionReason(s,def)||!actionContractReady(s,def))return false;
@@ -195,8 +334,10 @@ export function claimContract(s,id,choice){
  const branch=id==='municipal_works'?s.story.choices.contractRoutes.municipal_works||s.story.choices.maintenance_route||null:null;
  if(id==='municipal_works'&&branch==='records')materials['Stamped brass']=(materials['Stamped brass']||0)+1;
  if(id==='municipal_works'&&branch==='overflow')materials.Floodglass=(materials.Floodglass||0)+1;
+ const chapterId=c.chapterId??1,chapter=CHAPTERS[chapterId-1],nextWasUnlocked=chapterId<5?chapterUnlocked(s,chapterId+1):true;
  s.coins=(s.coins||0)+coins;s.materials??={};for(const [m,n]of Object.entries(materials))s.materials[m]=(s.materials[m]||0)+n;
  s.story.accepted=s.story.accepted.filter(x=>x!==id);if(!s.story.completed.includes(id))s.story.completed.push(id);s.story.legacyReady=s.story.legacyReady.filter(x=>x!==id);s.story.introStage=stageFor(s);
  if(c.majorIndex!==undefined&&s.pending===c.majorIndex)s.pending=null;
- return {id,xp,coins,materials,choice:selectedChoice,majorIndex:c.majorIndex??null,storyAdvance:{chapter:c.chapter,stage:s.story.introStage,majorIndex:c.majorIndex??null,branch}};
+ const unlockedChapter=chapter?.finale===id&&chapterId<5&&!nextWasUnlocked&&chapterUnlocked(s,chapterId+1)?chapterId+1:null;
+ return {id,xp,coins,materials,choice:selectedChoice,majorIndex:c.majorIndex??null,chapterId,storyAdvance:{chapter:c.chapter,chapterId,unlockedChapter,stage:s.story.introStage,majorIndex:c.majorIndex??null,branch}};
 }

@@ -1,4 +1,4 @@
-# Crown & Calamity: playable solo prototype v0.13.1
+# Crown & Calamity: campaign preview v0.14.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -28,7 +28,13 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## New in v0.13.1: ten weapons per fighting style
+## v0.14.0 campaign preview — implementation complete, balance unfinished
+
+This preview adds five authored chapters, receipt-based travel/shop access, twenty generated enemy illustrations, level-50 progression, and a 145-item catalog (25 Might, 25 magic, 25 Finesse weapons; ten items per other category). All equipment has stuffie-themed display names while existing save IDs and ownership remain intact. Weapons retain 100 coins at tier 1 and 10,000 at tier 10; armor and relics use separate economic rules. Shop filters hide obsolete same-style weapons while preserving sidegrades. Save v6 imports v1–v5 and current saves.
+
+**This is not a completed balance release.** The original XP curve continues to level 50, later prices grow steeply, and the current offline walkthrough has not completed the whole campaign. Late caster survival, chapter pacing, high-tier affordability, and regional workshop material uses need another pass. See [IMPLEMENTATION-STATUS.md](IMPLEMENTATION-STATUS.md) for completed segments, exact unfinished work, and acceptance checks. `npm run economy` produces bounded, labeled offline samples; synthetic regional fixtures must not be presented as measured new-player completion times.
+
+## v0.13.1: ten weapons per fighting style
 
 The catalog now has 100 base items, including ten Might, ten magic, and ten Finesse weapons. Each channel has tiers 1–10, priced from 100 to 10,000 coins using the same geometric curve. Other equipment prices are unchanged. Gear tiers do not require a character level.
 

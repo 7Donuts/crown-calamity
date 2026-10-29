@@ -8,7 +8,7 @@ const oldLevelXP=level=>100+40*(level-1)+8*(level-1)**2;
 const invested=stats=>Object.values(stats).reduce((sum,n)=>sum+n,0);
 
 test('a completed level grants four points and keeps the existing XP curve',()=>{
-  const s=G.fresh();assert.equal(G.VERSION,5);assert.equal(G.xpNeeded(1),oldLevelXP(1)*3);
+  const s=G.fresh();assert.equal(G.VERSION,6);assert.equal(G.xpNeeded(1),oldLevelXP(1)*3);
   assert.equal(G.progression(s).levelRequired,300);assert.equal('part' in s,false);
   G.awardXP(s,299);assert.equal(s.points,0);assert.equal(s.level,1);
   G.awardXP(s,1);assert.equal(s.level,2);assert.equal(s.points,4);assert.equal(s.xp,0);
@@ -17,8 +17,8 @@ test('a completed level grants four points and keeps the existing XP curve',()=>
 
 test('one XP award crosses several full levels and stops at the cap',()=>{
   const s=G.fresh();G.awardXP(s,600);assert.equal(s.level,2);assert.equal(s.xp,300);assert.equal(s.points,4);
-  G.awardXP(s,100000);assert.equal(s.level,10);assert.equal(s.xp,0);assert.equal(s.points,36);
-  assert.equal(G.progression(s).totalEarned,36);G.awardXP(s,100000);assert.equal(s.points,36);
+  G.awardXP(s,100000);assert.equal(s.level,22);assert.equal(s.xp,220);assert.equal(s.points,84);
+  assert.equal(G.progression(s).totalEarned,84);G.awardXP(s,10_000_000);assert.equal(s.level,50);assert.equal(s.xp,0);assert.equal(s.points,196);
 });
 
 test('progression reads and explicit recovery do not grant points or hidden XP',()=>{
@@ -35,7 +35,7 @@ test('v1–3 XP normalization and v4 part awards migrate once without loss or du
     if(version===1)delete s.stats.lck;
     const oldXP=Math.floor(oldLevelXP(s.level)/2);s.xp=oldXP;
     const loaded=G.loadSave(JSON.stringify(s));assert.ok(loaded,`v${version} migrates`);
-    assert.equal(loaded.version,5);assert.equal(loaded.xp,Math.round(oldXP/oldLevelXP(loaded.level)*G.xpNeeded(loaded.level)));
+    assert.equal(loaded.version,6);assert.equal(loaded.xp,Math.round(oldXP/oldLevelXP(loaded.level)*G.xpNeeded(loaded.level)));
     assert.equal(loaded.levelPointsPaid,2);assert.equal(loaded.points,2);
     assert.equal(invested(loaded.stats)+loaded.points,68+4*(loaded.level-1)+2);
     assert.equal('part' in loaded,false);
@@ -46,16 +46,16 @@ test('v1–3 XP normalization and v4 part awards migrate once without loss or du
   G.awardXP(loaded,G.xpNeeded(1)-loaded.xp);assert.equal(loaded.points,3);assert.equal(loaded.levelPointsPaid,0);
 });
 
-test('level-cap migration and later XP cannot exceed earned points',()=>{
+test('legacy level-10 saves resume along the extended progression',()=>{
   const s=G.fresh();s.version=3;s.level=10;s.stats.mig+=36;s.points=0;s.xp=oldLevelXP(10)-1;delete s.part;
   const loaded=G.loadSave(JSON.stringify(s));assert.ok(loaded);assert.equal(loaded.level,10);assert.equal(loaded.xp,0);assert.equal(loaded.points,0);
-  G.awardXP(loaded,1_000_000);assert.equal(loaded.points,0);assert.equal(loaded.xp,0);assert.equal(G.progression(loaded).totalEarned,36);
+  G.awardXP(loaded,1_000_000);assert.ok(loaded.level>10);assert.ok(loaded.points>36);assert.ok(G.progression(loaded).totalEarned>36);
 });
 
 test('character creation grants the selected kit without legacy progress fields',()=>{
   for(const [kit,starter] of Object.entries(G.STARTER_KITS)){
     const s=G.createCharacter({name:`${kit} runner`,race:'Stonekin',origin:'Canal clerk',kit});
-    assert.ok(s,kit);assert.equal(s.version,5);assert.equal(s.levelPointsPaid,0);assert.equal('part' in s,false);assert.equal(s.coins,20);
+    assert.ok(s,kit);assert.equal(s.version,6);assert.equal(s.levelPointsPaid,0);assert.equal('part' in s,false);assert.equal(s.coins,20);
     assert.deepEqual(s.bag,[...starter.gear,'coat']);assert.equal(s.gear.weapon,starter.gear[0]);assert.equal(s.gear.offhand,starter.gear[1]);assert.equal(s.gear.body,'coat');
     assert.equal(invested(s.stats),68);assert.equal(s.points,0);assert.equal(G.progression(s).totalEarned,0);
   }

@@ -4,10 +4,10 @@ import {
   ITEMS, SLOTS, EXCHANGES, PREFIXES, SUFFIXES, resolveItem, slotChoices,
   equipItem, unequipItem, unequipReason, buyItem, exchangeMaterials,
   upgradePreview, upgradeItem, affixPreview, applyAffix, normalizeGearState,
-  effectiveItem, buyPreview, sellPreview, sellItem, buyAndEquipPreview, buyAndEquipItem
+  effectiveItem, weaponRankScore, isStrictWeaponDowngrade, buyPreview, sellPreview, sellItem, buyAndEquipPreview, buyAndEquipItem
 } from '../dist/gear.js';
 
-const state=(overrides={})=>({level:10,coins:1000,materials:{'Ledger scraps':10,'Canal iron':10,'Runic residue':10,'Chainback shell':10,'Stamped brass':10,'Floodglass':10,'Floodglass Fragment':2,'Salvaged fittings':10,'Repair fittings':10},bag:['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band','cap','boots','rivethelm','waders','signet','pike'],gear:{weapon:'rod',offhand:'shield',body:'coat'},itemMods:{},fight:null,delve:null,...overrides});
+const state=(overrides={})=>({level:10,coins:1000,story:{completed:['municipal_works']},materials:{'Ledger scraps':10,'Canal iron':10,'Runic residue':10,'Chainback shell':10,'Stamped brass':10,'Floodglass':10,'Floodglass Fragment':2,'Salvaged fittings':10,'Repair fittings':10},bag:['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band','cap','boots','rivethelm','waders','signet','pike'],gear:{weapon:'rod',offhand:'shield',body:'coat'},itemMods:{},fight:null,delve:null,...overrides});
 
 test('catalog preserves every original item id and exposes all nine slots',()=>{
   for(const id of ['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band'])assert.ok(ITEMS[id],id);
@@ -16,15 +16,15 @@ test('catalog preserves every original item id and exposes all nine slots',()=>{
   assert.ok(EXCHANGES.fragment_glass&&PREFIXES.keen&&SUFFIXES.of_vigor);
 });
 
-test('expanded catalog has ten items per gear category and a generated art family for each',async()=>{
+test('expanded catalog has chapter stock, a generated art family for each item, and monotonic weapons',async()=>{
   const {ITEM_ART}=await import('../dist/item-art.js');
   const counts={};for(const item of Object.values(ITEMS))counts[item.slot]=(counts[item.slot]||0)+1;
-  assert.equal(Object.keys(ITEMS).length,100);
+  assert.equal(Object.keys(ITEMS).length,145);
   for(const slot of ['offhand','head','body','hands','feet','accessory','relic'])assert.equal(counts[slot],10,slot);
-  assert.equal(counts.weapon,30);
+  assert.equal(counts.weapon,75);
   for(const channel of ['heavy','spell','precision']){
     const tiers=Object.values(ITEMS).filter(item=>item.slot==='weapon'&&item.channel===channel).map(item=>item.tier).sort((a,b)=>a-b);
-    assert.deepEqual(tiers,[1,2,3,4,5,6,7,8,9,10],`${channel} weapon tiers`);
+    assert.deepEqual(tiers,Array.from({length:25},(_,i)=>i+1),`${channel} weapon tiers`);
     const primary={heavy:'mig',spell:'int',precision:'fin'}[channel];
     const ladder=Object.values(ITEMS).filter(item=>item.slot==='weapon'&&item.channel===channel).sort((a,b)=>a.tier-b.tier);
     for(const item of ladder)assert.equal(item.price,Math.round(100*100**((item.tier-1)/9)));
@@ -32,9 +32,18 @@ test('expanded catalog has ten items per gear category and a generated art famil
     for(let i=1;i<ladder.length;i++)assert.ok(attackPower(ladder[i])>attackPower(ladder[i-1]),`${channel} tier ${ladder[i].tier} exceeds tier ${ladder[i-1].tier}`);
   }
   assert.equal(ITEMS.sword.price,100);assert.equal(ITEMS.pike.price,10000);assert.equal(ITEMS.pike.base,40);
+  assert.equal(ITEMS.sword.chapter,1);assert.equal(ITEMS.pike.chapter,2);assert.equal(ITEMS.thimblePike.chapter,3);assert.equal(ITEMS.bobbinClub.chapter,4);assert.equal(ITEMS.fairgroundMaul.chapter,5);
+  for(const slot of ['offhand','head','body','hands','feet','accessory']){
+    const rows=Object.values(ITEMS).filter(item=>item.slot===slot).sort((a,b)=>a.tier-b.tier);
+    assert.deepEqual(rows.map(item=>item.tier),Array.from({length:10},(_,i)=>i+1));
+    assert.deepEqual(rows.map(item=>item.chapter),[1,1,2,2,3,3,4,4,5,5]);
+  }
   for(const id of Object.keys(ITEMS))assert.ok(ITEM_ART[id],`${id} has generated family art`);
   for(const id of ['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'])assert.ok(ITEMS[id]);
   assert.ok(ITEMS.signet.relicEffect==='signet');assert.ok(ITEMS.threadSpool.relicEffect==='threadSpool');
+  assert.deepEqual(['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'].map(id=>ITEMS[id].price),[500,1200,3500,8000,20000,50000,125000,300000,750000,1800000]);
+  assert.deepEqual(['rod','sword','blade','shield','focus','charm','coat'].map(id=>ITEMS[id].lootEligible),Array(7).fill(false));
+  for(const item of Object.values(ITEMS).filter(x=>x.slot==='relic'))assert.equal(item.lootEligible,false);
 });
 
 test('full nine-slot loadout preserves legacy traits and counts each owned ID once',()=>{
@@ -92,7 +101,7 @@ test('buy and exchange spend exactly once and cannot grant duplicates',()=>{
 
 test('starter shop stock is affordable after a few hunts and exposes its prices',()=>{
   const s=state({level:1,coins:500,bag:['rod']});
-  for(const id of ['rod','sword','blade','shield','focus','charm','coat'])assert.ok(ITEMS[id].price>=20,`${id} has a meaningful price`);
+  for(const id of ['rod','sword','blade'])assert.ok(ITEMS[id].price>=100,`${id} has a meaningful price`);
   for(const id of ['cap','workgloves','wornboots','boots'])assert.ok(buyPreview(s,id).allowed,`${id} can be bought at any level`);
   assert.equal(buyPreview(s,'sword').price,100);assert.equal(buyPreview(s,'sword').item.base,14);
 });
@@ -103,7 +112,7 @@ test('buy and sell previews enforce ownership, equipment, coin and encounter loc
   assert.equal(sellPreview(s,'rod').allowed,false);assert.match(sellPreview(s,'rod').reason,/[Uu]nequip/);
   assert.equal(sellItem(s,'rod'),false);assert.deepEqual(s,before);
   assert.equal(sellItem(s,'cap'),false);assert.deepEqual(s,before);
-  assert.equal(buyPreview(s,'boots').allowed,false); // insufficient coins, not a level lock
+  assert.equal(buyPreview(s,'boots').allowed,false); // insufficient coins
   s.fight={enemy:'rats'};assert.equal(sellPreview(s,'shield').allowed,false);assert.equal(sellItem(s,'shield'),false);assert.equal(buyPreview(s,'cap').allowed,false);assert.equal(buyItem(s,'cap'),false);assert.deepEqual(s.bag,before.bag);assert.equal(s.coins,before.coins);
   s.fight=null;s.delve={node:0};assert.equal(sellItem(s,'shield'),false);assert.equal(buyItem(s,'cap'),false);
 });
@@ -112,7 +121,7 @@ test('selling removes unequipped item and mods, and every buy/sell cycle loses c
   const s=state({level:1,coins:60,bag:['rod'],gear:{weapon:'rod'},materials:{'Salvaged fittings':1},itemMods:{workgloves:{upgrade:3,prefix:'sturdy'}}});
   assert.equal(buyItem(s,'workgloves'),true);assert.equal(s.coins,60-ITEMS.workgloves.price);assert.equal(s.itemMods.workgloves,undefined);
   assert.equal(buyPreview(s,'workgloves').allowed,false);
-  const receipt=sellItem(s,'workgloves');assert.equal(receipt.coins,Math.floor(ITEMS.workgloves.price*.25));assert.ok(!s.bag.includes('workgloves'));
+  const receipt=sellItem(s,'workgloves');assert.equal(receipt.coins,sellPreview(state({bag:['workgloves']}),'workgloves').price);assert.ok(receipt.coins<ITEMS.workgloves.price);assert.ok(!s.bag.includes('workgloves'));
   assert.equal(s.itemMods.workgloves,undefined);assert.equal(buyItem(s,'workgloves'),true);assert.ok(s.coins<60);
 
   const upgraded=state({level:1,coins:500,bag:['rod'],gear:{weapon:'rod'},materials:{'Salvaged fittings':1},itemMods:{}});
@@ -122,8 +131,26 @@ test('selling removes unequipped item and mods, and every buy/sell cycle loses c
   assert.equal(upgraded.itemMods.workgloves,undefined);assert.ok(upgraded.coins<500);
 });
 
+test('chapter stock opens by claimed finale while owned future gear remains usable',()=>{
+  const s=state({story:{completed:[]},bag:['rod','thimblePike'],gear:{weapon:'rod'},coins:1_000_000});
+  const locked=buyPreview(s,'spoolSpear');assert.equal(locked.allowed,false);assert.equal(locked.chapterRequired,3);assert.match(locked.reason,/Chapter 3/);
+  assert.equal(buyItem(s,'spoolSpear'),false);
+  assert.equal(equipItem(s,'thimblePike','weapon'),true,'chapter access never blocks legacy owned equipment');
+  s.gear={weapon:'rod'};s.story.completed=['municipal_works','arcade_finale'];
+  assert.equal(buyPreview(s,'spoolSpear').allowed,true);
+  assert.equal(buyPreview(s,'bobbinClub').allowed,false);
+});
+
+test('weapon downgrade comparison includes completed upgrades and affixes',()=>{
+  const s=state({bag:['rod','floodrod'],gear:{weapon:'floodrod'},itemMods:{floodrod:{upgrade:3},rod:{prefix:'keen'}}});
+  assert.ok(weaponRankScore(s,'floodrod')>weaponRankScore(s,'rod'));
+  assert.equal(isStrictWeaponDowngrade(s,'rod'),true);
+  assert.equal(isStrictWeaponDowngrade(s,'floodrod'),false);
+  assert.equal(isStrictWeaponDowngrade(s,'sword'),false,'different scaling channels do not get labeled as strict downgrades');
+});
+
 test('buy and equip is atomic, permits any tier, selects empty accessories, and clears offhands for two-handers',()=>{
-  const s=state({level:1,coins:10000,bag:['rod'],gear:{weapon:'rod',offhand:'shield',accessory:'penny',accessory2:null}});
+  const s=state({level:1,coins:10000,story:{completed:['municipal_works','arcade_finale']},bag:['rod'],gear:{weapon:'rod',offhand:'shield',accessory:'penny',accessory2:null}});
   let p=buyAndEquipPreview(s,'lantern');assert.equal(p.allowed,true);assert.equal(p.selectedSlot,'accessory2');
   const before=s.coins;const bought=buyAndEquipItem(s,'lantern');assert.equal(bought.slot,'accessory2');assert.equal(s.coins,before-ITEMS.lantern.price);
   const poor=state({level:1,coins:0,bag:['rod'],gear:{weapon:'rod',offhand:'shield'}}), snapshot=structuredClone(poor);
@@ -193,7 +220,7 @@ test('affixes are slot-limited, deterministic, replace per kind and never double
   assert.equal(affixPreview(s,'rod','prefix','focused').replacing,'keen');
   assert.equal(applyAffix(s,'rod','prefix','focused').replaced,'keen');assert.equal(s.coins,coins-60);
   assert.equal(effectiveItem(s,'rod').spellBase,1);assert.equal(effectiveItem(s,'rod').base,14);
-  assert.match(effectiveItem(s,'rod').name,/^Focused Inspector’s Rod$/);
+  assert.match(effectiveItem(s,'rod').name,/^Focused Squeaker-Glass Wand$/);
   assert.equal(applyAffix(s,'rod','suffix','of_vigor'),false);
   assert.equal(applyAffix(s,'rod','suffix','of_might').affixId,'of_might');assert.equal(effectiveItem(s,'rod').stats.mig,1);
 });

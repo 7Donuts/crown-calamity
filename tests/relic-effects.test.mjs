@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { actionInfo, actionProfile, exchange, fresh, recoverProfile, startFight, totals } from '../dist/engine.js';
+import { ENEMIES, actionInfo, actionProfile, exchange, fresh, recoverProfile, startFight, totals } from '../dist/engine.js';
 import { RELIC_EFFECTS, relicBonuses } from '../dist/relics.js';
 import { ITEMS } from '../dist/gear.js';
 import { SHIELD_IDS, isShield, sidestepEligible } from '../dist/telegraph.js';
@@ -61,9 +61,9 @@ test('Seal echoes increase one useful-Guard barrier grant without granting anoth
   assert.equal(relicBonuses(s).effects.seal,1.875);
   assert.equal(startFight(s,'rats'),true);s.fight.round=2;s.sp=0;
   exchange(s,'guard',()=>0,1000);
-  assert.ok(s.log.some(x=>x.text.includes('Seal grants 28 barrier')));
+  assert.ok(s.log.some(x=>x.text.includes(`${ITEMS.seal.name} grants 28 barrier`)));
   s.fight.round=2;exchange(s,'guard',()=>0,2000);
-  assert.equal(s.log.filter(x=>x.text.includes('Seal grants')).length,1);
+  assert.equal(s.log.filter(x=>x.text.includes(`${ITEMS.seal.name} grants`)).length,1);
   assert.equal(s.fight.sealUsed,true);
 });
 
@@ -83,15 +83,18 @@ test('Thread Spool and Thimble Guard trigger once on a useful Guard and respect 
 });
 
 test('victory relics heal only missing resources and Lucky Button has a bounded minimum',()=>{
-  const win=(id)=>{const s=fresh();s.passive=null;s.gear.relic=id;s.bag.push(id);assert.equal(startFight(s,'rats'),true);s.fight.hp=1;return s;};
+  const win=(id,enemy='rats')=>{const s=fresh();s.passive=null;s.gear.relic=id;s.bag.push(id);assert.equal(startFight(s,enemy),true);s.fight.hp=1;return s;};
   const heart=win('patchworkHeart'),heartCap=totals(heart).hp;heart.hp=heartCap-100;
   exchange(heart,'attack',()=>0,1000);assert.equal(heart.hp,heartCap-95,'heart restores 5% of the missing health');
   const heartCapCase=win('patchworkHeart'),healthMax=totals(heartCapCase).hp;heartCapCase.hp=healthMax-2;
   exchange(heartCapCase,'attack',()=>0,1000);assert.equal(heartCapCase.hp,healthMax-2,'a tiny missing-health deficit cannot produce an oversized heal');
 
   const lucky=win('luckyButton');exchange(lucky,'attack',()=>0,1000);
-  assert.equal(lucky.last.coins,10,'a 9 coin hunt gets the minimum one coin bonus');
-  assert.equal(lucky.last.coins<=11,true,'the small-reward bonus remains below the 25% cap');
+  const ratsCoins=ENEMIES.find(enemy=>enemy.id==='rats').coins;
+  const ratBonus=Math.min(Math.max(1,Math.floor(ratsCoins*.25)),Math.max(1,Math.floor(ratsCoins*.05)));
+  assert.equal(lucky.last.coins,ratsCoins+ratBonus,'the live rat reward and floored 25% cap determine its coin receipt');
+  assert.equal(ratBonus,1,'a small rat payout still receives the one coin minimum');
+  assert.equal(lucky.last.coins<=ratsCoins+Math.max(1,Math.floor(ratsCoins*.25)),true,'the small-reward bonus stays within its rounded 25% cap');
 
   const bell=win('dreamBell'),manaCap=totals(bell).mp;bell.mp=manaCap-10;
   exchange(bell,'attack',()=>0,1000);assert.equal(bell.mp,manaCap-6,'two action-regeneration mana plus two victory mana');

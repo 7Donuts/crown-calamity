@@ -77,7 +77,9 @@ test('presentation and appearance remain cosmetic to combat totals',()=>{
 test('three core-matching relic echoes add fractional attributes while saved resources remain integer and round-trip',()=>{
   const s=G.createCharacter({race:'quayfolk',kit:'bulwark'});
   s.coins=200_000;s.bag.push('signet');s.gear.relic='signet';
+  const unlockReceipts=['municipal_works','arcade_finale','garden_finale'];
   for(let slot=0;slot<3;slot++){
+    s.story.completed.push(unlockReceipts[slot]);
     assert.equal(G.unlockRelic(s,slot).ok,true);
     assert.equal(G.attuneRelic(s,slot,'signet').ok,true);
   }
@@ -98,32 +100,39 @@ test('three core-matching relic echoes add fractional attributes while saved res
 test('Seal echoes scale one barrier proc per fight, with or without the core Seal equipped',()=>{
   const s=G.createCharacter({race:'wolf',kit:'breaker'});
   s.coins=1_200_000;s.bag.push('seal');s.gear.relic='seal';s.itemMods={seal:{upgrade:1}};
+  const unlockReceipts=['municipal_works','arcade_finale','garden_finale'];
   for(let slot=0;slot<3;slot++){
+    s.story.completed.push(unlockReceipts[slot]);
     assert.equal(G.unlockRelic(s,slot).ok,true);
     assert.equal(G.attuneRelic(s,slot,'seal').ok,true);
   }
   assert.equal(G.totals(s).echoBonuses.stats.wil,.875,'Seal echoes add only their licensed flat stat');
+  s.delve={node:0,path:'records'};
   assert.equal(G.startFight(s,'crab','delve',1000),true);
+  s.fight.round=1;
   const first=G.exchange(s,'guard',()=>.5,1000);
-  assert.equal(first.ok,true);assert.equal(first.absorbed,0,'an unhelpful first guard grants no Seal barrier');
+  assert.equal(first.ok,true);assert.ok(first.absorbed>0,'the useful Guard triggers the Seal barrier');
+  assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants 28 barrier`)).length,1,'the core and three echoes scale one proc instead of repeating it');
   const second=G.exchange(s,'guard',()=>.5,1000+G.ACTION_DELAY_MS);
-  assert.equal(second.ok,true);assert.ok(second.absorbed>0,'the Seal barrier absorbs the second response');
+  assert.equal(second.ok,true);
   assert.equal(s.fight.sealUsed,true);
-  assert.equal(s.log.filter(entry=>entry.text.includes('Seal grants 28 barrier')).length,1,'the core and three echoes scale one proc instead of repeating it');
   G.exchange(s,'guard',()=>.5,1000+2*G.ACTION_DELAY_MS);
-  assert.equal(s.log.filter(entry=>entry.text.includes('Seal grants')).length,1,'later useful Guards do not trigger another Seal proc');
+  assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants`)).length,1,'later useful Guards do not trigger another Seal proc');
 
   const echoOnly=G.createCharacter({race:'wolf',kit:'breaker'});
   echoOnly.coins=1_200_000;echoOnly.bag.push('seal','signet');echoOnly.gear.relic='signet';echoOnly.itemMods={seal:{upgrade:1}};
   for(let slot=0;slot<3;slot++){
+    echoOnly.story.completed.push(unlockReceipts[slot]);
     assert.equal(G.unlockRelic(echoOnly,slot).ok,true);
     assert.equal(G.attuneRelic(echoOnly,slot,'seal').ok,true);
   }
+  echoOnly.delve={node:0,path:'records'};
   assert.equal(G.startFight(echoOnly,'crab','delve',1000),true);
+  echoOnly.fight.round=1;
   G.exchange(echoOnly,'guard',()=>.5,1000);
   G.exchange(echoOnly,'guard',()=>.5,1000+G.ACTION_DELAY_MS);
   assert.equal(echoOnly.fight.sealUsed,true,'a licensed Seal echo can use its scaled effect with another core relic');
-  assert.equal(echoOnly.log.filter(entry=>entry.text.includes('Seal grants 26 barrier')).length,1,'three echoes scale the barrier effect without duplicating its trigger');
+  assert.equal(echoOnly.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants 26 barrier`)).length,1,'three echoes scale the barrier effect without duplicating its trigger');
   G.exchange(echoOnly,'guard',()=>.5,1000+2*G.ACTION_DELAY_MS);
-  assert.equal(echoOnly.log.filter(entry=>entry.text.includes('Seal grants')).length,1);
+  assert.equal(echoOnly.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants`)).length,1);
 });

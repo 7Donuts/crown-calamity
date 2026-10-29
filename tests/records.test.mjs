@@ -17,9 +17,18 @@ const fighter = () => {
   return s;
 };
 const hit = (s, key = 'attack') => G.exchange(s, key, rng, tick());
+const delveContext = id => ({
+  crab: { node: 0, path: null, campUsed: false },
+  inspector: { node: 2, path: 'records', campUsed: false },
+  hound: { node: 2, path: 'overflow', campUsed: false },
+  boss: { node: 4, path: 'records', campUsed: false }
+})[id];
 // Win one fight against `id`; `hp` shapes how many exchanges it takes, `hero` how much Stuffing the stuffie has to lose.
 function win(s, id = 'rats', { hp = null, source = 'hunt', hero = 100000, before = null } = {}) {
+  s.delve = null;
   G.restore(s);
+  if(source==='delve')s.delve=delveContext(id);
+  assert.ok(source!=='delve'||s.delve,`valid delve fixture for ${id}`);
   assert.ok(G.startFight(s, id, source, tick()));
   if (hp !== null) s.fight.hp = hp;
   s.hp = hero;
@@ -33,7 +42,7 @@ function win(s, id = 'rats', { hp = null, source = 'hunt', hero = 100000, before
 test('case files start empty for a new character and old saves default to an empty map', () => {
   assert.deepEqual(G.fresh().caseFiles, {});
   assert.deepEqual(G.createCharacter({ name: 'A' }).caseFiles, {});
-  for (const version of [1, 2, 3, 4]) {
+  for (const version of [1, 2, 3, 4, 5]) {
     const old = G.fresh();
     old.version = version;
     delete old.caseFiles;
@@ -43,7 +52,7 @@ test('case files start empty for a new character and old saves default to an emp
     assert.ok(loaded, `v${version} save imports`);
     assert.deepEqual(loaded.caseFiles, {}, `v${version} starts from zero with no retroactive credit`);
     assert.equal(loaded.titleId, undefined);
-    assert.equal(loaded.version, 5, 'older records migrate into the current save format');
+    assert.equal(loaded.version, 6, 'older records migrate into the current save format');
   }
 });
 
@@ -51,14 +60,14 @@ test('only accepted victories count, by enemy id, from zero', () => {
   const s = fighter();
   win(s, 'rats');
   win(s, 'rats');
-  win(s, 'scavenger', { source: 'delve' });
+  win(s, 'crab', { source: 'delve' });
   assert.equal(s.caseFiles.rats.wins, 2);
-  assert.equal(s.caseFiles.scavenger.wins, 1);
+  assert.equal(s.caseFiles.crab.wins, 1);
   assert.equal(s.kills.rats, 2, 'existing kill counter is untouched');
   // A variant field on the fight never changes which enemy ID is credited.
   win(s, 'rats', { before: x => { x.fight.variant = 'special-edition'; x.fight.elite = true; } });
   assert.equal(s.caseFiles.rats.wins, 3);
-  assert.equal(Object.keys(s.caseFiles).sort().join(), 'rats,scavenger');
+  assert.equal(Object.keys(s.caseFiles).sort().join(), 'crab,rats');
 });
 
 test('Withdraw, defeat and practice fights never count', () => {
@@ -78,7 +87,9 @@ test('Withdraw, defeat and practice fights never count', () => {
   s.woundedUntil = 0;
   s.restReadyAt = 0;
   G.restore(s);
-  win(s, 'rats', { source: 'practice' });
+  assert.equal(G.startFight(s,'rats','practice',tick()),false,'the campaign runtime does not start practice fights');
+  s.last={type:'victory'};
+  assert.equal(R.recordVictory(s,G.ENEMIES.find(e=>e.id==='rats'),{source:'practice',rec:{ex:1,lost:0}}),null);
   assert.deepEqual(s.caseFiles, {}, 'a no-reward practice fight is ignored');
   assert.equal(s.last.case, undefined);
 });
@@ -121,6 +132,7 @@ test('case files add no combat edge and no reward: a win pays the same with or w
 test('records count accepted exchanges only; a tap inside the 650 ms delay is rejected and never counted', () => {
   const s = fighter();
   G.restore(s);
+  s.delve = { node: 2, path: 'overflow', campUsed: false };
   G.startFight(s, 'hound', 'delve', 5000);
   s.hp = 100000;
   s.fight.hp = 60;
@@ -228,6 +240,7 @@ test('titles: earned achievements only, stored additively, validated on load, di
 test('real achievements become titles through the existing achievement path', () => {
   const s = fighter();
   G.restore(s);
+  s.delve = { node: 4, path: 'records', campUsed: false };
   G.startFight(s, 'boss', 'delve', tick());
   s.guardCount = 2;
   s.fight.round = 1;
@@ -267,10 +280,11 @@ test('malformed case-file and title data is normalized away on load', () => {
   assert.deepEqual(G.loadSave(JSON.stringify(loaded)).caseFiles, loaded.caseFiles);
 });
 
-test('case file lore covers exactly the seven current enemies, with v0.11.0 names and a B.U.R.S.A.R. line', () => {
-  assert.deepEqual([...R.CASE_ENEMY_IDS].sort(), G.ENEMIES.map(e => e.id).sort());
+test('case file lore covers every chapter-one enemy, with the authored names and a B.U.R.S.A.R. line', () => {
+  const chapterOne=G.CHAPTERS[0],chapterOneIds=[...chapterOne.enemyIds,chapterOne.bossId];
+  assert.deepEqual(R.CASE_ENEMY_IDS.filter(id=>G.enemyChapter(id)===1).sort(),[...chapterOneIds].sort());
   const names = ['Nesting Rat Swarm', 'Rummage Raccoon', 'Static Cling Wisp', 'Clawback Crab', 'Lost & Found Appraiser', 'Chewster, the Family Dog', 'The Spin Cycle'];
-  assert.deepEqual(G.ENEMIES.map(e => e.name), names);
+  assert.deepEqual(chapterOneIds.map(id=>G.ENEMIES.find(e=>e.id===id).name), names);
   for (const e of G.ENEMIES) {
     const lore = R.CASE_LORE[e.id];
     assert.ok(lore.page.length > 120, e.id);

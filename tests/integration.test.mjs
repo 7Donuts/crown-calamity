@@ -160,8 +160,8 @@ test('all character, equipment, and workbench mutations stay locked during an en
   }
 });
 
-test('v1–4 saves migrate to v5 and v5 preserves live encounter state and item modifications', () => {
-  for (const version of [1, 2, 3]) {
+test('v1–5 saves migrate to v6 and v6 preserves live encounter state and item modifications', () => {
+  for (const version of [1, 2, 3, 4, 5]) {
     const old = G.fresh(); old.version = version;
     if (version === 1) delete old.stats.lck;
     old.level = 4; old.coins = 73; old.points = 3;
@@ -178,9 +178,10 @@ test('v1–4 saves migrate to v5 and v5 preserves live encounter state and item 
   }
   const live = G.fresh(); live.level=8; live.quest=4; live.learnedAbilities.push('brace','mend'); live.equippedAbilities=['arc','brace','mend'];
   live.itemMods={rod:{upgrade:2,prefix:'keen',suffix:'of_might'}};
+  live.delve={node:0,path:null,campUsed:false};
   assert.equal(G.startFight(live,'crab','delve'),true);
   Object.assign(live.fight,{barrier:23,barrierTurns:1,exposed:true,exposedRound:2,charge:1,healDeficit:14});
-  live.delve={node:2,path:'records',campUsed:false}; live.nextActionAt=2100;
+  live.nextActionAt=2100;
   const loaded = G.loadSave(JSON.stringify(live));
   assert.ok(loaded);
   for (const key of ['barrier','barrierTurns','exposed','exposedRound','charge','healDeficit']) assert.equal(loaded.fight[key], live.fight[key]);
