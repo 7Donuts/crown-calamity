@@ -56,20 +56,20 @@ export function renderCharacterCreator({ draft, modal = false, canCreate = true 
   const shownKits = KITS.filter(k => k.id !== 'bulwark' || d.kit === 'bulwark');
   const statRows = ATTRS.map(([id, label]) => `<span class="cc-stat"><b>${label}</b><strong>${d.stats[id]}</strong></span>`).join('');
   return `<section class="character-creator${modal ? ' character-creator--modal' : ''}" aria-label="Create your character">
-    <header class="cc-heading"><span class="cc-kicker">A NEW NAME IN THE LEDGER</span><h2>Make your adventurer</h2><p>Choose a people, a first kit, and the details you want to carry into Bracken Quay.</p></header>
+    <header class="cc-heading"><span class="cc-kicker">A NEW NAME ON THE CARE TAG</span><h2>Make your stuffie</h2><p>Choose a brand, a first kit, and the details you want to carry into Fluffington Quay.</p></header>
     <div class="cc-identity-fields">
       <label class="cc-field cc-name-field" for="new-name"><span>Name</span><input id="new-name" data-creator-field="name" type="text" maxlength="32" autocomplete="off" placeholder="Your name" value="${esc(d.name)}"></label>
       <label class="cc-field" for="new-origin"><span>Origin <small>optional</small></span><input id="new-origin" data-creator-field="origin" type="text" maxlength="70" autocomplete="off" placeholder="A place, trade, or old promise" value="${esc(d.origin)}"></label>
     </div>
-    <section class="cc-section" aria-labelledby="cc-people-title"><div class="cc-section-title"><div><h3 id="cc-people-title">Choose your people</h3><p>Each comes with its own attributes, passive, and flavor.</p></div><small class="cc-budget">68 points total</small></div>
+    <section class="cc-section" aria-labelledby="cc-people-title"><div class="cc-section-title"><div><h3 id="cc-people-title">Choose your brand</h3><p>Each brand comes with its own attributes, passive, and tagline.</p></div><small class="cc-budget">68 points total</small></div>
       <input id="new-race" type="hidden" data-creator-field="race" value="${d.race}">
       <div class="cc-race-grid">${RACE_IDS.map(id => { const r = RACES[id], selected = id === d.race, appearance = selected ? d.appearance : normalizeAppearance(id, { presentation: d.appearance.presentation }); return `<button type="button" class="cc-race-choice${selected ? ' is-selected' : ''}" data-action="creator-race:${id}" aria-pressed="${selected}"><span class="cc-race-art">${renderCharacterArt(id, appearance, { size: 'large' })}</span><span class="cc-race-copy"><strong>${esc(r.name)}</strong><small>${esc(r.epithet)}</small></span></button>`; }).join('')}</div>
-      <div class="cc-race-detail"><div class="cc-race-detail-head"><div><span class="cc-detail-eyebrow">${esc(race.epithet)}</span><h4>${esc(race.name)}</h4></div><p>${esc(race.description)}</p></div><div class="cc-stats" aria-label="Starting attributes">${statRows}</div><p class="cc-passive"><strong>${esc(race.passiveName || 'Passive')}</strong><span>${esc(race.passiveDescription)}</span></p><p class="cc-trait"><span>Flavor trait</span> “${esc(race.trait)}”</p></div>
+      <div class="cc-race-detail"><div class="cc-race-detail-head"><div><span class="cc-detail-eyebrow">${esc(race.epithet)}</span><h4>${esc(race.name)}</h4></div><p>${esc(race.description)}</p></div>${race.bursarReading ? `<p class="cc-bursar"><span>B.U.R.S.A.R. reads your tag</span> “${esc(race.bursarReading)}”</p>` : ''}<div class="cc-stats" aria-label="Starting attributes">${statRows}</div><p class="cc-passive"><strong>${esc(race.passiveName || 'Passive')}</strong><span>${esc(race.passiveDescription)}</span></p><p class="cc-trait"><span>Flavor trait</span> “${esc(race.trait)}”</p></div>
     </section>
     <section class="cc-section" aria-labelledby="cc-kit-title"><div class="cc-section-title"><div><h3 id="cc-kit-title">Choose a starting kit</h3><p>Kits are a first loadout. Your build stays open.</p></div></div>
       <input id="new-kit" type="hidden" data-creator-field="kit" value="${d.kit}">
       <div class="cc-kit-grid">${shownKits.map(k => `<button type="button" class="cc-kit-choice${k.id === d.kit ? ' is-selected' : ''}" data-action="creator-kit:${k.id}" aria-pressed="${k.id === d.kit}"><span class="cc-kit-name">${esc(k.name)}</span><strong>${esc(k.gear)}</strong><span>${esc(k.skill)}</span></button>`).join('')}</div>
-      <p class="cc-kit-note">${esc(kit.note)} Your chosen kit is independent of your people.</p>
+      <p class="cc-kit-note">${esc(kit.note)} Your chosen kit is independent of your brand.</p>
     </section>
     <section class="cc-section cc-appearance" aria-labelledby="cc-appearance-title"><div class="cc-section-title"><div><h3 id="cc-appearance-title">Appearance</h3><p>Adjust your portrait. Appearance changes no combat stats.</p></div></div><div class="cc-appearance-layout"><div class="cc-portrait-preview" aria-live="polite">${renderCharacterArt(d.race, d.appearance, { size: 'large' })}</div>${appearanceFields(d, d.race)}</div></section>
     <button type="button" class="cc-create" data-action="creator-submit"${canCreate ? '' : ' disabled'}>${modal ? 'Create character' : 'Begin your adventure'}</button>
@@ -78,7 +78,7 @@ export function renderCharacterCreator({ draft, modal = false, canCreate = true 
 
 // Optional identity editor for an existing character. Race is deliberately locked here.
 export function renderAppearanceEditor(state = {}, { draft } = {}) {
-  const race = safeRace(state.race || state.raceId);
+  const race = safeRace(state.raceId || state.race);
   const d = normalizeCreationDraft({ ...state, ...draft, race });
   return `<section class="cc-identity-editor" aria-label="Character appearance"><div class="cc-portrait-preview">${renderCharacterArt(race, d.appearance, { size: 'large' })}</div>${appearanceFields(d, race, { identity: true })}</section>`;
 }

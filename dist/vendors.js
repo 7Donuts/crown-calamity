@@ -2,9 +2,9 @@
 import { ITEMS, buyPreview, sellPreview } from './gear.js';
 
 export const VENDORS = Object.freeze({
-  weaponsmith: Object.freeze({ id: 'weaponsmith', name: 'Weaponsmith', description: 'Weapons and fighting tools.' }),
-  armorer: Object.freeze({ id: 'armorer', name: 'Armorer', description: 'Armor and shields.' }),
-  curio: Object.freeze({ id: 'curio', name: 'Curio dealer', description: 'Magical focuses, accessories, and relics.' })
+  weaponsmith: Object.freeze({ id: 'weaponsmith', name: 'Pins & Needles', kind: 'Weaponsmith', description: 'A toy armory run by Tuffet, a pincushion hedgehog. “Pointy end goes toward the problem.” Weapons and fighting tools.' }),
+  armorer: Object.freeze({ id: 'armorer', name: 'Second Stitch Outfitters', kind: 'Armorer', description: 'Raincoats and reinforcements. “Waterproofing is not a fashion choice. It’s a lifestyle.” Armor and shields.' }),
+  curio: Object.freeze({ id: 'curio', name: 'The Odds & Ends Drawer', kind: 'Curio dealer', description: 'Kept by an old bear who has seen things. Magical focuses, accessories, and relics.' })
 });
 
 const ARMOR_SLOTS = new Set(['head', 'body', 'hands', 'feet']);

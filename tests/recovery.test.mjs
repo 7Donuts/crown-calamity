@@ -15,7 +15,7 @@ test('mana regenerates after accepted non-mana exchanges while stamina remains a
   const recover = G.exchange(s, 'recover', () => .2, 1650);
   assert.equal(recover.manaRegenerated, 2);
   assert.equal(s.mp, 15); assert.equal(s.sp, 15);
-  assert.ok(s.log.some(entry => entry.text === 'Caught your breath · +2 mana.'));
+  assert.ok(s.log.some(entry => entry.text === 'Caught your breath · +2 Sparkle (mana).'));
 });
 
 test('free and stamina actions regenerate mana, mana spells do not, and actual gains respect the cap', () => {
@@ -50,7 +50,7 @@ test('free and stamina actions regenerate mana, mana spells do not, and actual g
   const almostFull=G.exchange(capped,'recover',()=>.2,2300);
   assert.equal(almostFull.manaRegenerated,0,'explicit recovery reaches the cap first');
   assert.equal(capped.mp,max);
-  assert.ok(capped.log.some(entry=>entry.text==='Recovered 1 mana and 0 stamina.'));
+  assert.ok(capped.log.some(entry=>entry.text==='Shake it off · recovered 1 Sparkle (mana) and 0 Bounce (stamina).'));
 });
 
 test('rejected and delay-blocked actions do not regenerate; a finishing exchange does and persists', () => {

@@ -34,17 +34,33 @@ export const ITEMS = Object.freeze({
   pike:{id:'pike',name:'Lockwarden’s Breach Pike',slot:'weapon',base:34,channel:'heavy',twoHanded:true,stats:{mig:2},level:7,price:125,desc:'Two-handed, 34 weapon base and +2 Might. Leaves no room for an offhand.'}
 });
 
+// Material names are save keys in `s.materials` and must never be renamed. These are the display labels shown to players.
+export const MATERIAL_LABELS = Object.freeze({
+  'Ledger scraps': 'Lint',
+  'Canal iron': 'Lost buttons',
+  'Runic residue': 'Static charge',
+  'Chainback shell': 'Prize tokens',
+  'Stamped brass': 'Price stickers',
+  'Floodglass': 'Squeaker cores',
+  'Floodglass Fragment': 'Drum fragment',
+  'Salvaged fittings': 'Spare thread',
+  'Repair fittings': 'Patches'
+});
+export function materialLabel(key) {
+  return typeof key === 'string' && Object.hasOwn(MATERIAL_LABELS, key) ? MATERIAL_LABELS[key] : String(key ?? '');
+}
+
 // Exchanges use guaranteed drops and quest materials; boss fragments always have a sink.
 export const EXCHANGES = Object.freeze({
-  ledger_fittings:{id:'ledger_fittings',name:'Sort ledger scraps',cost:{'Ledger scraps':3},gain:{'Salvaged fittings':1},coins:5},
-  iron_fittings:{id:'iron_fittings',name:'Shape canal iron',cost:{'Canal iron':2},gain:{'Salvaged fittings':1},coins:8},
-  repair_parts:{id:'repair_parts',name:'Repair with spare fittings',cost:{'Repair fittings':2},gain:{'Salvaged fittings':1},coins:0},
-  residue_parts:{id:'residue_parts',name:'Set runic residue',cost:{'Runic residue':2},gain:{'Floodglass':1},coins:12},
-  shell_parts:{id:'shell_parts',name:'Break down chainback shell',cost:{'Chainback shell':2},gain:{'Repair fittings':2},coins:15},
-  brass_parts:{id:'brass_parts',name:'Rework stamped brass',cost:{'Stamped brass':2},gain:{'Repair fittings':3},coins:20},
-  fragment_glass:{id:'fragment_glass',name:'Stabilize a boss fragment',cost:{'Floodglass Fragment':1},gain:{'Floodglass':3,'Repair fittings':2},coins:0},
-  salvage_glass:{id:'salvage_glass',name:'Recover floodgate fittings',cost:{'Floodglass':2},gain:{'Salvaged fittings':2},coins:15},
-  fittings_repair:{id:'fittings_repair',name:'Turn fittings into repairs',cost:{'Salvaged fittings':2},gain:{'Repair fittings':2},coins:0},
+  ledger_fittings:{id:'ledger_fittings',name:'Sort lint',cost:{'Ledger scraps':3},gain:{'Salvaged fittings':1},coins:5},
+  iron_fittings:{id:'iron_fittings',name:'Sort lost buttons',cost:{'Canal iron':2},gain:{'Salvaged fittings':1},coins:8},
+  repair_parts:{id:'repair_parts',name:'Unpick patches into spare thread',cost:{'Repair fittings':2},gain:{'Salvaged fittings':1},coins:0},
+  residue_parts:{id:'residue_parts',name:'Bottle static charge',cost:{'Runic residue':2},gain:{'Floodglass':1},coins:12},
+  shell_parts:{id:'shell_parts',name:'Trade in prize tokens',cost:{'Chainback shell':2},gain:{'Repair fittings':2},coins:15},
+  brass_parts:{id:'brass_parts',name:'Rework price stickers',cost:{'Stamped brass':2},gain:{'Repair fittings':3},coins:20},
+  fragment_glass:{id:'fragment_glass',name:'Stabilize a drum fragment',cost:{'Floodglass Fragment':1},gain:{'Floodglass':3,'Repair fittings':2},coins:0},
+  salvage_glass:{id:'salvage_glass',name:'Unpick squeaker cores',cost:{'Floodglass':2},gain:{'Salvaged fittings':2},coins:15},
+  fittings_repair:{id:'fittings_repair',name:'Turn spare thread into patches',cost:{'Salvaged fittings':2},gain:{'Repair fittings':2},coins:0},
   craft_cap:{id:'craft_cap',name:'Assemble a ledger-keeper’s cap',cost:{'Ledger scraps':2,'Salvaged fittings':1},gain:{},gainItems:['cap'],coins:8,level:1},
   craft_boots:{id:'craft_boots',name:'Assemble sluicewalker boots',cost:{'Canal iron':3,'Ledger scraps':2},gain:{},gainItems:['boots'],coins:18,level:2},
   craft_gate_shield:{id:'craft_gate_shield',name:'Rivet a gate shield',cost:{'Canal iron':3,'Salvaged fittings':2},gain:{},gainItems:['gateShield'],coins:24,level:3},

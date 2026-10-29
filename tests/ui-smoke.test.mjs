@@ -83,7 +83,7 @@ test('the shared Rest control works from town screens and cannot heal during an 
     s.hp=1;s.mp=0;s.sp=0;
     const before={xp:s.xp,coins:s.coins,exchanges:s.totalExchanges,points:s.points};
     await ui.act('nav:'+view);
-    matches(recovery(),/data-action="rest"[^>]*>.*Rest at the Quay · 4s/);
+    matches(recovery(),/data-action="rest"[^>]*>.*Fluff up at the Quay · 4s/);
     assert.doesNotMatch(recovery(),/\bdisabled\b/);
     await ui.act('rest');
     const restDeadline=s.restReadyAt;
@@ -117,7 +117,7 @@ test('the shared Rest control works from town screens and cannot heal during an 
   assert.equal(s.nextActionAt,nextActionAt,'rest cannot bypass the shared combat delay');
   s.delve={node:0,path:null,campUsed:false};s.hp=1;ui.render();
   matches(recovery(),/disabled/);
-  matches(recovery(),/Available after leaving the Works/);
+  matches(recovery(),/Available after leaving the Laundry Works/);
   await ui.act('rest');assert.equal(s.hp,1,'town rest does not bypass the limited delve camp');
 });
 
@@ -189,7 +189,7 @@ test('the actual UI action handlers carry a rescue build through character, gear
   ui.getState().materials['Repair fittings']=3;
   await ui.act('bag-tab:materials');
   matches(ui.getApp().innerHTML,/Materials on hand/);
-  matches(ui.getApp().innerHTML,/Repair fittings/);
+  matches(ui.getApp().innerHTML,/Patches/);
 
   ui.getState().materials['Runic residue']=3;
   ui.getState().materials['Canal iron']=3;
@@ -266,7 +266,7 @@ test('relic resonance UI reviews each unlock and copy license without replacing 
   await ui.act('nav:character');await ui.act('char-tab:gear');
   assert.equal(Object.keys(G.SLOTS).length,9,'echoes do not add ordinary gear slots');
   assert.match(ui.getApp().innerHTML,/CORE RELIC · FULL EFFECT/);
-  for(const index of [1,2,3])assert.match(ui.getApp().innerHTML,new RegExp(`ECHO ${index} · LOCKED`));
+  for(const index of [1,2,3])assert.match(ui.getApp().innerHTML,new RegExp(`LOOP ${index} · LOCKED`));
 
   const unlockCosts=[250,1250,6250];
   for(let index=0;index<unlockCosts.length;index++){
@@ -289,13 +289,13 @@ test('relic resonance UI reviews each unlock and copy license without replacing 
 test('first-run wizard creates a local character and the roster preserves progress when creating and switching characters', async()=>{
   const {ui,storage,getElement}=await bootApp(null);
   noBrokenText(ui.getApp().innerHTML,'new character wizard');
-  contains(ui.getApp().innerHTML,'Make your adventurer');
+  contains(ui.getApp().innerHTML,'Make your stuffie');
   for(const id of ['new-name','new-race','new-origin','new-kit'])assert.ok(ui.getApp().innerHTML.includes(`id="${id}"`),id);
   await ui.act('creator-race:reedling');await ui.act('creator-kit:caster');
   getElement('#new-name').value='Ada';getElement('#new-race').value='reedling';getElement('#new-origin').value='Canal clerk';getElement('#new-kit').value='caster';
   ui.changeCreatorField('hairColor','copper');
   await ui.act('create-character');
-  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().race,'Reedlings');assert.equal(ui.getState().raceId,'reedling');assert.equal(ui.getState().origin,'Canal clerk');
+  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().race,'Floppables by Pellet & Pip');assert.equal(ui.getState().raceId,'reedling');assert.equal(ui.getState().origin,'Canal clerk');
   assert.equal(ui.getState().coins,20);assert.deepEqual([...ui.getState().bag],['rod','focus','coat']);
   assert.deepEqual(ui.getState().stats,Races.RACES.reedling.stats);
   assert.equal(ui.getState().appearance.hairColor,'copper');
@@ -376,8 +376,8 @@ test('hunt shortcut prefers the accepted contract enemy, then the last hunt, the
 test('workbench makes a first cap from actual hunt materials and grants its gear only on confirmation',async()=>{
  const s=G.createCharacter({name:'Crafter',kit:'breaker'});s.coins=100;s.materials={'Ledger scraps':5};
  const {ui}=await bootApp(s);await ui.act('bag-tab:workbench');
- const live=ui.getState();assert.match(ui.getApp().innerHTML,/A FIRST PROJECT/);assert.match(ui.getApp().innerHTML,/5<\/strong> Ledger scraps/);
- assert.match(ui.getApp().innerHTML,/Still need 1 Salvaged fittings/);
+ const live=ui.getState();assert.match(ui.getApp().innerHTML,/A FIRST PROJECT/);assert.match(ui.getApp().innerHTML,/5<\/strong> Lint/);
+ assert.match(ui.getApp().innerHTML,/Still need 1 Spare thread/);
  const before=JSON.stringify(live);await ui.act('exchange:ledger_fittings');assert.equal(JSON.stringify(live),before);
  await ui.act('exchange-confirm:ledger_fittings');assert.equal(live.materials['Ledger scraps'],2);assert.equal(live.materials['Salvaged fittings'],1);
  await ui.act('exchange:craft_cap');assert.equal(live.bag.includes('cap'),false);await ui.act('exchange-confirm:craft_cap');
@@ -395,7 +395,7 @@ test('the final required victory prompts a report and claiming it offers the nex
  assert.equal(G.contractStatus(ui.getState(),'proof_of_trouble').ready,true);
  await ui.act('story-claim:proof_of_trouble:coins');
  assert.equal(G.contractStatus(ui.getState(),'proof_of_trouble').completed,true);
- assert.equal(ui.getModal().open,true);assert.match(ui.getModal().innerHTML,/Next contract: Drainage Inspection/);assert.match(ui.getModal().innerHTML,/story-accept:drainage_inspection/);
+ assert.equal(ui.getModal().open,true);assert.match(ui.getModal().innerHTML,/Next contract: Lint Trap Rescue/);assert.match(ui.getModal().innerHTML,/story-accept:drainage_inspection/);
  assert.equal(G.contractStatus(ui.getState(),'drainage_inspection').active,false,'the prompt never accepts a contract for the player');
  await ui.act('story-accept:drainage_inspection');assert.equal(ui.getModal().open,false);assert.equal(G.contractStatus(ui.getState(),'drainage_inspection').active,true);
 });
@@ -421,11 +421,11 @@ test('combat UI explains zero-mana recovery and reports actual gains without rew
   await ui.act('hunt:rats');
   const state=ui.getState();
   state.mp=0;ui.render();
-  contains(ui.getApp().innerHTML,'+2 mana after any action that spends none.');
-  contains(ui.getApp().innerHTML,'Recover restores 10 mana and 10 stamina.');
+  contains(ui.getApp().innerHTML,'+2 Sparkle (mana) after any action that spends none.');
+  contains(ui.getApp().innerHTML,'Shake it off (Recover) restores 10 Sparkle (mana) and 10 Bounce (stamina).');
   await ui.act('combat:attack');
   assert.equal(state.mp,2);
-  contains(ui.getApp().innerHTML,'+2 mana');
+  contains(ui.getApp().innerHTML,'+2 Sparkle (mana)');
   const round=state.fight.round;
   await ui.act('combat:guard');
   assert.equal(state.mp,2,'rapid rejected taps give no regeneration');
@@ -433,7 +433,7 @@ test('combat UI explains zero-mana recovery and reports actual gains without rew
   ui.setClock(state.nextActionAt);
   await ui.act('combat:recover');
   assert.equal(state.mp,12);
-  contains(ui.getApp().innerHTML,'+10 mana','Recover feedback includes both the active and passive recovery');
+  contains(ui.getApp().innerHTML,'+10 Sparkle (mana)','Recover feedback includes both the active and passive recovery');
   ui.advanceClock(60000);ui.render();
   assert.equal(state.mp,12,'waiting and re-rendering do not restore mana');
 });

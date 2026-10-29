@@ -12,7 +12,7 @@ export const CHARACTER_ATLASES = Object.freeze(Object.fromEntries([
   src, width: 1983, height: 793,
   columns: 5, split, topPad, bottomPad
 })])));
-const NAMES = Object.freeze({quayfolk:'Quayfolk', cobblekin:'Cobblekin', reedling:'Reedling', emberling:'Emberling'});
+const NAMES = Object.freeze({quayfolk:'Cuddleworth Classics', cobblekin:'Sturdy Stitch Workwear', reedling:'Floppables by Pellet & Pip', emberling:'Lullabrite Nightlight Pals'});
 const SIZES = Object.freeze({small:64, medium:96, large:128});
 const EYES = Object.freeze({
   quayfolk: [[[173,195],[247,195]],[[168,195],[241,195]],[[156,195],[229,195]],[[133,195],[205,195]],[[155,191],[231,191]],[[174,169],[246,169]],[[169,169],[241,169]],[[157,169],[229,169]],[[133,169],[205,169]],[[155,167],[228,167]]],
@@ -62,9 +62,9 @@ export function renderCharacterArt(raceId, appearance, {size='medium'}={}) {
   const eyePoints=EYES[race][col+(male?5:0)], paths=regions(race,a.hairStyle,eyePoints);
   const keySkin=race==='reedling'?'-10 0 14 0 -0.8':race==='emberling'?'-8 8 12 0 -0.5':'20 -24 0 0 -1';
   const keyAccent=race==='quayfolk'?'-14 20 -2 0 -0.2':race==='cobblekin'?(a.hairStyle==='shaved'?'8 8 8 0 -11':'0 0 0 1 0'):'14 -16 -1 0 -0.5';
-  const accessible=`${a.presentation} ${NAMES[race]} adventurer; ${labels.hairStyle}: ${choice('hairStyle').label}; ${labels.hairColor}: ${choice('hairColor').label}; ${labels.skinTone}: ${choice('skinTone').label}; ${choice('eyeColor').label} eyes`;
+  const accessible=`${a.presentation} ${NAMES[race]} stuffie; ${labels.hairStyle}: ${choice('hairStyle').label}; ${labels.hairColor}: ${choice('hairColor').label}; ${labels.skinTone}: ${choice('skinTone').label}; ${choice('eyeColor').label} eyes`;
   const px=SIZES[size]||SIZES.medium;
   const defs=`<g id="${id}-source"><svg x="0" y="0" width="${fw}" height="${sh}" viewBox="${(col*fw).toFixed(2)} ${sy} ${fw} ${sh}" overflow="hidden"><image href="${atlas.src}" x="0" y="0" width="${atlas.width}" height="${atlas.height}"/></svg></g><clipPath id="${id}-skin"><path d="${paths.skin}" clip-rule="evenodd"/></clipPath><clipPath id="${id}-accent"><path d="${paths.accent}" clip-rule="evenodd"/></clipPath><clipPath id="${id}-eyes">${eyePoints.map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="${race==='reedling'&&i===1?8:race==='cobblekin'?12:15}" ry="${race==='cobblekin'?15:17}"/>`).join('')}</clipPath>${tintFilter(id+'-skin-tint',choice('skinTone').color,keySkin,race==='emberling'?.3:.55)}${tintFilter(id+'-accent-tint',choice('hairColor').color,keyAccent,.6)}${tintFilter(id+'-eye-tint',choice('eyeColor').color,'8 -6 -2 0 -0.15',.3)}`;
   const layer=(mask,filter)=>`<g clip-path="url(#${id}-${mask})"><use href="#${id}-source" filter="url(#${id}-${filter}-tint)"/></g>`;
-  return `<span class="character-art character-art--${Object.hasOwn(SIZES,size)?size:'medium'}"><svg class="character-art__portrait" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${fw} 420" width="${px}" height="${Math.ceil(px*420/fw)}" role="img" aria-label="${xml(accessible)}"><title>${NAMES[race]} adventurer</title><defs>${defs}</defs><g transform="translate(0 ${py})"><use href="#${id}-source"/>${layer('skin','skin')}${layer('accent','accent')}${layer('eyes','eye')}</g></svg></span>`;
+  return `<span class="character-art character-art--${Object.hasOwn(SIZES,size)?size:'medium'}"><svg class="character-art__portrait" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${fw} 420" width="${px}" height="${Math.ceil(px*420/fw)}" role="img" aria-label="${xml(accessible)}"><title>${xml(NAMES[race])} stuffie</title><defs>${defs}</defs><g transform="translate(0 ${py})"><use href="#${id}-source"/>${layer('skin','skin')}${layer('accent','accent')}${layer('eyes','eye')}</g></svg></span>`;
 }

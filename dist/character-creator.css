@@ -33,3 +33,7 @@
 #app .sheet-identity-mark:has(.character-art), #app .sheet-identity-mark .character-art { height: auto; }
 .character-creator .cc-race-art { height: 72px; }
 .character-creator .cc-portrait-preview { min-height: 148px; }
+
+/* v0.11.0: B.U.R.S.A.R. care-tag reading under the brand description. */
+.character-creator .cc-bursar { margin: 10px 0 0; padding: 8px 10px; border-left: 3px solid #d6ad56; background: rgba(255,255,255,.06); font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: #f2e6bf; }
+.character-creator .cc-bursar span { display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #d3dccf; }

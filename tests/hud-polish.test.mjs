@@ -91,7 +91,7 @@ test('encounter outcome reports engine receipts and separates reward, salvage, d
   const markup = renderEncounterOutcome(winner);
   assert.match(markup, new RegExp(`\\+${receipt.xp} XP`));
   assert.match(markup, new RegExp(`\\+${receipt.coins}`));
-  assert.ok(markup.includes(`+1 ${receipt.material}`));
+  assert.ok(markup.includes(`+1 ${G.materialLabel(receipt.material)}`));
   assert.match(markup, /Spoils of the hunt/);
   assert.doesNotMatch(markup, /Equipment roll|\d+\.\d+%|ENCOUNTER COMPLETE|enemy-token|encounter-result__status-seal|reward-grid/);
   assert.match(markup, /aria-label="Victory rewards"/);
@@ -107,7 +107,7 @@ test('encounter outcome reports engine receipts and separates reward, salvage, d
 
   winner.last = { ...receipt, loot: null, salvaged: true, dropChance: 0.25 };
   const salvageMarkup = renderEncounterOutcome(winner);
-  assert.match(salvageMarkup, /\+1 Salvaged fitting/);
+  assert.match(salvageMarkup, /\+1 Spare thread/);
   assert.doesNotMatch(salvageMarkup, /Equipment roll|chance/i);
 
   for (const type of ['defeat', 'withdraw']) {
@@ -253,7 +253,7 @@ test('combat recovery meter precedes actions; the shared fake-clock delay blocks
   const waitingCount = elements.get('#action-delay-count').textContent;
   assert.match(waitingCount, /650|0\.65/, 'the text count reflects the live remaining wait');
   assert.equal(elements.get('#action-delay-track').getAttribute('aria-valuenow'), '0', 'the recovery bar starts at zero when the full delay remains');
-  assert.equal(G.actionInfo(state, 'brace').reason, 'Not enough stamina', 'the fixture keeps Brace unavailable for a non-delay reason');
+  assert.equal(G.actionInfo(state, 'brace').reason, 'Not enough Bounce (stamina)', 'the fixture keeps Brace unavailable for a non-delay reason');
   const afterAccepted = JSON.stringify(state);
   const exchangesAfterAccepted = state.totalExchanges;
   await ui.act('combat:guard');
@@ -276,7 +276,7 @@ test('combat recovery meter precedes actions; the shared fake-clock delay blocks
   const blockedBrace = controls.lastButtons.find(button => button.dataset.action === 'combat:brace');
   assert.ok(blockedBrace, 'the equipped but unaffordable ability remains represented');
   assert.equal(blockedBrace.disabled, true, 'the timer does not enable actions that still fail engine requirements');
-  assert.match(blockedBrace.title, /Not enough stamina/);
+  assert.match(blockedBrace.title, /Not enough Bounce \(stamina\)/);
   assert.equal(elements.get('#action-ready-text').textContent, 'Ready for your next action');
   assert.equal(elements.get('#action-delay-track').getAttribute('aria-valuenow'), String(G.ACTION_DELAY_MS));
 });
@@ -309,8 +309,8 @@ test('world and community navigation labels planned features and leaves campaign
   await ui.act('nav:world');
   markup = ui.getApp().innerHTML;
   assert.match(markup, /WORLD RECORD · FUTURE CHAPTERS/);
-  assert.match(markup, /Bracken Quay/);
-  assert.match(markup, /Lower Canals/);
+  assert.match(markup, /Fluffington Quay/);
+  assert.match(markup, /Lint Trap Canals/);
   assert.match(markup, /World movement is planned/);
   assert.match(markup, /<button type="button" disabled[^>]*>Travel planned<\/button>/);
   await ui.act('world-tab:guilds');

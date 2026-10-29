@@ -28,6 +28,8 @@ Caveat: the scripted policies are simple and deliberately not optimal (no Vent, 
 
 ## Bugs and defects
 
+Status: B1 to B4 are fixed in v0.11.0 (see the README release notes and `tests/layout-css.test.mjs`, `tests/ability-costs.test.mjs`).
+
 ### B1. Mobile: action panel covers the enemy-intent hint (all phone widths)
 
 At 390×844 the intent block spans y = 644 to 726 while `.combat-controls` starts at y = 677. That is a 49 px overlap, which fully covers the `<small>` line "Heavy attack · Guard or Disrupt can help. ~N raw damage". It is the single most important tactical cue. 360 and 430 px widths overlap identically; 1280 px is fine.

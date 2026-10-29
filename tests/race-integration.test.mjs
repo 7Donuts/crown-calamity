@@ -58,7 +58,7 @@ test('legacy heritage adoption is one-time, locked during encounters and recover
   const s=makeLegacy(),stats=structuredClone(s.stats),gear=structuredClone(s.gear),coins=s.coins,points=s.points;
   const oldTotals=G.totals(s),oldMax=oldTotals.hp;
   assert.equal(G.adoptRace(s,'Stonekin'),true);
-  assert.equal(s.raceId,'cobblekin');assert.equal(s.race,'Cobblekin');
+  assert.equal(s.raceId,'cobblekin');assert.equal(s.race,'Sturdy Stitch Workwear');
   assert.deepEqual(s.stats,stats);assert.equal(s.points,points);assert.deepEqual(s.gear,gear);assert.equal(s.coins,coins);
   assert.deepEqual([s.hp,s.mp,s.sp],[1,2,3],'heritage adoption does not refill current resources');
   assert.ok(G.totals(s).hp>oldMax,'the new passive raises maximum health');

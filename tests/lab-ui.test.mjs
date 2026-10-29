@@ -28,7 +28,7 @@ test('the disposable UI opens all six scenarios, shows the correct goals, and ne
     ui.handleAction('start-session');
     assert.equal(ui.getSession().scenarioId,scenario.id);
     assert.equal(/\b(?:undefined|NaN)\b/.test(get('#lab-app').innerHTML),false,scenario.id);
-    if(scenario.id==='return_orientation')assert.match(get('#lab-app').innerHTML,/Drainage Inspection/);
+    if(scenario.id==='return_orientation')assert.match(get('#lab-app').innerHTML,/Lint Trap Rescue/);
     ui.handleAction('start-hunt');
     assert.equal(ui.getSession().character.fight.enemy,scenario.enemy);
     assert.match(get('#lab-app').innerHTML,/data-action="lab-action:attack"/);

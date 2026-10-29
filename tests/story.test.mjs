@@ -56,7 +56,7 @@ test('permit, optional runic minor, gate, records, and municipal route form the 
   const s=make();normalizeStory(s);beginIntro(s);completeObjective(s,'rats',3);claimContract(s,'proof_of_trouble');finishDrainage(s);
 
   assert.ok(acceptContract(s,'permit_with_teeth'));assert.ok(acceptContract(s,'runic_research'));
-  completeObjective(s,'scavenger',3);assert.equal(storyAction(s,'return_permit'),false);assert.equal(availableStoryActions(s)[0].enabled,false);assert.match(availableStoryActions(s)[0].reason,/2 more Permit Wisps/);
+  completeObjective(s,'scavenger',3);assert.equal(storyAction(s,'return_permit'),false);assert.equal(availableStoryActions(s)[0].enabled,false);assert.match(availableStoryActions(s)[0].reason,/2 more Static Cling Wisps/);
   completeObjective(s,'wisp',2);assert.equal(availableStoryActions(s)[0].enabled,true);
   assert.equal(storyAction(s,'return_permit').action,'return_permit');
   assert.equal(contractStatus(s,'runic_research').ready,true);assert.ok(claimContract(s,'runic_research'));

@@ -142,3 +142,8 @@
   #modal .comparison-table th:nth-child(2), #modal .comparison-table th:nth-child(3) { width: 33%; }
   #modal .comparison-slots button { flex-basis: 125px; }
 }
+
+/* v0.11.0: vendor names with a standard-name subtitle. */
+#app .vendor-tab-name { display: inline-flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.2; }
+#app .vendor-tab-name small, #app .vendor-header h2 .vendor-kind { font-size: 12px; font-weight: 400; color: inherit; opacity: .84; letter-spacing: 0; }
+#app .vendor-header h2 { flex-wrap: wrap; }

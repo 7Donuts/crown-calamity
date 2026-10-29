@@ -18,7 +18,7 @@ Everything below is a proposal for the coordinated theme pass. It changes names,
 
 Stuffies live in the Underfoot: the stuffie-scale world beneath, behind and between the Big Things. Their hub is Fluffington Quay, a town built from lost odds and ends along the Gutter Canal behind the Suds & Duds laundromat. Water still matters, and more than before: for a stuffie, a flood isn't an inconvenience but a soaking that can ruin you. The current canal, pump and municipal story maps across almost line for line.
 
-Stuffies grow stronger by being loved and by surviving, in the spirit of *The Velveteen Rabbit* (1922, public domain in the US): the more a stuffie has been through, the more Real it becomes. That gives the LitRPG layer an in-world reason. Levels are you becoming more Real, and the post-cap progression proposed in design 36 (R7) becomes Realness ranks.
+Stuffies grow stronger by being loved and by surviving, in the spirit of *The Velveteen Rabbit* (1922, public domain in the US): the more a stuffie has been through, the more Real it becomes. That gives the LitRPG layer an in-world reason. Levels are you becoming more Real. The post-cap progression proposed in design 36 (R7) could become a Realness rank, but "Real" and "Realness" are not used as game labels in the v0.11.0 text pass.
 
 The title still works. The Toy Box Crown grants its wearer the right to decide which toys are kept and which go in the Donation Bag. The Calamity is Spring Cleaning, the Great Declutter that threatens the whole Underfoot. The current Superintendent arc becomes the first sign of it.
 
@@ -33,11 +33,13 @@ Enemies are objects, animals and forces. Keep human children and adults offscree
 
 Keep B.U.R.S.A.R. and give it a new backronym: the Bureau of Unclaimed Residents, Stuffies And Repairs. This keeps the existing emblem, the save-free commentary hooks and the established deadpan voice. In-world, B.U.R.S.A.R. speaks through each stuffie's care tag, so the LitRPG status window is literally your tag. System messages can borrow care-label format:
 
-> CARE INSTRUCTIONS · Level 3 reached. Do not tumble dry. Hug gently.
+> NOTICE · Level 3 reached. Do not tumble dry. Hug gently.
 
 > NOTICE · Your seams are holding. Statistically, this is a surprise.
 
 > WARNING · Moisture detected. You are now 4% heavier and 100% grumpier.
+
+The heading "Care Instructions" is reserved for the future difficulty modifiers below and is not used as a label in the v0.11.0 text pass. The word "tag" is reserved for this care-tag system voice.
 
 ## Brands (replacing races)
 
@@ -59,7 +61,7 @@ Capabilities stay where they are today, renamed to fit:
 | Floppables | 8 12 10 8 9 13 8 | Pellet Shuffle | +8 max Stamina, +2 Evasion | "Sits on any shelf edge. Falls off most of them on purpose." |
 | Lullabrite | 8 9 13 8 12 9 9 | Night-Light | +8 max Mana, +1 Ward | "Afraid of the dark professionally, so you don't have to be." |
 
-Shared appearance options become brand-flavored: eye style (button, stitched, safety, sleepy) replaces eye color as the main choice, and named colorways ("Honey", "Seafoam", "Limited: Marmalade") replace skin tone. Hang tags, stitching and fabric texture carry the brand identity in the portrait, so two bunnies from different brands read differently at a glance.
+Shared appearance options become brand-flavored: eye style (button, stitched, safety, sleepy) replaces eye color as the main choice, and named colorways ("Honey", "Seafoam", "Marmalade") replace skin tone. Hang tags, stitching and fabric texture carry the brand identity in the portrait, so two bunnies from different brands read differently at a glance.
 
 On creation, B.U.R.S.A.R. reads the tag:
 
@@ -93,15 +95,17 @@ Same IDs, stats and move patterns; new names and move text.
 
 | Save ID | Becomes | Kind | Moves (pattern unchanged) | Blurb |
 |---|---|---|---|---|
-| `rats` | Moth Mob | Dislikes (eats wool) | Nibble, Nibble, Wool rush | "Small wings. Large appetite. Strong opinions about wool." |
-| `scavenger` | Button Magpie | Likes too much | Guarded perch, Shiny snatch | "Everything shiny belongs to someone. Mostly this one." |
-| `wisp` | Static Cling | Dislikes | Recharge field, Zap, Zap | "Your fur is now standing up for itself." |
-| `crab` | The Claw | Likes too much | Coin drop, Slow grab, Prize chute | "Insert coin. Lose dignity." |
-| `inspector` | Thrift Appraiser | Likes too much (to resell) | Price check, Markdown, Tag gun | "The appraisal is mandatory. Being worth it is recommended." |
+| `rats` | Nesting Rat Swarm | Dislikes (eats stuffing) | Nibble, Nibble, Nest rush | "Small teeth. Large plans for your stuffing." |
+| `scavenger` | Rummage Raccoon | Likes too much | Clutch the sack, Grabby lunge | "Everything in the gutter belongs to someone. Mostly this one." |
+| `wisp` | Static Cling Wisp | Dislikes | Recharge field, Zap, Zap | "Your fur is now standing up for itself." |
+| `crab` | Clawback Crab | Likes too much | Coin rattle, Slow grab, Prize chute | "A walking claw machine with a deeply unreasonable grip." |
+| `inspector` | Lost & Found Appraiser | Likes too much (to resell) | Price check, Markdown, Tag gun | "The appraisal is mandatory. Being worth it is recommended." |
 | `hound` | Chewster, the Family Dog | Likes far too much | Fetch, Fetch, Tug-of-war | "Loves you. That's the problem." |
-| `boss` | The Spin Cycle, Acting Superintendent of the Laundry Works | Dislikes | Agitate, Heavy rinse, Spin cycle; under 30%: Emergency drain | "Acting capacity. Permanent press." |
+| `boss` | The Spin Cycle | Dislikes | Agitate, Heavy rinse, Spin cycle; under 30%: Emergency drain, Drum door open (armor down), Soap drawer open (ward down) | "Acting Superintendent of the Laundry Works. Acting capacity. Permanent press." |
 
-Vent pressure becomes Pop the lid.
+The first draft named the enemies Moth Mob, Button Magpie, Static Cling, The Claw, Thrift Appraiser and The Spin Cycle. The names above replace it because the existing sprites show a rat, a raccoon carrying a sack, a wisp wearing paper tags, a crab wrapped in chains, a mole-like figure in a coat holding a rubber stamp, a big fluffy dog with a padlock collar and a brass porthole-headed robot with a clipboard. Names must match the art until the art pass replaces it.
+
+Vent pressure becomes Pop the lid (subtitle Vent pressure); it still reduces the boss's pressure attacks by 30%.
 
 ## Regions
 
@@ -146,13 +150,13 @@ Rules stay the same; these are display terms. Show the standard name beside the 
 | Mana | Sparkle | For Lullabrites, flavor as glow charge |
 | Stamina | Bounce | |
 | Rest (4 s) | Fluff up | "Fluffing up… tap to finish." |
-| Defeat | Lost & Found | "A kind paw returned you to the toy box. 5 coins covered the Lost & Found fee." |
+| Defeat | Back on the shelf (Defeated) | "A kind paw put you back on the shelf. 5 coins covered the call-out. Your levels and gear are safe." Lost & Found is reserved for the Lost & Found Dock and Appraiser. |
 | Wound (12 s) | Drying off | "Still damp. Ready in 12 s." |
-| Withdraw | Go still | The classic toy defense: freeze until nobody's looking |
-| Defend | Brace your seams | |
-| Recover | Catch your fluff | |
-| Level part (4 per level) | Stitch; a full level is a Seam | "Stitch 3 of 4 complete." |
-| Achievements | Merit patches | Sewn onto the portrait as cosmetics |
+| Withdraw | Go still (Withdraw) | The classic toy defense: freeze until nobody's looking |
+| Defend | Hunker down (Defend) | Not "Brace your seams", which collides with the Brace ability |
+| Recover | Shake it off (Recover) | Not "Catch your fluff", which is too close to Fluff up |
+| Level part (4 per level) | Stitch (level part); a full level is a Seam in flavor text | "Stitch 3 of 4 complete." |
+| Achievements | Merit badges (Achievements) | Pinned to the portrait as cosmetics. "Patches" is a material label. |
 | Relic echo sockets | Keychain loops | |
 | Coins | Coins | Unchanged: stuffies scavenge real coins from couch cushions |
 
@@ -160,11 +164,11 @@ Materials (save keys change, see migration):
 
 | Current | Becomes | Source |
 |---|---|---|
-| Ledger scraps | Lint | Moth Mob |
-| Canal iron | Lost buttons | Button Magpie |
-| Runic residue | Static charge | Static Cling |
-| Chainback shell | Claw parts | The Claw |
-| Stamped brass | Price tags | Thrift Appraiser |
+| Ledger scraps | Lint | Nesting Rat Swarm |
+| Canal iron | Lost buttons | Rummage Raccoon |
+| Runic residue | Static charge | Static Cling Wisp |
+| Chainback shell | Prize tokens | Clawback Crab |
+| Stamped brass | Price stickers | Lost & Found Appraiser |
 | Floodglass | Squeaker cores | Chewster |
 | Floodglass Fragment | Drum fragment | The Spin Cycle |
 | Salvaged fittings | Spare thread | Conversions and salvage |
@@ -176,10 +180,10 @@ The theme makes several of the review's proposals easier to explain:
 
 - Shifts (R2) become Past Bedtime runs. Lights out starts the run; each win adds a Past Bedtime bonus; a Midnight Snack check-in offers the boon choice; Back to the Toy Box banks it.
 - Case files (R3) become Hazard Tags in the Field Guide.
-- Flagged elites (R4) become Limited Edition enemies ("Limited Edition Moth Mob: Holiday Colorway"). Rare spawns become a Golden Moth or a Mint-in-Box Magpie.
+- Flagged elites (R4) become Special Edition enemies ("Special Edition Nesting Rat Swarm: Holiday Colorway"). Rare spawns become a Golden Rat or a Gift-Wrapped Raccoon.
 - Restoration (R5) becomes Rebuilding Fluffington: a Sewing Circle, the Button Bank, Night-light Row, and a Training Pillow that reports damage per exchange.
-- Loot grades (R6) become collector condition: Played-With, Gently Used, Like New, Mint, Mint-in-Box.
-- Ordinances (R7) become Care Instructions, difficulty modifiers styled as laundry symbols: Hand Wash Only (no healing), Tumble Dry High (enemies hit harder), Do Not Bleach (no spells on the first exchange). Seniority becomes Realness.
+- Loot grades (R6) become collector condition: Played-With, Gently Used, Like New, Pristine, Boxed.
+- Ordinances (R7) become Care Instructions, difficulty modifiers styled as laundry symbols: Hand Wash Only (no healing), Tumble Dry High (enemies hit harder), Do Not Bleach (no spells on the first exchange). Seniority is left for a later pass.
 
 ## Implementation notes
 
@@ -191,11 +195,34 @@ The theme makes several of the review's proposals easier to explain:
 
 ## Phasing
 
-1. Text pass: names, blurbs, contract text, B.U.R.S.A.R. lines and the vocabulary table, with display-only changes and no save bump.
+1. Text pass (done in v0.11.0): names, blurbs, contract text, B.U.R.S.A.R. lines and the vocabulary table, with display-only changes and no save bump.
 2. Material key migration (save v5) plus stable material IDs.
 3. Art pass: brands and forms first (the portrait is the creator's centerpiece), then enemies, NPCs and the Fluffington scene.
 4. Optional brand features, after a balance pass.
 5. Future districts, starting with Couch Cushion Caverns (it also expands the coin economy) or Under-Bed Badlands (it gives Lullabrite a home-turf moment).
+
+## Implementation status (v0.11.0)
+
+The text pass shipped as display-only changes. No rule, number, timing, pattern, stat, cost, reward, cooldown, enemy behavior or save format changed, and every race, enemy, item, contract, ability and appearance ID, every `settings` key and the save `VERSION` (4) are as before. Saves v1 to v4 still import, and a pre-pass save loads with the new names.
+
+Done:
+
+- Brands: the four races display as Cuddleworth Classics, Sturdy Stitch Workwear, Floppables by Pellet & Pip and Lullabrite Nightlight Pals with taglines, passive names, flavor traits and a B.U.R.S.A.R. care-tag reading on the creation screen. `RACE_ALIASES` accepts the brand names (and short forms) beside every older alias, and the UI renders the brand from `raceId` where it can. Passive descriptions state the same numbers using Stuffing (Health), Sparkle (Mana) and Bounce (Stamina).
+- Characters and places: Mara Purl, Pins & Needles (Weaponsmith), Second Stitch Outfitters (Armorer), The Odds & Ends Drawer (Curio dealer), the Sewing Kit (Workbench), Fluffington Quay, the Lint Trap Canals, Rinse Walk, Static Arch, Claw Gate, Lost & Found Dock, Doggy Door and the Laundry Works ending at The Drum. Chapter subtitle is Below the Rinse Line, with the Lost & Found Ledger and Drain Valve delve routes.
+- Enemies use the sprite-matched names in the table above, with the same patterns and intents.
+- Story: every contract title, text, objective label and employer line is re-themed with the same IDs, counts, rewards and beats.
+- Vocabulary: resource names, Fluff up (Rest), Back on the shelf (Defeated), Drying off (Recovering), Hunker down (Defend), Shake it off (Recover), Go still (Withdraw), Pop the lid (Vent pressure), Stitch (level part), Merit badges (Achievements) and Keychain loops (Relic echo sockets). Standard names appear beside the themed ones in labels, aria text and previews.
+- Materials keep their save keys (`'Ledger scraps'` and so on). A display-label map and `materialLabel()` in `dist/gear.js` route every UI and newly generated log or journal mention through the themed names (Lint, Lost buttons, Static charge, Prize tokens, Price stickers, Squeaker cores, Drum fragment, Spare thread, Patches). Journal entries already stored in saves keep their old wording.
+- B.U.R.S.A.R. is expanded once in the Field Guide, the header reads STUFFIE SERVICES, and care-label style lines ("NOTICE · ...") appear on arrival cards and a few system messages.
+
+Pending:
+
+- Art pass: portraits, scenes, NPCs, enemies and item art still show the prototype art, so appearance option labels, item names and item descriptions are deliberately unchanged. Brand copy describes identity and voice, not specific materials.
+- Material key migration with stable material IDs (save v5, see Implementation notes).
+- Item renames and ability renames; ability and cost lines (for example "16 mana") keep their standard wording.
+- Appearance option relabels (eye style, colorways, tag and stitching options) after the portraits exist.
+- Brand features (a rules change needing a balance pass) and future districts.
+- Trademark clearance search on the final names.
 
 ## Decisions for the owner
 

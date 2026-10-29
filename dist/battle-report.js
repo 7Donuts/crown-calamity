@@ -91,13 +91,13 @@ function rewardRows(state, receipt, enemy) {
   const rows = [
     `<li class="encounter-result__reward">${glyph('experience')}<span><small>EXPERIENCE</small><strong>+${Number(receipt.xp || 0).toLocaleString()} XP</strong></span></li>`,
     `<li class="encounter-result__reward">${glyph('gold')}<span><small>COINS</small><strong>+${Number(receipt.coins || 0).toLocaleString()} coins</strong></span></li>`,
-    `<li class="encounter-result__reward">${glyph('supplies')}<span><small>MATERIAL</small><strong>+1 ${esc(receipt.material || enemy?.material || 'Material')}</strong></span></li>`
+    `<li class="encounter-result__reward">${glyph('supplies')}<span><small>MATERIAL</small><strong>+1 ${esc(G.materialLabel(receipt.material || enemy?.material || 'Material'))}</strong></span></li>`
   ];
   if (receipt.loot) {
     const item = G.resolveItem(state, receipt.loot) || G.ITEMS[receipt.loot];
     rows.push(`<li class="encounter-result__reward encounter-result__reward--item">${renderItemArt(receipt.loot, { size: 'large' })}<span><small>EQUIPMENT</small><strong>${esc(item?.name || receipt.loot)}</strong>${actionButton('compare:'+receipt.loot,'Inspect & equip →','text-button')}</span></li>`);
   } else if (receipt.salvaged) {
-    rows.push(`<li class="encounter-result__reward">${glyph('supplies')}<span><small>SALVAGE</small><strong>+1 Salvaged fitting</strong></span></li>`);
+    rows.push(`<li class="encounter-result__reward">${glyph('supplies')}<span><small>SALVAGE</small><strong>+1 Spare thread</strong></span></li>`);
   }
   return rows.join('');
 }
@@ -114,7 +114,7 @@ function resultActions(state, receipt, enemy) {
   } else if (won && enemy) {
     const rest=G.restStatus(state);primary = actionButton(`hunt:${enemy.id}`, `${glyph('hunt')}<span>Hunt again →</span>`, 'primary',rest.active||rest.wounded||state.hp<=0);
   } else {
-    const rest=G.restStatus(state);primary=actionButton('rest',`${glyph('camp')}<span>${rest.active?rest.remainingMs>0?'Resting · '+Math.ceil(rest.remainingMs/1000)+'s':'Finish resting':'Recover at the Quay · '+(G.REST_DURATION_MS/1000)+'s'}</span>`,'primary',rest.active&&rest.remainingMs>0);
+    const rest=G.restStatus(state);primary=actionButton('rest',`${glyph('camp')}<span>${rest.active?rest.remainingMs>0?'Fluffing up · '+Math.ceil(rest.remainingMs/1000)+'s':'Fluffing up… tap to finish':'Fluff up at the Quay · '+(G.REST_DURATION_MS/1000)+'s'} (Rest)</span>`,'primary',rest.active&&rest.remainingMs>0);
   }
   const secondary = !state.delve
     ? actionButton('clear-outcome', `${glyph('chevron')}<span>Choose another hunt</span>`, 'subtle')
@@ -133,16 +133,16 @@ export function renderEncounterOutcome(state, { celebrate = false } = {}) {
   const enemy = enemyFor(state, receipt.enemy);
   const won = receipt.type === 'victory';
   const defeated = receipt.type === 'defeat';
-  const title = won ? 'One problem. Properly filed.' : defeated ? 'Temporarily out of hero.' : 'Live to file another day.';
+  const title = won ? 'One problem. Properly filed.' : defeated ? 'Back on the shelf <small class="std">(Defeated)</small>' : 'Live to file another day.';
   const detail = won
-    ? `${enemy?.name || 'The encounter'} defeated. The canal is a little less crowded.`
+    ? `${enemy?.name || 'The encounter'} defeated. The Underfoot is a little less crowded.`
     : defeated
-      ? 'The Quay’s recovery crew fished you out, gear and all. They also kept a story. Rest up; the canals can wait.'
-      : 'You left the encounter. Its provisional rewards were forfeited.';
+      ? 'A kind paw put you back on the shelf, gear and all. They also kept a story. Fluff up; the canals can wait.'
+      : 'You went still and slipped away. The encounter’s provisional rewards were forfeited.';
   const emblem = won ? treasureChest() : renderJournalArt(defeated ? 'recovery' : 'field', { size: 'large' });
   const emblemLabel = won ? 'Victory rewards' : defeated ? 'Recovery required' : 'Withdrawal recorded';
   const rewardBlock = won
-    ? `<section class="encounter-spoils" aria-label="Encounter rewards"><h3>Spoils of the hunt</h3><ul class="encounter-loot">${rewardRows(state, receipt, enemy)}</ul><p class="spoils-location">${receipt.loot?'Equipment is in Satchel → Spare gear.':receipt.salvaged?'Duplicate equipment became Salvaged fittings.':'No equipment recovered this time.'} Coins and materials have been saved.</p><div class="spoils-links">${actionButton('bag-tab:materials',`${glyph('supplies')}<span>View materials →</span>`,'text-button')}${actionButton('bag-tab:workbench',`${glyph('workbench')}<span>Use the workbench →</span>`,'text-button')}</div></section>`
+    ? `<section class="encounter-spoils" aria-label="Encounter rewards"><h3>Spoils of the hunt</h3><ul class="encounter-loot">${rewardRows(state, receipt, enemy)}</ul><p class="spoils-location">${receipt.loot?'Equipment is in Satchel → Spare gear.':receipt.salvaged?'Duplicate equipment became Spare thread.':'No equipment recovered this time.'} Coins and materials have been saved.</p><div class="spoils-links">${actionButton('bag-tab:materials',`${glyph('supplies')}<span>View materials →</span>`,'text-button')}${actionButton('bag-tab:workbench',`${glyph('workbench')}<span>Open the Sewing Kit (Workbench) →</span>`,'text-button')}</div></section>`
     : '';
   const outcomeKind = won ? 'victory' : defeated ? 'defeat' : 'withdrawal';
 
@@ -154,7 +154,7 @@ export function renderEncounterOutcome(state, { celebrate = false } = {}) {
         <p>${esc(detail)}</p>
       </div>
     </div>
-    ${defeated?`<p class="recovery-receipt">${Number.isFinite(receipt.coinsLost)?`Recovery crew fee: <strong>${receipt.coinsLost} coins</strong>. `:''}Your levels and gear are safe. A short rest will put you back on your feet; recovery takes at least 12 seconds after a knockout.</p>`:''}
+    ${defeated?`<p class="recovery-receipt">${Number.isFinite(receipt.coinsLost)?`<strong>${receipt.coinsLost} coins</strong> covered the call-out. `:''}Your levels and gear are safe. A short fluff up (Rest) will put you back on your paws; drying off (Recovering) takes at least 12 seconds after a knockout.</p>`:''}
     ${won?renderStoryNudge(state):''}
     ${rewardBlock}
     ${resultActions(state, receipt, enemy)}

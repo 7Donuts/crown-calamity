@@ -1,5 +1,7 @@
 # Races and identity
 
+> v0.11.0 note: the four races now display as toy brands (Cuddleworth Classics, Sturdy Stitch Workwear, Floppables by Pellet & Pip and Lullabrite Nightlight Pals) with new passive names. Race IDs, attribute spreads, passive numbers and saves are unchanged, and the display names, passive names and wording in the tables below are historical. See [design 35](35_Stuffies_Theme.md) for the current names and the implementation status.
+
 The release introduces four playable peoples of Bracken Quay. Race sets the character's starting attribute spread and one modest static passive. The player may freely reassign the twelve points above the seven-attribute minimum of eight, so every starting spread totals 68 and remains respec-able. A starter kit continues to control starting equipment and its ability; it does not overwrite race stats.
 
 | ID | Display name | Might | Finesse | Intellect | Vitality | Will | Insight | Luck | Passive |

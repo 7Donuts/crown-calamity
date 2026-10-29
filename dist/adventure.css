@@ -402,3 +402,12 @@
 #modal .heritage-adoption { margin-top: 14px; padding-top: 14px; border-top: 1px solid #536a73; }
 #modal .heritage-adoption p { font-size: 14px; }
 #app .recovery-receipt { margin: 16px 0 0; padding-block: 10px; border-block: 1px solid #796b49; color: #e3d1ab; font-size: 14px; }
+
+/* v0.11.0 stuffie text pass: themed names carry their standard rules name as quieter secondary text. */
+#app .std, #app small.std { font-size: .82em; font-weight: 400; letter-spacing: 0; text-transform: none; color: inherit; opacity: .84; }
+#app .resource-name-text { display: inline-flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+#app .resource-name-text .std { font-size: 11px; line-height: 1.2; font-family: var(--font); }
+#app .care-label { margin: 8px 0 0; padding: 6px 10px; border-left: 3px solid #d6ad56; background: rgba(255,255,255,.06); color: #f2e6bf; font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .03em; max-width: 48ch; }
+#app .resource-rest .std, #app .action-btn small, #app .combat-controls .secondary-actions .std, #app .tabs .std, #app .panel-label .std, #app .progression-head .std { white-space: normal; }
+#app .combat-controls .secondary-actions button .std { display: inline; font-size: 11px; }
+@media (max-width: 740px) { #app .resource-recovery .resource-rest { min-width: 190px; } #app .resource-rest .std { font-size: 12px; } }

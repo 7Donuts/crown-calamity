@@ -79,7 +79,7 @@ import * as G from '../dist/engine.js';
   for(const kit of Object.keys(G.STARTER_KITS)){
     const c=G.createCharacter({name:'  Mina  ',race:'Stonekin',origin:'Lockwright',kit});
     assert.ok(c,kit);
-    assert.equal(c.name,'Mina');assert.equal(c.race,'Cobblekin');assert.equal(c.raceId,'cobblekin');assert.equal(c.origin,'Lockwright');
+    assert.equal(c.name,'Mina');assert.equal(c.race,'Sturdy Stitch Workwear');assert.equal(c.raceId,'cobblekin');assert.equal(c.origin,'Lockwright');
     assert.equal(c.coins,20);assert.equal(c.level,1);assert.equal(c.part,1);
     assert.equal(Object.values(c.stats).reduce((a,b)=>a+b,0),68);
     assert.deepEqual(c.bag.sort(),[...G.STARTER_KITS[kit].gear,'coat'].sort());

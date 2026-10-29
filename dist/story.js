@@ -8,61 +8,61 @@ const act=(id,label,action)=>({id,label,source:'actions',action,target:1});
 
 export const STORY_CONTRACTS=Object.freeze({
   proof_of_trouble:{
-    id:'proof_of_trouble',kind:'minor',title:'Proof of Trouble',employer:'Mara Pell',chapter:'The Work Beneath the Quay',
-    text:'Mara has heard teeth in the drainage culvert for three nights. Clear the Ledger Rats nearby, then bring her a count she can trust.',
-    requirements:[req('action','mara_met','Meet Mara at the lower stair')],objectives:[win('rats','Drive off Ledger Rat swarms','rats',3)],
+    id:'proof_of_trouble',kind:'minor',title:'Proof of Trouble',employer:'Mara Purl',chapter:'The Work Beneath the Quay',
+    text:'Mara Purl, a much-mended Cuddleworth rabbit and foreman of the Seam Crew, has heard teeth in the drainage culvert for three nights. Clear the Nesting Rat Swarms nearby, then bring her a count she can trust.',
+    requirements:[req('action','mara_met','Meet Mara at the lower stair')],objectives:[win('rats','Drive off Nesting Rat swarms','rats',3)],
     reward:{xp:32,coins:12,materials:{}}
   },
   drainage_inspection:{
-    id:'drainage_inspection',majorIndex:0,kind:'major',title:'Drainage Inspection',employer:'Mara Pell',chapter:'The Work Beneath the Quay',
-    text:'The rats were driven back, but the passage is still flooding. Clear the blockage, secure a way through, and bring Mara out yourself.',
+    id:'drainage_inspection',majorIndex:0,kind:'major',title:'Lint Trap Rescue',employer:'Mara Purl',chapter:'The Work Beneath the Quay',
+    text:'The rats were driven back, but the passage is still full of suds. Clear the blockage, secure a way through, and bring Mara out yourself. She is damp, grumpy and extremely fluffy.',
     requirements:[req('completed','proof_of_trouble','Complete Proof of Trouble')],
     objectives:[win('rats','Clear three more rat swarms from the passage','rats',3),act('passage','Secure the maintenance passage','passage_secured'),act('mara','Bring Mara back to the stair','mara_rescued')],
     reward:{xp:88,coins:20,materials:{}}
   },
   permit_with_teeth:{
-    id:'permit_with_teeth',majorIndex:1,kind:'major',title:'A Permit with Teeth',employer:'Mara Pell',chapter:'The Toll Arch',
-    text:'The scavengers took the access seal, and a Permit Wisp keeps renewing the lock. Recover the seal and quiet the ward that protects it.',
+    id:'permit_with_teeth',majorIndex:1,kind:'major',title:'A Seal with Static',employer:'Mara Purl',chapter:'The Static Arch',
+    text:'The Rummage Raccoons took the access seal, and a Static Cling Wisp keeps recharging the lock. Recover the seal and quiet the static ward that protects it.',
     requirements:[req('completed','drainage_inspection','Rescue Mara from the lower passage')],
-    objectives:[win('scavengers','Defeat the seal’s scavenger guards','scavenger',3),win('wisps','Dispel the Permit Wisp’s ward','wisp',2),act('seal','Return the access seal to Mara','permit_returned')],
+    objectives:[win('scavengers','Defeat the seal’s raccoon guards','scavenger',3),win('wisps','Quiet the Static Cling Wisp’s ward','wisp',2),act('seal','Return the access seal to Mara','permit_returned')],
     reward:{xp:120,coins:34,materials:{}}
   },
   runic_research:{
-    id:'runic_research',kind:'minor',title:'Terms of the Ward',employer:'Mara Pell',chapter:'The Toll Arch',
-    text:'The wisp’s citations repeat a phrase from the old pump manuals. Observe two ward renewals and report the repeated wording so the crew can read the ward safely; no residue is spent.',
-    requirements:[req('completed','drainage_inspection','Complete Drainage Inspection')],objectives:[win('wisps','Collect samples from Permit Wisps','wisp',2)],
+    id:'runic_research',kind:'minor',title:'Reading the Static',employer:'Mara Purl',chapter:'The Static Arch',
+    text:'The wisp’s zaps repeat a pattern from the old washer manuals. Observe two ward recharges and report the repeated crackle so the Seam Crew can read the ward safely; no static charge is spent.',
+    requirements:[req('completed','drainage_inspection','Complete Lint Trap Rescue')],objectives:[win('wisps','Collect samples from Static Cling Wisps','wisp',2)],
     reward:{xp:34,coins:12,materials:{'Runic residue':1}}
   },
   bent_gate:{
-    id:'bent_gate',majorIndex:2,kind:'major',title:'The Bent Gate',employer:'Mara Pell',chapter:'The Sluice Walk',
-    text:'A Chainback Crab has jammed the gate with its shell. Drive it away, then set the gate back into its runners before the pressure builds.',
-    requirements:[req('completed','permit_with_teeth','Return the access seal')],objectives:[win('crabs','Clear the Chainback Crab from the gate','crab',3),act('gate','Reset the Bent Gate runners','gate_reset')],
+    id:'bent_gate',majorIndex:2,kind:'major',title:'The Claw Gate',employer:'Mara Purl',chapter:'The Rinse Walk',
+    text:'A Clawback Crab has jammed the gate with its prize chute. Drive it away, then set the gate back into its runners before the pressure builds.',
+    requirements:[req('completed','permit_with_teeth','Return the access seal')],objectives:[win('crabs','Clear the Clawback Crab from the gate','crab',3),act('gate','Reset the Claw Gate runners','gate_reset')],
     reward:{xp:142,coins:42,materials:{}}
   },
   shell_repairs:{
-    id:'shell_repairs',kind:'minor',title:'A Better Brace',employer:'Mara Pell',chapter:'The Sluice Walk',
-    text:'The first brace held, but the gate needs chainback shell plates for a lasting repair. Bring back two more shells.',
-    requirements:[req('completed','bent_gate','Complete The Bent Gate')],objectives:[win('shells','Gather Chainback shell plates','crab',2)],
+    id:'shell_repairs',kind:'minor',title:'A Better Brace',employer:'Mara Purl',chapter:'The Rinse Walk',
+    text:'The first brace held, but the gate needs prize tokens for a lasting repair. Bring back two more.',
+    requirements:[req('completed','bent_gate','Complete The Claw Gate')],objectives:[win('shells','Gather prize tokens from Clawback Crabs','crab',2)],
     reward:{xp:38,coins:16,materials:{'Repair fittings':2}}
   },
   someone_expendable:{
-    id:'someone_expendable',majorIndex:3,kind:'major',title:'Someone Expendable',employer:'Mara Pell',chapter:'The Inspection Dock',
-    text:'An inspector’s ledger may show where Mara’s missing crew were sent. Defeat the guard, recover the records, and decide what the town should know.',
-    requirements:[req('completed','bent_gate','Reset the Bent Gate'),req('level','5','Reach level 5',5)],
-    objectives:[win('inspector','Defeat the records inspector','inspector',1),act('records','Recover the missing crew ledger','records_recovered')],
+    id:'someone_expendable',majorIndex:3,kind:'major',title:'Tagged for Sale',employer:'Mara Purl',chapter:'The Lost & Found Dock',
+    text:'An appraiser’s ledger may show where the missing Seam Crew were sent. Defeat the guard, recover the records, and decide what the town should know.',
+    requirements:[req('completed','bent_gate','Reset the Claw Gate'),req('level','5','Reach level 5',5)],
+    objectives:[win('inspector','Defeat the Lost & Found Appraiser','inspector',1),act('records','Recover the missing crew ledger','records_recovered')],
     reward:{xp:168,coins:48,materials:{}}
   },
   floodgate_watch:{
-    id:'floodgate_watch',kind:'minor',title:'Watch the Floodgate',employer:'Mara Pell',chapter:'The Floodgate',
-    text:'The hound keeps returning to the floodgate. Track it off the maintenance path before the next crew goes below.',
-    requirements:[req('completed','someone_expendable','Recover the missing crew ledger'),req('level','8','Reach level 8',8)],objectives:[win('hound','Drive the Floodgate Hound from the path','hound',2)],
+    id:'floodgate_watch',kind:'minor',title:'Watch the Doggy Door',employer:'Mara Purl',chapter:'The Doggy Door',
+    text:'Chewster keeps returning to the doggy door, delighted to see everyone. Walk him off the maintenance path before the next crew goes below.',
+    requirements:[req('completed','someone_expendable','Recover the missing crew ledger'),req('level','8','Reach level 8',8)],objectives:[win('hound','Walk Chewster off the maintenance path','hound',2)],
     reward:{xp:58,coins:24,materials:{Floodglass:1}}
   },
   municipal_works:{
-    id:'municipal_works',majorIndex:4,kind:'major',title:'The Municipal Works',employer:'Mara Pell',chapter:'Below the Waterline',
-    text:'The ledger points beneath the pump chamber. Enter the works, choose whether the crew’s record or the eastern overflow matters most, then stop the Superintendent.',
-    requirements:[req('completed','someone_expendable','Complete Someone Expendable'),req('level','6','Reach level 6',6)],
-    objectives:[act('descent','Enter the Municipal Works','delve_enter'),{id:'route',label:'Choose the records route or eastern overflow',source:'route',target:1},{id:'guardian',label:'Defeat the guard on the chosen route',source:'routeVictory',target:1},win('superintendent','Defeat the Acting Superintendent','boss',1)],
+    id:'municipal_works',majorIndex:4,kind:'major',title:'The Laundry Works',employer:'Mara Purl',chapter:'Below the Rinse Line',
+    text:'The ledger points beneath the drum. Enter the Laundry Works, choose whether the crew’s Lost & Found Ledger or the Drain Valve matters most, then stop The Spin Cycle.',
+    requirements:[req('completed','someone_expendable','Complete Tagged for Sale'),req('level','6','Reach level 6',6)],
+    objectives:[act('descent','Enter the Laundry Works','delve_enter'),{id:'route',label:'Choose the Lost & Found Ledger or the Drain Valve',source:'route',target:1},{id:'guardian',label:'Defeat the guard on the chosen route',source:'routeVictory',target:1},win('superintendent','Stop The Spin Cycle','boss',1)],
     reward:{xp:240,coins:60,materials:{}}
   }
 });
@@ -91,7 +91,7 @@ function objectiveValue(s,id,obj){
  return 0;
 }
 function objectiveRows(s,id){
- const c=STORY_CONTRACTS[id];return c.objectives.map(obj=>{const current=s.story.legacyReady.includes(id)?obj.target:Math.min(obj.target,objectiveValue(s,id,obj));let label=obj.label;if(obj.source==='routeVictory'){const path=s.story.choices.contractRoutes[id];label=path==='records'?'Defeat the inspector guarding the records':path==='overflow'?'Defeat the hound at the eastern overflow':'Defeat the guard on the chosen route';}return {id:obj.id,label,current,target:obj.target,done:current>=obj.target};});
+ const c=STORY_CONTRACTS[id];return c.objectives.map(obj=>{const current=s.story.legacyReady.includes(id)?obj.target:Math.min(obj.target,objectiveValue(s,id,obj));let label=obj.label;if(obj.source==='routeVictory'){const path=s.story.choices.contractRoutes[id];label=path==='records'?'Defeat the appraiser guarding the Lost & Found Ledger':path==='overflow'?'Defeat Chewster at the Drain Valve':'Defeat the guard on the chosen route';}return {id:obj.id,label,current,target:obj.target,done:current>=obj.target};});
 }
 function prereqsMet(s,id){return requirementRows(s,id).every(r=>r.met);}
 function stageFor(s){
@@ -117,20 +117,20 @@ export function contractHuntTarget(s,eligible=()=>true){
 export function availableContracts(s){if(!s)return [];ensureStory(s);return CONTRACT_IDS.map(id=>contractStatus(s,id)).filter(c=>c?.available);}
 export function storyState(s){
  if(!s)return null;ensureStory(s);const stage=stageFor(s),nextMajor=MAJOR_IDS.find(id=>!complete(s,id));
- const stages=['Meet Mara at the lower stair','Prove the rats are gathering','Rescue Mara from the flooded passage','Recover the access seal','Reset the Bent Gate','Find the missing crew records','Enter the Municipal Works'];
- return {chapter:'The Work Beneath the Quay',title:stage===0?'A hand beneath the floodgate':stage===1?'Proof before promises':stage===2?'The passage is still flooding':STORY_CONTRACTS[nextMajor]?.title||'Bracken Quay can breathe',stage,stageLabel:nextMajor?stages[Math.min(stage,stages.length-1)]:'Below the Waterline completed',introStage:stage,majorCompleted:MAJOR_IDS.filter(id=>complete(s,id)).length,majorTotal:MAJOR_TOTAL,nextMajor:nextMajor?contractStatus(s,nextMajor):null,active:activeContracts(s),available:availableContracts(s),completed:[...s.story.completed]};
+ const stages=['Meet Mara at the lower stair','Prove the rats are gathering','Rescue Mara from the suds-filled passage','Recover the access seal','Reset the Claw Gate','Find the missing crew records','Enter the Laundry Works'];
+ return {chapter:'The Work Beneath the Quay',title:stage===0?'A paw beneath the stair':stage===1?'Proof before promises':stage===2?'The passage is still full of suds':STORY_CONTRACTS[nextMajor]?.title||'Fluffington Quay can breathe',stage,stageLabel:nextMajor?stages[Math.min(stage,stages.length-1)]:'Below the Rinse Line completed',introStage:stage,majorCompleted:MAJOR_IDS.filter(id=>complete(s,id)).length,majorTotal:MAJOR_TOTAL,nextMajor:nextMajor?contractStatus(s,nextMajor):null,active:activeContracts(s),available:availableContracts(s),completed:[...s.story.completed]};
 }
 export function acceptContract(s,id){
  if(!s||locked(s)||!STORY_CONTRACTS[id])return false;ensureStory(s);const status=contractStatus(s,id);if(!status?.available)return false;
  const st=s.story;st.accepted.push(id);st.baselines[id]={victories:{...st.events.victories},actions:{...st.events.actions}};return true;
 }
 const ACTIONS={
- meet_mara:{label:'Meet Mara',text:'Mara wipes canal water from her face. “The rats have been bold for three nights. I can fix a gate. I cannot file a report that says ‘probably rats.’ Bring me a count.”',allowed:(s)=>!eventMet(s,'mara_met')},
- secure_passage:{label:'Secure the passage',contract:'drainage_inspection',objectives:[{id:'rats',enemy:'rats',target:3,label:'rat swarms'}],event:'passage_secured',text:'You wedge the maintenance hatch open and lay a rope through the dry side of the culvert. There is room for one person to climb out.'},
- rescue_mara:{label:'Bring Mara to safety',contract:'drainage_inspection',requiresAction:'passage_secured',event:'mara_rescued',text:'You pull Mara clear of the passage. She catches her breath, then points toward the Toll Arch: “The scavengers have the access seal. They opened something they should not have.”'},
- return_permit:{label:'Return the access seal',contract:'permit_with_teeth',objectives:[{id:'scavengers',enemy:'scavenger',target:3,label:'scavengers'},{id:'wisps',enemy:'wisp',target:2,label:'Permit Wisps'}],event:'permit_returned',text:'Mara turns the access seal over in her hands. The permit wisp’s ward gutters out. “Good. Now the gate can be reached without asking the thing for permission.”'},
- reset_gate:{label:'Reset the Bent Gate',contract:'bent_gate',objectives:[{id:'crabs',enemy:'crab',target:3,label:'Chainback Crabs'}],event:'gate_reset',text:'With the crab driven off, you reset the gate runners. The water settles enough for Mara to inspect the records dock.'},
- recover_records:{label:'Recover the crew ledger',contract:'someone_expendable',objectives:[{id:'inspector',enemy:'inspector',target:1,label:'records inspector'}],event:'records_recovered',text:'You retrieve the maintenance ledger. It lists the missing crew as “expendable labor,” then notes they were sent below the pump chamber.'}
+ meet_mara:{label:'Meet Mara',text:'Mara wipes lint from her ears. “The rats have been bold for three nights. I can fix a gate. I cannot file a report that says ‘probably rats.’ Bring me a count.”',allowed:(s)=>!eventMet(s,'mara_met')},
+ secure_passage:{label:'Secure the passage',contract:'drainage_inspection',objectives:[{id:'rats',enemy:'rats',target:3,label:'rat swarms'}],event:'passage_secured',text:'You wedge the maintenance hatch open and lay a thread through the dry side of the culvert. There is room for one stuffie to climb out.'},
+ rescue_mara:{label:'Bring Mara to safety',contract:'drainage_inspection',requiresAction:'passage_secured',event:'mara_rescued',text:'You pull Mara clear of the passage. She wrings out an ear, then points toward the Static Arch: “The raccoons have the access seal. They opened something they should not have.”'},
+ return_permit:{label:'Return the access seal',contract:'permit_with_teeth',objectives:[{id:'scavengers',enemy:'scavenger',target:3,label:'Rummage Raccoons'},{id:'wisps',enemy:'wisp',target:2,label:'Static Cling Wisps'}],event:'permit_returned',text:'Mara turns the access seal over in her paws. The static ward gutters out with a small, sad fizz. “Good. Now the gate can be reached without asking the thing for permission.”'},
+ reset_gate:{label:'Reset the Claw Gate',contract:'bent_gate',objectives:[{id:'crabs',enemy:'crab',target:3,label:'Clawback Crabs'}],event:'gate_reset',text:'With the crab driven off, you reset the gate runners. The suds settle enough for Mara to inspect the Lost & Found Dock.'},
+ recover_records:{label:'Recover the crew ledger',contract:'someone_expendable',objectives:[{id:'inspector',enemy:'inspector',target:1,label:'Lost & Found Appraisers'}],event:'records_recovered',text:'You retrieve the Lost & Found Ledger. It lists the missing Seam Crew as “surplus stock,” then notes they were tagged and sent down to the Laundry Works.'}
 };
 function actionContractReady(s,def){
  if(!def.contract)return true;if(!s.story.accepted.includes(def.contract)||s.story.completed.includes(def.contract))return false;

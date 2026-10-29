@@ -1,8 +1,8 @@
-# Crown & Calamity — playable solo prototype v0.10.4
+# Crown & Calamity: playable solo prototype v0.11.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
-An original, mobile-first, text-first LitRPG set below Bracken Quay. One explicit action resolves one combat exchange. There is no idle or offline advancement. Characters now have customizable pixel portraits alongside the illustrated enemies and equipment.
+An original, mobile-first, text-first LitRPG about stuffed animals ("stuffies") in the Underfoot, the stuffie-sized world beneath Fluffington Quay. One explicit action resolves one combat exchange. There is no idle or offline advancement. Characters have customizable pixel portraits alongside the illustrated enemies and equipment.
 
 ## Run and package
 
@@ -28,7 +28,23 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## New in v0.10.4 — generated icons throughout
+## New in v0.11.0: the stuffie text pass
+
+Crown & Calamity is now told as a stuffie story, as a **display-only text pass**. Players and every non-monster character are stuffies; the four races read as toy brands (Cuddleworth Classics, Sturdy Stitch Workwear, Floppables by Pellet & Pip, Lullabrite Nightlight Pals) with taglines, passive names, and B.U.R.S.A.R. care-tag readings on the creation screen. B.U.R.S.A.R. is the Bureau of Unclaimed Residents, Stuffies And Repairs, and it speaks through each stuffie's care tag.
+
+- Places and people: Fluffington Quay, the Lint Trap Canals, Rinse Walk, Static Arch, Claw Gate, Lost & Found Dock, Doggy Door, and the Laundry Works ending at The Drum; Mara Purl; Pins & Needles, Second Stitch Outfitters, The Odds & Ends Drawer; the Sewing Kit (Workbench). Enemies are renamed to match their existing sprites (Nesting Rat Swarm, Rummage Raccoon, Static Cling Wisp, Clawback Crab, Lost & Found Appraiser, Chewster the Family Dog, The Spin Cycle). All contracts keep their beats, counts, and rewards.
+- Vocabulary shows the themed name with the standard name beside it: Stuffing (Health), Sparkle (Mana), Bounce (Stamina), Fluff up (Rest), Hunker down (Defend), Shake it off (Recover), Go still (Withdraw), Pop the lid (Vent pressure), Stitch (level part), Merit badges (Achievements), Keychain loops (Relic echo sockets), Back on the shelf (Defeated), and Drying off (Recovering). Materials show as Lint, Lost buttons, Static charge, Prize tokens, Price stickers, Squeaker cores, Drum fragment, Spare thread, and Patches.
+- Nothing mechanical changed: every rule, number, timing, enemy pattern, and cost is as in v0.10.4. Race, enemy, item, contract, ability, and appearance IDs, the material save keys, and save format v4 are unchanged, and saves v1 to v4 still import. Journal entries already in a save keep their old wording.
+- The art pass is still pending. Portraits, scenes, enemies, and items still show the prototype art, so appearance options, item names, and ability names are unchanged for now. See [Stuffies](design/35_Stuffies_Theme.md) for the implementation status and what is left.
+
+Bug fixes also in v0.11.0:
+
+- The phone combat panel stays in page flow, so the enemy intent hint is no longer covered (a regression test resolves the real stylesheet cascade).
+- Ability costs come from one catalog; the Abilities tab, mastery text, and combat spending agree.
+- The primary hunt button prefers the enemy an accepted contract still needs, then the last hunt, then the toughest unlocked opponent.
+- `npm test` no longer uses a Node 23-only flag, and the packaged-portrait test builds its own standalone HTML in a temp directory.
+
+## v0.10.4 — generated icons throughout
 
 All runtime icons now use generated soft-pixel art: navigation, resources, combat, rewards, vendors, utility controls, story markers, the equipment mannequin, favicon and playtest lab. Authored SVG/grid icon drawings and standalone pictogram glyphs are retired. See the [icon audit](design/34_Generated_Icon_Audit.md). Future character-theme direction is recorded in [Stuffies](design/35_Stuffies_Theme.md); gameplay adaptation comes later.
 
@@ -135,8 +151,8 @@ The first minor contract yields 128 total XP after its three hunts and reward: l
 
 - Seven attributes including Luck, levels 1–10, one point per progression part, free early respecs, exact per-point previews, equipment comparisons, and a target-specific combat inspector.
 - Earned ability learning: Arc Bolt, Brace, Disrupt, Mend, Driving Strike, Aegis, and Expose; Prepared, Sure Footing, and Reservoir passives. Three active slots, one passive, six shared attunement. Learn and prepare outside fights and expeditions.
-- Useful-contribution mastery with rank improvements and rank-3 choices for Arc Bolt, Brace, Disrupt, and Mend. Universal Attack, Defend, Recover, Withdraw, and encounter-specific Vent remain available without an ability slot.
-- Six repeatable ordinary enemies and the three-phase Acting Superintendent; readable intents and a shared 650 ms action delay. Extra inputs during the pause are discarded, never queued. Timers only re-enable controls.
+- Useful-contribution mastery with rank improvements and rank-3 choices for Arc Bolt, Brace, Disrupt, and Mend. Universal Attack, Defend (Hunker down), Recover (Shake it off), Withdraw (Go still), and encounter-specific Vent (Pop the lid) remain available without an ability slot.
+- Six repeatable ordinary enemies and the three-phase Spin Cycle (formerly the Acting Superintendent); readable intents and a shared 650 ms action delay. Extra inputs during the pause are discarded, never queued. Timers only re-enable controls.
 - Minor and major story contracts, worker rescue callbacks, a branching solo delve, a single camp recovery, first-boss reward selection, event-driven achievements, and authored B.U.R.S.A.R. commentary.
 - Character Overview/Attributes/Abilities tabs, all nine equipment slots, an outfit comparison, material-source hints, and explicit workbench cost/benefit confirmations. Higher-contrast text and system fonts preserve the readability fixes.
 - Soft pixel environment, six-enemy atlas, four-pose rat sheet, equipment atlas, and matching identity/glyph art. Runtime renderers share measured crop metadata; offline packaging embeds the required illustrations.
@@ -145,7 +161,7 @@ The first minor contract yields 128 total XP after its three hunts and reward: l
 
 The nine slots are weapon, offhand, head, body, hands, feet, two accessories, and relic. Accessories may use either accessory slot; a single owned item cannot occupy both. Two-handed weapons reserve the offhand. Replace a weapon rather than leaving universal Attack without one.
 
-Workbench recipes use the existing guaranteed encounter materials. Early recipes assemble a cap, boots, or gate shield. Five boss fragments can buy a selected Seal or Band that you do not already own; every boss victory grants a fragment. Conversions provide fittings and repair materials without waiting or passive gains.
+Sewing Kit (Workbench) recipes use the existing guaranteed encounter materials. Materials keep their original save keys and show themed labels. Early recipes assemble a cap, boots, or gate shield. Five boss fragments can buy a selected Seal or Band that you do not already own; every boss victory grants a fragment. Conversions provide fittings and repair materials without waiting or passive gains.
 
 Owned gear supports three upgrades and one prefix plus one suffix. Modifiers are deterministic, slot-compatible, modest flat bonuses with visible costs. A new prefix replaces the old prefix; a new suffix replaces the old suffix. The same modifier cannot be paid for twice. Upgraded and reforged values flow through the same resolver used by combat, stat previews, and equipment comparisons. Duplicate base-item loot becomes salvage.
 
@@ -187,4 +203,4 @@ This is still a local solo prototype. Login, server-authoritative actions/random
 
 The automated suite covers combat, mastery/loadout rules, multipart XP and migration, all nine gear slots, shop prices and atomic spending, upgrade/affix removal on sale, roster creation/switch/import isolation, authored contract objectives/reward idempotency, physical skills without a focus, and live save round-trips. It also packages the complete offline HTML, syntax-checks it, and boots/navigates its UI using a minimal DOM test harness.
 
-The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 112 test cases, including lab storage isolation, seeded replay, timing, telemetry limits, vendor comparisons, complete art coverage/crops, metadata integrity, and both standalone game pages. Gallery and art-preview embedding are checked separately.
+The DOM test harness has no layout engine, so layout is guarded only by a stylesheet-cascade test for the phone combat panel (it resolves the real CSS at fixed viewports); it does not render pixels. v0.11.0 was also checked by hand in Chromium at 360×740, 390×844, and 1280×900. Real-device visual and accessibility testing remains outstanding. The current release passes 190 test cases (`npm test`), including lab storage isolation, seeded replay, timing, telemetry limits, vendor comparisons, complete art coverage/crops, metadata integrity, and both standalone game pages. Gallery and art-preview embedding are checked separately.

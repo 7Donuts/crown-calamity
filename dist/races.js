@@ -6,48 +6,57 @@ const freezeRace = (race) => Object.freeze({
 
 export const RACES = Object.freeze({
   quayfolk: freezeRace({
-    id: 'quayfolk', name: 'Quayfolk', epithet: 'Canal-town local',
-    description: 'Adaptable people of Bracken Quay and its neighboring waterside towns.',
+    id: 'quayfolk', name: 'Cuddleworth Classics', epithet: 'The one everybody had.™',
+    description: 'The classic, much-hugged stuffie line. Adaptable, easy to like, and found in nearly every toy box in the Underfoot.',
+    bursarReading: 'Model identified. Extremely common. Statistically, someone has hugged you.',
     stats: { mig: 10, fin: 10, int: 10, vit: 10, wil: 10, ins: 9, lck: 9 },
     passive: { hp: 4, mp: 4, sp: 4, armor: 0, ward: 0, evasion: 0 },
-    passiveName: 'Well Provisioned',
-    passiveDescription: '+4 maximum Health, +4 maximum Mana, and +4 maximum Stamina.',
-    trait: 'Every quay has a cousin who knows a shortcut.'
+    passiveName: 'Well Loved',
+    passiveDescription: '+4 max Stuffing (Health), +4 max Sparkle (Mana), and +4 max Bounce (Stamina).',
+    trait: 'Every toy box has a Cuddleworth. Most have three.'
   }),
   cobblekin: freezeRace({
-    id: 'cobblekin', name: 'Cobblekin', epithet: 'Stonework folk',
-    description: 'Compact, broad-shouldered stonefolk with mineral ridges and crystal crests in place of hair.',
+    id: 'cobblekin', name: 'Sturdy Stitch Workwear', epithet: 'Double-stitched. Dog-tested.™',
+    description: 'Practical workwear for stuffies who expect to be dragged through things. Compact, broad-shouldered, and proud of every reinforced seam.',
+    bursarReading: 'Seam strength: excessive. Fashion sense: practical.',
     stats: { mig: 12, fin: 8, int: 8, vit: 13, wil: 10, ins: 9, lck: 8 },
     passive: { hp: 12, mp: 0, sp: 0, armor: 1, ward: 0, evasion: 0 },
-    passiveName: 'Cobblehide',
-    passiveDescription: '+12 maximum Health and +1 Armor.',
-    trait: 'They remember which stones were laid out of true.'
+    passiveName: 'Reinforced Seams',
+    passiveDescription: '+12 max Stuffing (Health) and +1 Armor.',
+    trait: 'Lifetime warranty. Nobody has ever successfully claimed it.'
   }),
   reedling: freezeRace({
-    id: 'reedling', name: 'Reedlings', epithet: 'Reedbank folk',
-    description: 'Quick-moving marshfolk with gill frills and flexible fin crests shaped by the quiet banks.',
+    id: 'reedling', name: 'Floppables by Pellet & Pip', epithet: 'Now with 30% more flop!™',
+    description: 'Quick, bendy, extremely floppable stuffies. Pellet & Pip promise comfort, bounce, and a posture that gives up first.',
+    bursarReading: 'Posture: optional. Pellet count: confidential.',
     stats: { mig: 8, fin: 12, int: 10, vit: 8, wil: 9, ins: 13, lck: 8 },
     passive: { hp: 0, mp: 0, sp: 8, armor: 0, ward: 0, evasion: 2 },
-    passiveName: 'Springstep',
-    passiveDescription: '+8 maximum Stamina and +2 Evasion.',
-    trait: 'A distant lock gate rarely surprises them twice.'
+    passiveName: 'Pellet Shuffle',
+    passiveDescription: '+8 max Bounce (Stamina) and +2 Evasion.',
+    trait: 'Sits on any shelf edge. Falls off most of them on purpose.'
   }),
   emberling: freezeRace({
-    id: 'emberling', name: 'Emberlings', epithet: 'Hearthspark folk',
-    description: 'Small soot-furred hearthfolk with short muzzles, tufted ears, fluffy tails, and an easy warmth.',
+    id: 'emberling', name: 'Lullabrite Nightlight Pals', epithet: 'Glows gently. Batteries not included.™',
+    description: 'Soft night-light pals who keep a small circle of light going. Their job is to make the dark less lonely, and to look good doing it.',
+    bursarReading: 'Glow detected. Please do not point at sleeping residents.',
     stats: { mig: 8, fin: 9, int: 13, vit: 8, wil: 12, ins: 9, lck: 9 },
     passive: { hp: 0, mp: 8, sp: 0, armor: 0, ward: 1, evasion: 0 },
-    passiveName: 'Pocket Hearth',
-    passiveDescription: '+8 maximum Mana and +1 Ward.',
-    trait: 'They can make a kettle feel welcome in any room.'
+    passiveName: 'Night-Light',
+    passiveDescription: '+8 max Sparkle (Mana) and +1 Ward.',
+    trait: 'Afraid of the dark professionally, so you don\'t have to be.'
   })
 });
 
+// Keys are lowercase, single-spaced display or legacy names. Saves written by v0.11.0 store the brand name in `race`.
 const RACE_ALIASES = Object.freeze({
   human: 'quayfolk', humans: 'quayfolk', quayfolk: 'quayfolk',
+  cuddleworth: 'quayfolk', 'cuddleworth classics': 'quayfolk',
   stonekin: 'cobblekin', dwarf: 'cobblekin', dwarves: 'cobblekin', cobblekin: 'cobblekin',
+  'sturdy stitch': 'cobblekin', 'sturdy stitch workwear': 'cobblekin',
   reedling: 'reedling', reedlings: 'reedling',
-  emberling: 'emberling', emberlings: 'emberling'
+  floppables: 'reedling', 'floppables by pellet & pip': 'reedling', 'floppables by pellet and pip': 'reedling',
+  emberling: 'emberling', emberlings: 'emberling',
+  lullabrite: 'emberling', 'lullabrite nightlight pals': 'emberling', 'lullabrite night-light pals': 'emberling'
 });
 
 export const APPEARANCE_OPTIONS = Object.freeze({
@@ -174,7 +183,7 @@ export function normalizeAppearance(raceId, value = {}) {
 
 export function resolveRace(idOrAlias) {
   if (typeof idOrAlias !== 'string') return null;
-  const key=idOrAlias.trim().toLowerCase();
+  const key=idOrAlias.trim().toLowerCase().replace(/\s+/g,' ');
   const id=Object.hasOwn(RACE_ALIASES,key)?RACE_ALIASES[key]:null;
   return id&&Object.hasOwn(RACES,id)?RACES[id]:null;
 }

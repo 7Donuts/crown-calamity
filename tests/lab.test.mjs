@@ -122,7 +122,7 @@ import * as Lab from '../dist/lab.js';
   const s=Lab.createLabSession({scenarioId:'heavy_telegraph',seed:4});
   assert.equal(Lab.startLabHunt(s,'crab',0),true);
   assert.equal(G.intent(s.character).heavy,true);
-  assert.equal(G.intent(s.character).name,'Slow clamp');
+  assert.equal(G.intent(s.character).name,'Slow grab');
   assert.equal(s.rounds,0,'scenario setup does not resolve an exchange');
   assert.equal(Lab.labAction(s,'guardstrike',0).ok,true);
   const report=Lab.labSummary(s);

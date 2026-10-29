@@ -193,7 +193,7 @@ test('the package generator produces standalone code with all module exports and
     const packaged=bootPackagedScript(embedded);
     const app=()=>packaged.elements.get('#app').innerHTML;
     assert.equal(/\b(?:undefined|NaN)\b/.test(app()),false,'packaged landing view renders without missing data');
-    for (const [action,label] of [['nav:character','Character record'],['char-tab:attributes','YOUR ATTRIBUTES'],['char-tab:abilities','Active abilities'],['nav:bag','Personal effects'],['nav:market','Quay market'],['vendor:armorer','Armorer'],['vendor:curio','Curio dealer'],['bag-tab:materials','Materials on hand'],['bag-tab:workbench','MUNICIPAL WORKBENCH'],['nav:story','The work beneath the Quay'],['nav:journal','Adventure chronicle'],['nav:guide','FIELD GUIDE · RULES & SAVES']]) {
+    for (const [action,label] of [['nav:character','Character record'],['char-tab:attributes','YOUR ATTRIBUTES'],['char-tab:abilities','Active abilities'],['nav:bag','Personal effects'],['nav:market','Quay market'],['vendor:armorer','Armorer'],['vendor:curio','Curio dealer'],['bag-tab:materials','Materials on hand'],['bag-tab:workbench','SEWING KIT'],['nav:story','The work beneath the Quay'],['nav:journal','Adventure chronicle'],['nav:guide','FIELD GUIDE · RULES & SAVES']]) {
       packaged.click(action);
       assert.equal(app().includes(label),true,`packaged UI renders ${label}`);
       assert.equal(/\b(?:undefined|NaN)\b/.test(app()),false,`packaged ${label} has no missing values`);

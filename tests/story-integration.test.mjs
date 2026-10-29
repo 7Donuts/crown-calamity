@@ -46,7 +46,7 @@ async function winRats(ui){
 
 test('the first-run story UI carries Mara’s introduction through the minor and rescue contracts',async()=>{
   const {ui}=await boot(null);
-  contains(ui.getApp().innerHTML,'Make your adventurer');
+  contains(ui.getApp().innerHTML,'Make your stuffie');
   uiTestField(ui,'new-name','Sera');uiTestField(ui,'new-race','Human');uiTestField(ui,'new-origin','Canal surveyor');uiTestField(ui,'new-kit','bulwark');
   await ui.act('create-character');
   assert.equal(ui.getState().coins,20);assert.equal(ui.getState().story.events.actions.mara_met||0,0);
@@ -56,7 +56,7 @@ test('the first-run story UI carries Mara’s introduction through the minor and
   assert.equal(ui.getState().story.accepted.includes('proof_of_trouble'),false,'the rat job stays gated until the introduction');
   await ui.act('story-action:meet_mara');
   assert.equal(ui.getState().story.events.actions.mara_met,1);
-  contains(ui.getModal().innerHTML,'Mara wipes canal water');
+  contains(ui.getModal().innerHTML,'Mara wipes lint');
   await ui.act('close');await ui.act('story-accept:proof_of_trouble');
   assert.equal(ui.getState().story.accepted[0],'proof_of_trouble');
   await winRats(ui);await winRats(ui);await winRats(ui);
@@ -68,7 +68,7 @@ test('the first-run story UI carries Mara’s introduction through the minor and
   assert.equal(ui.getState().story.completed.includes('proof_of_trouble'),true);
   assert.equal(ui.getState().coins,minorCoins+12);
   assert.equal(ui.getState().story.accepted.includes('proof_of_trouble'),false);
-  contains(ui.getApp().innerHTML,'Drainage Inspection');
+  contains(ui.getApp().innerHTML,'Lint Trap Rescue');
   await ui.act('story-accept:drainage_inspection');
   for(let i=0;i<3;i++)await winRats(ui);
   assert.equal(G.contractStatus(ui.getState(),'drainage_inspection').objectives[0].current,3);
