@@ -90,12 +90,12 @@ export function labAction(session,key,now){
   input(session);const at=timestamp(session,now),character=session.character,shift=session.shift?.status==='open'?session.shift:null,before={hp:character.hp,mp:character.mp,sp:character.sp,enemyHP:character.fight?.hp,enemy:character.fight?.enemy,round:character.fight?.round},info=shift?Shifts.shiftActionInfo(character,shift,key):G.actionInfo(character,key);
   const resolved=shift?Shifts.shiftExchange(character,shift,key,session.rng,Number.isFinite(now)?now:Date.now()):{result:G.exchange(character,key,session.rng,Number.isFinite(now)?now:Date.now()),effects:[]},result=resolved.result;
   if(!result.ok)session.deniedInputs++;else{
-    session.rounds++;const damageKeys=new Set(['attack','cast','combo','disrupt','driving','guardstrike']);
+    session.rounds++;const damageKeys=new Set(G.DAMAGING_ACTIONS);
     if(Number.isFinite(result.damage))session.damageAttempted+=Math.max(0,result.damage);else if(damageKeys.has(key))session.damageUnreportedActions++;
     session.hpLost+=Math.max(0,before.hp-character.hp);session.hpRestored+=Math.max(0,character.hp-before.hp);session.manaSpent+=Math.max(0,Number(info?.mp)||0);session.staminaSpent+=Math.max(0,Number(info?.sp)||0);
     if(result.victory)session.victories++;if(result.defeat)session.defeats++;if(result.withdraw)session.withdrawals++;
   }
-  const damageKeys=new Set(['attack','cast','combo','disrupt','driving','guardstrike']),damageUnknown=!!result.ok&&damageKeys.has(key)&&!Number.isFinite(result.damage);
+  const damageKeys=new Set(G.DAMAGING_ACTIONS),damageUnknown=!!result.ok&&damageKeys.has(key)&&!Number.isFinite(result.damage);
   event(session,{type:'combat-input',key,enemy:before.enemy,roundBefore:before.round,accepted:!!result.ok,...(at!==undefined?{at}:{}),result:safeResult(result),damageAttempted:Number.isFinite(result.damage)?Math.max(0,result.damage):null,damageUnreported:damageUnknown,hpLost:Math.max(0,before.hp-character.hp),hpRestored:Math.max(0,character.hp-before.hp),cost:{mana:result.ok?Math.max(0,Number(info?.mp)||0):0,stamina:result.ok?Math.max(0,Number(info?.sp)||0):0},resources:{hpBefore:before.hp,hpAfter:character.hp,mpBefore:before.mp,mpAfter:character.mp,spBefore:before.sp,spAfter:character.sp}});
   if(shift)settleShiftExchange(session,shift,result,resolved.effects,before.enemy,at);
   return result;

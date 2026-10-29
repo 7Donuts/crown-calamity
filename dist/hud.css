@@ -215,6 +215,7 @@ body, #app { font-size: 16px; }
 .intent.heavy { border-top-color: #967250; background: #392b21; }
 .intent strong { color: #f1d59f; font: 600 15px Georgia, 'Times New Roman', serif; }
 .intent small { color: #e0e2d4; font-size: 14px; line-height: 1.45; }
+.intent-badges { margin-left: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; flex: 0 0 auto; }
 
 .rune-console { position: relative; padding: 16px; border: 1px solid #796b49; background: linear-gradient(145deg,#1b2822,#141d18); box-shadow: 0 12px 30px #0004; }
 .rune-console::before, .rune-console::after { content: ""; position: absolute; pointer-events: none; width: 21px; height: 21px; border-color: #c6b176; border-style: solid; opacity: .8; }

@@ -99,21 +99,20 @@ function uiTestField(ui,id,value){
 }
 
 test('physical starter actions stay weapon-aware and do not require a focus',async()=>{
-  for(const [kit,expected,guardstrikeEnabled] of [['duelist','blade',false],['breaker','sword',true]]){
+  for(const [kit,expected,combined,label] of [['duelist','blade','sidestep','Sidestep'],['breaker','sword','guardstrike','Guardstrike']]){
     const save=G.createCharacter({name:kit,race:'Human',kit});
     const {ui}=await boot(save);
     assert.equal(ui.getState().gear.weapon,expected);
     assert.equal(G.hasFocus(ui.getState()),false);
-    assert.deepEqual(G.primaryActions(ui.getState()),{skill:'driving',combined:'guardstrike',skillLabel:'Driving Strike',combinedLabel:'Guardstrike'});
+    assert.deepEqual(G.primaryActions(ui.getState()),{skill:'driving',combined,skillLabel:'Driving Strike',combinedLabel:label});
     await ui.act('hunt:rats');
     const html=ui.getApp().innerHTML;
-    contains(html,'Driving Strike');contains(html,'Guardstrike');
-    contains(html,'data-action="combat:driving"');contains(html,'data-action="combat:guardstrike"');
-    const button=html.match(/<button class="action-btn[^"]*" data-action="combat:guardstrike"[^>]*>/)?.[0];
+    contains(html,'Driving Strike');contains(html,label);
+    contains(html,'data-action="combat:driving"');contains(html,`data-action="combat:${combined}"`);
+    const button=html.match(new RegExp(`<button class="action-btn[^"]*" data-action="combat:${combined}"[^>]*>`))?.[0];
     assert.ok(button,'combined physical action is rendered as an action button');
-    assert.equal(button.includes('disabled'),!guardstrikeEnabled,'Guardstrike is enabled only while a shield is equipped');
+    assert.equal(button.includes('disabled'),false,`${label} is enabled by the starter weapon and offhand`);
     assert.equal(html.includes('data-action="combat:cast"'),false,'the physical starter bar does not offer an unusable focus attack');
-    if(!guardstrikeEnabled)contains(button,'Equip a shield');
   }
 });
 

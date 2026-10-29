@@ -8,6 +8,8 @@ import {ITEMS,SLOTS,EXCHANGES,PREFIXES,SUFFIXES,resolveItem,effectiveItem,slotCh
 export {materialLabel,MATERIAL_LABELS,ITEMS,SLOTS,EXCHANGES,PREFIXES,SUFFIXES,resolveItem,effectiveItem,slotChoices,unequipReason,upgradePreview,affixPreview,buyPreview,sellPreview};
 import {ABILITIES,MASTERY_CHOICES,abilityCost,costLabel} from './abilities.js';
 export {ABILITIES,abilityCost,costLabel};
+import {TELEGRAPH,GUARD_ACTIONS,DAMAGING_ACTIONS,isShield,guardRate,sidestepEligible,strikeBonus,resolveHit,openingPercent,telegraphText,openingLabel} from './telegraph.js';
+export {TELEGRAPH,GUARD_ACTIONS,DAMAGING_ACTIONS,telegraphText,strikeBonus,resolveHit,openingLabel};
 import {PARTS_PER_LEVEL,LEVEL_CAP,xpNeeded,partForXP,progression,pointBudget,advanceXP,migrateLegacyProgression} from './progression.js';
 export {PARTS_PER_LEVEL,LEVEL_CAP,xpNeeded,progression,pointBudget};
 import {normalizeRecovery,restStatus as recoveryStatus,finishRest as completeRest,cancelRest as abandonRest,applyDeathPenalty,REST_DURATION_MS,WOUND_DURATION_MS,DEATH_COIN_CAP,DEATH_COIN_RATE} from './recovery.js';
@@ -94,45 +96,46 @@ export function attributePreview(s,key){
  return {before,after,changes:fields.map(field=>({field,before:before[field],after:after[field]}))};
 }
 export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
- const e=ENEMIES.find(x=>x.id===enemyId);if(!e||!['attack','cast','combo','disrupt','driving','guardstrike'].includes(key))return null;
+ const e=ENEMIES.find(x=>x.id===enemyId);if(!e||!['attack','cast','combo','disrupt','driving','guardstrike','sidestep'].includes(key))return null;
  const t=totals(s),w=effectiveItem(s,s.gear.weapon),f=s.fight?.enemy===enemyId?s.fight:null,i=f?intent(s):null;
- const channel=['cast','combo'].includes(key)?'arcane':'physical',power=w.channel==='spell'?t.spellPower:w.channel==='precision'?t.precisionPower:t.heavyPower,masteryKey=['cast','combo'].includes(key)?'arc':key==='guardstrike'?'driving':key,rank=s.mastery?.[masteryKey]?.rank||1;
+ const channel=['cast','combo'].includes(key)?'arcane':'physical',power=w.channel==='spell'?t.spellPower:w.channel==='precision'?t.precisionPower:t.heavyPower,masteryKey=['cast','combo'].includes(key)?'arc':['guardstrike','sidestep'].includes(key)?'driving':key,rank=s.mastery?.[masteryKey]?.rank||1;
  const accuracy=channel==='arcane'?t.spellAcc:t.physicalAcc;
- let coeff=key==='combo'?.85:key==='cast'?1.25:key==='disrupt'?.65+Math.max(0,rank-1)*.05:key==='driving'?1.15+Math.max(0,rank-1)*.05:key==='guardstrike'?.8+Math.max(0,rank-1)*.05:1;
+ let coeff=key==='combo'?.85:key==='cast'?1.25:key==='disrupt'?.65+Math.max(0,rank-1)*.05:key==='driving'?1.15+Math.max(0,rank-1)*.05:key==='guardstrike'?.8+Math.max(0,rank-1)*.05:key==='sidestep'?TELEGRAPH.sidestepCoefficient+Math.max(0,rank-1)*.05:1;
  if(key==='disrupt'&&s.mastery?.disrupt?.choice==='power')coeff*=1.15;if((key==='cast'||key==='combo')&&s.mastery?.arc?.choice==='power')coeff*=1.15;
  let raw=channel==='arcane'?(w.base+t.spellBase+.9*t.spellPower+4*rank)*coeff:(w.base+.9*power+4)*coeff;
  if(f?.charge&&channel==='arcane')raw*=1.1;
- if(f?.exposed)raw*=1+.15+.05*(s.mastery?.expose?.rank||1);
+ const bonus=strikeBonus({exposed:f?.exposed,exposeRank:s.mastery?.expose?.rank,opening:f?.opening});raw*=1+bonus.bonus;
  let defense=channel==='arcane'?e.ward:e.armor;
  if(i?.warded&&channel==='arcane')defense+=25;
  if(i?.guarded&&channel==='physical')raw*=.65;
  if(e.id==='hound'&&f?.streak>=3&&f.channel===channel)raw*=.85;
  if(e.id==='boss'&&f&&f.hp/e.hp<.3&&((f.round%3===0&&channel==='physical')||(f.round%3===1&&channel==='arcane')))raw*=1.2;
- const reduced=raw*(1-mitigation(defense,s.level)),solidHit=hitChance(accuracy,18+e.level*3);
+ const reduced=raw*(1-mitigation(defense,s.level)),solidHit=bonus.noGlance?1:hitChance(accuracy,18+e.level*3);
  const normal=Math.max(1,Math.floor(reduced)),critical=Math.max(1,Math.floor(reduced*t.critMultiplier)),glance=Math.max(1,Math.floor(reduced*.55));
  const available=channel!=='arcane'||hasFocus(s);
- return {channel,raw,defense,hitChance:solidHit,critChance:t.critChance,normal,critical,glance,
+ return {channel,raw,defense,opening:bonus.source==='opening',openingBonus:bonus.source==='opening'?bonus.bonus:0,noGlance:bonus.noGlance,hitChance:solidHit,critChance:t.critChance,normal,critical,glance,
  average:solidHit*((1-t.critChance)*normal+t.critChance*critical)+(1-solidHit)*glance,
- available:available&&(!['combo','guardstrike'].includes(key)||['shield','gateShield'].includes(s.gear.offhand)),live:!!f};
+ available:available&&(!['combo','guardstrike'].includes(key)||isShield(s.gear.offhand))&&(key!=='sidestep'||sidestepEligible(w.channel,s.gear.offhand)),live:!!f};
 }
 export function restore(s){if(s.fight||s.delve)return false;let t=totals(s);s.hp=t.hp;s.mp=t.mp;s.sp=t.sp;s.restReadyAt=0;return true;}
 export function restStatus(s,now=Date.now()){return recoveryStatus(s,now);}
 export function beginRest(s,now=Date.now()){const status=restStatus(s,now),t=totals(s);if(s.fight||s.delve||status.active||(s.hp>=t.hp&&s.mp>=t.mp&&s.sp>=t.sp))return false;s.restReadyAt=Math.max(now+REST_DURATION_MS,s.woundedUntil||0);return {readyAt:s.restReadyAt};}
 export function finishRest(s,now=Date.now()){return completeRest(s,now,totals(s));}
 export function cancelRest(s){return abandonRest(s);}
-export function startFight(s,id,source='hunt',now=Date.now()){if(s.fight||s.hp<=0||restStatus(s,now).active||restStatus(s,now).wounded)return false;const e=ENEMIES.find(x=>x.id===id);if(!e|| (source==='hunt'&&e.id==='boss'))return false;if(source==='hunt'&&e.level>s.level+2)return false;if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+3);}s.fight={enemy:id,hp:e.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false};if(source==='hunt')(s.settings??={}).lastHunt=id;s.last=null;s.log=[];if(!s.visited.includes(id))s.visited.push(id);return true;}
+export function startFight(s,id,source='hunt',now=Date.now()){if(s.fight||s.hp<=0||restStatus(s,now).active||restStatus(s,now).wounded)return false;const e=ENEMIES.find(x=>x.id===id);if(!e|| (source==='hunt'&&e.id==='boss'))return false;if(source==='hunt'&&e.level>s.level+2)return false;if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+3);}s.fight={enemy:id,hp:e.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,opening:false,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false};if(source==='hunt')(s.settings??={}).lastHunt=id;s.last=null;s.log=[];if(!s.visited.includes(id))s.visited.push(id);return true;}
 export function intent(s){const f=s.fight;if(!f)return null;const e=ENEMIES.find(x=>x.id===f.enemy),idx=f.round%e.pattern.length;let heavy=idx===e.heavy;let name=e.pattern[idx];if(e.id==='boss'&&f.hp/e.hp<.3){heavy=idx===2;name=heavy?'Emergency drain':idx===0?'Drum door open (armor down)':'Soap drawer open (ward down)';}return {name,heavy,interruptible:heavy,damage:Math.floor(e.damage*(heavy?2.15:e.id==='scavenger'&&idx===0?.5:1)),warded:e.id==='wisp'&&idx===0,guarded:e.id==='scavenger'&&idx===0};}
 export function hasFocus(s){return Object.values(s.gear).some(id=>effectiveItem(s,id)?.focus);}
 export function primaryActions(s){
  const weapon=effectiveItem(s,s.gear.weapon),equipped=new Set(s.equippedAbilities||[]),arcReady=equipped.has('arc')&&hasFocus(s);
  if(weapon?.channel==='spell'&&arcReady)return {skill:'cast',combined:'combo',skillLabel:'Arc Bolt',combinedLabel:'Wardcast'};
+ if(weapon?.channel!=='spell'&&equipped.has('driving')&&sidestepEligible(weapon?.channel,s.gear.offhand))return {skill:'driving',combined:'sidestep',skillLabel:'Driving Strike',combinedLabel:'Sidestep'};
  if(weapon?.channel!=='spell'&&equipped.has('driving'))return {skill:'driving',combined:'guardstrike',skillLabel:'Driving Strike',combinedLabel:'Guardstrike'};
  if(arcReady)return {skill:'cast',combined:'combo',skillLabel:'Arc Bolt',combinedLabel:'Wardcast'};
  return {skill:'attack',combined:'guard',skillLabel:'Attack',combinedLabel:'Hunker down'};
 }
 export const mainActionKeys=primaryActions;
-export function actionInfo(s,key){let f=s.fight;const cd=f?.cooldowns[key]||0,cost=(id,variant)=>{const c=abilityCost(id,s.mastery,variant);return {mp:c.mp,sp:c.sp,cost:costLabel(c)};};const defs={attack:{label:'Attack',cost:'Free',mp:0,sp:0,desc:'Strike with your equipped weapon.'},cast:{label:'Arc Bolt',...cost('arc'),ability:'arc',desc:'1.25× spell damage. Requires a focus.'},combo:{label:'Wardcast',...cost('arc','wardcast'),ability:'arc',desc:'0.85× spell damage and Guard in one exchange. Requires a focus and shield.'},guard:{label:'Hunker down',std:'Defend',cost:'Free',mp:0,sp:0,desc:'Reduce incoming damage by 35% and restore 2 Bounce (stamina) after the response. A useful Guard can charge Reservoir.'},recover:{label:'Shake it off',std:'Recover',cost:'One exchange',mp:0,sp:0,desc:`Restore ${RECOVER_MANA_RESTORE} Sparkle (mana) and 10 Bounce (stamina); recover ${MANA_REGEN_PER_EXCHANGE} additional Sparkle after your action. The enemy still responds.`},brace:{label:'Brace',...cost('brace'),ability:'brace',desc:'Guard and a barrier this exchange. 2-round cooldown.'},disrupt:{label:'Disrupt',...cost('disrupt'),ability:'disrupt',desc:'Weapon strike; interrupts a heavy wind-up on hit. 3-round cooldown.'},mend:{label:'Mend',...cost('mend'),ability:'mend',desc:'Restore health before the enemy acts. 2-round cooldown.'},driving:{label:'Driving Strike',...cost('driving'),ability:'driving',desc:'A committed 1.15× physical strike using equipped weapon power. No focus required.'},guardstrike:{label:'Guardstrike',...cost('driving','guardstrike'),ability:'driving',desc:'Deal 0.80× physical weapon damage and Guard in one exchange. Requires a shield.'},aegis:{label:'Aegis',...cost('aegis'),ability:'aegis',desc:'Raise a barrier for two enemy responses.'},expose:{label:'Expose',...cost('expose'),ability:'expose',desc:'Your next damaging action in the following exchange deals extra damage.'},withdraw:{label:'Go still',std:'Withdraw',cost:'Half enemy damage',mp:0,sp:0,desc:'Freeze until nobody is looking, then exit after one enemy response at half damage. Forfeit this encounter’s rewards.'},vent:{label:'Pop the lid',std:'Vent pressure',cost:'One exchange',mp:0,sp:0,desc:'Reduce The Spin Cycle’s pressure attacks by 30% for this fight.'}};
-const d={...defs[key]};if(!d.label)return null;if(d.mp===0&&key!=='recover')d.desc+=` Recover ${MANA_REGEN_PER_EXCHANGE} Sparkle (mana) after this accepted action.`;let unavailable=null;if(d.ability&&!s.equippedAbilities?.includes(d.ability))unavailable=(s.learnedAbilities||[]).includes(d.ability)?`${ABILITIES[d.ability].name} is not equipped.`:`${ABILITIES[d.ability].name} has not been learned.`;d.reason=!f?'Choose a hunt to begin.':unavailable?unavailable:s.mp<d.mp?'Not enough Sparkle (mana)':s.sp<d.sp?'Not enough Bounce (stamina)':cd>f.round?`Available in ${cd-f.round} exchange${cd-f.round===1?'':'s'}`:['cast','combo'].includes(key)&&!hasFocus(s)?'Equip a focus-tagged item':['combo','guardstrike'].includes(key)&&!['shield','gateShield'].includes(s.gear.offhand)?'Equip a shield':key==='vent'&&(f.enemy!=='boss'||f.hp>620*.65||f.vented)?'No lid to pop yet':key==='expose'&&f.exposed?'The enemy is already exposed.':null;return d;}
+export function actionInfo(s,key){let f=s.fight;const cd=f?.cooldowns[key]||0,cost=(id,variant)=>{const c=abilityCost(id,s.mastery,variant);return {mp:c.mp,sp:c.sp,cost:costLabel(c)};};const defs={attack:{label:'Attack',cost:'Free',mp:0,sp:0,desc:'Strike with your equipped weapon.'},cast:{label:'Arc Bolt',...cost('arc'),ability:'arc',desc:'1.25× spell damage. Requires a focus.'},combo:{label:'Wardcast',...cost('arc','wardcast'),ability:'arc',desc:`0.85× spell damage and Guard in one exchange. Requires a focus and shield. ${telegraphText.guardNote()}`},guard:{label:'Hunker down',std:'Defend',cost:'Free',mp:0,sp:0,desc:`${telegraphText.guardNote()} Restore 2 Bounce (stamina) after the response. A useful Guard can charge Reservoir.`},recover:{label:'Shake it off',std:'Recover',cost:'One exchange',mp:0,sp:0,desc:`Restore ${RECOVER_MANA_RESTORE} Sparkle (mana) and 10 Bounce (stamina); recover ${MANA_REGEN_PER_EXCHANGE} additional Sparkle after your action. The enemy still responds.`},brace:{label:'Brace',...cost('brace'),ability:'brace',desc:`Guard and a barrier this exchange. 2-round cooldown. ${telegraphText.guardNote()}`},disrupt:{label:'Disrupt',...cost('disrupt'),ability:'disrupt',desc:'Weapon strike; interrupts a heavy wind-up on hit. 3-round cooldown.'},mend:{label:'Mend',...cost('mend'),ability:'mend',desc:'Restore health before the enemy acts. 2-round cooldown.'},driving:{label:'Driving Strike',...cost('driving'),ability:'driving',desc:'A committed 1.15× physical strike using equipped weapon power. No focus required.'},guardstrike:{label:'Guardstrike',...cost('driving','guardstrike'),ability:'driving',desc:`Deal 0.80× physical weapon damage and Guard in one exchange. Requires a shield. ${telegraphText.guardNote()}`},sidestep:{label:'Sidestep',...cost('driving','sidestep'),ability:'driving',desc:`Deal 0.80× precision weapon damage and Guard in one exchange. Requires a precision weapon and no shield. ${telegraphText.guardNote()}`},aegis:{label:'Aegis',...cost('aegis'),ability:'aegis',desc:'Raise a barrier for two enemy responses.'},expose:{label:'Expose',...cost('expose'),ability:'expose',desc:'Your next damaging action in the following exchange deals extra damage.'},withdraw:{label:'Go still',std:'Withdraw',cost:'Half enemy damage',mp:0,sp:0,desc:'Freeze until nobody is looking, then exit after one enemy response at half damage. Forfeit this encounter’s rewards.'},vent:{label:'Pop the lid',std:'Vent pressure',cost:'One exchange',mp:0,sp:0,desc:'Reduce The Spin Cycle’s pressure attacks by 30% for this fight.'}};
+const d={...defs[key]};if(!d.label)return null;if(d.mp===0&&key!=='recover')d.desc+=` Recover ${MANA_REGEN_PER_EXCHANGE} Sparkle (mana) after this accepted action.`;let unavailable=null;if(d.ability&&!s.equippedAbilities?.includes(d.ability))unavailable=(s.learnedAbilities||[]).includes(d.ability)?`${ABILITIES[d.ability].name} is not equipped.`:`${ABILITIES[d.ability].name} has not been learned.`;d.reason=!f?'Choose a hunt to begin.':unavailable?unavailable:s.mp<d.mp?'Not enough Sparkle (mana)':s.sp<d.sp?'Not enough Bounce (stamina)':cd>f.round?`Available in ${cd-f.round} exchange${cd-f.round===1?'':'s'}`:['cast','combo'].includes(key)&&!hasFocus(s)?'Equip a focus-tagged item':['combo','guardstrike'].includes(key)&&!isShield(s.gear.offhand)?'Equip a shield':key==='sidestep'&&!sidestepEligible(effectiveItem(s,s.gear.weapon)?.channel,s.gear.offhand)?'Needs a precision weapon and no shield':key==='vent'&&(f.enemy!=='boss'||f.hp>620*.65||f.vented)?'No lid to pop yet':key==='expose'&&f.exposed?'The enemy is already exposed.':null;return d;}
 function addLog(s,text,kind='normal'){s.log.unshift({text,kind,round:s.fight?.round??0});s.log=s.log.slice(0,60);}
 export function journal(s,title,text,kind='story'){s.journal.unshift({title,text,kind});}
 function achievement(s,id,title,text,coins=0){if(s.achievements.some(a=>a.id===id))return;s.achievements.push({id,title,text});s.coins+=coins;journal(s,title,text,'achievement');addLog(s,`Merit badge earned: ${title}. ${text}`,'special');}
@@ -153,12 +156,12 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  const retryAfterMs=actionDelayRemaining(s,now);if(retryAfterMs)return {ok:false,reason:'Brief action delay. Tap again when ready.',retryAfterMs};
  s.nextActionAt=now+ACTION_DELAY_MS;
  const e=ENEMIES.find(x=>x.id===f.enemy),t=totals(s),i=intent(s),w=effectiveItem(s,s.gear.weapon),oldCharge=f.charge||0,profile=actionProfile(s,key,e.id);
- f.charge=0;s.mp-=info.mp;s.sp-=info.sp;
- let guarded=['guard','brace','combo','guardstrike'].includes(key),interrupted=false,damage=0,channel=null,critical=false,healed=0;
- if(['attack','disrupt','driving','guardstrike','cast','combo'].includes(key)){
+ f.charge=0;const opening=f.opening===true;f.opening=false;s.mp-=info.mp;s.sp-=info.sp;
+ let guarded=GUARD_ACTIONS.includes(key),interrupted=false,damage=0,channel=null,critical=false,healed=0;
+ if(DAMAGING_ACTIONS.includes(key)){
   channel=profile.channel;const glance=rng()>profile.hitChance;critical=!glance&&rng()<t.critChance;damage=glance?profile.glance:critical?profile.critical:profile.normal;
-  f.hp=Math.max(0,f.hp-damage);addLog(s,`${info.label}${critical?' · critical':''}${glance?' · glancing hit':''}: ${damage} ${channel} damage${oldCharge&&channel==='arcane'?' · Reservoir +10%':''}${f.exposed?' · exposed':''}.`,'attack');
-  if(damage>0){const mark=key==='driving'||key==='guardstrike'?'driving':channel==='arcane'?'arc':null;if(mark&&!f.used.includes(mark))f.used.push(mark);if(f.exposed&&!f.used.includes('expose'))f.used.push('expose');if(f.exposed){f.exposed=false;f.exposedRound=null;}}
+  f.hp=Math.max(0,f.hp-damage);addLog(s,`${info.label}${critical?' · critical':''}${glance?' · glancing hit':''}: ${damage} ${channel} damage${oldCharge&&channel==='arcane'?' · Reservoir +10%':''}${f.exposed?' · exposed':''}${opening?profile.opening?` · Opening ${openingPercent()}`:' · Opening (no glance)':''}.`,'attack');
+  if(damage>0){const mark=['driving','guardstrike','sidestep'].includes(key)?'driving':channel==='arcane'?'arc':null;if(mark&&!f.used.includes(mark))f.used.push(mark);if(f.exposed&&!profile.opening&&!f.used.includes('expose'))f.used.push('expose');if(f.exposed){f.exposed=false;f.exposedRound=null;}}
   if(key==='disrupt'&&i.interruptible&&!glance&&f.interruptImmune<=f.round){if(!f.used.includes('disrupt'))f.used.push('disrupt');interrupted=true;f.interruptImmune=f.round+(s.mastery?.disrupt?.choice==='immunity'?3:4);addLog(s,`${i.name} interrupted. The enemy loses its response.`,'special');if(e.id==='boss')achievement(s,'maintenance','Percussive Maintenance','“The approved shutdown procedure was unavailable. Apparently you were available.”',20);}
   if(f.channel===channel)f.streak++;else{f.channel=channel;f.streak=1;}
  }else if(key==='mend'){
@@ -174,6 +177,7 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  }else{f.streak=0;addLog(s,key==='withdraw'?'You go very still and look for a safe way out.':'You hunker down.','defend');}
  const actualManaRegenerated=info.mp===0?Math.min(MANA_REGEN_PER_EXCHANGE,Math.max(0,t.mp-s.mp)):0;
  if(actualManaRegenerated>0){s.mp+=actualManaRegenerated;addLog(s,`Caught your breath · +${actualManaRegenerated} Sparkle (mana).`,'heal');}
+ if(opening&&!DAMAGING_ACTIONS.includes(key))addLog(s,'Opening closed unused. It only lasts for one exchange and needs a damaging action.','special');
  if(key==='brace'){
   const extra=s.mastery?.brace?.choice==='barrier'?15:0,braceBarrier=Math.min(Math.floor(t.hp*.3),20+5*((s.mastery?.brace?.rank||1)-1)+extra);
   if(braceBarrier>f.barrier){f.barrier=braceBarrier;f.barrierTurns=1;}
@@ -181,19 +185,20 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  }
  if(key==='disrupt')f.cooldowns.disrupt=f.round+4;
  if(key==='mend')f.cooldowns.mend=f.round+(s.mastery?.mend?.choice==='recovery'?2:3);
- s.totalExchanges++;if(f.hp<=0){victory(s,e,rng);return {ok:true,victory:true,damage,critical,incoming:0,heavy:false,absorbed:0,prevented:0,healed,manaRegenerated:actualManaRegenerated};}
+ s.totalExchanges++;if(f.hp<=0){victory(s,e,rng);return {ok:true,victory:true,damage,critical,incoming:0,heavy:false,absorbed:0,prevented:0,healed,manaRegenerated:actualManaRegenerated,openingUsed:opening};}
  const enemyAcc=25+4*e.level,playerEvasion=t.evasion,enemyHit=clamp(.85+.3*(enemyAcc-playerEvasion)/(enemyAcc+playerEvasion+40),.65,.98),enemyGlance=!interrupted&&rng()>enemyHit;
  let incoming=interrupted?0:Math.floor(i.damage*(enemyGlance?.55:1)*(1-clamp((e.id==='wisp'?t.ward:t.armor)/((e.id==='wisp'?t.ward:t.armor)+100+8*e.level),0,.65))*(f.vented&&e.id==='boss'?.7:1));
- let prevented=guarded?Math.ceil(incoming*.35):0;incoming-=prevented;
+ const declared=i.damage*(enemyGlance?.55:1)*(f.vented&&e.id==='boss'?.7:1),afterArmor=incoming,hitInput={declared,afterArmor,guardRate:guarded?guardRate(i.heavy):0,withdraw:key==='withdraw'};
+ let hit=resolveHit({...hitInput,barrier:f.barrier}),prevented=hit.prevented;
  if(guarded&&prevented>=20){s.usefulGuards=(s.usefulGuards||0)+1;if(i.heavy)s.guardCount++;if(s.passive==='reservoir'){f.charge=1;if(!s.discoveries.includes('reservoir')){s.discoveries.push('reservoir');journal(s,'Interaction discovered · Stored Pressure','A useful Guard stores one charge. Your next Arc Bolt or Wardcast gains 10% raw spell damage. One charge, expires after the next exchange. “The shield is not an approved charging station. Procurement has been informed.”','discovery');}addLog(s,'Reservoir charged. Next spell +10% (expires next exchange).','special');}if(s.gear.relic==='seal'&&!f.sealUsed){f.barrier=Math.max(f.barrier,Math.min(Math.floor(t.hp*.3),15));f.barrierTurns=Math.max(f.barrierTurns,1);f.sealUsed=true;addLog(s,'Superintendent’s Seal grants 15 barrier.','defend');}if(s.guardCount>=3)achievement(s,'citizen','Load-Bearing Citizen','“You have discovered the tactical applications of remaining upright. Engineering has been informed.”',15);}
- if(key==='withdraw')incoming=Math.floor(incoming*.5);
- const absorbed=Math.min(incoming,f.barrier);f.barrier-=absorbed;incoming-=absorbed;
+ hit=resolveHit({...hitInput,barrier:f.barrier});prevented=hit.prevented;incoming=hit.incoming;const absorbed=hit.absorbed;f.barrier-=absorbed;
  if(absorbed>0){if(key==='brace'&&!f.used.includes('brace'))f.used.push('brace');if(key==='aegis'&&!f.used.includes('aegis'))f.used.push('aegis');}
  s.hp=Math.max(0,s.hp-incoming);f.healDeficit=(f.healDeficit||0)+incoming;if(!interrupted)addLog(s,`${i.name}${enemyGlance?' · glancing hit':''}: ${incoming} damage${prevented?` · ${prevented} guarded`:''}${absorbed?` · ${absorbed} absorbed`:''}.`,'enemy');
+ let openingGranted=false;if(guarded&&i.heavy&&!interrupted&&s.hp>0){f.opening=true;openingGranted=true;addLog(s,`Opening: ${i.name} overreached. Your next damaging action cannot glance and deals ${openingPercent()} damage.`,'special');}
  if(key==='guard')s.sp=Math.min(t.sp,s.sp+2);if(f.barrierTurns>0&&--f.barrierTurns===0)f.barrier=0;if(f.exposed&&(f.exposedRound??f.round)<=f.round){f.exposed=false;f.exposedRound=null;}f.round++;
  if(s.hp<=0){s.fight=null;s.delve=null;const penalty=applyDeathPenalty(s,now);s.last={type:'defeat',enemy:e.id,...penalty};journal(s,'Back on the shelf',`A kind paw put you back on the shelf. ${penalty.coinsLost} coins covered the call-out. Your levels and gear are safe. Fluff up at the Quay (Rest) once you have finished drying off.`);return {ok:true,defeat:true,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,manaRegenerated:actualManaRegenerated,...penalty};}
  if(key==='withdraw'){s.fight=null;s.last={type:'withdraw',enemy:e.id};if(s.delve)s.delve=null;return {ok:true,withdraw:true,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,manaRegenerated:actualManaRegenerated};}
- return {ok:true,damage,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,interrupted,manaRegenerated:actualManaRegenerated};
+ return {ok:true,damage,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,interrupted,manaRegenerated:actualManaRegenerated,opening:openingGranted,openingUsed:opening&&DAMAGING_ACTIONS.includes(key)};
 }
 export function allocate(s,k){if(s.fight||s.delve||s.points<1||!Object.hasOwn(ATTRS,k))return false;s.stats[k]++;s.points--;capResources(s);return true;}
 export function capResources(s){const t=totals(s);s.hp=Math.min(s.hp,t.hp);s.mp=Math.min(s.mp,t.mp);s.sp=Math.min(s.sp,t.sp);}
@@ -252,7 +257,7 @@ export function loadSave(raw){
   normalizeGearState(out);normalizeRelics(out);normalizeRecovery(out);
   const ancestry=Object.hasOwn(RACES,out.raceId)?RACES[out.raceId]:null;out.raceId=ancestry?.id||null;out.appearance=normalizeAppearance(ancestry?.id||resolveRace(out.race)?.id||'quayfolk',out.appearance);if(ancestry)out.race=ancestry.name;
   const resourceCaps=totals(out);out.hp=Math.min(out.hp,resourceCaps.hp);out.mp=Math.min(out.mp,resourceCaps.mp);out.sp=Math.min(out.sp,resourceCaps.sp);if(!out.gear.weapon||!ITEMS[out.gear.weapon])return null;
-  if(out.fight){out.fight.barrier??=0;out.fight.barrierTurns??=0;out.fight.healDeficit??=0;out.fight.exposed??=false;}
+  if(out.fight){out.fight.opening=out.fight.opening===true;out.fight.barrier??=0;out.fight.barrierTurns??=0;out.fight.healDeficit??=0;out.fight.exposed??=false;}
   if(!s.story)delete out.story;normalizeStory(out,{legacy:!s.story});
   return out;
  }catch{return null;}

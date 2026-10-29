@@ -6,7 +6,7 @@ import { ABILITIES, MASTERY_CHOICES, abilityCost, costLabel } from '../dist/abil
 // Action key -> ability card id and cost variant. The Abilities tab renders costLabel(abilityCost(id, mastery)).
 const ACTIONS = [
   ['cast', 'arc'], ['combo', 'arc', 'wardcast'], ['brace', 'brace'], ['disrupt', 'disrupt'], ['mend', 'mend'],
-  ['driving', 'driving'], ['guardstrike', 'driving', 'guardstrike'], ['aegis', 'aegis'], ['expose', 'expose'],
+  ['driving', 'driving'], ['guardstrike', 'driving', 'guardstrike'], ['sidestep', 'driving', 'sidestep'], ['aegis', 'aegis'], ['expose', 'expose'],
 ];
 
 function ready(key, ability, mastery) {
@@ -14,6 +14,7 @@ function ready(key, ability, mastery) {
   s.learnedAbilities = ['arc', 'prepared', ability].filter((x, i, a) => a.indexOf(x) === i);
   s.equippedAbilities = [ability];
   s.gear.weapon = 'rod'; s.gear.offhand = 'shield';
+  if (key === 'sidestep') { s.gear.weapon = 'blade'; s.gear.offhand = 'charm'; }
   if (mastery) s.mastery = { arc: { rank: 3, marks: 0, choice: 'economy' } };
   assert.ok(G.startFight(s, 'rats'));
   return s;
