@@ -5,15 +5,17 @@ import vm from 'node:vm';
 import * as G from '../dist/engine.js';
 import * as C from '../dist/characters.js';
 import * as StoryUI from '../dist/story-ui.js';
+import * as MarketUI from '../dist/market-ui.js';
+import {MENU_ICONS} from '../dist/menu-icons.js';
 
 async function bootWithSave(save) {
   const elements=new Map(),storage=new Map([['crown-calamity-v1',JSON.stringify(save)]]);
   const element=()=>({innerHTML:'',textContent:'',value:'',files:[],open:false,style:{setProperty(){}},classList:{add(){},remove(){},toggle(){}},addEventListener(){},querySelector(){return element();},querySelectorAll(){return [];},showModal(){this.open=true;},close(){this.open=false;},focus(){},click(){},getBoundingClientRect(){return {left:0,right:0,top:0,bottom:0};}});
   const getElement=selector=>{if(!elements.has(selector))elements.set(selector,element());return elements.get(selector);};
   const document={querySelector:getElement,createElement:element,addEventListener(){}};
-  const context={__GAME_ENGINE__:G,__CHARACTER_MODULE__:C,__STORY_UI__:StoryUI,document,localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},window:{scrollTo(){}},console,Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},structuredClone};
+  const context={__GAME_ENGINE__:G,__CHARACTER_MODULE__:C,__STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS,document,localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},window:{scrollTo(){}},console,Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},structuredClone};
   const source=await readFile(new URL('../dist/app.js',import.meta.url),'utf8');
-  const transformed=source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;');
+  const transformed=source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;');
   vm.runInNewContext(transformed+`\nglobalThis.__uiTest={act,getState:()=>state,getApp:()=>$('#app'),getModal:()=>$('#modal'),getToast:()=>$('#toast')};`,context,{filename:'dist/app.js'});
   return {ui:context.__uiTest,storage};
 }
@@ -21,11 +23,63 @@ async function bootWithSave(save) {
 const contains=(html,text,where=text)=>assert.equal(html.includes(text),true,where);
 const noMissing=html=>assert.equal(/\b(?:undefined|NaN)\b/.test(html),false,'shop rendering has no missing values');
 
+test('separate vendor menus compare through an overlay and purchased stock disappears without equipping',async()=>{
+  const save=G.createCharacter({name:'Nell',kit:'caster'});
+  const {ui}=await bootWithSave(save);
+  await ui.act('nav:market');
+  contains(ui.getApp().innerHTML,'Weaponsmith');
+  contains(ui.getApp().innerHTML,'data-action="vendor:armorer"');
+  contains(ui.getApp().innerHTML,'data-action="vendor:curio"');
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="rod"|Inspector’s Rod|side-column|EQUIPPED BUILD/,'Buy only displays vendor stock');
+  contains(ui.getApp().innerHTML,'data-action="market-compare:sword"');
+  const before=structuredClone(ui.getState());
+  await ui.act('market-compare:sword');
+  assert.equal(ui.getModal().open,true);
+  contains(ui.getModal().innerHTML,'Inspector’s Rod');
+  contains(ui.getModal().innerHTML,'Canal-Iron Sword');
+  contains(ui.getModal().innerHTML,'YOUR GEAR');contains(ui.getModal().innerHTML,'VENDOR ITEM');
+  assert.deepEqual(ui.getState(),before,'comparison changes neither equipment nor money');
+  await ui.act('buy-preview:sword');
+  assert.deepEqual(ui.getState(),before,'review does not spend');
+  await ui.act('buy-confirm:sword');
+  assert.equal(ui.getState().coins,2);
+  assert.equal(ui.getState().gear.weapon,'rod');
+  assert.ok(ui.getState().bag.includes('sword'));
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="sword"/,'owned gear disappears from Buy');
+  await ui.act('shop-tab:sell');
+  contains(ui.getApp().innerHTML,'data-stock-id="sword"');
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="rod"/,'equipped gear stays out of Sell');
+  await ui.act('sell-preview:sword');await ui.act('sell-confirm:sword');
+  await ui.act('shop-tab:buy');
+  contains(ui.getApp().innerHTML,'data-stock-id="sword"');
+  await ui.act('vendor:armorer');
+  contains(ui.getApp().innerHTML,'data-stock-id="workgloves"');
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="sword"/);
+  noMissing(ui.getApp().innerHTML);
+});
+
+test('mobile has six main destinations and Records retains the Field Guide and save tools',async()=>{
+  const {ui}=await bootWithSave(G.fresh());
+  const mobile=ui.getApp().innerHTML.match(/<nav class="mobile-nav"[\s\S]*?<\/nav>/)?.[0];
+  assert.ok(mobile);
+  assert.equal([...mobile.matchAll(/data-action="nav:/g)].length,6);
+  assert.match(mobile,/nav:market/);assert.match(mobile,/Records/);
+  await ui.act('nav:journal');
+  assert.match(ui.getApp().innerHTML,/<div class="tabs records-tabs"[\s\S]*?data-action="nav:guide"/);
+  await ui.act('nav:guide');
+  contains(ui.getApp().innerHTML,'Save format v4');
+  contains(ui.getApp().innerHTML,'data-action="export"');
+  contains(ui.getApp().innerHTML,'data-action="import"');
+  contains(ui.getApp().innerHTML,'class="guide-section guide-topic"');
+  noMissing(ui.getApp().innerHTML);
+});
+
 test('outfitter purchase, workbench upgrades, and resale reviews remove modifications without a coin loop',async()=>{
   const save=G.fresh();save.coins=120;
   const {ui,storage}=await bootWithSave(save),initialCoins=save.coins;
   await ui.act('nav:bag');await ui.act('bag-tab:shop');
-  contains(ui.getApp().innerHTML,'Quay outfitter');
+  contains(ui.getApp().innerHTML,'Quay market');
+  await ui.act('vendor:armorer');
   contains(ui.getApp().innerHTML,'data-action="shop-tab:sell"');
   noMissing(ui.getApp().innerHTML);
 
@@ -80,8 +134,8 @@ test('outfitter explains why equipped gear and the universal Attack weapon canno
   const save=G.fresh();save.coins=100;
   const {ui}=await bootWithSave(save);
   await ui.act('nav:bag');await ui.act('bag-tab:shop');await ui.act('shop-tab:sell');
-  contains(ui.getApp().innerHTML,'Unequip on Gear page');
-  contains(ui.getApp().innerHTML,'Unequip this item before selling it.');
+  contains(ui.getApp().innerHTML,'Equipped gear stays with you');
+  assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="rod"/,'equipped weapon is omitted from Sell');
   const before=structuredClone(ui.getState());
   await ui.act('sell-preview:rod');
   contains(ui.getModal().innerHTML,'Unequip this item before selling it.');

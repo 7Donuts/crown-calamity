@@ -5,6 +5,8 @@ import vm from 'node:vm';
 import * as G from '../dist/engine.js';
 import * as C from '../dist/characters.js';
 import * as StoryUI from '../dist/story-ui.js';
+import * as MarketUI from '../dist/market-ui.js';
+import {MENU_ICONS} from '../dist/menu-icons.js';
 
 function bootApp(initialSave=G.fresh()) {
   const elements = new Map();
@@ -25,7 +27,7 @@ function bootApp(initialSave=G.fresh()) {
   };
   const storage = new Map(initialSave?[["crown-calamity-v1",JSON.stringify(initialSave)]]:[]);
   const context = {
-    __GAME_ENGINE__:G, __CHARACTER_MODULE__:C, __STORY_UI__:StoryUI, document,
+    __GAME_ENGINE__:G, __CHARACTER_MODULE__:C, __STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, document,
     localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},
     window:{scrollTo(){}}, console,
     Blob, URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},
@@ -34,7 +36,7 @@ function bootApp(initialSave=G.fresh()) {
   };
   const src = readFile(new URL('../dist/app.js',import.meta.url),'utf8');
   return src.then(source=>{
-    const transformed = source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;');
+    const transformed = source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;');
     const testExports = `\nglobalThis.__uiTest={act,render,getState:()=>state,getRoster:()=>roster,setState:v=>{state=v;},setView:v=>{view=v;},getView:()=>view,getModal:()=>$('#modal'),getApp:()=>$('#app'),getToast:()=>$('#toast')};`;
     vm.runInNewContext(transformed+testExports,context,{filename:'dist/app.js'});
     return {ui:context.__uiTest,storage,elements,getElement};
@@ -55,7 +57,7 @@ test('the shared Rest control works from town screens and cannot heal during an 
     assert.ok(markup,'every campaign screen renders the shared recovery area');
     return markup;
   };
-  for(const view of ['hunt','character','bag','story','journal','guide']){
+  for(const view of ['hunt','character','bag','market','story','journal','guide']){
     s.hp=1;s.mp=0;s.sp=0;
     const before={xp:s.xp,coins:s.coins,exchanges:s.totalExchanges,points:s.points};
     await ui.act('nav:'+view);
@@ -127,9 +129,9 @@ test('the actual UI action handlers carry a rescue build through character, gear
   noBrokenText(ui.getModal().innerHTML,'equipment comparison');
   await ui.act('close');
   await ui.act('bag-tab:shop');
-  matches(ui.getApp().innerHTML,/Quay outfitter/);
+  matches(ui.getApp().innerHTML,/Quay market/);
   ui.getState().coins=100;
-  await ui.act('buy-preview:penny');
+  await ui.act('vendor:curio');await ui.act('buy-preview:penny');
   matches(ui.getModal().innerHTML,/FULL PRICE/);
   await ui.act('buy-confirm:penny');
   await ui.act('compare:penny');
@@ -183,13 +185,15 @@ test('the actual UI action handlers carry a rescue build through character, gear
   noBrokenText(ui.getApp().innerHTML,'save management screen');
 });
 
-test('rendered character and satchel retain every slot, including the second accessory and two-handed reservation', async () => {
+test('the character gear page retains every slot while Satchel keeps spare equipment separate', async () => {
   const {ui}=await bootApp();
   const s=ui.getState(); s.level=10;
   for (const id of ['cap','grips','boots','penny','lantern','signet','pike']) s.bag.push(id);
   for (const [id,slot] of [['cap','head'],['grips','hands'],['boots','feet'],['penny','accessory'],['lantern','accessory2'],['signet','relic']]) assert.equal(G.equip(s,id,slot),true);
   await ui.act('nav:bag');
   await ui.act('bag-tab:gear');
+  assert.doesNotMatch(ui.getApp().innerHTML,/class="gear-diagram"/,'Satchel does not repeat the equipped gear diagram');
+  await ui.act('open-gear');
   noBrokenText(ui.getApp().innerHTML,'nine slot equipment screen');
   for (const label of ['Weapon','Offhand','Head','Body','Hands','Feet','Accessory','Second accessory','Relic']) assert.ok(ui.getApp().innerHTML.includes(label),label);
   assert.equal(G.equip(s,'pike','weapon'),true);
@@ -223,7 +227,7 @@ test('first-run wizard creates a local character and the roster preserves progre
   assert.ok(storage.has('crown-calamity-roster-v1'));
 
   // Add a concrete change before switching, so the test proves the old adventure is saved.
-  await ui.act('nav:bag');await ui.act('bag-tab:shop');await ui.act('buy-preview:workgloves');await ui.act('buy-confirm:workgloves');
+  await ui.act('nav:bag');await ui.act('bag-tab:shop');await ui.act('vendor:armorer');await ui.act('buy-preview:workgloves');await ui.act('buy-confirm:workgloves');
   assert.equal(ui.getState().coins,4);assert.ok(ui.getState().bag.includes('workgloves'));
   const firstId=ui.getRoster().activeId;
   await ui.act('nav:character');await ui.act('character-manager');

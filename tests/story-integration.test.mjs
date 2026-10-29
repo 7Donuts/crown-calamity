@@ -5,15 +5,17 @@ import vm from 'node:vm';
 import * as G from '../dist/engine.js';
 import * as C from '../dist/characters.js';
 import * as StoryUI from '../dist/story-ui.js';
+import * as MarketUI from '../dist/market-ui.js';
+import {MENU_ICONS} from '../dist/menu-icons.js';
 
 async function boot(save){
   const elements=new Map(),storage=new Map([['crown-calamity-v1',JSON.stringify(save)]]);
   const element=()=>({innerHTML:'',textContent:'',value:'',files:[],open:false,style:{setProperty(){}},classList:{add(){},remove(){},toggle(){}},addEventListener(){},querySelector(){return element();},querySelectorAll(){return [];},showModal(){this.open=true;},close(){this.open=false;},focus(){},click(){},getBoundingClientRect(){return {left:0,right:0,top:0,bottom:0};}});
   const getElement=selector=>{if(!elements.has(selector))elements.set(selector,element());return elements.get(selector);};
   const document={querySelector:getElement,createElement:element,addEventListener(){}};
-  const context={__GAME_ENGINE__:G,__CHARACTER_MODULE__:C,__STORY_UI__:StoryUI,document,localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},window:{scrollTo(){}},console,Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},structuredClone};
+  const context={__GAME_ENGINE__:G,__CHARACTER_MODULE__:C,__STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS,document,localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},window:{scrollTo(){}},console,Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},structuredClone};
   let source=await readFile(new URL('../dist/app.js',import.meta.url),'utf8');
-  source=source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;');
+  source=source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;');
   vm.runInNewContext(source+`\nglobalThis.__uiTest={act,render,getState:()=>state,getRoster:()=>roster,getApp:()=>$('#app'),getModal:()=>$('#modal'),getToast:()=>$('#toast'),setState:v=>{state=v;}};`,context,{filename:'dist/app.js'});
   context.__uiTest.getElement=getElement;
   return {ui:context.__uiTest,storage,getElement};

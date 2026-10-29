@@ -1,0 +1,144 @@
+/* Supplemental menu and dialog polish; combat HUD rules remain in hud.css. */
+#app { --menu-ink: #f5f4e9; --menu-muted: #c4cdbd; --menu-gold: #c5aa78; --menu-teal: #80aba7; }
+#app :is(.content,.main-column,.side-column,.panel,.item-card,.ability-card,.journal-entry,.guide-section),
+#modal :is(.modal-head,.modal-body,.compare>div,.character-list-row) { min-width: 0; }
+#app :is(.main-column,.side-column) { overflow-wrap: anywhere; }
+#app :is(.tabs) { gap: clamp(12px,2vw,26px); flex-wrap: wrap; row-gap: 0; }
+#app :is(.tabs button) { min-height: 48px; font-size: 14px; padding-inline: 3px; white-space: normal; }
+#app :is(.tabs .icon,.menu-icon) { width: 18px; height: 18px; flex: 0 0 18px; }
+.menu-icon { display: inline-block; width: 18px; height: 18px; flex: 0 0 18px; vertical-align: middle; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; color: var(--menu-teal,#80aba7); }
+#app :is(.tabs button.active .menu-icon,.nav-link.active .menu-icon) { color: var(--menu-gold,#c5aa78); }
+#app :is(.bag-tabs,.shop-mode-tabs,.sheet-tabs) { flex-wrap: wrap; gap: 4px 14px; }
+#app :is(.bag-tabs button,.shop-mode-tabs button,.sheet-tabs button) { min-height: 48px; }
+#app :is(.panel) { padding: clamp(15px,2vw,21px); }
+#app :is(.panel-label) { gap: 10px; flex-wrap: wrap; line-height: 1.45; }
+#app :is(.item-grid) { grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); gap: 12px; }
+#app :is(.item-card) { padding: 16px; }
+#app :is(.item-card h3,.ability-card h3) { overflow-wrap: anywhere; }
+#app :is(.item-card p,.item-card small,.ability-card p,.ability-card small,.journal-entry p,.guide-section p,.guide-section li) { font-size: max(12px,1em); line-height: 1.55; }
+#app :is(.item-card button,.ability-card button,.workbench-actions button,.character-header-actions button) { min-height: 48px; }
+#app :is(.attributes) { gap: 8px; }
+#app :is(.attribute) { min-width: 0; align-items: center; }
+#app :is(.attribute-description) { min-width: 0; overflow-wrap: anywhere; }
+#app :is(.story-columns) { gap: 14px; }
+#app :is(.story-contract) { padding: clamp(14px,2vw,21px); }
+#app :is(.story-contract h3) { font-size: clamp(19px,2vw,25px); }
+#app :is(.story-objectives li) { align-items: baseline; gap: 8px; }
+#app :is(.story-objectives li>span) { min-width: 0; overflow-wrap: anywhere; }
+#app :is(.story-objectives strong) { flex: 0 0 auto; }
+#app :is(.story-buttons) { align-items: stretch; }
+#app :is(.story-buttons>div) { min-width: min(100%,210px); flex: 1 1 210px; }
+#app :is(.story-buttons button) { width: 100%; min-height: 48px; white-space: normal; }
+#app :is(.character-header-actions,.character-header) { flex-wrap: wrap; }
+#app :is(.journal-entry h3,.guide-section h3) { overflow-wrap: anywhere; }
+#app :is(.save-controls) { flex-wrap: wrap; }
+#app :is(.save-controls button) { min-height: 48px; }
+#app :is(button,.text-button,a[role="button"]) { line-height: 1.35; }
+#app :is(.text-button) { min-height: 48px; }
+#modal { width: min(720px,calc(100vw - 24px)); max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px - env(safe-area-inset-top)); margin: auto; overflow: hidden; }
+#modal[open] { display: flex; flex-direction: column; }
+#modal .modal-head { position: relative; top: auto; z-index: 1; display: flex; flex: 0 0 auto; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px 20px 0; background: #202b23; }
+#modal .modal-head>div { min-width: 0; }
+#modal .modal-head h2 { overflow-wrap: anywhere; }
+#modal .modal-head .close { flex: 0 0 48px; width: 48px; min-height: 48px; padding: 8px; font-size: 24px; }
+#modal .modal-body { flex: 1 1 auto; min-height: 0; max-height: none; overflow-y: auto; overscroll-behavior: contain; padding: 16px 20px 20px; }
+#modal .compare { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; align-items: stretch; }
+#modal .compare>div { padding: 12px; }
+#modal .compare h3 { overflow-wrap: anywhere; }
+#modal .compare p { font-size: 14px; line-height: 1.55; }
+#modal .compare :is(.stat-row,.compare-stat) { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: baseline; }
+#modal .modal-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#modal .modal-actions button { flex: 1 1 180px; min-width: 0; min-height: 48px; white-space: normal; }
+#modal .modal-actions button, #modal .comparison-slots button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+#modal :is(.affix-options,.character-list,.target-slot-choices) { min-width: 0; }
+#modal .affix-option { width: 100%; min-height: 48px; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+#modal :is(input,select,textarea) { max-width: 100%; min-height: 48px; }
+@media (max-width: 740px) {
+  #app :is(.story-columns) { grid-template-columns: minmax(0,1fr); }
+  #app :is(.story-chapter-progress) { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  #app :is(.inventory-summary) { align-items: flex-start; flex-wrap: wrap; gap: 6px 12px; }
+  #app :is(.workbench-items,.workbench-section) { min-width: 0; }
+  #app :is(.ability-grid) { grid-template-columns: repeat(auto-fit,minmax(min(100%,230px),1fr)); }
+  #modal { width: calc(100vw - 16px); max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px - env(safe-area-inset-top)); }
+  #modal .modal-head { padding: 14px 14px 0; }
+  #modal .modal-body { max-height: none; padding: 12px 14px 16px; }
+  #modal .compare { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+  #modal .compare>div { padding: 9px 7px; }
+  #modal .compare h3 { font-size: 15px; }
+  #modal .compare p { font-size: 12px; overflow-wrap: anywhere; }
+  #modal .compare .eyebrow { font-size: 12px; letter-spacing: .08em; }
+  #modal .modal-actions button { flex-basis: 100%; }
+}
+@media (max-width: 370px) {
+  #app :is(.story-objectives li) { flex-wrap: wrap; }
+  #app :is(.story-objectives strong) { margin-left: 22px; }
+  #modal .modal-head { gap: 6px; }
+}
+#app .page:not(.in-combat) { font-size: 15px; }
+#app .page:not(.in-combat) :is(.panel p,.item-card p,.ability-card p,.journal-entry p,.guide-section p,.guide-section li,.story-hint,.story-objectives li) { font-size: max(12px,1em); }
+#app .page:not(.in-combat) :is(.tiny,.muted.tiny,.panel-label,.inventory-summary) { font-size: max(12px,1em); }
+
+/* Market is a dedicated view, separate from the Satchel inventory. */
+#app .market-page, #app .vendor-header, #app .vendor-stock, #app .vendor-card,
+#app .vendor-actions { min-width: 0; }
+#app .market-page { font-size: 15px; }
+#app .guide-tools { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); gap: 12px; align-items: start; }
+#app .guide-tools .panel { margin-bottom: 0; }
+#app .guide-tools { margin-bottom: 18px; }
+#app .guide-topic { border-bottom: 1px solid #43503e; padding: 0 0 12px; margin-bottom: 12px; }
+#app .guide-topic > summary, #app .bench-group > summary { display: list-item; cursor: pointer; min-height: 48px; padding: 12px 8px; color: #eedbb0; font-size: 18px; line-height: 1.5; }
+#app .guide-topic > summary .icon, #app .bench-group > summary .icon { margin-right: 8px; vertical-align: middle; }
+#app .bench-group { border: 1px solid #4d5b45; padding: 4px 12px; margin-bottom: 12px; background: #17231c; }
+#app .bench-group > summary small { display: block; margin-left: 28px; color: #c5d0bd; font: 13px/1.5 system-ui,sans-serif; }
+#app .guide-topic p, #app .guide-topic li { font-size: 15px; }
+#app .tabs button, #app .vendor-actions button, #app .save-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+#app .guide-tools button .icon, #app .lab-launch-link .icon { flex-shrink: 0; margin-right: 7px; }
+#app .satchel-page .item-lore { margin-bottom: 12px; }
+#app .vendor-tabs { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+#app .vendor-tabs button { min-height: 48px; white-space: normal; }
+#app .vendor-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+#app .vendor-stock { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,270px),1fr)); gap: 12px; }
+#app .vendor-card { padding: 16px; }
+#app .vendor-card-heading { display: flex; align-items: center; gap: 12px; min-width: 0; margin-bottom: 10px; }
+#app .vendor-card-heading > div { min-width: 0; }
+#app .vendor-card-heading h3 { margin: 0 0 3px; font-size: 19px; overflow-wrap: anywhere; }
+#app .vendor-card-heading small { display: block; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+#app .vendor-card-heading .item-symbol { flex: 0 0 38px; width: 38px; height: 38px; display: grid; place-items: center; }
+#app .vendor-card-heading .menu-icon, #app .vendor-header h2 .menu-icon { width: 20px; height: 20px; }
+#app .vendor-header h2 { display: flex; align-items: center; gap: 9px; }
+#app .vendor-header > div:first-child { min-width: min(100%,260px); flex: 1 1 260px; }
+#app .vendor-header > .shop-mode-tabs { flex: 0 0 auto; }
+#app .vendor-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#app .vendor-actions button { min-height: 48px; white-space: normal; flex: 1 1 110px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+#app .vendor-actions .menu-icon { width: 17px; height: 17px; flex: 0 0 17px; }
+#app .vendor-price { margin: 12px 0; color: var(--menu-gold,#c5aa78); font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+#app .item-lore { margin: 8px 0 2px; border-top: 1px solid var(--line,#303b30); border-bottom: 1px solid var(--line,#303b30); }
+#app .item-lore summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--menu-teal,#80aba7); font-size: 13px; }
+#app .item-lore p { margin: 0 0 10px; font-size: 13px; }
+#modal .vendor-compare { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-bottom: 12px; }
+#modal .vendor-compare > div { min-width: 0; padding: 12px; border: 1px solid #45523e; border-radius: 5px; background: #172219; }
+#modal .vendor-compare .eyebrow { display: block; min-height: 2.8em; font-size: 12px; line-height: 1.4; letter-spacing: .08em; overflow-wrap: anywhere; }
+#modal .vendor-compare h3 { font-size: 17px; overflow-wrap: anywhere; }
+#modal .comparison-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 12px 0 16px; font-size: 13px; line-height: 1.45; }
+#modal .comparison-table caption { caption-side: top; padding: 7px 0; color: #d4deca; text-align: left; font-size: 12px; line-height: 1.45; }
+#modal .comparison-table th, #modal .comparison-table td { min-width: 0; padding: 8px 6px; border-bottom: 1px solid #43513d; overflow-wrap: anywhere; }
+#modal .comparison-table th:first-child { width: 40%; text-align: left; }
+#modal .comparison-table th:nth-child(2), #modal .comparison-table th:nth-child(3) { width: 30%; }
+#modal .comparison-table thead th { color: #e4c98f; font-size: 12px; line-height: 1.35; }
+#modal .comparison-table tbody td { text-align: right; font-variant-numeric: tabular-nums; }
+#modal .comparison-table tbody th { color: #f5f4e9; font-weight: 500; }
+#modal .comparison-slots { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+#modal .comparison-slots button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 48px; flex: 1 1 160px; white-space: normal; }
+#modal .comparison-slots button[aria-pressed="true"] { border-color: var(--menu-gold,#c5aa78); background: #303729; color: #f4e0b4; }
+#modal .comparison-slots .menu-icon { width: 17px; height: 17px; }
+@media (max-width: 740px) {
+  #app .vendor-stock { grid-template-columns: minmax(0,1fr); }
+  #modal .vendor-compare { gap: 6px; }
+  #modal .vendor-compare > div { padding: 9px 7px; }
+  #modal .vendor-compare h3 { font-size: 15px; }
+  #modal .comparison-table { font-size: 12px; }
+  #modal .comparison-table th, #modal .comparison-table td { padding: 7px 4px; }
+  #modal .comparison-table th:first-child { width: 34%; }
+  #modal .comparison-table th:nth-child(2), #modal .comparison-table th:nth-child(3) { width: 33%; }
+  #modal .comparison-slots button { flex-basis: 125px; }
+}
