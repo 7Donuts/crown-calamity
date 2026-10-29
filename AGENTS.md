@@ -5,10 +5,10 @@ The canonical repository is https://github.com/7Donuts/crown-calamity.
 ## Source and checks
 
 - Editable application source and assets live in `dist/`. This is a dependency-free HTML/JavaScript game; `dist/` is source, despite its conventional build-output name.
-- `dist/engine.js` owns the rules. `dist/app.js` renders the UI and submits actions. Keep calculations shared between the engine and build inspector.
-- Run `node tests/engine.test.mjs` for the combat/progression checks, and `node --check` on changed JavaScript. The tests use an injected clock; do not add real waits to them.
+- `dist/engine.js` coordinates combat and progression; `dist/abilities.js` owns the ability catalog and `dist/gear.js` owns equipment, recipes, upgrades, and affixes. `dist/app.js` renders the UI and submits actions. Keep calculations shared between the engine and build inspector.
+- Run `npm test` (Node 22.8+) for all checks, or `node tests/engine.test.mjs` for the original combat/progression checks, and `node --check` on changed JavaScript. The tests use an injected clock; do not add real waits to them.
 - `npm start` serves the game using Python. `python scripts-package.py` generates a standalone HTML game and a versioned source ZIP. Generated downloads are ignored by Git.
-- Preserve imported save compatibility. Save format v2 imports both v1 and v2. Exported player saves and local hosting credentials do not belong in the repository.
+- Preserve imported save compatibility. Save format v3 imports v1, v2, and v3. Exported player saves and local hosting credentials do not belong in the repository.
 
 ## Established product requirements
 
