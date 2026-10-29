@@ -19,8 +19,19 @@ test('catalog preserves every original item id and exposes all nine slots',()=>{
 test('expanded catalog has ten items per gear category and a generated art family for each',async()=>{
   const {ITEM_ART}=await import('../dist/item-art.js');
   const counts={};for(const item of Object.values(ITEMS))counts[item.slot]=(counts[item.slot]||0)+1;
-  assert.equal(Object.keys(ITEMS).length,80);
-  for(const slot of ['weapon','offhand','head','body','hands','feet','accessory','relic'])assert.equal(counts[slot],10,slot);
+  assert.equal(Object.keys(ITEMS).length,100);
+  for(const slot of ['offhand','head','body','hands','feet','accessory','relic'])assert.equal(counts[slot],10,slot);
+  assert.equal(counts.weapon,30);
+  for(const channel of ['heavy','spell','precision']){
+    const tiers=Object.values(ITEMS).filter(item=>item.slot==='weapon'&&item.channel===channel).map(item=>item.tier).sort((a,b)=>a-b);
+    assert.deepEqual(tiers,[1,2,3,4,5,6,7,8,9,10],`${channel} weapon tiers`);
+    const primary={heavy:'mig',spell:'int',precision:'fin'}[channel];
+    const ladder=Object.values(ITEMS).filter(item=>item.slot==='weapon'&&item.channel===channel).sort((a,b)=>a.tier-b.tier);
+    for(const item of ladder)assert.equal(item.price,Math.round(100*100**((item.tier-1)/9)));
+    const attackPower=item=>item.base+1.8*(item.stats?.[primary]||0);
+    for(let i=1;i<ladder.length;i++)assert.ok(attackPower(ladder[i])>attackPower(ladder[i-1]),`${channel} tier ${ladder[i].tier} exceeds tier ${ladder[i-1].tier}`);
+  }
+  assert.equal(ITEMS.sword.price,100);assert.equal(ITEMS.pike.price,10000);assert.equal(ITEMS.pike.base,40);
   for(const id of Object.keys(ITEMS))assert.ok(ITEM_ART[id],`${id} has generated family art`);
   for(const id of ['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'])assert.ok(ITEMS[id]);
   assert.ok(ITEMS.signet.relicEffect==='signet');assert.ok(ITEMS.threadSpool.relicEffect==='threadSpool');
@@ -83,7 +94,7 @@ test('starter shop stock is affordable after a few hunts and exposes its prices'
   const s=state({level:1,coins:500,bag:['rod']});
   for(const id of ['rod','sword','blade','shield','focus','charm','coat'])assert.ok(ITEMS[id].price>=20,`${id} has a meaningful price`);
   for(const id of ['cap','workgloves','wornboots','boots'])assert.ok(buyPreview(s,id).allowed,`${id} can be bought at any level`);
-  assert.equal(buyPreview(s,'sword').price,30);assert.equal(buyPreview(s,'sword').item.base,14);
+  assert.equal(buyPreview(s,'sword').price,100);assert.equal(buyPreview(s,'sword').item.base,14);
 });
 
 test('buy and sell previews enforce ownership, equipment, coin and encounter locks atomically',()=>{

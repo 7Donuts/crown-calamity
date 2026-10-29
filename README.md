@@ -1,4 +1,4 @@
-# Crown & Calamity: playable solo prototype v0.13.0
+# Crown & Calamity: playable solo prototype v0.13.1
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -28,7 +28,13 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## New in v0.13.0: full levels, a smaller market, and five plush types
+## New in v0.13.1: ten weapons per fighting style
+
+The catalog now has 100 base items, including ten Might, ten magic, and ten Finesse weapons. Each channel has tiers 1–10, priced from 100 to 10,000 coins using the same geometric curve. Other equipment prices are unchanged. Gear tiers do not require a character level.
+
+Run `npm run economy` for a reproducible offline gold-pacing simulation using real combat, leveling, loot, sales, rest, and death rules. At the documented 1.5-second input cadence, fresh starter-only characters save 10,000 gold in roughly 58–61 minutes from encounter coins, or 27–38 minutes while selling unequipped drops. These are focused-play model results, not measured human session times; reading, purchases and upgrades change the result. See [the economy assumptions](design/38_Gear_Economy.md#saving-for-a-10000-coin-weapon).
+
+## v0.13.0: full levels, a smaller market, and five plush types
 
 - Levels use the same full-level XP curve and now award four attributes on level-up, with no parts or Stitch counters. V1–v4 saves migrate to v5; already-earned partial rewards are kept and counted against the next level award so no one loses points or receives them twice.
 - Buying and selling use compact rows. Compare stays beside stock; purchase review offers Buy to Satchel or Buy & Equip, with a legal accessory slot choice and atomic two-handed/offhand handling.

@@ -26,7 +26,7 @@ XP remains cumulative within the current level. A single reward can cross severa
 
 ## Early pacing with minor and major contracts
 
-The authored introduction puts a short minor contract before the first major contract, then advances the rescue through encounters and explicit objectives. At level 1, Ledger Rat victories award 32 XP each. Completing the three-rat minor contract adds 32 XP, for 128 total: the player crosses Part 2 at 75 XP and has 53 XP toward Part 3. The three additional rats for the major contract add 96 XP; its 88 XP receipt brings the opening sequence to 312 XP. That reaches level 2 part 1 and awards all four level-1 points. The passage and rescue objectives are player actions and award no extra combat XP.
+The authored introduction puts a short minor contract before the first major contract, then advances the rescue through encounters and explicit objectives. At level 1, Ledger Rat victories award 32 XP each. Completing the three-rat minor contract adds 32 XP, for 128 total: the player has 128 of the 300 XP needed for level 2. The three additional rats for the major contract add 96 XP; its 88 XP receipt brings the opening sequence to 312 XP. That reaches level 2 and awards all four level-1 points. The passage and rescue objectives are player actions and award no extra combat XP.
 
 This gives the first major chapter a meaningful short-term reward before the full level arrives. Side contracts can add additional XP and materials, while each encounter still requires an explicit tap. These figures should be checked against playtests if encounter rewards, contract objectives, or the XP curve change.
 
@@ -34,7 +34,7 @@ This gives the first major chapter a meaningful short-term reward before the ful
 
 The level 1 character budget remains 68: 56 baseline points across seven attributes and 12 points distributed in the selected starter build. Each full level adds four points. At level L, the total invested budget is `68 + 4 × (L − 1)`, plus any legacy partial-level points already awarded. A free reset returns this entire budget to the player while leaving the earned progression and gear untouched. Gear bonuses remain outside the invested budget.
 
-Abilities and equipment continue to check full character level. Arc Bolt remains available to every character from level 1. Driving Strike is also learnable at level 1 and has no quest requirement, so physical starter kits can begin with a relevant active ability.
+Abilities continue to check full character level. Equipment tiers do not impose a character-level requirement. Arc Bolt remains available to every character from level 1. Driving Strike is also learnable at level 1 and has no quest requirement, so physical starter kits can begin with a relevant active ability.
 
 ## Migration from versions 1–4
 
@@ -42,7 +42,7 @@ Migration preserves the character's current level, XP, invested attributes, and 
 
 ## Character creation and starter equipment
 
-`createCharacter({name, race, origin, kit, stats?})` validates a new level 1 character and returns `null` for invalid options. Names may contain 1–32 characters after trimming; origins may contain 1–70. Race is Human or Stonekin. Both races use the same attribute budget and ability access. The four starter kits are:
+`createCharacter({name, race, origin, kit, stats?})` validates a new level 1 character and returns `null` for invalid options. Names may contain 1–32 characters after trimming; origins may contain 1–70. The five plush types use the same attribute budget and ability access; see `30_Races_and_Identity.md` for their base spreads and passives. The kit distributions below are historical custom-build examples; choosing a kit does not replace the selected plush type’s base attributes. The four starter kits are:
 
 | Kit | Weapon and offhand | Starting distribution | Starting active |
 |---|---|---|---|

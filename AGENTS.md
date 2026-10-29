@@ -37,7 +37,7 @@ The original pack in `design/Crown-and-Calamity-Design-v0.1/` is retained histor
 - Preserve independent local characters when creating, switching, or importing. Switching and creation are unavailable during fights/delves. Never save a placeholder character before first-run creation.
 - Story contracts are accepted explicitly, distinguish minor jobs and major milestones, count qualifying actions after acceptance, and pay once. Do not return to automatic major completion on one random kill.
 - Completed major contracts update the quest progress used by ability unlocks. Preserve legacy completed/pending contract states during save migration.
-- The base catalog has ten items per category (80 total, with ten shared accessories fitting both accessory slots). Gear tiers are price/content labels, never buy/equip/craft/upgrade restrictions. Prices follow the category base ×2.4^(tier−1). Buy & Equip is one atomic purchase with explicit accessory-slot choice; failed loadouts spend nothing.
+- The base catalog has ten weapons per scaling channel (Might/heavy, magic/spell, Finesse/precision) and ten per nonweapon category (100 total, with ten shared accessories fitting both accessory slots). Gear tiers are price/content labels, never buy/equip/craft/upgrade restrictions. Weapons use round(100 ×100^((tier−1)/9)), exactly 100 coins at tier 1 and 10,000 at tier 10; nonweapons use category base ×2.4^(tier−1). Buy & Equip is one atomic purchase with explicit accessory-slot choice; failed loadouts spend nothing.
 - Only owned unequipped gear can be sold, and practice kits cannot recreate sold gear. Buy/sell cycles must not generate profit.
 
 ## Recovery and relic constraints

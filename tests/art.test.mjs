@@ -42,7 +42,7 @@ function parsePercentStyles(html) {
 
 test('every gear item has a percentage-cropped item sprite, with unknown IDs omitted', async () => {
   const itemIds = Object.keys(ITEMS);
-  assert.equal(itemIds.length, 80, 'item art coverage tracks all ten items per equipment category');
+  assert.equal(itemIds.length, 100, 'item art covers thirty weapons and ten items per nonweapon category');
   assert.deepEqual(Object.keys(ITEM_ART).sort(), [...itemIds].sort());
 
   for (const id of itemIds) {
