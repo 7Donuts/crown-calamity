@@ -305,11 +305,13 @@
 
 /* Open treasure, a few decorative coins, and a gentle reveal of earned spoils. */
 #app .loot-chest { display: block; position: relative; width: 88px; height: 88px; }
-#app .loot-chest__sprite { display: block; width: 100%; height: 100%; overflow: visible; }
-#app .loot-chest__lid { transform-box: view-box; transform-origin: 4px 12px; transform: translateY(-2px) rotate(-16deg); }
+#app .loot-chest > .battle-glyph { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; }
+#app .loot-chest__closed { opacity: 0; }
+#app .loot-chest__open { opacity: 1; }
 #app .loot-coin { position: absolute; left: 32px; top: 20px; width: 24px; height: 24px; opacity: 0; pointer-events: none; }
 #app .loot-coin .battle-glyph { width: 24px; height: 24px; }
-#app .encounter-result[data-reactive="victory"] .loot-chest__lid { animation: chest-open 500ms ease-out both; }
+#app .encounter-result[data-reactive="victory"] .loot-chest__closed { animation: chest-close 500ms ease-out both; }
+#app .encounter-result[data-reactive="victory"] .loot-chest__open { animation: chest-reveal 500ms ease-out both; }
 #app .encounter-result[data-reactive="victory"] .loot-coin { animation: coin-toss 700ms ease-out var(--coin-delay,130ms) both; }
 #app .loot-coin--1 { --coin-x: -24px; --coin-turn: -40deg; }
 #app .loot-coin--2 { --coin-x: 0px; --coin-turn: 20deg; --coin-delay: 190ms; }
@@ -319,14 +321,16 @@
 #app .encounter-result[data-reactive="victory"] .encounter-result__reward:nth-child(3) { animation-delay: 140ms; }
 #app .encounter-result[data-reactive="victory"] .encounter-result__reward:nth-child(4) { animation-delay: 210ms; }
 #app .encounter-result[data-reactive="defeat"] { animation: recovery-arrive 450ms ease-out; }
-@keyframes chest-open { from { transform: none; } to { transform: translateY(-2px) rotate(-16deg); } }
+@keyframes chest-close { from { opacity: 1; } to { opacity: 0; } }
+@keyframes chest-reveal { from { opacity: 0; } to { opacity: 1; } }
 @keyframes coin-toss { 0% { opacity: 0; transform: translate(0,0) scale(.5); } 30% { opacity: 1; transform: translate(calc(var(--coin-x)*.5),-38px) rotate(var(--coin-turn)); } 100% { opacity: 0; transform: translate(var(--coin-x),10px) rotate(var(--coin-turn)); } }
 @keyframes spoils-arrive { from { opacity: .3; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes recovery-arrive { from { opacity: .5; } to { opacity: 1; } }
 @media(max-width:600px) { #app .loot-chest { width: 72px; height: 72px; } #app .loot-coin { left: 24px; top: 16px; } }
 @media(max-width:370px) { #app .loot-chest { width: 64px; height: 64px; } }
 @media(prefers-reduced-motion:reduce) {
-  #app .encounter-result[data-reactive] .loot-chest__lid,
+  #app .encounter-result[data-reactive] .loot-chest__closed,
+  #app .encounter-result[data-reactive] .loot-chest__open,
   #app .encounter-result[data-reactive] .loot-coin,
   #app .encounter-result[data-reactive] .encounter-result__reward,
   #app .encounter-result[data-reactive="defeat"] { animation: none; }

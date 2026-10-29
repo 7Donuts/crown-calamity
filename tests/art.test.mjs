@@ -104,16 +104,17 @@ test('all engine enemies resolve to bounded frames in their shipped PNG atlas', 
   assert.match(renderEnemyArt(G.ENEMIES.find(enemy => enemy.id === 'rats'), { animated: true }), /enemy-idle/);
 });
 
-test('authored UI and menu glyphs cover their public keys and render as accessible SVG paths', () => {
+test('generated UI and menu icons cover their public keys and render as accessible PNG viewports', () => {
   const mainKeysUsedByUI = ['crown', 'hunt', 'overview', 'close', 'market', 'compare', 'materials', 'workbench', 'lab', 'buy', 'sell', 'character', 'bag', 'journal', 'guide', 'pin', 'arrow', 'chevron', 'coin', 'heart', 'mana', 'bolt', 'shield', 'sword', 'staff', 'coat', 'spark', 'rest', 'lock', 'check', 'leaf', 'clock', 'scroll', 'exit', 'cross', 'download', 'settings'];
   const menuKeysUsedByUI = ['weapons', 'armor', 'curios', 'market', 'buy', 'sell', 'compare', 'materials', 'workbench', 'upgrade', 'reforge', 'overview', 'attributes', 'abilities', 'gear', 'story', 'minor', 'major', 'journal', 'guide', 'save', 'characters', 'lab', 'close'];
   for (const key of new Set([...Object.keys(UI_ICONS), ...mainKeysUsedByUI])) {
     assert.ok(UI_ICONS[key], `main UI glyph ${key} exists`);
-    assert.ok(UI_ICONS[key].startsWith('<path '), `${key} is authored path data`);
+    assert.match(UI_ICONS[key], /^<svg\b[^>]*class="generated-icon-frame"[\s\S]*?<image\b[^>]*href="assets\/(?:icons|journal)\/[^\"]+\.png"/,
+      `${key} is a viewport over generated PNG artwork`);
   }
   for (const key of new Set([...Object.keys(MENU_ICONS), ...menuKeysUsedByUI])) {
     assert.ok(MENU_ICONS[key], `menu glyph ${key} exists`);
-    assert.match(menuIcon(key), /<svg\b[^>]*aria-hidden="true"[^>]*>\s*<path\b/);
+    assert.match(menuIcon(key), /<svg\b[^>]*aria-hidden="true"[^>]*>[\s\S]*?<svg\b[^>]*class="generated-icon-frame"[\s\S]*?<image\b/);
   }
   assert.equal(menuIcon('unknown'), '');
 });

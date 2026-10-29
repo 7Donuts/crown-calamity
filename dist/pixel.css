@@ -129,7 +129,6 @@ body, #app { background: var(--bg); color: var(--text); font-size: 16px; }
 #app .action-delay-track { background: #44575a; }
 #app .action-delay-track i { background: var(--teal); }
 #app .gear-figure { border: 1px solid #52686b; background: #2a3b40; box-shadow: none; }
-#app .gear-figure svg { shape-rendering: crispEdges; stroke: #cbd9d3; stroke-width: 3; stroke-linecap: butt; stroke-linejoin: miter; filter: none; }
 #app .gear-slot-card { border: 1px solid #53686b; background: #304048; }
 #app .gear-slot-card.filled { border-left: 4px solid var(--gold); }
 #app .gear-slot-card.empty { border-style: dashed; }

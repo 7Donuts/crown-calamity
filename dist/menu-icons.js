@@ -1,21 +1,21 @@
 import { UI_ICONS } from './ui-icons.js';
 
-/* Menu vocabulary shares the same original pixel glyphs as the main UI. */
+/* Menu vocabulary shares the same generated pixel illustrations as the main UI. */
 export const MENU_ICONS = Object.freeze({
   weapons: UI_ICONS.sword,
   armor: UI_ICONS.shield,
-  curios: UI_ICONS.spark,
+  curios: UI_ICONS.relic,
   market: UI_ICONS.market,
   buy: UI_ICONS.buy,
   sell: UI_ICONS.sell,
   compare: UI_ICONS.compare,
   materials: UI_ICONS.materials,
   workbench: UI_ICONS.workbench,
-  upgrade: UI_ICONS.arrow,
-  reforge: UI_ICONS.spark,
+  upgrade: UI_ICONS.upgrade,
+  reforge: UI_ICONS.reforge,
   overview: UI_ICONS.character,
-  attributes: UI_ICONS.spark,
-  abilities: UI_ICONS.bolt,
+  attributes: UI_ICONS.attributes,
+  abilities: UI_ICONS.abilities,
   gear: UI_ICONS.shield,
   story: UI_ICONS.scroll,
   minor: UI_ICONS.check,

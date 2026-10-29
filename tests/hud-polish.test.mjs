@@ -338,7 +338,8 @@ test('victory feedback plays once for an accepted exchange, then reopening the r
   let markup=ui.getApp().innerHTML;
   assert.match(markup,/data-outcome="victory" data-reactive="victory"/);
   assert.equal((markup.match(/class="loot-coin loot-coin--/g)||[]).length,3);
-  assert.match(markup,/class="loot-chest__lid"/);
+  assert.match(markup,/class="pixel-glyph battle-glyph loot-chest__closed"/);
+  assert.match(markup,/class="pixel-glyph battle-glyph loot-chest__open"/);
   assert.equal(ui.getState().totalExchanges,1);
   const snapshot=JSON.stringify(ui.getState());
   await ui.act('nav:world');await ui.act('nav:hunt');markup=ui.getApp().innerHTML;

@@ -18,3 +18,7 @@ button,input,select,.rating-field select{min-height:48px}
 /* The disposable text bench shares the game's approved soft pixel palette. */
 :root{--bg:#26343d;--surface:#33424b;--surface2:#3c4b54;--line:#53656c;--text:#f2eee3;--muted:#c4cdd0;--gold:#d9b66e;--green:#9bb987;--blue:#91b5c5}
 .lab-header, .controls-panel{background:#2b3740}.panel{border-radius:10px}button{border-radius:9px;background:#35454c;border-color:#60747a}input,select,textarea{background:#26343d;color:#f2eee3;border-color:#60747a}.primary{background:var(--gold);color:#29343a}.action-button.featured{background:#4b4b3b}.disposable-banner{background:#3c4b42;color:#fff1c8;border-color:#8d7448}.intent-box{background:#33434a}.intent-box.heavy{background:#50454a}.status-chip,.compare-card,.notice{background:#2b3b40;color:#e2e8df}
+.lab-icon{display:inline-block;width:24px;height:24px;flex:0 0 24px;vertical-align:middle}
+.action-button .action-icon{width:28px;height:28px;flex-basis:28px}
+.notice .goal-icon{width:18px;height:18px;flex-basis:18px;vertical-align:middle}
+.intent-box .intent-icon{width:24px;height:24px;flex:0 0 24px}

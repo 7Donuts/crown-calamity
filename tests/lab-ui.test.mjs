@@ -5,15 +5,17 @@ import vm from 'node:vm';
 import * as G from '../dist/engine.js';
 import * as L from '../dist/lab.js';
 import * as B from '../dist/balance.js';
+import {UI_ICONS} from '../dist/ui-icons.js';
 
 async function bootLab(){
   const elements=new Map(),downloads=[],copied=[];
   const element=()=>({innerHTML:'',textContent:'',value:'',dataset:{},classList:{add(){},remove(){},toggle(){}},listeners:{},addEventListener(type,fn){this.listeners[type]=fn;},click(){}});
   const get=selector=>{if(!elements.has(selector))elements.set(selector,element());return elements.get(selector);};
-  const context={__G:G,__L:L,__B:B,document:{querySelector:get,createElement:element},window:{scrollTo(){}},navigator:{clipboard:{async writeText(text){copied.push(text);}}},Blob,URL:{createObjectURL(blob){downloads.push(blob);return 'blob:lab-report';},revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},console};
+  const context={__G:G,__L:L,__B:B,__UI_ICONS__:UI_ICONS,document:{querySelector:get,createElement:element},window:{scrollTo(){}},navigator:{clipboard:{async writeText(text){copied.push(text);}}},Blob,URL:{createObjectURL(blob){downloads.push(blob);return 'blob:lab-report';},revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},console};
   Object.defineProperty(context,'localStorage',{get(){throw new Error('Lab must never access campaign storage');}});
   let source=await readFile(new URL('../dist/lab-ui.js',import.meta.url),'utf8');
   for(const [name,file] of [['G','engine'],['L','lab'],['B','balance']])source=source.replace(`import * as ${name} from './${file}.js';`,`const ${name}=globalThis.__${name};`);
+  source=source.replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;');
   vm.runInNewContext(source+'\nglobalThis.__test={handleAction,render,buildReport,getSession:()=>session};',context,{filename:'lab-ui.js'});
   return {ui:context.__test,get,downloads,copied};
 }
