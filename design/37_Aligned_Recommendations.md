@@ -287,6 +287,16 @@ Changes:
 
 Client now, server later: meter and variant locally (stored at encounter start so reload cannot change it); server later: rolls, meter, offer and receipt are server-owned and part of the atomic victory grant.
 
+Status: Implemented in v0.12.0 as "Special Edition" hunts (design 35 vocabulary; "Limited Edition" and "Mint" are not used). Rules, data and copy live in `dist/variants.js`, with rendering in `dist/variant-ui.js` and `dist/variant.css`.
+
+- Meter: each ordinary hunt enemy has a `variantMeters` counter that advances by one on every accepted hunt victory (any variant; delve fights, the boss, defeat, withdrawal, rejected taps and timers never advance it). At 6 an offer becomes pending in `variantOffers[enemyId] = {id, version}`, with the affix chosen at that moment from the enemy's authored list by the saved kill count (cycling, no random roll, no Luck). While an offer is pending the meter is held at 6. Declining (the regular hunt of that enemy, or any other enemy) changes nothing and never rerolls. Winning the Special Edition clears the offer and resets that meter to 0; losing or withdrawing leaves it pending.
+- Disclosure and consent: the hunting list shows an offer card under the regular hunt row with the affix, its effect, trigger and limit, changed stats against the regular hunt, and the reward, plus a separate "Start the Special Edition hunt" button. The regular hunt stays one tap away. Nothing starts automatically. The chosen variant is stored as `fight.variant = {id, version}` (and `fight.variantState` for Static-charged) at encounter start, so reload cannot change it. Fights saved without it stay valid.
+- Affixes (version 1): Reinforced packaging (+25% armor and ward), Extra stuffed (+20% maximum health), Squeaky (heavy attacks deal 15% more; the heavy is still declared a full exchange ahead), Static-charged (one 20-point barrier after its first completed heavy; an interrupted heavy does not count). Each enemy lists the affixes it may carry (Reinforced skips the Nesting Rat Swarm and Rummage Raccoon, whose defenses are too low to show it; Extra stuffed skips the Clawback Crab). All numbers flow through `fightEnemy`, `intent` and `actionProfile`, so the inspector and the action hints stay true.
+- Rewards: XP x1.25, coins x1.4 (floored) and 1 extra of the enemy's material. Equipment drop chance, the pity counter, mastery marks and story objectives behave exactly as for a regular victory.
+- Balance evidence: `tests/variants.test.mjs` replays seeded hunts at the enemy's level with always-strike for three kits and every allowed affix. All 63 combinations win at least 90% of fights (lowest: Chewster with Extra stuffed against the caster kit), none is easier than the regular hunt, and HP lost rises by up to about 15 points of maximum health. Reading the telegraph still pays against Special Editions.
+- Not built, as specified: named rare spawns, any Luck influence, bonus drop chance, cosmetic drops and any new currency. These wait for server-owned rolls.
+- Saves: additive `variantMeters`, `variantOffers` and `fight.variant`, defaulted when absent; unknown enemy IDs, unknown or disallowed affix IDs and non-integer meters are normalized away on load. No version bump; saves v1 to v4 still import.
+
 Saves: additive `variantMeters` and `fight.variant`; old fights without a variant stay valid.
 
 ### R5 (revised). Town works (personal ledger, not holdings)
@@ -426,9 +436,9 @@ Dependencies are marked "needs". Items flagged "server" must wait for server aut
 | System | Server must own | Idempotency or uniqueness key |
 | --- | --- | --- |
 | Shifts | Shift record, streak, filed receipts, boon offers, bonus values, bank and clock-out | Shift ID plus action ID; one bank per Shift |
+| Variant meter and flagged elites (built locally in v0.12.0 as `variantMeters`, `variantOffers`, `fight.variant`) | Meter, offer, affix choice, rewards. The deterministic cycling by kill count is a local stand-in; the server owns the meter and the offer, persists the offer before the first exchange, and grants the reward multipliers and extra material inside the atomic victory grant | Encounter ID; offer persisted before the first exchange |
 | Case files (Hazard notes) | Victory counters, any derived bonus | Per character and enemy ID; counter advances only inside the victory grant (local: `caseFiles[id].wins`, `dist/records.js`) |
 | Local records | Fewest exchanges, least Stuffing lost, no-damage flag, if ever shown as verified or ranked | Per character and enemy ID; computed from server-resolved exchanges; until then private, unverifiable and unrewarded (local: same `caseFiles[id]` entry) |
-| Variant meter and flagged elites | Meter, offer, affix, rewards | Encounter ID; offer persisted before the first exchange |
 | Works Ledger and bounties | Purchases, completion, bounty rotation | Project or bounty ID per character |
 | Seniority | Rank XP and rank grants | Inside the atomic victory grant |
 | Ordinances | Entry choice, run record, reward multiplier | Run ID |

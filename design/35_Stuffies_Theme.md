@@ -216,6 +216,8 @@ Done:
 - B.U.R.S.A.R. is expanded once in the Field Guide, the header reads STUFFIE SERVICES, and care-label style lines ("NOTICE · ...") appear on arrival cards and a few system messages.
 - Later in v0.12.0 (R3, R7c, R7d, display and additive save data only): Hazard notes (case files) with a lore page per enemy in the stuffie voice and B.U.R.S.A.R. lines, "Local records (this device only)", "New personal best" in the victory report, and a display-only title under the name drawn from earned Merit badges (Achievements). See `design/37`.
 
+R4 follow-up (v0.12.0): enemy variants ship as "Special Edition" hunts (not "Limited Edition"; "Mint" is not used) with the affixes Reinforced packaging, Extra stuffed, Squeaky and Static-charged, offered after six victories over the same enemy, disclosed on the hunting list with a NOTICE care-label line and B.U.R.S.A.R. footer, and always optional beside the regular hunt. Colorways keep their own word. See `design/37`, R4.
+
 Pending:
 
 - Art pass: portraits, scenes, NPCs, enemies and item art still show the prototype art, so appearance option labels, item names and item descriptions are deliberately unchanged. Brand copy describes identity and voice, not specific materials.

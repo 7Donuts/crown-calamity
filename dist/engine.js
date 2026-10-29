@@ -10,6 +10,9 @@ import {ABILITIES,MASTERY_CHOICES,abilityCost,costLabel} from './abilities.js';
 export {ABILITIES,abilityCost,costLabel};
 import {TELEGRAPH,GUARD_ACTIONS,DAMAGING_ACTIONS,isShield,guardRate,sidestepEligible,strikeBonus,resolveHit,openingPercent,telegraphText,openingLabel} from './telegraph.js';
 export {TELEGRAPH,GUARD_ACTIONS,DAMAGING_ACTIONS,telegraphText,strikeBonus,resolveHit,openingLabel};
+// R4 Special Edition variants (design 37). Data, meter and offer rules live in variants.js.
+import {applyVariant,variantReward,variantVictory,startVariant,initialVariantState,normalizeVariants,normalizeFightVariant,variantSoak,variantResponse,VARIANT_THRESHOLD,VARIANT_LABEL,VARIANT_REWARDS,VARIANT_ENEMIES,VARIANT_TEXT,AFFIXES,AFFIX_ORDER,STATIC_BARRIER,isVariantEnemy,affixById,variantProgress,pendingOffer,rewardSummary} from './variants.js';
+export {VARIANT_THRESHOLD,VARIANT_LABEL,VARIANT_REWARDS,VARIANT_ENEMIES,VARIANT_TEXT,AFFIXES,AFFIX_ORDER,STATIC_BARRIER,isVariantEnemy,affixById,applyVariant,variantProgress,pendingOffer,rewardSummary};
 import {PARTS_PER_LEVEL,LEVEL_CAP,xpNeeded,partForXP,progression,pointBudget,advanceXP,migrateLegacyProgression} from './progression.js';
 export {PARTS_PER_LEVEL,LEVEL_CAP,xpNeeded,progression,pointBudget};
 import {normalizeRecovery,restStatus as recoveryStatus,finishRest as completeRest,cancelRest as abandonRest,applyDeathPenalty,REST_DURATION_MS,WOUND_DURATION_MS,DEATH_COIN_CAP,DEATH_COIN_RATE} from './recovery.js';
@@ -32,6 +35,8 @@ export const ENEMIES=[
 {id:'inspector',name:'Lost & Found Appraiser',level:7,hp:360,armor:32,ward:34,damage:76,coins:35,material:'Stamped brass',blurb:'The appraisal is mandatory. Being worth it is recommended.',location:'The Lost & Found Dock',pattern:['Price check','Markdown','Tag gun'],heavy:1,art:'inspector'},
 {id:'hound',name:'Chewster, the Family Dog',level:9,hp:440,armor:42,ward:32,damage:88,coins:45,material:'Floodglass',blurb:'Loves you. That’s the problem.',location:'The Doggy Door',pattern:['Fetch','Fetch','Tug-of-war'],heavy:2,art:'hound'},
 {id:'boss',name:'The Spin Cycle',level:10,hp:620,armor:48,ward:48,damage:97,coins:100,material:'Floodglass Fragment',blurb:'Acting Superintendent of the Laundry Works. Acting capacity. Permanent press.',location:'The Drum (Laundry Works)',pattern:['Agitate','Heavy rinse','Spin cycle'],heavy:1,art:'boss'}];
+// The enemy as it fights: base stats plus the stored fight.variant (if any). Every combat calculation reads this.
+export function fightEnemy(f){const e=f&&ENEMIES.find(x=>x.id===f.enemy);return e&&f.variant?applyVariant(e,f.variant):e;}
 export const QUESTS=[
 {title:'Lint Trap Rescue',text:'The Seam Crew’s foreman is trapped in the Lint Trap Canals. Clear the Nesting Rat Swarms and bring her home.',target:'rats',xp:68},
 {title:'A Seal with Static',text:'A Rummage Raccoon took the access seal. Recover it along the Rinse Walk.',target:'scavenger',xp:70},
@@ -39,7 +44,7 @@ export const QUESTS=[
 {title:'Tagged for Sale',text:'An appraiser guards the missing crew’s records. Recover them before the next rinse cycle.',target:'inspector',xp:180},
 {title:'The Laundry Works',text:'Reach level 6 and enter the Laundry Works. Find out why the washer has turned against the town.',target:'boss',xp:250}
 ];
-export function fresh(){return normalizeRelics(normalizeStory(normalizeRecovery(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',raceId:null,appearance:normalizeAppearance('quayfolk'),relicSockets:[],origin:'Former Gutter Canal surveyor',level:1,part:1,xp:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:66,sp:65,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional stuffie',text:'Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,restReadyAt:0,woundedUntil:0,visited:['rats'],caseFiles:{},settings:{details:false}}))));}
+export function fresh(){return normalizeRelics(normalizeStory(normalizeRecovery(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',raceId:null,appearance:normalizeAppearance('quayfolk'),relicSockets:[],origin:'Former Gutter Canal surveyor',level:1,part:1,xp:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:66,sp:65,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,variantMeters:{},variantOffers:{},materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional stuffie',text:'Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,restReadyAt:0,woundedUntil:0,visited:['rats'],caseFiles:{},settings:{details:false}}))));}
 export const STARTER_KITS={
  bulwark:{gear:['rod','shield'],starterAbility:'arc',stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8}},
  caster:{gear:['rod','focus'],starterAbility:'arc',stats:{mig:8,fin:8,int:16,vit:8,wil:12,ins:8,lck:8}},
@@ -98,8 +103,8 @@ export function attributePreview(s,key){
  return {before,after,changes:fields.map(field=>({field,before:before[field],after:after[field]}))};
 }
 export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
- const e=ENEMIES.find(x=>x.id===enemyId);if(!e||!['attack','cast','combo','disrupt','driving','guardstrike','sidestep'].includes(key))return null;
- const t=totals(s),w=effectiveItem(s,s.gear.weapon),f=s.fight?.enemy===enemyId?s.fight:null,i=f?intent(s):null;
+ const e0=ENEMIES.find(x=>x.id===enemyId);if(!e0||!['attack','cast','combo','disrupt','driving','guardstrike','sidestep'].includes(key))return null;
+ const t=totals(s),w=effectiveItem(s,s.gear.weapon),f=s.fight?.enemy===enemyId?s.fight:null,e=f?fightEnemy(f):e0,i=f?intent(s):null;
  const channel=['cast','combo'].includes(key)?'arcane':'physical',power=w.channel==='spell'?t.spellPower:w.channel==='precision'?t.precisionPower:t.heavyPower,masteryKey=['cast','combo'].includes(key)?'arc':['guardstrike','sidestep'].includes(key)?'driving':key,rank=s.mastery?.[masteryKey]?.rank||1;
  const accuracy=channel==='arcane'?t.spellAcc:t.physicalAcc;
  let coeff=key==='combo'?.85:key==='cast'?1.25:key==='disrupt'?.65+Math.max(0,rank-1)*.05:key==='driving'?1.15+Math.max(0,rank-1)*.05:key==='guardstrike'?.8+Math.max(0,rank-1)*.05:key==='sidestep'?TELEGRAPH.sidestepCoefficient+Math.max(0,rank-1)*.05:1;
@@ -117,15 +122,15 @@ export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
  const available=channel!=='arcane'||hasFocus(s);
  return {channel,raw,defense,opening:bonus.source==='opening',openingBonus:bonus.source==='opening'?bonus.bonus:0,noGlance:bonus.noGlance,hitChance:solidHit,critChance:t.critChance,normal,critical,glance,
  average:solidHit*((1-t.critChance)*normal+t.critChance*critical)+(1-solidHit)*glance,
- available:available&&(!['combo','guardstrike'].includes(key)||isShield(s.gear.offhand))&&(key!=='sidestep'||sidestepEligible(w.channel,s.gear.offhand)),live:!!f};
+ available:available&&(!['combo','guardstrike'].includes(key)||isShield(s.gear.offhand))&&(key!=='sidestep'||sidestepEligible(w.channel,s.gear.offhand)),live:!!f,variantBarrier:f?.variantState?.barrier||0};
 }
 export function restore(s){if(s.fight||s.delve)return false;let t=totals(s);s.hp=t.hp;s.mp=t.mp;s.sp=t.sp;s.restReadyAt=0;return true;}
 export function restStatus(s,now=Date.now()){return recoveryStatus(s,now);}
 export function beginRest(s,now=Date.now()){const status=restStatus(s,now),t=totals(s);if(s.fight||s.delve||status.active||(s.hp>=t.hp&&s.mp>=t.mp&&s.sp>=t.sp))return false;s.restReadyAt=Math.max(now+REST_DURATION_MS,s.woundedUntil||0);return {readyAt:s.restReadyAt};}
 export function finishRest(s,now=Date.now()){return completeRest(s,now,totals(s));}
 export function cancelRest(s){return abandonRest(s);}
-export function startFight(s,id,source='hunt',now=Date.now()){if(s.fight||s.hp<=0||restStatus(s,now).active||restStatus(s,now).wounded)return false;const e=ENEMIES.find(x=>x.id===id);if(!e|| (source==='hunt'&&e.id==='boss'))return false;if(source==='hunt'&&e.level>s.level+2)return false;if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+3);}s.fight={enemy:id,hp:e.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,opening:false,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false};if(source==='hunt')(s.settings??={}).lastHunt=id;s.last=null;s.log=[];if(!s.visited.includes(id))s.visited.push(id);return true;}
-export function intent(s){const f=s.fight;if(!f)return null;const e=ENEMIES.find(x=>x.id===f.enemy),idx=f.round%e.pattern.length;let heavy=idx===e.heavy;let name=e.pattern[idx];if(e.id==='boss'&&f.hp/e.hp<.3){heavy=idx===2;name=heavy?'Emergency drain':idx===0?'Drum door open (armor down)':'Soap drawer open (ward down)';}return {name,heavy,interruptible:heavy,damage:Math.floor(e.damage*(heavy?2.15:e.id==='scavenger'&&idx===0?.5:1)),warded:e.id==='wisp'&&idx===0,guarded:e.id==='scavenger'&&idx===0};}
+export function startFight(s,id,source='hunt',now=Date.now(),opts={}){if(s.fight||s.hp<=0||restStatus(s,now).active||restStatus(s,now).wounded)return false;const e=ENEMIES.find(x=>x.id===id);if(!e|| (source==='hunt'&&e.id==='boss'))return false;if(source==='hunt'&&e.level>s.level+2)return false;const variant=opts?.special===true?(source==='hunt'?startVariant(s,id):null):null;if(opts?.special===true&&!variant)return false;const fe=applyVariant(e,variant);if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+3);}s.fight={enemy:id,hp:fe.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,opening:false,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false,...(variant?{variant,variantState:initialVariantState(variant)}:{})};if(source==='hunt')(s.settings??={}).lastHunt=id;s.last=null;s.log=[];if(variant)addLog(s,`Special Edition · ${AFFIXES[variant.id].name}: ${AFFIXES[variant.id].effect}`,'special');if(!s.visited.includes(id))s.visited.push(id);return true;}
+export function intent(s){const f=s.fight;if(!f)return null;const e=fightEnemy(f),idx=f.round%e.pattern.length;let heavy=idx===e.heavy;let name=e.pattern[idx];if(e.id==='boss'&&f.hp/e.hp<.3){heavy=idx===2;name=heavy?'Emergency drain':idx===0?'Drum door open (armor down)':'Soap drawer open (ward down)';}return {name,heavy,interruptible:heavy,damage:Math.floor(e.damage*(heavy?2.15*(e.heavyMult||1):e.id==='scavenger'&&idx===0?.5:1)),warded:e.id==='wisp'&&idx===0,guarded:e.id==='scavenger'&&idx===0};}
 export function hasFocus(s){return Object.values(s.gear).some(id=>effectiveItem(s,id)?.focus);}
 export function primaryActions(s){
  const weapon=effectiveItem(s,s.gear.weapon),equipped=new Set(s.equippedAbilities||[]),arcReady=equipped.has('arc')&&hasFocus(s);
@@ -143,14 +148,14 @@ export function journal(s,title,text,kind='story'){s.journal.unshift({title,text
 function achievement(s,id,title,text,coins=0){if(s.achievements.some(a=>a.id===id))return;s.achievements.push({id,title,text});s.coins+=coins;journal(s,title,text,'achievement');addLog(s,`Merit badge earned: ${title}. ${text}`,'special');}
 function gainXP(s,amount){const gained=advanceXP(s,amount);if(gained.parts){const label=`${gained.parts} attribute point${gained.parts===1?'':'s'} earned`;journal(s,`${label} · Level ${s.level} · Stitch ${s.part} of ${PARTS_PER_LEVEL} (level part)`,`Progress is saved at ${s.level}.${s.part}, which is Stitch ${s.part} of ${PARTS_PER_LEVEL} (level part). Allocate your available points whenever you are ready.`,'growth');}return gained.levels;}
 export function awardXP(s,n){return gainXP(s,n);}
-function victory(s,e,rng){const f=s.fight,dropChance=f.dropChance??totals(s).equipmentDropChance,diff=e.level-f.startLevel,factor=diff<=-6?.25:diff<=-3?.6:diff>=6?1.25:diff>=3?1.2:1;let xp=Math.floor((20+12*e.level)*(e.id==='boss'?2:1)*factor);const leveled=gainXP(s,xp);s.coins+=e.coins;s.materials[e.material]=(s.materials[e.material]||0)+1;s.kills[e.id]=(s.kills[e.id]||0)+1;
+function victory(s,e,rng){const f=s.fight,dropChance=f.dropChance??totals(s).equipmentDropChance,diff=e.level-f.startLevel,factor=diff<=-6?.25:diff<=-3?.6:diff>=6?1.25:diff>=3?1.2:1;let xp=Math.floor((20+12*e.level)*(e.id==='boss'?2:1)*factor);const rw=variantReward(f.variant,{xp,coins:e.coins,materials:1});xp=rw.xp;const leveled=gainXP(s,xp);s.coins+=rw.coins;s.materials[e.material]=(s.materials[e.material]||0)+rw.materials;s.kills[e.id]=(s.kills[e.id]||0)+1;const vv=variantVictory(s,e.id,f);
 const misses=Number.isInteger(s.equipmentMisses)?clamp(s.equipmentMisses,0,5):0,dropProtected=misses>=5;
 let loot=null,salvaged=false;if(rng()<dropChance||dropProtected){let pool=['penny','oilskin','gateShield','grips','lantern','floodrod'].filter(id=>ITEMS[id].level<=s.level);if(pool.length){loot=pool[Math.floor(rng()*pool.length)];if(!s.bag.includes(loot))s.bag.push(loot);else{salvaged=true;s.materials['Salvaged fittings']=(s.materials['Salvaged fittings']||0)+1;loot=null;}}}
 s.equipmentMisses=loot||salvaged?0:Math.min(5,misses+1);
 if(diff>=-2){for(const key of f.used.slice(0,3)){const m=s.mastery[key];if(!m||m.rank>=3)continue;m.marks++;if(m.marks>=3+2*m.rank){m.marks-=3+2*m.rank;m.rank++;journal(s,`${ABILITIES[key]?.name||key} · rank ${m.rank}`,'Practice has become something rather more useful.','growth');}}}
 recordStoryEvent(s,{type:'victory',enemy:e.id,eventId:'victory:'+e.id+':'+s.kills[e.id]});
 if(e.id==='boss'){s.clears++;if(s.clears===1){s.pending='bossLoot';journal(s,'The Quay will stay dry','The Spin Cycle’s corrupted directive is suspended. Fluffington Quay’s barriers hold. The missing Seam Crew are fluffy, damp and safe in the upper maintenance tunnels.');}if(s.delve&&!s.delve.campUsed)achievement(s,'budget','Budget Emergency','“Fluff conserved. Therapist not included.”');}
-s.last={type:'victory',enemy:e.id,xp,coins:e.coins,material:e.material,loot,salvaged,dropChance,dropProtected,leveled};addLog(s,`${e.name} defeated. +${xp} XP · +${e.coins} coins · ${materialLabel(e.material)}.`,'reward');s.fight=null;
+s.last={type:'victory',enemy:e.id,xp,coins:rw.coins,material:e.material,loot,salvaged,dropChance,dropProtected,leveled,...(rw.bonus?{variant:f.variant,materials:rw.materials,bonus:rw.bonus}:{}),...(vv.granted?{variantOffer:vv.granted}:{})};addLog(s,`${e.name} defeated. +${xp} XP · +${rw.coins} coins · ${rw.materials>1?rw.materials+' × ':''}${materialLabel(e.material)}.`,'reward');s.fight=null;
 recordVictory(s,e,f);
 if(s.delve){s.delve.node++;if(e.id==='boss'){s.delve=null;restore(s);}}}
 export function exchange(s,key,rng=Math.random,now=Date.now()){
@@ -158,12 +163,12 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  const info=actionInfo(s,key);if(!info||info.reason)return {ok:false,reason:info?.reason||'Unknown action'};
  const retryAfterMs=actionDelayRemaining(s,now);if(retryAfterMs)return {ok:false,reason:'Brief action delay. Tap again when ready.',retryAfterMs};
  s.nextActionAt=now+ACTION_DELAY_MS;countExchange(f);
- const e=ENEMIES.find(x=>x.id===f.enemy),t=totals(s),i=intent(s),w=effectiveItem(s,s.gear.weapon),oldCharge=f.charge||0,profile=actionProfile(s,key,e.id);
+ const e=fightEnemy(f),t=totals(s),i=intent(s),w=effectiveItem(s,s.gear.weapon),oldCharge=f.charge||0,profile=actionProfile(s,key,e.id);
  f.charge=0;const opening=f.opening===true;f.opening=false;s.mp-=info.mp;s.sp-=info.sp;
  let guarded=GUARD_ACTIONS.includes(key),interrupted=false,damage=0,channel=null,critical=false,healed=0;
  if(DAMAGING_ACTIONS.includes(key)){
   channel=profile.channel;const glance=rng()>profile.hitChance;critical=!glance&&rng()<t.critChance;damage=glance?profile.glance:critical?profile.critical:profile.normal;
-  f.hp=Math.max(0,f.hp-damage);addLog(s,`${info.label}${critical?' · critical':''}${glance?' · glancing hit':''}: ${damage} ${channel} damage${oldCharge&&channel==='arcane'?' · Reservoir +10%':''}${f.exposed?' · exposed':''}${opening?profile.opening?` · Opening ${openingPercent()}`:' · Opening (no glance)':''}.`,'attack');
+  const soaked=variantSoak(f,damage);f.hp=Math.max(0,f.hp-(damage-soaked));addLog(s,`${info.label}${critical?' · critical':''}${glance?' · glancing hit':''}: ${damage} ${channel} damage${oldCharge&&channel==='arcane'?' · Reservoir +10%':''}${f.exposed?' · exposed':''}${opening?profile.opening?` · Opening ${openingPercent()}`:' · Opening (no glance)':''}.`,'attack');if(soaked>0)addLog(s,`Static-charged barrier soaked ${soaked} of that.`,'special');
   if(damage>0){const mark=['driving','guardstrike','sidestep'].includes(key)?'driving':channel==='arcane'?'arc':null;if(mark&&!f.used.includes(mark))f.used.push(mark);if(f.exposed&&!profile.opening&&!f.used.includes('expose'))f.used.push('expose');if(f.exposed){f.exposed=false;f.exposedRound=null;}}
   if(key==='disrupt'&&i.interruptible&&!glance&&f.interruptImmune<=f.round){if(!f.used.includes('disrupt'))f.used.push('disrupt');interrupted=true;f.interruptImmune=f.round+(s.mastery?.disrupt?.choice==='immunity'?3:4);addLog(s,`${i.name} interrupted. The enemy loses its response.`,'special');if(e.id==='boss')achievement(s,'maintenance','Percussive Maintenance','“The approved shutdown procedure was unavailable. Apparently you were available.”',20);}
   if(f.channel===channel)f.streak++;else{f.channel=channel;f.streak=1;}
@@ -197,6 +202,7 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  hit=resolveHit({...hitInput,barrier:f.barrier});prevented=hit.prevented;incoming=hit.incoming;const absorbed=hit.absorbed;f.barrier-=absorbed;
  if(absorbed>0){if(key==='brace'&&!f.used.includes('brace'))f.used.push('brace');if(key==='aegis'&&!f.used.includes('aegis'))f.used.push('aegis');}
  countDamageTaken(f,incoming);s.hp=Math.max(0,s.hp-incoming);f.healDeficit=(f.healDeficit||0)+incoming;if(!interrupted)addLog(s,`${i.name}${enemyGlance?' · glancing hit':''}: ${incoming} damage${prevented?` · ${prevented} guarded`:''}${absorbed?` · ${absorbed} absorbed`:''}.`,'enemy');
+ const variantNote=variantResponse(f,i,interrupted);if(variantNote)addLog(s,variantNote,'special');
  let openingGranted=false;if(guarded&&i.heavy&&!interrupted&&s.hp>0){f.opening=true;openingGranted=true;addLog(s,`Opening: ${i.name} overreached. Your next damaging action cannot glance and deals ${openingPercent()} damage.`,'special');}
  if(key==='guard')s.sp=Math.min(t.sp,s.sp+2);if(f.barrierTurns>0&&--f.barrierTurns===0)f.barrier=0;if(f.exposed&&(f.exposedRound??f.round)<=f.round){f.exposed=false;f.exposedRound=null;}f.round++;
  if(s.hp<=0){s.fight=null;s.delve=null;const penalty=applyDeathPenalty(s,now);s.last={type:'defeat',enemy:e.id,...penalty};journal(s,'Back on the shelf',`A kind paw put you back on the shelf. ${penalty.coinsLost} coins covered the call-out. Your levels and gear are safe. Fluff up at the Quay (Rest) once you have finished drying off.`);return {ok:true,defeat:true,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,manaRegenerated:actualManaRegenerated,...penalty};}
@@ -260,7 +266,8 @@ export function loadSave(raw){
   normalizeGearState(out);normalizeRelics(out);normalizeRecovery(out);normalizeRecords(out);
   const ancestry=Object.hasOwn(RACES,out.raceId)?RACES[out.raceId]:null;out.raceId=ancestry?.id||null;out.appearance=normalizeAppearance(ancestry?.id||resolveRace(out.race)?.id||'quayfolk',out.appearance);if(ancestry)out.race=ancestry.name;
   const resourceCaps=totals(out);out.hp=Math.min(out.hp,resourceCaps.hp);out.mp=Math.min(out.mp,resourceCaps.mp);out.sp=Math.min(out.sp,resourceCaps.sp);if(!out.gear.weapon||!ITEMS[out.gear.weapon])return null;
-  if(out.fight){out.fight.opening=out.fight.opening===true;out.fight.barrier??=0;out.fight.barrierTurns??=0;out.fight.healDeficit??=0;out.fight.exposed??=false;}
+  normalizeVariants(out);
+  if(out.fight){out.fight.opening=out.fight.opening===true;out.fight.barrier??=0;out.fight.barrierTurns??=0;out.fight.healDeficit??=0;out.fight.exposed??=false;normalizeFightVariant(out.fight);const fe=fightEnemy(out.fight);if(fe&&Number.isFinite(out.fight.hp))out.fight.hp=Math.min(out.fight.hp,fe.hp);}
   if(!s.story)delete out.story;normalizeStory(out,{legacy:!s.story});
   return out;
  }catch{return null;}
