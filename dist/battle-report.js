@@ -36,7 +36,7 @@ function entryMarkup(entry) {
   const kind = Object.hasOwn(LOG_TYPES, entry?.kind) ? entry.kind : 'normal';
   const type = LOG_TYPES[kind];
   const round = Number.isInteger(entry?.round) ? Math.max(0, entry.round) + 1 : null;
-  return `<article class="battle-report__entry report-line ${esc(entry?.kind || 'normal')}" aria-label="${type.label}${round === null ? '' : `, exchange ${round}`}">
+  return `<article class="battle-report__entry ${esc(entry?.kind || 'normal')}" aria-label="${type.label}${round === null ? '' : `, exchange ${round}`}">
     <span class="battle-report__entry-icon" aria-hidden="true">${glyph(type.icon)}</span>
     <span class="battle-report__entry-body"><span class="battle-report__role">${type.role}</span><span class="battle-report__entry-text">${esc(entry?.text || '')}</span></span>
     ${round === null ? '' : `<span class="battle-report__exchange">EXCHANGE ${round}</span>`}

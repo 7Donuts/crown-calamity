@@ -325,10 +325,11 @@
   line-height: 1.45;
 }
 
-#app .battle-report__entry.report-line {
+#app .battle-report__entry {
   min-width: 0;
   display: grid;
   grid-template-columns: 34px minmax(0, 1fr) auto;
+  grid-template-areas: "icon body exchange";
   align-items: start;
   gap: 10px;
   padding: 12px 2px;
@@ -341,6 +342,7 @@
 #app .battle-report__entry:last-child { border-bottom: 0; }
 
 #app .battle-report__entry-icon {
+  grid-area: icon;
   width: 30px;
   height: 30px;
   display: grid;
@@ -359,7 +361,7 @@
 #app .battle-report__entry.reward .battle-report__entry-icon { color: #f0c477; background: #484333; }
 #app .battle-report__entry.special .battle-report__entry-icon { color: #8fc6bd; }
 
-#app .battle-report__entry-body { min-width: 0; display: grid; gap: 2px; }
+#app .battle-report__entry-body { grid-area: body; min-width: 0; display: grid; gap: 2px; }
 #app .battle-report__role { color: #c6d7cf; font-size: 12px; font-weight: 800; letter-spacing: .1em; }
 #app .battle-report__entry-text { color: #f0f1e7; font-size: 15px; overflow-wrap: anywhere; }
 #app .battle-report__entry.attack .battle-report__entry-text { color: #fff1d3; }
@@ -369,6 +371,7 @@
 #app .battle-report__entry.reward .battle-report__entry-text { color: #f2d79f; }
 
 #app .battle-report__exchange {
+  grid-area: exchange;
   padding: 4px 7px;
   border: 1px solid #496461;
   border-radius: 7px;
@@ -409,9 +412,9 @@
   #app .battle-report__title { gap: 8px; }
   #app .battle-report__title strong { font-size: 18px; }
   #app .battle-report__toggle.text-button { min-height: 48px; padding: 6px 8px; font-size: 13px; }
-  #app .battle-report__entry.report-line { grid-template-columns: 30px minmax(0, 1fr); gap: 8px; padding: 11px 0; }
+  #app .battle-report__entry { grid-template-columns: 30px minmax(0, 1fr); grid-template-areas: "icon body" ". exchange"; column-gap: 8px; row-gap: 5px; padding: 11px 0; }
   #app .battle-report__entry-icon { width: 28px; height: 28px; }
-  #app .battle-report__exchange { grid-column: 2; justify-self: start; }
+  #app .battle-report__exchange { justify-self: start; }
 }
 
 @media (max-width: 370px) {

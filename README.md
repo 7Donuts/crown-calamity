@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.8.0
+# Crown & Calamity — playable solo prototype v0.8.1
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -27,6 +27,10 @@ python scripts-package.py
 Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy sprites, item atlas, emblem, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Records → Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
+
+## Fixed in v0.8.1 — mobile layout
+
+The encounter log now uses its own explicitly placed icon, text, and exchange areas; it no longer inherits the old log's bullet marker, which squeezed mobile text into the icon column. Mobile navigation sits outside the page shell with six equal-width targets, a fixed safe-area-aware height, and viewport width bounds. The mobile shell uses the stable small viewport height to avoid relayout when the browser toolbar collapses.
 
 ## New in v0.8.0 — the adventurer’s field record
 
