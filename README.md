@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.7.0
+# Crown & Calamity — playable solo prototype v0.8.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -27,6 +27,14 @@ python scripts-package.py
 Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy sprites, item atlas, emblem, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Records → Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
+
+## New in v0.8.0 — the adventurer’s field record
+
+The character overview is a parchment TTRPG sheet with seven attribute scores, icon-led resources and defenses, equipment illustrations, multipart progression, and a collapsible build inspector. The adventure sidebar lists occupied gear in compact rows; the full nine-slot equipment diagram and accessible slot editor remain on Character → Gear.
+
+Combat recovery now sits above the action buttons with a prominent progress bar and explicit ready/countdown state. It preserves the shared 650 ms delay and never queues a later action. After encounters, an illustrated field report separates actual rewards, equipment-roll details, and the next action. New journal props follow the canonical soft-pixel direction.
+
+World & community reserves space for regional movement, guilds, friends, and land holdings. Community opens a compact drawer with planned chat channels and a disabled composer. On mobile, World lives under Records to preserve the six main navigation targets. These are clearly marked UI placeholders: login, networking, chat delivery, guild membership, ownership, and server authority remain future work. No fake players or messages are displayed.
 
 ## New in v0.7.0 — the approved soft pixel world
 

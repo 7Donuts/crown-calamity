@@ -1,0 +1,62 @@
+import * as G from './engine.js';
+import { renderItemArt } from './item-art.js';
+import { UI_ICONS } from './ui-icons.js';
+import { menuIcon } from './menu-icons.js';
+
+const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const glyph = (name, cls = '') => UI_ICONS[name] ? `<svg class="sheet-glyph ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${UI_ICONS[name]}</svg>` : '';
+const SLOT_NAMES = { weapon: 'Weapon', offhand: 'Offhand', head: 'Head', body: 'Body', hands: 'Hands', feet: 'Feet', accessory: 'Accessory', accessory2: 'Second accessory', relic: 'Relic' };
+const ATTR_GLYPHS = { mig: 'sword', fin: 'hunt', int: 'guide', vit: 'heart', wil: 'mana', ins: 'overview', lck: 'spark' };
+const RESOURCE_GLYPHS = { hp: 'heart', mp: 'mana', sp: 'bolt', armor: 'shield', ward: 'spark', evasion: 'hunt' };
+
+function equippedItemRows(state) {
+  const gear = state?.gear || {};
+  return Object.entries(SLOT_NAMES).flatMap(([slot, slotName]) => {
+    const id = gear[slot], item = id ? G.effectiveItem(state, id) : null;
+    if (!item) return [];
+    const facts = [
+      item.base ? `${item.base} base` : null,
+      item.armor ? `${item.armor} armor` : null,
+      item.ward ? `${item.ward} ward` : null,
+      item.spellBase ? `${item.spellBase} spell` : null,
+      ...Object.entries(item.stats || {}).map(([key, value]) => `${value > 0 ? '+' : ''}${value} ${G.ATTRS[key]?.[0] || key}`)
+    ].filter(Boolean);
+    if (item.id === 'seal') facts.push('Guard barrier');
+    return [`<div class="build-summary-row"><span class="build-summary-art">${renderItemArt(id, { size: 'large' })}</span><div class="build-summary-copy"><small>${esc(slotName)}</small><strong>${esc(item.name)}</strong><span>${facts.length ? facts.map(esc).join(' · ') : esc(item.desc)}</span></div></div>`];
+  });
+}
+
+export function renderBuildSummary(state) {
+  const abilities = G.ABILITIES || {};
+  const rows = equippedItemRows(state);
+  const active = (state.equippedAbilities || []).map(id => abilities[id]?.name || id);
+  const passive = abilities[state.passive]?.name || state.passive;
+  return `<section class="panel build-summary" aria-label="Equipped build"><header class="build-summary-head"><div><span class="build-summary-kicker">LOADOUT</span><h2>Equipped build</h2></div>${menuIcon('overview','build-summary-mark')}</header>${rows.length ? `<div class="build-summary-items">${rows.join('')}</div>` : '<p class="build-summary-empty">No equipment is currently shown.</p>'}<div class="build-summary-skills">${passive ? `<div><span>${glyph('spark','build-summary-skill-mark')}</span><p><small>Passive</small><strong>${esc(passive)}</strong></p></div>` : ''}${active.length ? `<div><span>${glyph('bolt','build-summary-skill-mark')}</span><p><small>Active</small><strong>${active.map(esc).join(' · ')}</strong></p></div>` : ''}</div><footer class="build-summary-foot"><span>${rows.length} of 9 slots equipped</span><button type="button" data-action="open-gear">View all nine slots ${glyph('arrow')}</button></footer></section>`;
+}
+
+function attributeRecord(state, totals) {
+  return Object.entries(G.ATTRS).map(([key, [name, description]]) => `<article class="sheet-attribute"><span class="sheet-attribute-mark">${glyph(ATTR_GLYPHS[key])}</span><span class="sheet-attribute-score">${totals[key]}</span><span class="sheet-attribute-name">${esc(name)}</span><small>${esc(description)}</small></article>`).join('');
+}
+
+function statRecord(state, totals, key, label, value, detail = '') {
+  const now = key === 'hp' ? state.hp : key === 'mp' ? state.mp : key === 'sp' ? state.sp : value;
+  const shown = ['hp', 'mp', 'sp'].includes(key) ? `${now} / ${value}` : value;
+  return `<div class="sheet-stat"><span class="sheet-stat-mark">${glyph(RESOURCE_GLYPHS[key])}</span><span class="sheet-stat-label">${esc(label)}</span><strong>${shown}</strong>${detail ? `<small>${esc(detail)}</small>` : ''}</div>`;
+}
+
+export function renderCharacterOverview(state, { levelProgressHTML = '', inspectorHTML = '' } = {}) {
+  const totals = G.totals(state), progression = G.progression(state), locked = !!(state.fight || state.delve);
+  const part = progression?.part || state.part || 1, parts = progression?.parts || G.PARTS_PER_LEVEL || 4;
+  const resources = [
+    statRecord(state, totals, 'hp', 'Health', totals.hp),
+    statRecord(state, totals, 'mp', 'Mana', totals.mp),
+    statRecord(state, totals, 'sp', 'Stamina', totals.sp)
+  ].join('');
+  const defenses = [
+    statRecord(state, totals, 'armor', 'Armor', totals.armor),
+    statRecord(state, totals, 'ward', 'Ward', totals.ward),
+    statRecord(state, totals, 'evasion', 'Evasion', totals.evasion)
+  ].join('');
+  const levelStamp = `<div class="sheet-level-stamp" aria-label="Level ${state.level}, part ${part} of ${parts}"><span>LEVEL</span><strong>${state.level}</strong><small>PART ${part} / ${parts}</small></div>`;
+  return `<article class="ttrpg-sheet" aria-label="${esc(state.name)} character sheet"><header class="sheet-identity"><div class="sheet-identity-mark">${renderItemArt(state.gear?.weapon, { size: 'large' })}</div><div class="sheet-identity-copy"><span class="sheet-overline">BRACKEN QUAY · ADVENTURER RECORD</span><h2>${esc(state.name)}</h2><p>${esc(state.race)} <span aria-hidden="true">·</span> ${esc(state.origin)}</p><div class="sheet-identity-actions"><button type="button" data-action="identity" ${locked ? 'disabled' : ''}>Edit identity</button><button type="button" data-action="character-manager" ${locked ? 'disabled' : ''}>Manage characters</button></div></div>${levelStamp}</header>${levelProgressHTML ? `<div class="sheet-progression">${levelProgressHTML}</div>` : ''}<section class="sheet-record-section" aria-labelledby="sheet-attributes-heading"><header class="sheet-section-heading"><div><span>ABILITY SCORES</span><h3 id="sheet-attributes-heading">Seven attributes</h3></div><span class="sheet-points">${state.points} available</span></header><div class="sheet-attributes">${attributeRecord(state, totals)}</div><button class="sheet-text-action" data-action="char-tab:attributes">Review attributes ${glyph('arrow')}</button></section><div class="sheet-vitals"><section class="sheet-record-section" aria-labelledby="sheet-resources-heading"><header class="sheet-section-heading"><div><span>VITALS</span><h3 id="sheet-resources-heading">Resources</h3></div></header><div class="sheet-stat-list">${resources}</div></section><section class="sheet-record-section" aria-labelledby="sheet-defenses-heading"><header class="sheet-section-heading"><div><span>GUARD</span><h3 id="sheet-defenses-heading">Defenses</h3></div></header><div class="sheet-stat-list">${defenses}</div></section></div><section class="sheet-record-section sheet-gear-section"><header class="sheet-section-heading"><div><span>PERSONAL EFFECTS</span><h3>Equipment</h3></div></header><div class="sheet-featured-gear">${Object.entries(state.gear || {}).filter(([, id]) => id).slice(0, 3).map(([slot, id]) => { const item = G.effectiveItem(state, id); return `<div>${renderItemArt(id, { size: 'large' })}<span><small>${esc(SLOT_NAMES[slot] || slot)}</small><strong>${esc(item?.name || id)}</strong></span></div>`; }).join('')}</div><button class="sheet-text-action" data-action="open-gear">Review all equipment slots ${glyph('arrow')}</button></section>${inspectorHTML ? `<details class="sheet-inspector"><summary>Combat details and build calculations</summary><div class="sheet-inspector-content">${inspectorHTML}</div></details>` : ''}</article>`;
+}

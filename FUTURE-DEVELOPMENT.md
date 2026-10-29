@@ -2,6 +2,8 @@
 
 Status: future development direction recorded from the user. Login, online play, server-stored progression, protection against client edits, and guilds are intended capabilities. They are not implemented in the current browser-local prototype. The exact stack, multiplayer format, and guild rules remain open.
 
+The current interface includes a World page and a social drawer as planning placeholders. The World page lists known Bracken Quay chapter places and a working return to the local adventure; travel, guilds, friend search, holdings, and chat controls remain disabled. There are no online accounts, shared player records, land claims, or live messages behind these surfaces. See [design/29_Interface_Polish.md](design/29_Interface_Polish.md) for the current UI boundary.
+
 ## Build the solo game with an online future
 
 Keep the current promises: mobile first, no player portraits, classless growth, one explicitly initiated exchange per tap, comfortable repeated actions, and no idle or offline advancement. Online play should preserve the solo path. Guild membership should not be required for basic character progression.

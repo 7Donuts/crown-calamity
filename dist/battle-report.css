@@ -1,0 +1,428 @@
+/* Encounter journal and after-action receipt. Keep this sheet scoped so the
+   battle UI can be iterated without leaking report treatments into menus. */
+#app .encounter-result.outcome,
+#app .battle-report.report {
+  color: #edf0e5;
+  background: linear-gradient(145deg, #223840, #192a31 76%);
+  border: 2px solid #56716f;
+  border-radius: 16px;
+  box-shadow: 0 4px 0 #111e24;
+}
+
+#app .encounter-result.outcome {
+  padding: clamp(18px, 3vw, 28px);
+  margin: 0 0 24px;
+}
+
+#app .encounter-result__top {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+}
+
+#app .encounter-result__portrait {
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  background: #30494d;
+  border: 2px solid #6b9085;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 3px #20363b, 0 3px 0 #15242b;
+}
+
+#app .encounter-result__portrait .enemy-token {
+  width: 96px;
+  height: 96px;
+  flex-basis: 96px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+}
+
+#app .encounter-result__portrait .enemy-token::after { content: none; }
+#app .encounter-result__portrait .pixel-sprite { image-rendering: pixelated; }
+
+#app .encounter-result__status-seal {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 70px;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding: 5px 10px 5px 7px;
+  margin-bottom: 10px;
+  border: 1px solid #8a9878;
+  border-radius: 8px 8px 8px 2px;
+  background: #34483c;
+  color: #f0d39a;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .11em;
+  line-height: 1.3;
+}
+
+#app .battle-glyph {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  fill: currentColor;
+  stroke: none;
+}
+
+#app .battle-report .journal-art,
+#app .encounter-result .journal-art {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+
+#app .battle-report .journal-art__sprite,
+#app .encounter-result .journal-art__sprite {
+  position: absolute;
+  display: block;
+  max-width: none;
+  image-rendering: pixelated;
+  object-fit: fill;
+}
+
+#app .encounter-result__status-seal .battle-glyph {
+  width: 22px;
+  height: 22px;
+  flex-basis: 22px;
+  color: #f1c375;
+}
+
+#app .encounter-result__status-label {
+  min-width: 0;
+  flex: 1 1 125px;
+  overflow-wrap: anywhere;
+}
+
+#app .encounter-result__heading h2 {
+  margin: 0 0 7px;
+  color: #f4e8cb;
+  font-size: clamp(25px, 4vw, 34px);
+  line-height: 1.1;
+}
+
+#app .encounter-result__heading p {
+  max-width: 66ch;
+  margin: 0;
+  color: #d6e0d8;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+#app .encounter-result__rewards.reward-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 1fr));
+  gap: 10px;
+  margin: 22px 0 0;
+  color: #edf0e5;
+  font-size: 15px;
+}
+
+#app .encounter-result__reward {
+  min-width: 0;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 13px;
+  border: 1px solid #49615e;
+  border-radius: 10px;
+  background: #1c3036;
+  color: #f0d39a;
+}
+
+#app .encounter-result__reward .battle-glyph,
+#app .encounter-result__reward .item-art {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  color: #9bc8b4;
+}
+
+#app .encounter-result__reward .item-art { border-radius: 6px; }
+
+#app .encounter-result__reward > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+#app .encounter-result__reward small {
+  color: #bfd0c9;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  line-height: 1.25;
+}
+
+#app .encounter-result__reward strong {
+  color: #fff1d1;
+  font-size: 16px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+#app .encounter-result__roll.loot-receipt {
+  max-width: 620px;
+  margin: 14px 0 0;
+  padding: 0;
+  border: 1px solid #526b68;
+  border-radius: 9px;
+  background: #1c3036;
+  color: #d8e4dc;
+  font-size: 15px;
+}
+
+#app .encounter-result__roll summary {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+#app .encounter-result__roll summary::-webkit-details-marker { display: none; }
+#app .encounter-result__roll summary .battle-glyph { color: #e3bd79; }
+#app .encounter-result__roll summary strong { color: #fff0ce; }
+
+#app .encounter-result__roll-cue {
+  margin-left: auto;
+  color: #a9c9bd;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+#app .encounter-result__roll[open] .encounter-result__roll-cue::after { content: ' open'; }
+#app .encounter-result__roll:not([open]) .encounter-result__roll-cue::after { content: ' closed'; }
+
+#app .encounter-result__roll p {
+  margin: 0;
+  padding: 9px 14px 13px 42px;
+  color: #d2ded8;
+  border-top: 1px solid #405a58;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+#app .encounter-result__actions.outcome-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+#app .encounter-result__actions button {
+  min-width: 0;
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 10px 14px;
+  border: 2px solid #768b78;
+  border-radius: 10px;
+  color: #f4e9cf;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+#app .encounter-result__actions button.primary {
+  border-color: #e0b96e;
+  background: #e0b96e;
+  color: #21333a;
+  box-shadow: 0 3px 0 #9c703c;
+}
+
+#app .encounter-result__actions button.primary:hover:not(:disabled) { background: #f0cd8b; }
+#app .encounter-result__actions button.subtle { background: #263d42; }
+#app .encounter-result__actions button:hover:not(:disabled) { border-color: #b6c8b4; }
+#app .encounter-result__actions button:focus-visible,
+#app .battle-report button:focus-visible,
+#app .encounter-result__roll summary:focus-visible {
+  outline: 3px solid #f0c477;
+  outline-offset: 3px;
+}
+
+#app .battle-report.report {
+  padding: 18px;
+  margin: 0 0 24px;
+  background: linear-gradient(145deg, #20353a, #17282e 80%);
+}
+
+#app .battle-report__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #48605d;
+}
+
+#app .battle-report__title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+#app .battle-report__stamp {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 72px;
+  border: 1px solid #788776;
+  border-radius: 10px 10px 10px 3px;
+  background: #35493e;
+  color: #efc779;
+}
+
+#app .battle-report__title > span:last-child { display: grid; gap: 2px; }
+#app .battle-report__title .eyebrow { color: #c7d7c8; font-size: 12px; letter-spacing: .12em; }
+#app .battle-report__title strong { color: #f0e2c3; font: 20px/1.2 var(--serif, Georgia, serif); }
+
+#app .battle-report__toggle.text-button {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border: 1px solid #617875;
+  border-radius: 9px;
+  background: #263b40;
+  color: #d9e4d8;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+#app .battle-report__toggle .battle-glyph { width: 16px; height: 16px; flex-basis: 16px; color: #efc779; }
+
+#app .battle-report__entries { display: grid; }
+
+#app .battle-report__count {
+  margin: 8px 0 0;
+  color: #bcd0c9;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+#app .battle-report__entry.report-line {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  padding: 12px 2px;
+  border-bottom: 1px solid #3d5554;
+  color: #ebeee4;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+#app .battle-report__entry:last-child { border-bottom: 0; }
+
+#app .battle-report__entry-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #59726b;
+  border-radius: 8px;
+  background: #2b4143;
+  color: #d9bf83;
+}
+
+#app .battle-report__entry-icon .battle-glyph { width: 19px; height: 19px; }
+#app .battle-report__entry.attack .battle-report__entry-icon { color: #f0c477; }
+#app .battle-report__entry.enemy .battle-report__entry-icon { color: #e2a999; background: #443b39; border-color: #80695f; }
+#app .battle-report__entry.heal .battle-report__entry-icon { color: #9bd0ba; background: #263f3d; }
+#app .battle-report__entry.defend .battle-report__entry-icon { color: #bdc99d; background: #334338; }
+#app .battle-report__entry.reward .battle-report__entry-icon { color: #f0c477; background: #484333; }
+#app .battle-report__entry.special .battle-report__entry-icon { color: #8fc6bd; }
+
+#app .battle-report__entry-body { min-width: 0; display: grid; gap: 2px; }
+#app .battle-report__role { color: #c6d7cf; font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+#app .battle-report__entry-text { color: #f0f1e7; font-size: 15px; overflow-wrap: anywhere; }
+#app .battle-report__entry.attack .battle-report__entry-text { color: #fff1d3; }
+#app .battle-report__entry.enemy .battle-report__entry-text { color: #f1d8ce; }
+#app .battle-report__entry.heal .battle-report__entry-text { color: #c8e6d9; }
+#app .battle-report__entry.defend .battle-report__entry-text { color: #d8e2c8; }
+#app .battle-report__entry.reward .battle-report__entry-text { color: #f2d79f; }
+
+#app .battle-report__exchange {
+  padding: 4px 7px;
+  border: 1px solid #496461;
+  border-radius: 7px;
+  color: #c6d8d0;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+#app .battle-report__empty.report-empty {
+  padding: 14px 2px 4px;
+  margin: 0;
+  color: #d1ded6;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+#app .battle-report__mechanics.mechanics { margin-top: 12px; }
+#app .battle-report__mechanics button { min-height: 48px; font-size: 14px; }
+
+@media (max-width: 600px) {
+  #app .encounter-result.outcome { padding: 18px; }
+  #app .encounter-result__top { grid-template-columns: 104px minmax(0, 1fr); gap: 14px; }
+  #app .encounter-result__status-seal { font-size: 11px; letter-spacing: .08em; }
+  #app .encounter-result__status-label { flex-basis: 100%; }
+  #app .encounter-result__heading h2 { font-size: 25px; }
+  #app .encounter-result__heading p { font-size: 15px; }
+  #app .encounter-result__rewards.reward-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 18px; }
+  #app .encounter-result__reward { min-height: 60px; gap: 8px; padding: 8px; }
+  #app .encounter-result__reward strong { font-size: 15px; }
+  #app .encounter-result__reward small { font-size: 11px; }
+  #app .encounter-result__roll summary { flex-wrap: wrap; }
+  #app .encounter-result__actions.outcome-actions { gap: 8px; }
+  #app .encounter-result__actions button { min-height: 50px; padding: 9px; font-size: 14px; }
+  #app .battle-report.report { padding: 14px; }
+  #app .battle-report__header { align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+  #app .battle-report__title { gap: 8px; }
+  #app .battle-report__title strong { font-size: 18px; }
+  #app .battle-report__toggle.text-button { min-height: 48px; padding: 6px 8px; font-size: 13px; }
+  #app .battle-report__entry.report-line { grid-template-columns: 30px minmax(0, 1fr); gap: 8px; padding: 11px 0; }
+  #app .battle-report__entry-icon { width: 28px; height: 28px; }
+  #app .battle-report__exchange { grid-column: 2; justify-self: start; }
+}
+
+@media (max-width: 370px) {
+  #app .encounter-result__top { grid-template-columns: 1fr; }
+  #app .encounter-result__rewards.reward-grid { grid-template-columns: 1fr; }
+  #app .encounter-result__actions.outcome-actions { grid-template-columns: 1fr; }
+  #app .encounter-result__actions button { width: 100%; }
+  #app .battle-report__header { flex-wrap: wrap; }
+  #app .battle-report__toggle.text-button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app .encounter-result.pulse { animation: none; }
+}

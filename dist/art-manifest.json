@@ -395,6 +395,74 @@
       "height": 32,
       "mode": "SVG",
       "alpha": true
+    },
+    {
+      "id": "journal-props",
+      "src": "assets/journal/journal-atlas.png",
+      "purpose": "Decorative field report, recovery, map, and ledger props",
+      "sha256": "46d4f2f8d5c8503bfa1d89f1539e3016ad49709a80caf4c0267e5feb20553a7f",
+      "displaySizes": [
+        32,
+        64,
+        96
+      ],
+      "provenance": "Original generated soft-pixel journal props following ART-DIRECTION.md; source PNG retained unchanged.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "layout": {
+        "columns": 2,
+        "rows": 2,
+        "cellWidth": 627,
+        "cellHeight": 627
+      },
+      "frames": [
+        {
+          "col": 0,
+          "row": 0,
+          "visibleBounds": [
+            207,
+            240,
+            465,
+            500
+          ]
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "visibleBounds": [
+            151,
+            248,
+            453,
+            486
+          ]
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "visibleBounds": [
+            198,
+            173,
+            482,
+            441
+          ]
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "visibleBounds": [
+            161,
+            180,
+            439,
+            446
+          ]
+        }
+      ]
     }
   ]
 }

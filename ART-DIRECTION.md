@@ -45,6 +45,8 @@ Keep icon silhouettes simple and crisp at 24 px on an integer-scaled pixel grid.
 
 Maintain at least 4.5:1 contrast for ordinary text, at least 48 × 48 px primary touch targets, visible focus and disabled states, and clear spacing. Do not make state understandable through color alone. Keep the battle log, enemy intent, action requirement, reward, and next decision visually dominant over decoration. The interface must remain mobile-first and text-first.
 
+The character overview uses warm cream paper with dark slate ink, compact stat groups, and a field-ledger identity mark. Keep the parchment scoped to the character record; action controls and encounter text keep their readable dark HUD surfaces. Journal props are decorative companions to text, never replacements for a reward, action label, or recovery state. Enlarge their viewports when source padding makes the silhouette too small.
+
 ## Asset inventory and production record
 
 The following files are installed in the live game. The [runtime asset manifest](dist/art-manifest.json) records delivered dimensions, transparency, crop grids, high-alpha content bounds, and SHA-256 hashes. Generated PNG containers retain their original pixels; they are not claimed to be hand-registered, sixteen-color indexed sprites.
@@ -55,6 +57,7 @@ The following files are installed in the live game. The [runtime asset manifest]
 | Ledger Rat | `dist/assets/enemies/ledger-rat-idle.png` | Approved 1254 × 1254 RGBA study; 2 × 2 poses with 627 px cells. Still in lists, four held frames during encounters. |
 | Other enemies | `dist/assets/enemies/enemy-atlas.png` | 1536 × 1024 RGBA; 3 × 2 cells of 512 px. Scavenger, Wisp, Crab, Inspector, Hound, Superintendent. |
 | Equipment | `dist/assets/items/item-atlas.png` | 1254 × 1254 RGBA; 4 × 4 visual families (fourteen equipment families, materials, and toolkit). Percentage crops handle 313.5 px source cells. All 25 base IDs map to a family in `dist/item-art.js`. |
+| Journal props | `dist/assets/journal/journal-atlas.png` | 1254 × 1254 RGBA, 2 × 2 cells of 627 px: victory shield, recovery mug/potion, field lantern/map, and ledger. Rendered through `dist/journal-art.js` at 32/64/96 px; live report and sheet use 64–96 px so silhouettes stay visible. |
 | BURSAR emblem | `dist/assets/hud/bursar-sigil.png` | 1305 × 1206 RGBA. A simple warm crown/control mark with a dusty-teal center; rendered at 31–36 px. |
 | Favicon and UI glyphs | `dist/assets/crown.svg`, `dist/ui-icons.js`, `dist/menu-icons.js` | Original integer-grid SVG silhouettes; 32 px favicon and shared 24 px glyph grid, with visible labels. |
 

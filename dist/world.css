@@ -1,0 +1,104 @@
+/* Planned-world surfaces use the existing soft-pixel palette and stay self-contained. */
+#app .world-page { min-width: 0; color: #f2eee3; font-size: 15px; line-height: 1.55; }
+#app .world-page :is(p,h2,h3,h4) { color: inherit; }
+#app .world-page-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
+#app .world-page-heading h2 { margin: 3px 0 4px; font-size: clamp(25px,3.5vw,34px); }
+#app .world-page-heading p { margin: 0; color: #d1d9d9; font-size: 15px; }
+#app .planning-eyebrow { display: block; color: #e5bd70; font-size: 12px; font-weight: 800; letter-spacing: .08em; }
+#app .planning-adventurer { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; margin-bottom: 14px; padding: 5px 10px; border-radius: 5px; background: #3c4b54; color: #e8e4d9; font-size: 13px; }
+#app .planning-adventurer .menu-icon { width: 18px; height: 18px; color: #e5bd70; }
+#app .planning-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+#app .planning-tabs button { display: inline-flex; flex: 1 1 120px; align-items: center; justify-content: center; gap: 7px; min-width: 0; min-height: 48px; padding: 8px 10px; border: 1px solid #617078; border-radius: 7px; background: #33424b; color: #e2e7e4; font: 700 14px/1.3 system-ui,sans-serif; }
+#app .planning-tabs button.active { border-color: #d9b66e; background: #46544e; color: #fff1ca; }
+#app .planning-tabs .menu-icon { width: 18px; height: 18px; color: #8fc2b9; }
+#app .planning-tabs button.active .menu-icon { color: #f0c477; }
+#app .world-tab-content { min-width: 0; }
+#app .planning-world-intro { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
+#app .planning-world-intro h3 { margin: 3px 0 6px; font-size: 23px; }
+#app .planning-world-intro p { max-width: 650px; margin: 0; color: #d1d9d9; font-size: 15px; }
+#app .planning-return { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 9px 13px; border: 1px solid #83969a; border-radius: 6px; background: #3d514d; color: #f2eee3; font: 700 14px/1.35 system-ui,sans-serif; }
+#app .planning-return .menu-icon { color: #d9b66e; }
+#app .planning-region { padding: clamp(15px,2vw,22px); border: 1px solid #617078; border-radius: 9px; background: linear-gradient(140deg,#33424b,#2d3b44); box-shadow: inset 0 1px rgba(255,255,255,.05); }
+#app .planning-region-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 13px; }
+#app .planning-region-heading .journal-art { position: relative; display: inline-block; flex: 0 0 64px; width: 64px; height: 64px; overflow: hidden; }
+#app .planning-region-heading .journal-art__sprite { position: absolute; max-width: none; image-rendering: pixelated; }
+#app .planning-region-heading h3 { margin: 2px 0; font-size: 23px; }
+#app .planning-region-heading p { margin: 0; color: #d1d9d9; font-size: 13px; }
+#app .planning-route { position: relative; display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+#app .planning-place { position: relative; display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 12px; min-height: 88px; padding: 12px; border-radius: 7px; background: rgba(18,29,34,.35); }
+#app .planning-place-mark { position: relative; z-index: 1; display: grid; place-items: center; width: 32px; height: 32px; border: 2px solid #8fc2b9; border-radius: 50%; background: #26343d; color: #f0c477; font-weight: 800; }
+#app .planning-place > div { min-width: 0; }
+#app .planning-place small { color: #e5bd70; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+#app .planning-place h4 { margin: 2px 0; font-size: 17px; }
+#app .planning-place p { margin: 0; color: #d1d9d9; font-size: 14px; }
+#app .planning-place button, #app .planning-actions button, #app .planning-empty button, #app .planning-label input { min-height: 48px; }
+#app .planning-place button, #app .planning-actions button, #app .planning-empty button { border: 1px solid #617078; border-radius: 5px; background: #34424a; color: #e0e4e0; font-size: 13px; }
+#app .world-page button:disabled, #app .social-drawer button:disabled, #app .world-page input:disabled, #app .social-drawer textarea:disabled { opacity: .76; color: #c4ccca; cursor: not-allowed; }
+#app .planning-place button:disabled, #app .planning-actions button:disabled, #app .planning-empty button:disabled, #app .social-drawer button:disabled { border-style: dashed; }
+#app .planning-note, #app .world-page-footer { display: flex; align-items: center; gap: 8px; margin: 14px 0 0; color: #d1d9d9; font-size: 13px; }
+#app .world-page-footer { padding-top: 12px; border-top: 1px solid #53656c; }
+#app .world-page-footer .menu-icon { flex: 0 0 18px; color: #8fc2b9; }
+#app .planning-empty { display: grid; grid-template-columns: 64px minmax(0,1fr); align-items: start; gap: 15px; min-width: 0; padding: clamp(16px,2vw,24px); border: 1px solid #617078; border-radius: 9px; background: #33424b; }
+#app .planning-empty-art { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 8px; background: #26343d; }
+#app .planning-empty .journal-art { position: relative; display: inline-block; width: 64px; height: 64px; overflow: hidden; }
+#app .planning-empty .journal-art__sprite { position: absolute; max-width: none; image-rendering: pixelated; }
+#app .planning-empty h3 { margin: 3px 0 5px; font-size: 22px; }
+#app .planning-empty p { margin: 0 0 12px; color: #d1d9d9; font-size: 15px; }
+#app .planning-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+#app .planning-actions button { flex: 1 1 150px; }
+#app .planning-label { display: grid; gap: 5px; color: #e1e5e1; font-size: 14px; }
+#app .planning-label input { width: 100%; padding: 8px 10px; border: 1px solid #617078; border-radius: 5px; background: #26343d; color: #e1e5e1; }
+#app .planning-label input::placeholder { color: #b9c2c4; }
+#app .planning-plot { display: grid; grid-template-columns: 28px minmax(0,1fr); align-items: center; column-gap: 8px; row-gap: 2px; margin: 12px 0; padding: 12px; border-radius: 6px; background: #26343d; }
+#app .planning-plot > span { grid-row: 1 / span 2; color: #d9b66e; }
+#app .planning-plot .menu-icon { width: 22px; height: 22px; }
+#app .planning-plot strong { color: #f2eee3; font-size: 15px; }
+#app .planning-plot small { color: #d1d9d9; font-size: 12px; }
+#app .planning-plot-features { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin: 0 0 12px; }
+#app .planning-plot-features > div { display: grid; gap: 2px; padding: 8px 10px; border-radius: 5px; background: #26343d; }
+#app .planning-plot-features small { color: #d1d9d9; font-size: 12px; }
+#app .planning-plot-features strong { color: #f0c477; font-size: 14px; }
+
+#app .social-drawer { position: fixed; z-index: 80; top: calc(78px + env(safe-area-inset-top)); right: 16px; bottom: 16px; display: flex; flex-direction: column; width: min(340px,calc(100vw - 32px)); max-height: calc(100dvh - 94px - env(safe-area-inset-top)); padding: 16px; border: 1px solid #74858b; border-radius: 10px; background: #2d3b44; color: #f2eee3; box-shadow: 0 16px 50px rgba(0,0,0,.55); }
+#app .social-drawer :is(h2,h3,p) { color: inherit; }
+#app .social-drawer-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+#app .social-drawer-heading h2 { margin: 3px 0 10px; font-size: 24px; }
+#app .social-close { display: grid; place-items: center; flex: 0 0 48px; width: 48px; height: 48px; padding: 8px; border: 1px solid #74858b; border-radius: 6px; background: #34454f; color: #f2eee3; }
+#app .social-close .menu-icon { width: 20px; height: 20px; }
+#app .social-drawer .planning-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; }
+#app .social-drawer .planning-tabs button { flex: 1 0 auto; min-width: 78px; padding-inline: 8px; font-size: 13px; }
+#app .social-drawer .planning-tabs .menu-icon { width: 16px; height: 16px; }
+#app .social-pane { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+#app .social-channels { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 0 10px; border-bottom: 1px solid #53656c; }
+#app .social-channels button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 1 1 90px; min-height: 48px; padding: 7px; border: 1px dashed #617078; border-radius: 5px; background: #33424b; color: #cbd3d1; font-size: 13px; }
+#app .social-channels .menu-icon { width: 17px; height: 17px; color: #a9c2ba; }
+#app .social-history { display: flex; flex: 1 1 auto; flex-direction: column; align-items: center; justify-content: center; min-height: 100px; padding: 18px 10px; text-align: center; }
+#app .social-history-art { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 10px; border-radius: 8px; background: #26343d; }
+#app .social-history .journal-art { position: relative; display: inline-block; width: 64px; height: 64px; overflow: hidden; }
+#app .social-history .journal-art__sprite { position: absolute; max-width: none; image-rendering: pixelated; }
+#app .social-history h3 { margin: 0 0 4px; font-size: 17px; }
+#app .social-history p, #app .social-planned p { max-width: 270px; margin: 0; color: #d1d9d9; font-size: 14px; }
+#app .social-composer { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 7px; align-items: end; padding-top: 10px; border-top: 1px solid #53656c; }
+#app .social-composer label { grid-column: 1 / -1; color: #d1d9d9; font-size: 12px; }
+#app .social-composer textarea { width: 100%; min-height: 48px; padding: 9px; resize: none; border: 1px solid #617078; border-radius: 5px; background: #26343d; color: #e1e5e1; font: 14px/1.4 system-ui,sans-serif; }
+#app .social-composer button { min-width: 72px; min-height: 48px; border: 1px solid #617078; border-radius: 5px; background: #34424a; color: #d1d9d9; }
+#app .social-planned { display: flex; flex: 1 1 auto; flex-direction: column; align-items: flex-start; justify-content: center; gap: 9px; padding: 14px 4px; }
+#app .social-planned h3 { margin: 0; font-size: 20px; }
+#app .social-planned button { min-height: 48px; padding: 8px 12px; border: 1px dashed #617078; border-radius: 5px; background: #33424b; color: #d1d9d9; }
+
+@media (max-width: 740px) {
+  #app .planning-world-intro { align-items: stretch; flex-direction: column; }
+  #app .planning-return { width: 100%; }
+  #app .social-drawer { top: auto; right: 12px; bottom: calc(68px + env(safe-area-inset-bottom)); left: 12px; width: auto; max-height: min(80vh,calc(100dvh - 88px - env(safe-area-inset-bottom))); padding: 14px; }
+  #app .social-drawer .planning-tabs { overflow-x: visible; }
+  #app .social-drawer .planning-tabs button { flex: 1 1 70px; min-width: 0; }
+}
+@media (max-width: 420px) {
+  #app .planning-place { grid-template-columns: 32px minmax(0,1fr); }
+  #app .planning-place button { grid-column: 2; justify-self: start; }
+  #app .planning-empty { grid-template-columns: 48px minmax(0,1fr); gap: 10px; padding: 14px; }
+  #app .planning-empty-art, #app .planning-empty .journal-art { width: 48px; height: 48px; }
+  #app .planning-empty .journal-art img { width: 200%; height: 200%; }
+  #app .social-drawer .planning-tabs { flex-wrap: wrap; }
+  #app .social-drawer .planning-tabs button { flex-basis: calc(50% - 4px); }
+}
