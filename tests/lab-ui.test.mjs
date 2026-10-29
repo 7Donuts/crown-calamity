@@ -5,22 +5,23 @@ import vm from 'node:vm';
 import * as G from '../dist/engine.js';
 import * as L from '../dist/lab.js';
 import * as B from '../dist/balance.js';
+import * as S from '../dist/shifts.js';
 import {UI_ICONS} from '../dist/ui-icons.js';
 
 async function bootLab(){
   const elements=new Map(),downloads=[],copied=[];
   const element=()=>({innerHTML:'',textContent:'',value:'',dataset:{},classList:{add(){},remove(){},toggle(){}},listeners:{},addEventListener(type,fn){this.listeners[type]=fn;},click(){}});
   const get=selector=>{if(!elements.has(selector))elements.set(selector,element());return elements.get(selector);};
-  const context={__G:G,__L:L,__B:B,__UI_ICONS__:UI_ICONS,document:{querySelector:get,createElement:element},window:{scrollTo(){}},navigator:{clipboard:{async writeText(text){copied.push(text);}}},Blob,URL:{createObjectURL(blob){downloads.push(blob);return 'blob:lab-report';},revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},console};
+  const context={__G:G,__L:L,__B:B,__S:S,__UI_ICONS__:UI_ICONS,document:{querySelector:get,createElement:element},window:{scrollTo(){}},navigator:{clipboard:{async writeText(text){copied.push(text);}}},Blob,URL:{createObjectURL(blob){downloads.push(blob);return 'blob:lab-report';},revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},console};
   Object.defineProperty(context,'localStorage',{get(){throw new Error('Lab must never access campaign storage');}});
   let source=await readFile(new URL('../dist/lab-ui.js',import.meta.url),'utf8');
-  for(const [name,file] of [['G','engine'],['L','lab'],['B','balance']])source=source.replace(`import * as ${name} from './${file}.js';`,`const ${name}=globalThis.__${name};`);
+  for(const [name,file] of [['G','engine'],['L','lab'],['B','balance'],['S','shifts']])source=source.replace(`import * as ${name} from './${file}.js';`,`const ${name}=globalThis.__${name};`);
   source=source.replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;');
   vm.runInNewContext(source+'\nglobalThis.__test={handleAction,render,buildReport,getSession:()=>session};',context,{filename:'lab-ui.js'});
   return {ui:context.__test,get,downloads,copied};
 }
 
-test('the disposable UI opens all six scenarios, shows the correct goals, and never accesses campaign storage',async()=>{
+test('the disposable UI opens all seven scenarios, shows the correct goals, and never accesses campaign storage',async()=>{
   const {ui,get}=await bootLab();
   assert.match(get('#lab-app').innerHTML,/provisional balance/);
   for(const scenario of L.LAB_SCENARIOS){
@@ -75,4 +76,60 @@ test('lab shop and equip controls use the same affordability and ownership rules
   ui.handleAction('lab-equip:oilskin:body');
   assert.equal(s.character.gear.body,'oilskin');
   assert.equal(/\b(?:undefined|NaN)\b/.test(get('#lab-app').innerHTML),false);
+});
+
+test('the Night Shift scenario clocks in, shows the risk, offers a stored boon check-in, locks shopping and clocks out once',async()=>{
+  const {ui,get,downloads}=await bootLab();
+  get('#scenario-select').value='night_shift';get('#kit-select').value='bulwark';get('#seed-input').value='ui-shift';
+  ui.handleAction('start-session');
+  const html=()=>get('#lab-app').innerHTML;
+  assert.match(html(),/Clock in \(start Night Shift\)/);
+  assert.match(html(),/Nothing is timed and nothing accrues while you are away/);
+  assert.equal(/\bundefined\b|\bNaN\b/.test(html()),false);
+  assert.equal(/\bbank\b|guild|circle|holdings|Care Instructions|toy box/i.test(html()),false,'reserved vocabulary stays out of the Shift text');
+  ui.handleAction('shift-start');
+  const s=ui.getSession();
+  assert.equal(s.shift.status,'open');
+  assert.match(html(),/Unfiled receipts at risk before the next fight: nothing yet/);
+  assert.match(html(),/Take your one Break \(heals 35% of each resource\)/);
+  assert.match(html(),/Locked during a Night Shift/);
+  assert.match(html(),/data-action="lab-buy:sword" class="subtle" disabled/);
+  const win=()=>{ui.handleAction('shift-fight:rats');assert.ok(s.character.fight);assert.match(html(),/Go still \(Withdraw\) ends this fight and resets the streak, and keeps your unfiled receipts/);s.character.fight.hp=1;s.character.nextActionAt=0;ui.handleAction('lab-action:attack');assert.equal(s.character.fight,null);};
+  win();
+  assert.match(html(),/Unfiled receipts at risk before the next fight: nothing yet/,'the first win adds no Overtime');
+  win();
+  assert.match(html(),/Unfiled receipts at risk before the next fight: /);assert.match(html(),/Overtime adds \+20% of its coins/);
+  win();
+  assert.match(html(),/MIDNIGHT SNACK CHECK-IN · 3 WINS/);
+  const picks=[...html().matchAll(/data-action="shift-pick:3:([a-z_]+)"/g)].map(m=>m[1]);
+  assert.equal(picks.length,3);assert.equal(new Set(picks).size,3);
+  assert.match(html(),/data-action="shift-fight:rats" class="target-button" disabled/,'the next hunt waits for the check-in');
+  ui.render();ui.render();
+  assert.deepEqual([...html().matchAll(/data-action="shift-pick:3:([a-z_]+)"/g)].map(m=>m[1]),picks,'re-rendering cannot reroll the offer');
+  ui.handleAction('shift-fight:rats');assert.equal(s.character.fight,null,'a hunt cannot start while the check-in is open');
+  ui.handleAction(`shift-pick:3:${picks[0]}`);
+  assert.deepEqual(S.activeBoonIds(s.shift),[picks[0]]);
+  assert.match(html(),/Boons this Shift:/);
+  assert.equal(/MIDNIGHT SNACK CHECK-IN/.test(html()),false);
+  const coins=s.character.coins,unfiled=S.unfiledReceipts(s.shift);
+  ui.handleAction('shift-clockout');
+  assert.equal(s.shift.status,'clocked_out');assert.equal(s.character.coins,coins+unfiled.coins);
+  assert.match(html(),/Last Night Shift: clocked out after 3 wins/);
+  ui.handleAction('shift-clockout');assert.equal(s.character.coins,coins+unfiled.coins,'a second clock-out pays nothing');
+  get('#session-notes').value='n';ui.handleAction('export-report');
+  const report=JSON.parse(await downloads[0].text());
+  assert.equal(report.report.shifts.records[0].endReason,'clock_out');assert.equal(report.report.shifts.records[0].wins,3);
+  assert.equal(/\bundefined\b|\bNaN\b/.test(html()),false);
+});
+
+test('a Night Shift defeat in the UI explains what was and was not lost',async()=>{
+  const {ui,get}=await bootLab();
+  get('#scenario-select').value='night_shift';get('#kit-select').value='bulwark';get('#seed-input').value='ui-defeat';
+  ui.handleAction('start-session');ui.handleAction('shift-start');
+  const s=ui.getSession();s.character.hp=1;
+  ui.handleAction('shift-fight:rats');s.character.nextActionAt=0;ui.handleAction('lab-action:attack');
+  assert.equal(s.shift.status,'ended');
+  assert.match(get('#lab-app').innerHTML,/ended in defeat/);assert.match(get('#lab-app').innerHTML,/no XP or gear was lost/);
+  assert.match(get('#lab-app').innerHTML,/Cannot clock in yet: You are still wounded/);
+  assert.match(get('#lab-app').innerHTML,/nothing updates by itself/);
 });

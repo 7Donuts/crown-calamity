@@ -232,6 +232,32 @@ Client now, server later: locally a `shift` object (id, wins, streak, filed rece
 
 Saves: additive, defaulted when absent; normalization drops malformed data. No version bump needed on its own.
 
+#### Prototype in the Playtest Lab, v0.12.0
+
+The lab scenario "Night Shift" (`night_shift`, a level 3 Bulwark fixture) implements R2 as a lab-only prototype. The rules live in `dist/shifts.js` (pure, no DOM, no storage, no clock); `dist/lab.js` owns the session and the telemetry; `dist/lab-ui.js` renders it. The engine (`dist/engine.js`) and the campaign are untouched: the module uses only the engine's public `startFight`, `exchange`, `actionInfo`, `intent`, `totals`, `restStatus` and `ENEMIES`. The lab still never reads or writes a campaign save or the roster, has no auto-combat or background progression, and discards a Shift on reset. These are prototype rules on a client-controlled fixture, not a secure online system. Nothing is timed and nothing accrues while the page is away.
+
+Owner defaults assumed (Q4 and Q5, plus the drop-chance decision), all provisional until the owner confirms them:
+- Q4: defeat ends the Shift and forfeits only the unfiled Overtime bonus. Base rewards already granted stay. The engine still applies the normal 5% carried-coin loss (cap 50) and the twelve-second wound; there is no XP or gear loss. Unfiled receipts are not carried coins, so they never enter the 5% calculation. Withdraw ends the current fight, resets the streak, keeps the unfiled receipts and leaves the Shift open. Because "filed receipts" appears in Q4, the prototype reads it as the receipts already accrued: there is no mid-Shift filing, and clock-out is the only filing step.
+- Q5: a spell made free by a boon is still a spell, so it grants no 2-mana regeneration. Only spells with a mana cost are eligible, so there is no ambiguity with zero-cost actions.
+- No drop-chance bonus in version 1. Overtime adds coins and materials only; drop chance, the equipment-miss counter and Luck are not touched.
+
+Rules implemented (`rulesVersion` 1, Shift ID `shift-N` per session):
+- Start ("Clock in") is blocked during a fight, a delve, a pending Rest, an active wound, at zero Stuffing (Health), or while another Shift is open. While a Shift is open, Rest, buying, selling, equipping and attribute allocation are locked in the lab, as in a delve. Every hunt is a separate explicit input under the shared 650 ms delay, and the player picks each target (anything the engine allows at the fixture's level). No actions are queued.
+- Overtime: a win adds a share of that victory's base coins and materials to unfiled receipts, equal to 10% per win already in the current streak, capped at +60%. The first win of a streak adds 0%, the second 10%, and the seventh and later 60%. Amounts are held as integer hundredths and shown and filed as the running total rounded down, so a 1-material reward still accrues across wins and the remainder is dropped at clock-out. The at-risk amount and the next Overtime percentage are shown before every fight.
+- Clock out ("file unfiled receipts") is blocked mid-fight, pays once, and is idempotent by Shift ID through a session ledger, so a repeat or a reloaded stale copy pays nothing more.
+- One Break per Shift, between fights: 35% of the maximum of each resource (rounded down, capped at maximum). It never touches `restReadyAt` or `woundedUntil`, so it cannot clear a wound or finish a Rest.
+- Midnight snack check-ins at 3, 6 and 9 total wins (withdrawals do not reset the win count). Each offers three of the five boons (excluding any already taken), shuffled once with a stream derived from the session seed, the Shift ID and the milestone, so offers are reproducible, independent of combat rolls, stored on the Shift and never rerolled by a reload, re-render or `normalizeShift`. The next hunt waits until the offer is picked or skipped. An open offer is forfeited at clock-out or defeat.
+- Boons (Shift-only, PvE-only, gone at clock-out or defeat, never saved, never in any PvP snapshot; each names a trigger, a window and a per-exchange ceiling in the UI):
+  - Hazard pay: answering a telegraphed heavy with a guarding action (Hunker down, Brace, Wardcast or Guardstrike) restores 6 Bounce (Stamina); the first 2 times each fight that it restores something; never above maximum.
+  - Paperwork shortcut: the first Arc Bolt or Wardcast each fight costs no Sparkle (Mana) and grants no regeneration, even with zero mana; one per fight.
+  - Union rules: Shake it off (Recover) also restores up to 25 Stuffing (Health) after the enemy responds; the first 2 times each fight; the action hint is updated, and still says Recover restores 10 Sparkle in total (8 plus the 2 regeneration) and 10 Bounce.
+  - Second wind: the Break heals 50% instead of 35%.
+  - Warm-up: each hunt in the Shift starts with 4 Sparkle (Mana) and 4 Bounce (Stamina) restored, never above maximum.
+- Telemetry (`shifts` in the lab report, only for this scenario): per Shift the ID, rules version, status and end reason (clock out or defeat), wins, best streak, each fight's streak before, Overtime percentage if won and unfiled amount at risk (capped at 100 fight records per Shift and 20 Shifts per session, with truncation flags), boon offers and picks, Break use and amounts, filed and forfeited totals. The event log adds `shift-start`, `shift-fight-start`, `shift-fight-end`, `shift-offer`, `shift-pick`, `shift-skip`, `shift-break`, `shift-effect` and `shift-end`.
+- Server notes (unchanged from above): Shift, streak, receipts, offers and bonus values become server-owned; clock-out becomes an idempotent action keyed by Shift ID plus action ID.
+
+What to watch in playtests: whether players clock out because they understand the risk or because they are afraid of it; whether Withdraw feels like a fair exit; whether the 25 Stuffing and 6 Bounce numbers matter; whether one Break is enough; and whether +60% on small base rewards (a level 1 hunt pays 9 coins) is large enough to tempt anyone. The numbers are starting values, not balance commitments.
+
 ### R3 (revised). Case files and local records
 
 Keeps: repetition builds toward something visible; each enemy gets a Field Guide entry; skill is acknowledged.

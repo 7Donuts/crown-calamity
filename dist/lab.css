@@ -22,3 +22,4 @@ button,input,select,.rating-field select{min-height:48px}
 .action-button .action-icon{width:28px;height:28px;flex-basis:28px}
 .notice .goal-icon{width:18px;height:18px;flex-basis:18px;vertical-align:middle}
 .intent-box .intent-icon{width:24px;height:24px;flex:0 0 24px}
+.shift-panel .notice,.shift-strip{margin:12px 0}.shift-panel .notice p,.shift-strip p{margin:6px 0}.shift-boons,.shift-targets{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin:12px 0}.boon-choice,.target-button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:48px;text-align:left}.boon-choice small,.target-button small{color:#e2e8df;font-size:13px;line-height:1.45}.boon-choice span{color:#fff9e9}.shift-panel .setup-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
