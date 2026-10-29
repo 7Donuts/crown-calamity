@@ -82,7 +82,7 @@ test('the shared Rest control works from town screens and cannot heal during an 
     s.hp=1;s.mp=0;s.sp=0;
     const before={xp:s.xp,coins:s.coins,exchanges:s.totalExchanges,points:s.points};
     await ui.act('nav:'+view);
-    matches(recovery(),/data-action="rest"[^>]*>.*Rest at the Quay/);
+    matches(recovery(),/data-action="rest"[^>]*>.*Rest at the Quay · 4s/);
     assert.doesNotMatch(recovery(),/\bdisabled\b/);
     await ui.act('rest');
     const restDeadline=s.restReadyAt;
@@ -91,7 +91,7 @@ test('the shared Rest control works from town screens and cannot heal during an 
     assert.equal(ui.startFight(s,'rats'),false,'a pending rest blocks fight start');
     await ui.act('rest');
     assert.deepEqual([s.hp,s.mp,s.sp],[1,0,0],'an early completion attempt leaves resources unchanged');
-    ui.advanceClock(8000);
+    ui.advanceClock(4000);
     await ui.act('rest');
     const totals=G.totals(s);
     assert.deepEqual([s.hp,s.mp,s.sp],[totals.hp,totals.mp,totals.sp]);

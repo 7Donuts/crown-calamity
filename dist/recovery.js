@@ -1,4 +1,4 @@
-export const REST_DURATION_MS = 8_000;
+export const REST_DURATION_MS = 4_000;
 export const WOUND_DURATION_MS = 12_000;
 export const DEATH_COIN_RATE = 0.05;
 export const DEATH_COIN_CAP = 50;

@@ -15,18 +15,18 @@ test('starter resource reserves are small and passive regeneration does not refi
   assert.equal(s.mp, 11); assert.equal(s.sp, 15);
 });
 
-test('rest requires explicit completion after eight seconds and does not advance on load or status reads', () => {
+test('rest requires explicit completion after four seconds and does not advance on load or status reads', () => {
   const s = G.fresh(); s.hp -= 20; s.mp -= 10;
   const begun = G.beginRest(s, 1000);
-  assert.deepEqual(begun, { readyAt: 9000 });
+  assert.deepEqual(begun, { readyAt: 5000 });
   assert.equal(G.startFight(s, 'rats', 'hunt', 1000), false);
-  assert.equal(G.finishRest(s, 8999), false);
+  assert.equal(G.finishRest(s, 4999), false);
   const raw = JSON.stringify(s);
-  assert.equal(G.restStatus(s, 4000).remainingMs, 5000);
+  assert.equal(G.restStatus(s, 4000).remainingMs, 1000);
   const loaded = G.loadSave(raw);
-  assert.equal(loaded.restReadyAt, 9000);
+  assert.equal(loaded.restReadyAt, 5000);
   assert.equal(loaded.hp, s.hp);
-  assert.equal(G.finishRest(loaded, 9000), true);
+  assert.equal(G.finishRest(loaded, 5000), true);
   assert.equal(loaded.hp, G.totals(loaded).hp);
   assert.equal(loaded.restReadyAt, 0);
 });

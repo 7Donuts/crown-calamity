@@ -114,7 +114,7 @@ function resultActions(state, receipt, enemy) {
   } else if (won && enemy) {
     const rest=G.restStatus(state);primary = actionButton(`hunt:${enemy.id}`, `${glyph('hunt')}<span>Hunt again →</span>`, 'primary',rest.active||rest.wounded||state.hp<=0);
   } else {
-    const rest=G.restStatus(state);primary=actionButton('rest',`${glyph('camp')}<span>${rest.active?rest.remainingMs>0?'Resting · '+Math.ceil(rest.remainingMs/1000)+'s':'Finish resting':'Recover at the Quay · 8s'}</span>`,'primary',rest.active&&rest.remainingMs>0);
+    const rest=G.restStatus(state);primary=actionButton('rest',`${glyph('camp')}<span>${rest.active?rest.remainingMs>0?'Resting · '+Math.ceil(rest.remainingMs/1000)+'s':'Finish resting':'Recover at the Quay · '+(G.REST_DURATION_MS/1000)+'s'}</span>`,'primary',rest.active&&rest.remainingMs>0);
   }
   const secondary = !state.delve
     ? actionButton('clear-outcome', `${glyph('chevron')}<span>Choose another hunt</span>`, 'subtle')

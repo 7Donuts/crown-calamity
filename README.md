@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.10.1
+# Crown & Calamity — playable solo prototype v0.10.2
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -28,7 +28,11 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## New in v0.10.1 — one art direction, four distinct peoples
+## New in v0.10.2 — quicker town rests
+
+Ordinary town rests now take four seconds and still require a final tap to finish.
+
+## v0.10.1 — one art direction, four distinct peoples
 
 Generated character art now follows the same mandatory [art direction](ART-DIRECTION.md), prompts and approved references as the other game illustrations. Four distinct anatomies and species-specific cosmetics replace the shared human hairstyle treatment. Existing saves retain their appearance IDs.
 
@@ -42,7 +46,7 @@ The nine core gear slots remain, with **three optional relic echo sockets** bene
 
 Early mana and stamina reserves are smaller, expensive actions cost more, and exchanges no longer refill both resources for free. Basic Attack stays free; guarded responses restore 2 stamina. Recover spends an exchange for 8 mana / 10 stamina while the enemy responds. Prepared grants only 3 mana / 3 stamina on encounter entry. Attribute and gear changes raise capacity without granting current resources, preventing free-heal respec loops.
 
-Town rest now takes **8 seconds**, has no coin fee, and requires a final tap to finish. There is no automatic healing while waiting or loading a save. Defeat costs **5% of carried coins, capped at 50**, plus a **12-second recovery window**; levels and gear are safe. A rest started during recovery shares the longer deadline instead of stacking waits. Encounters and delves cannot begin during pending rest or wounds. See [resources and recovery](design/32_Resources_and_Recovery.md).
+Town rest now takes **4 seconds**, has no coin fee, and requires a final tap to finish. There is no automatic healing while waiting or loading a save. Defeat costs **5% of carried coins, capped at 50**, plus a **12-second recovery window**; levels and gear are safe. A rest started during recovery shares the longer deadline instead of stacking waits. Encounters and delves cannot begin during pending rest or wounds. See [resources and recovery](design/32_Resources_and_Recovery.md).
 
 Starting a desktop encounter scrolls the combat actions into view, respecting reduced motion. Mobile keeps its existing combat layout. Tests cover all four races with every supported starter kit against the opening rats, appearance combinations, recovery timing, relic costs and stacking, save compatibility, and actual UI flows. Equal budgets and these starter checks are a foundation for balance; full PvP tuning remains future work.
 
