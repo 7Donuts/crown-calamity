@@ -18,7 +18,7 @@ The browser presents the game and submits a requested action. The server owns th
 
 - Use an established authentication service or maintained identity library for sign-in, sign-out, session expiry, recovery, and account deletion. Choose the provider when hosting and account requirements are settled.
 - Give each account and character stable server-issued IDs. Authorize access to every character record on the server; never trust an account or character ID supplied by the browser as proof of ownership.
-- Store attributes, resources, XP, equipment ownership, currencies, mastery, quests, achievements, first-clear claims, and active encounters in the database. Resume the same character across devices.
+- Store attributes, resources, XP, equipment ownership, currencies, mastery, quests, achievements, first-clear claims, case-file victory counters, the selected title (derived from stored achievements), and active encounters in the database. Resume the same character across devices.
 - Persist expedition rooms, route choices, camp use, and boss state so disconnects cannot reset a limited resource or repeatedly grant a reward.
 - Define backups, restore procedures, schema migrations, and data export before inviting long-term players.
 - Treat current local saves as prototype data. Do not import client-edited inventory, currency, achievements, or XP into a trusted live economy. Decide separately whether prototype players receive an explicitly defined starting grant or cosmetic recognition.
