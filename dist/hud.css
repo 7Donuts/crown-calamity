@@ -79,6 +79,24 @@ body, #app { font-size: 16px; }
 .resources .mp .bar i { background: repeating-linear-gradient(90deg, #79aaa7 0 10px, #354944 10px 12px); }
 .resources .sp .bar i { background: repeating-linear-gradient(90deg, #d2b778 0 10px, #514833 10px 12px); }
 .resource label { font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .06em; }
+#app .resource-recovery { display: grid; flex: 0 0 172px; gap: 6px; min-width: 0; }
+#app .resource-rest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #81724d;
+  border-radius: 2px;
+  background: #24382d;
+  color: #f1dfb3;
+  font-size: 14px;
+  white-space: normal;
+}
+#app .resource-rest .icon { width: 20px; height: 20px; flex-shrink: 0; }
+#app .resource-recovery small { color: #cbd7c6; font-size: 12px; line-height: 1.4; }
 
 .panel, .hunt-row, .item-card, .report, .outcome, .encounter {
   border-radius: 2px;
@@ -104,6 +122,17 @@ body, #app { font-size: 16px; }
   min-height: 320px;
   box-shadow: inset 0 0 0 4px #101a1780, 0 18px 36px #0004;
 }
+.hero-top {
+  position: static;
+  inset: auto;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 24px;
+}
+.hero-top .region-pill { margin-left: auto; }
+.hero-top .eyebrow { flex: 1 1 180px; line-height: 1.6; }
 .hero::after {
   background: linear-gradient(0deg, #0d1815 0%, #101c17dc 39%, #101c1744 100%), linear-gradient(90deg, #102018c0, transparent 90%);
 }
@@ -251,8 +280,11 @@ body, #app { font-size: 16px; }
   .topbar .save-label { font-size: 11px; }
   .content { padding-top: 19px; }
   .page-title p { font-size: 15px; line-height: 1.55; }
-  .resources { position: relative; top: auto; gap: 10px; padding: 12px 10px; }
+  #app .resources { position: relative; top: auto; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; padding: 12px 10px; }
+  #app .resource-recovery { grid-column: 1 / -1; padding-top: 12px; border-top: 1px solid #3d4f42; }
+  #app .resource-recovery small { font-size: 13px; }
   .resource label { font-size: 12px; line-height: 1.4; }
+  #app .resource label { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
   .resource label > span { display: inline; font-size: 12px; }
   .resource label .resource-name { font-size: 12px; }
   .hero { min-height: 315px; padding: 24px 19px; }

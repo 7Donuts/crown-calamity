@@ -47,6 +47,42 @@ function noBrokenText(html,where) {
 const contains = (html, text, where=text) => assert.equal(html.includes(text),true,where);
 const matches = (html, regex, where=String(regex)) => assert.equal(regex.test(html),true,where);
 
+test('the shared Rest control works from town screens and cannot heal during an encounter or delve', async()=>{
+  const {ui}=await bootApp();
+  const s=ui.getState();
+  const recovery=()=>{
+    const markup=ui.getApp().innerHTML.match(/<div class="resource-recovery">([\s\S]*?)<\/div>/)?.[1];
+    assert.ok(markup,'every campaign screen renders the shared recovery area');
+    return markup;
+  };
+  for(const view of ['hunt','character','bag','story','journal','guide']){
+    s.hp=1;s.mp=0;s.sp=0;
+    const before={xp:s.xp,coins:s.coins,exchanges:s.totalExchanges,points:s.points};
+    await ui.act('nav:'+view);
+    matches(recovery(),/data-action="rest"[^>]*>.*Rest at the Quay/);
+    assert.doesNotMatch(recovery(),/\bdisabled\b/);
+    await ui.act('rest');
+    const totals=G.totals(s);
+    assert.deepEqual([s.hp,s.mp,s.sp],[totals.hp,totals.mp,totals.sp]);
+    assert.deepEqual({xp:s.xp,coins:s.coins,exchanges:s.totalExchanges,points:s.points},before,'town rest grants no rewards or exchanges');
+  }
+  assert.equal(G.startFight(s,'rats'),true);
+  s.hp=1;s.mp=0;s.sp=0;ui.render();
+  matches(recovery(),/data-action="rest"[^>]*disabled/);
+  await ui.act('rest');
+  assert.deepEqual([s.hp,s.mp,s.sp],[1,0,0],'disabled controls and direct handler calls cannot heal in combat');
+  assert.equal(G.exchange(s,'guard',()=>.5,1000).defeat,true);
+  const nextActionAt=s.nextActionAt;
+  ui.render();assert.doesNotMatch(recovery(),/\bdisabled\b/);
+  await ui.act('rest');
+  assert.equal(s.hp,G.totals(s).hp,'Rest is available after defeat');
+  assert.equal(s.nextActionAt,nextActionAt,'rest cannot bypass the shared combat delay');
+  s.delve={node:0,path:null,campUsed:false};s.hp=1;ui.render();
+  matches(recovery(),/disabled/);
+  matches(recovery(),/Available after leaving the Works/);
+  await ui.act('rest');assert.equal(s.hp,1,'town rest does not bypass the limited delve camp');
+});
+
 test('the actual UI action handlers carry a rescue build through character, gear, shop, workbench, and save flows', async () => {
   const {ui,storage,getElement}=await bootApp();
   noBrokenText(ui.getApp().innerHTML,'initial hunt');

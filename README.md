@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.5.0
+# Crown & Calamity — playable solo prototype v0.5.1
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -27,6 +27,10 @@ python scripts-package.py
 Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy atlas, HUD sigil, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
 
 Progress is browser-local. Export a save from the Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
+
+## Fixed in v0.5.1 — mobile layout and Rest
+
+Rest at the Quay is visible beneath the resource bars on mobile and restores all three resources. It remains unavailable during fights and delves. The hero's district label now occupies normal layout space so enlarged text cannot collide with the welcome heading. Equipment rows place slot selection and Unequip explicitly, wrap long item names, and stack the removal control below the item on phones. The compact sidebar equipment summary uses the same corrected row structure.
 
 ## New in v0.5 — an arcane HUD and a disposable playtest lab
 
@@ -102,4 +106,4 @@ This is still a local solo prototype. Login, server-authoritative actions/random
 
 The automated suite covers combat, mastery/loadout rules, multipart XP and migration, all nine gear slots, shop prices and atomic spending, upgrade/affix removal on sale, roster creation/switch/import isolation, authored contract objectives/reward idempotency, physical skills without a focus, and live save round-trips. It also packages the complete offline HTML, syntax-checks it, and boots/navigates its UI using a minimal DOM test harness.
 
-The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 92 test cases, including lab storage isolation, seeded replay, timing, telemetry limits, and both standalone pages.
+The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 93 test cases, including lab storage isolation, seeded replay, timing, telemetry limits, and both standalone pages.
