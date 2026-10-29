@@ -1,6 +1,6 @@
 # Gameplay loop review: v0.10.3
 
-This review covers the build at `7543a89` (v0.10.3). It looks for bugs, balance problems, structural gaps in the loop, and new systems that would make the game more compelling to return to. Recommendations respect the established requirements in `AGENTS.md`: one explicit input per exchange, the shared 650 ms delay, no idle or offline gains, comfortable repetition as valid play, no XP or gear loss on defeat, and timers that never auto-heal.
+This review covers the build at `7543a89` (v0.10.3). B1 and B4 were rechecked on v0.10.4 (`cb23c81`) and still reproduce. For the stuffie theme versions of these proposals, see design 35. It looks for bugs, balance problems, structural gaps in the loop, and new systems that would make the game more compelling to return to. Recommendations respect the established requirements in `AGENTS.md`: one explicit input per exchange, the shared 650 ms delay, no idle or offline gains, comfortable repetition as valid play, no XP or gear loss on defeat, and timers that never auto-heal.
 
 ## Method
 

@@ -5,3 +5,201 @@ User direction: player characters are **stuffed animals** ("stuffies"), powering
 Keep the tone playful, plucky and lighthearted even when the world is dangerous. Preserve the approved soft-pixel style and mandatory generated-art pipeline in [ART-DIRECTION.md](../ART-DIRECTION.md).
 
 This is the intended future character theme. Adapt character identities, appearance options, story and gameplay together in a later development pass. Existing prototype races and mechanics are temporary implementation material; do not treat human fantasy race anatomy as the final theme. This note does not implement a character, story, stat or save migration in the current icon release.
+
+Further user direction (v0.10.4 review): players and all non-monster characters are stuffies. Races read like toy brands but keep distinct appearance and capabilities. Regions reference the stuffie lore shift, lean on silly puns, and carry commentary from the system voice.
+
+---
+
+# Theme proposal: the Underfoot
+
+Everything below is a proposal for the coordinated theme pass. It changes names, text and art, not rules. Stat budgets, passives, enemy patterns, timings and save IDs stay as they are, so balance work and the theme pass can proceed independently.
+
+## World premise
+
+Stuffies live in the Underfoot: the stuffie-scale world beneath, behind and between the Big Things. Their hub is Fluffington Quay, a town built from lost odds and ends along the Gutter Canal behind the Suds & Duds laundromat. Water still matters, and more than before: for a stuffie, a flood isn't an inconvenience but a soaking that can ruin you. The current canal, pump and municipal story maps across almost line for line.
+
+Stuffies grow stronger by being loved and by surviving, in the spirit of *The Velveteen Rabbit* (1922, public domain in the US): the more a stuffie has been through, the more Real it becomes. That gives the LitRPG layer an in-world reason. Levels are you becoming more Real, and the post-cap progression proposed in design 36 (R7) becomes Realness ranks.
+
+The title still works. The Toy Box Crown grants its wearer the right to decide which toys are kept and which go in the Donation Bag. The Calamity is Spring Cleaning, the Great Declutter that threatens the whole Underfoot. The current Superintendent arc becomes the first sign of it.
+
+The threats split into the two halves of your brief:
+
+- Things that dislike stuffies: moths, static, the washer and dryer, the vacuum, mildew, scissors.
+- Things that like stuffies too much: the family dog, the claw machine, magpies, collectors, the thrift appraiser.
+
+Enemies are objects, animals and forces. Keep human children and adults offscreen, as Big Things heard but not fought, so the danger stays playful.
+
+## The system voice
+
+Keep B.U.R.S.A.R. and give it a new backronym: the Bureau of Unclaimed Residents, Stuffies And Repairs. This keeps the existing emblem, the save-free commentary hooks and the established deadpan voice. In-world, B.U.R.S.A.R. speaks through each stuffie's care tag, so the LitRPG status window is literally your tag. System messages can borrow care-label format:
+
+> CARE INSTRUCTIONS · Level 3 reached. Do not tumble dry. Hug gently.
+
+> NOTICE · Your seams are holding. Statistically, this is a surprise.
+
+> WARNING · Moisture detected. You are now 4% heavier and 100% grumpier.
+
+## Brands (replacing races)
+
+Each brand keeps its current race's save ID, 68-point spread and passive budget. Only display names, art and text change. A brand reads like a product line: a name, a trademark-style tagline, a material, a signature feature and a set of forms. Male/Female presentation stays cosmetic.
+
+| Save ID | Brand | Tagline | Material and look | Forms (5) | Custom slot (replaces) |
+|---|---|---|---|---|---|
+| `quayfolk` | Cuddleworth Classics | "The one everybody had.™" | Cotton velour, embroidered nose, satin ribbon, classic round proportions | Bear, bunny, puppy, kitten, lamb | Ribbon and tuft style (hairstyle) |
+| `cobblekin` | Sturdy Stitch Workwear | "Double-stitched. Dog-tested.™" | Corduroy, canvas and denim patches, rivet studs, visible thick thread | Bulldog, rhino, tortoise, badger, beaver | Patch set and rivet color (crest and mineral) |
+| `reedling` | Floppables by Pellet & Pip | "Now with 30% more flop!™" | Minky shell, bean-pellet fill, floppy limbs, slightly waterproof | Frog, otter, axolotl, duck, platypus | Ear and limb flop, pouch print (fins and gills) |
+| `emberling` | Lullabrite Nightlight Pals | "Glows gently. Batteries not included.™" | Faux fur with soft glow panels and a battery pocket | Fox, owl, hedgehog, red panda, little dragon | Glow pattern and glow color (coat and ruff) |
+
+Capabilities stay where they are today, renamed to fit:
+
+| Brand | Spread (Mig Fin Int Vit Wil Ins Lck) | Passive | Effect (unchanged) | Flavor trait |
+|---|---|---|---|---|
+| Cuddleworth Classics | 10 10 10 10 10 9 9 | Well Loved | +4 max Health, Mana and Stamina | "Every toy box has a Cuddleworth. Most have three." |
+| Sturdy Stitch Workwear | 12 8 8 13 10 9 8 | Reinforced Seams | +12 max Health, +1 Armor | "Lifetime warranty. Nobody has ever successfully claimed it." |
+| Floppables | 8 12 10 8 9 13 8 | Pellet Shuffle | +8 max Stamina, +2 Evasion | "Sits on any shelf edge. Falls off most of them on purpose." |
+| Lullabrite | 8 9 13 8 12 9 9 | Night-Light | +8 max Mana, +1 Ward | "Afraid of the dark professionally, so you don't have to be." |
+
+Shared appearance options become brand-flavored: eye style (button, stitched, safety, sleepy) replaces eye color as the main choice, and named colorways ("Honey", "Seafoam", "Limited: Marmalade") replace skin tone. Hang tags, stitching and fabric texture carry the brand identity in the portrait, so two bunnies from different brands read differently at a glance.
+
+On creation, B.U.R.S.A.R. reads the tag:
+
+- Cuddleworth: "Model identified. Extremely common. Statistically, someone has hugged you."
+- Sturdy Stitch: "Seam strength: excessive. Fashion sense: practical."
+- Floppables: "Posture: optional. Pellet count: confidential."
+- Lullabrite: "Glow detected. Please do not point at sleeping residents."
+
+Future brands, for expansion once the first four are settled:
+
+- Prize Grade (claw-machine prizes), "Won, not bought.™" A Luck-leaning spread, slightly off-model proportions as a joke on knockoffs.
+- Heirloom Mohair Co., "Est. before batteries.™" Jointed antique bears, Will and Insight leaning.
+- Patchwork Collective, "No two alike. Mostly on purpose.™" Handmade and mismatched.
+- Sock Surplus, "Formerly footwear.™" Sock creatures, Stamina leaning.
+
+Optional second layer, needing a balance pass first: a once-per-encounter brand feature inside the passive budget, drawn from real toy features. Examples: a Cuddleworth squeaker that draws a heavy attack onto a barrier, a Lullabrite flicker that cancels one glance. `AGENTS.md` currently limits races to a modest named passive, so treat this as a rules change, not a reskin.
+
+## Characters who aren't monsters
+
+All are stuffies.
+
+- Mara Pell becomes Mara Purl, a much-mended Cuddleworth rabbit and foreman of the Seam Crew, Fluffington's maintenance stuffies. Her missing crew are missing stuffies.
+- Weaponsmith becomes Pins & Needles, a toy armory run by Tuffet, a pincushion hedgehog. "Pointy end goes toward the problem."
+- Armorer becomes Second Stitch Outfitters, raincoats and reinforcements. "Waterproofing is not a fashion choice. It's a lifestyle."
+- Curio dealer becomes The Odds & Ends Drawer, run by an Heirloom Mohair bear who has seen things.
+- The Workbench becomes the Sewing Kit.
+
+## Enemies
+
+Same IDs, stats and move patterns; new names and move text.
+
+| Save ID | Becomes | Kind | Moves (pattern unchanged) | Blurb |
+|---|---|---|---|---|
+| `rats` | Moth Mob | Dislikes (eats wool) | Nibble, Nibble, Wool rush | "Small wings. Large appetite. Strong opinions about wool." |
+| `scavenger` | Button Magpie | Likes too much | Guarded perch, Shiny snatch | "Everything shiny belongs to someone. Mostly this one." |
+| `wisp` | Static Cling | Dislikes | Recharge field, Zap, Zap | "Your fur is now standing up for itself." |
+| `crab` | The Claw | Likes too much | Coin drop, Slow grab, Prize chute | "Insert coin. Lose dignity." |
+| `inspector` | Thrift Appraiser | Likes too much (to resell) | Price check, Markdown, Tag gun | "The appraisal is mandatory. Being worth it is recommended." |
+| `hound` | Chewster, the Family Dog | Likes far too much | Fetch, Fetch, Tug-of-war | "Loves you. That's the problem." |
+| `boss` | The Spin Cycle, Acting Superintendent of the Laundry Works | Dislikes | Agitate, Heavy rinse, Spin cycle; under 30%: Emergency drain | "Acting capacity. Permanent press." |
+
+Vent pressure becomes Pop the lid.
+
+## Regions
+
+Each region has a pun name, a lore hook from the stuffie world, and a B.U.R.S.A.R. line for its arrival card. Current regions keep their save IDs and enemies.
+
+### Chapter I: Spin Cycle (current content)
+
+| Current location | Becomes | Lore hook | B.U.R.S.A.R. |
+|---|---|---|---|
+| Bracken Quay | Fluffington Quay | Hub town of lost things on the Gutter Canal | "Population: soft. Morale: firm." |
+| The Lower Canals | The Lint Trap Canals | Where every lost sock ends up | "Air quality: fuzzy. Proceed." |
+| The Sluice Walk | The Rinse Walk | Overflow channel from the laundromat | "Watch your step. Watch your stuffing." |
+| The Toll Arch | The Static Arch | Dryer vent outflow, crackling with charge | "Permit required to cling." |
+| The Bent Gate | The Claw Gate | Arcade spillover; prize chutes jam the gate | "Win some, lose some. Mostly get grabbed." |
+| The Inspection Dock | The Lost & Found Dock | Unclaimed things get tagged and sold | "Items unclaimed after 30 days become Inventory. Please stay claimed." |
+| The Floodgate | The Doggy Door | Chewster's patrol route | "Swings both ways. So does Chewster's mood." |
+| The Pump Chamber (delve) | The Laundry Works, ending in The Drum | The washer at the heart of the flood | "Delicates, this way. Everyone else: good luck." |
+
+Chapter subtitle: "Below the Rinse Line." Delve route choice: the records route becomes the Lost & Found Ledger (where the Seam Crew were tagged), and the overflow route becomes the Drain Valve (protects the homes along the canal).
+
+### Future districts
+
+| District | Lore hook | Enemy and boss ideas | Pun or tagline | B.U.R.S.A.R. |
+|---|---|---|---|---|
+| Couch Cushion Caverns | The richest mine in the Underfoot; lost coins fund the economy | Crumb golems, Lost Earring; boss: The Remote (changes channel to swap phases) | "Fortune favors the cushion." | "Treasure detected. Also crumbs. Mostly crumbs." |
+| Under-Bed Badlands | Dark frontier where the night-light's reach ends; Lullabrite home turf | Dust Bunnies (rival rabble), Monster-Under-the-Bed (more scared of you) | "Dust to dust bunnies." | "Visibility: low. Night-light recommended (sold separately)." |
+| Claw Arcade Prize Pits | Origin of Prize Grade stuffies; tickets as a regional currency | The Grabber, Token Hoarders | "Every toy has a price. Yours is 40 tickets." | "Odds of rescue: posted on the side of the machine. In very small print." |
+| Yard Sale Frontier | Lawless edge where toys are priced to go | Collectors (like you too much), Bargain Hunters | "Everything must go. Including you." | "Price sticker detected. Remove carefully. It will not come off carefully." |
+| The Attic Archives | Forgotten friends and heirlooms; bittersweet but plucky | Mildew, Mothball Sentinels | "Archived, not abandoned." | "Last hugged: unknown. Recommended: soon." |
+| Hamper Heights | A mountain that is always laundry day | Sock Avalanche, The Lost Sock (miniboss, has seen things) | "It's always laundry day somewhere." | "Climbing conditions: damp. Expect lint." |
+| Toy Box Citadel | Seat of the Toy Box Crown; endgame politics of who gets kept | Royal toys, the Donation Bag | "Uneasy lies the head that wears a paper crown." | "Royal decree: all residents must be adorable. Compliance is mandatory." |
+
+The campaign climax is Spring Cleaning: the Great Declutter sweeps across every district, and the player decides who wears the Crown.
+
+## Mechanic vocabulary
+
+Rules stay the same; these are display terms. Show the standard name beside the themed one wherever numbers appear, to keep the readability requirement.
+
+| System | Themed name | Example text |
+|---|---|---|
+| Health | Stuffing | "Stuffing 312 / 356 (Health)" |
+| Mana | Sparkle | For Lullabrites, flavor as glow charge |
+| Stamina | Bounce | |
+| Rest (4 s) | Fluff up | "Fluffing up… tap to finish." |
+| Defeat | Lost & Found | "A kind paw returned you to the toy box. 5 coins covered the Lost & Found fee." |
+| Wound (12 s) | Drying off | "Still damp. Ready in 12 s." |
+| Withdraw | Go still | The classic toy defense: freeze until nobody's looking |
+| Defend | Brace your seams | |
+| Recover | Catch your fluff | |
+| Level part (4 per level) | Stitch; a full level is a Seam | "Stitch 3 of 4 complete." |
+| Achievements | Merit patches | Sewn onto the portrait as cosmetics |
+| Relic echo sockets | Keychain loops | |
+| Coins | Coins | Unchanged: stuffies scavenge real coins from couch cushions |
+
+Materials (save keys change, see migration):
+
+| Current | Becomes | Source |
+|---|---|---|
+| Ledger scraps | Lint | Moth Mob |
+| Canal iron | Lost buttons | Button Magpie |
+| Runic residue | Static charge | Static Cling |
+| Chainback shell | Claw parts | The Claw |
+| Stamped brass | Price tags | Thrift Appraiser |
+| Floodglass | Squeaker cores | Chewster |
+| Floodglass Fragment | Drum fragment | The Spin Cycle |
+| Salvaged fittings | Spare thread | Conversions and salvage |
+| Repair fittings | Patches | Conversions |
+
+## Fitting the loop proposals (design 36)
+
+The theme makes several of the review's proposals easier to explain:
+
+- Shifts (R2) become Past Bedtime runs. Lights out starts the run; each win adds a Past Bedtime bonus; a Midnight Snack check-in offers the boon choice; Back to the Toy Box banks it.
+- Case files (R3) become Hazard Tags in the Field Guide.
+- Flagged elites (R4) become Limited Edition enemies ("Limited Edition Moth Mob: Holiday Colorway"). Rare spawns become a Golden Moth or a Mint-in-Box Magpie.
+- Restoration (R5) becomes Rebuilding Fluffington: a Sewing Circle, the Button Bank, Night-light Row, and a Training Pillow that reports damage per exchange.
+- Loot grades (R6) become collector condition: Played-With, Gently Used, Like New, Mint, Mint-in-Box.
+- Ordinances (R7) become Care Instructions, difficulty modifiers styled as laundry symbols: Hand Wash Only (no healing), Tumble Dry High (enemies hit harder), Do Not Bleach (no spells on the first exchange). Seniority becomes Realness.
+
+## Implementation notes
+
+- Saves: keep every save ID (`raceId`, item IDs, enemy IDs, contract IDs, appearance option IDs where possible), and rename display text only. Appearance options without a clean mapping need an alias table like `RACE_ALIASES` in `dist/races.js`.
+- Materials are stored by display name in `s.materials` (`'Ledger scraps'` is both label and key). Renaming them needs a one-time key migration in `loadSave`, a save-format bump to v5 that still imports v1 to v4, and updates to `EXCHANGES`, `PREFIXES`/`SUFFIXES` costs, the story rewards, and the tests that name materials (engine, gear, integration, progression-integration, ui-smoke). A cleaner long-term fix is stable material IDs with separate labels, introduced in the same migration.
+- Art: every brand × form, NPC, enemy, region scene and item family needs regenerated art under `ART-DIRECTION.md`. Add a stuffie addendum to the shared prompts: positive terms for plush materials, visible seams, button and stitched eyes, and fabric texture; negative terms for realistic animal anatomy, human anatomy, horror, and torn-stuffing gore. Damage reads as fluff puffs, never injury. Review at rendered size as required.
+- Trademarks: brand names, taglines and tag designs must stay original. Avoid real toy brands and their distinctive trade dress, for example heart-shaped hang tags, a button in the ear, belly-badge symbols, or a build-your-own-bear workshop concept. Run a trademark clearance search on the final brand names before any public release.
+- Tone: keep "likes too much" threats affectionate-menacing (a dog that wants to play, a claw that wants a prize), not creepy. No human children as enemies.
+
+## Phasing
+
+1. Text pass: names, blurbs, contract text, B.U.R.S.A.R. lines and the vocabulary table, with display-only changes and no save bump.
+2. Material key migration (save v5) plus stable material IDs.
+3. Art pass: brands and forms first (the portrait is the creator's centerpiece), then enemies, NPCs and the Fluffington scene.
+4. Optional brand features, after a balance pass.
+5. Future districts, starting with Couch Cushion Caverns (it also expands the coin economy) or Under-Bed Badlands (it gives Lullabrite a home-turf moment).
+
+## Decisions for the owner
+
+- Keep the B.U.R.S.A.R. name with the new backronym, or retire it for a new tag-based system name.
+- Themed resource names in the HUD (Stuffing, Sparkle, Bounce) with standard subtitles, or standard names with themed flavor text only.
+- Forms per brand (distinct silhouettes, as proposed) or every species available in every brand (more choice, more art).
+- Whether brand features (a rules change) are in scope for the theme pass.
