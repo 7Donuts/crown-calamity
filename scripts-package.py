@@ -32,6 +32,11 @@ def bundle(path):
                 bindings.append(names[0] if len(names) == 1 else f'{names[0]}:{names[1]}')
         return 'const {' + ','.join(bindings) + '}=__crownModules[' + json.dumps(module_id(dependency)) + '];'
     code = re.sub(r"import\s*\{([^}]+)\}\s*from\s*['\"]([^'\"]+)['\"];?", named_import, code)
+    def namespace_import(match):
+        dependency = (path.parent / match.group(2)).resolve()
+        bundle(dependency)
+        return 'const ' + match.group(1) + '=__crownModules[' + json.dumps(module_id(dependency)) + '];'
+    code = re.sub(r"import\s+\*\s+as\s+(\w+)\s+from\s*['\"]([^'\"]+)['\"];?", namespace_import, code)
     exports = {name:name for name in re.findall(r'export\s+(?:const|let|var|function|class)\s+(\w+)', code)}
     def named_export(match):
         for entry in match.group(1).split(','):
@@ -48,7 +53,17 @@ def bundle(path):
 
 bundle(source / 'engine.js')
 app = (source / 'app.js').read_text()
-app = app.replace("import * as G from './engine.js';", 'const G=__crownModules["engine.js"];')
+def app_namespace(match):
+    dependency = (source / match.group(2)).resolve()
+    bundle(dependency)
+    return 'const ' + match.group(1) + '=__crownModules[' + json.dumps(module_id(dependency)) + '];'
+app = re.sub(r"import\s+\*\s+as\s+(\w+)\s+from\s*['\"]([^'\"]+)['\"];?", app_namespace, app)
+def app_named(match):
+    dependency = (source / match.group(2)).resolve()
+    bundle(dependency)
+    bindings = [re.sub(r'\s+as\s+', ':', entry.strip()) for entry in match.group(1).split(',') if entry.strip()]
+    return 'const {' + ','.join(bindings) + '}=__crownModules[' + json.dumps(module_id(dependency)) + '];'
+app = re.sub(r"import\s*\{([^}]+)\}\s*from\s*['\"]([^'\"]+)['\"];?", app_named, app)
 if re.search(r'^\s*(?:import|export)\s', app, re.M):
     raise ValueError('App imports must be explicitly bundled.')
 app = 'const __crownModules={};\n' + '\n'.join(modules) + '\n' + app

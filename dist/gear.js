@@ -7,13 +7,13 @@ const ACCESSORY_SLOTS = ['accessory', 'accessory2'];
 const SLOT_KEYS = Object.keys(SLOTS);
 
 export const ITEMS = Object.freeze({
-  rod:{id:'rod',name:"Inspector’s Rod",slot:'weapon',base:14,channel:'spell',focus:true,level:1,desc:'A focus-tagged rod. Strike scales with Intellect; supports a shield.'},
-  sword:{id:'sword',name:'Canal-Iron Sword',slot:'weapon',base:14,channel:'heavy',level:1,desc:'An honest length of iron. Strike scales with Might.'},
-  blade:{id:'blade',name:'Surveyor’s Blade',slot:'weapon',base:14,channel:'precision',level:1,desc:'For precise measurements and less precise disputes. Scales with Finesse.'},
-  shield:{id:'shield',name:'Salvaged Buckler',slot:'offhand',armor:10,level:1,desc:'Enough shield to make a point. Enables Wardcast with a rod.'},
-  focus:{id:'focus',name:'Chalkbound Focus',slot:'offhand',spellBase:3,focus:true,level:1,desc:'+3 spell base. Trades shield protection for spell output.'},
-  charm:{id:'charm',name:'Canalstone Charm',slot:'offhand',ward:8,stats:{ins:2},level:1,desc:'+2 Insight, +8 ward. A small stone with good intentions.'},
-  coat:{id:'coat',name:'Patched Workcoat',slot:'body',armor:8,ward:4,level:1,desc:'+8 armor, +4 ward. Dry is a relative term.'},
+  rod:{id:'rod',name:"Inspector’s Rod",slot:'weapon',base:14,channel:'spell',focus:true,level:1,price:18,desc:'A focus-tagged rod. Strike scales with Intellect; supports a shield.'},
+  sword:{id:'sword',name:'Canal-Iron Sword',slot:'weapon',base:14,channel:'heavy',level:1,price:18,desc:'An honest length of iron. Strike scales with Might.'},
+  blade:{id:'blade',name:'Surveyor’s Blade',slot:'weapon',base:14,channel:'precision',level:1,price:20,desc:'For precise measurements and less precise disputes. Scales with Finesse.'},
+  shield:{id:'shield',name:'Salvaged Buckler',slot:'offhand',armor:10,level:1,price:12,desc:'Enough shield to make a point. Enables Wardcast with a rod.'},
+  focus:{id:'focus',name:'Chalkbound Focus',slot:'offhand',spellBase:3,focus:true,level:1,price:15,desc:'+3 spell base. Trades shield protection for spell output.'},
+  charm:{id:'charm',name:'Canalstone Charm',slot:'offhand',ward:8,stats:{ins:2},level:1,price:16,desc:'+2 Insight, +8 ward. A small stone with good intentions.'},
+  coat:{id:'coat',name:'Patched Workcoat',slot:'body',armor:8,ward:4,level:1,price:20,desc:'+8 armor, +4 ward. Dry is a relative term.'},
   gateShield:{id:'gateShield',name:'Riveted Gate Shield',slot:'offhand',armor:28,level:3,price:45,desc:'+28 armor. A retired piece of infrastructure.'},
   oilskin:{id:'oilskin',name:'Oilskin Coat',slot:'body',armor:20,ward:12,level:3,price:50,desc:'+20 armor, +12 ward. Finally, an actual waterproof layer.'},
   grips:{id:'grips',name:'Chainback Grips',slot:'hands',armor:6,stats:{mig:2},level:5,price:65,desc:'+2 Might, +6 armor. Reclaimed from a reluctant donor.'},
@@ -25,7 +25,9 @@ export const ITEMS = Object.freeze({
   penny:{id:'penny',name:'Copper-Thread Charm',slot:'accessory',stats:{lck:4},level:1,price:25,desc:'+4 Luck. A little fortune, worn on purpose. Improves critical and equipment-drop chances.'},
   band:{id:'band',name:'Floodglass Band',slot:'accessory',ward:8,stats:{int:2},level:8,desc:'+2 Intellect, +8 ward. Quietly, reliably magical.'},
   cap:{id:'cap',name:'Ledger-Keeper’s Cap',slot:'head',armor:4,stats:{ins:1},level:1,price:22,desc:'+1 Insight, +4 armor. Keeps the paperwork out of your eyes.'},
-  boots:{id:'boots',name:'Sluicewalker Boots',slot:'feet',armor:3,stats:{fin:1},level:2,price:32,desc:'+1 Finesse, +3 armor. Grip tested on wet stone.'},
+  boots:{id:'boots',name:'Sluicewalker Boots',slot:'feet',armor:3,stats:{fin:1},level:2,price:24,desc:'+1 Finesse, +3 armor. Grip tested on wet stone.'},
+  workgloves:{id:'workgloves',name:'Dockhand Workgloves',slot:'hands',armor:2,stats:{fin:1},level:1,price:16,desc:'+1 Finesse, +2 armor. Worn smooth by honest municipal labor.'},
+  wornboots:{id:'wornboots',name:'Canal-Walking Boots',slot:'feet',armor:1,stats:{fin:1},level:1,price:16,desc:'+1 Finesse, +1 armor. Better than bare feet on wet stone.'},
   rivethelm:{id:'rivethelm',name:'Chainback Rivet Helm',slot:'head',armor:11,stats:{vit:1},level:5,price:68,desc:'+1 Vitality, +11 armor. A hard answer to a hard shell.'},
   waders:{id:'waders',name:'Floodgate Waders',slot:'feet',armor:7,ward:5,stats:{wil:1},level:6,price:78,desc:'+1 Will, +7 armor, +5 ward. Rated for municipal flooding.'},
   signet:{id:'signet',name:'Stamped Brass Signet',slot:'relic',stats:{wil:1},ward:8,level:4,price:58,desc:'+1 Will, +8 ward. An official seal with unofficial uses.'},
@@ -115,9 +117,32 @@ export function equipItem(s,id,targetSlot){
   gear[slot]=id;s.gear=gear;return true;
 }
 export function unequipItem(s,slot){if(unequipReason(s,slot))return false;s.gear[slot]=null;return true;}
+export function buyPreview(s,id){
+  const item=ITEMS[id],price=item?.price||0;
+  let reason=!item?'Unknown item.':LOCKED(s)?'Shopping is unavailable during a fight or delve.':!price?'This item is not stocked by the outfitter.':(s.level||1)<item.level?`Requires level ${item.level}.`:owned(s,id)?'You already own this item.':(s.coins||0)<price?'You cannot afford this item.':null;
+  return {allowed:!reason,reason,price,item:item?clone(item):null};
+}
 export function buyItem(s,id){
-  const item=ITEMS[id];if(LOCKED(s)||!item?.price||(s.level||1)<item.level||owned(s,id)||(s.coins||0)<item.price)return false;
-  s.coins-=item.price;s.bag.push(id);return true;
+  const p=buyPreview(s,id);if(!p.allowed||!Array.isArray(s.bag))return false;
+  s.coins-=p.price;s.bag.push(id);if(s.itemMods)delete s.itemMods[id];return true;
+}
+function baseResaleValue(item){return item.price||item.value||12+5*item.level;}
+function resaleValue(s,id){
+  const item=ITEMS[id];if(!item)return 0;
+  const base=baseResaleValue(item),up=Math.max(0,Math.min(3,Number.isInteger(s.itemMods?.[id]?.upgrade)?s.itemMods[id].upgrade:0));
+  // Upgrades return at most three extra coins, and affixes return no material value.
+  return Math.max(1,Math.min(Math.floor(base*.45),Math.floor(base*.25)+up));
+}
+export function sellPreview(s,id){
+  const item=ITEMS[id],price=item?resaleValue(s,id):0;
+  const equipped=Object.values(s?.gear||{}).includes(id);
+  let reason=!item?'Unknown item.':LOCKED(s)?'Selling is unavailable during a fight or delve.':!owned(s,id)?'You do not own this item.':equipped?'Unequip this item before selling it.':null;
+  return {allowed:!reason,reason,price,item:item?resolveItem(s,id):null,id};
+}
+export function sellItem(s,id){
+  const p=sellPreview(s,id);if(!p.allowed||!Array.isArray(s.bag))return false;
+  s.bag=s.bag.filter(ownedId=>ownedId!==id);if(s.itemMods)delete s.itemMods[id];s.coins+=p.price;
+  return {id,coins:p.price};
 }
 export function exchangeMaterials(s,recipeId){
   const recipe=EXCHANGES[recipeId];if(LOCKED(s)||!recipe||(s.level||1)<(recipe.level||1)||!costAffordable(s,{coins:recipe.coins,materials:recipe.cost})||(recipe.gainItems||[]).some(id=>!ITEMS[id]||owned(s,id)))return false;

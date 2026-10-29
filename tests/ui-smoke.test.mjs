@@ -3,8 +3,10 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import * as G from '../dist/engine.js';
+import * as C from '../dist/characters.js';
+import * as StoryUI from '../dist/story-ui.js';
 
-function bootApp() {
+function bootApp(initialSave=G.fresh()) {
   const elements = new Map();
   const makeElement = () => ({
     innerHTML:'', textContent:'', value:'', files:[], open:false, style:{setProperty(){}},
@@ -21,9 +23,9 @@ function bootApp() {
     createElement(){return makeElement();},
     addEventListener(type,handler){(this.listeners[type]??=[]).push(handler);}, listeners:{}
   };
-  const storage = new Map();
+  const storage = new Map(initialSave?[["crown-calamity-v1",JSON.stringify(initialSave)]]:[]);
   const context = {
-    __GAME_ENGINE__:G, document,
+    __GAME_ENGINE__:G, __CHARACTER_MODULE__:C, __STORY_UI__:StoryUI, document,
     localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},
     window:{scrollTo(){}}, console,
     Blob, URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},
@@ -32,8 +34,8 @@ function bootApp() {
   };
   const src = readFile(new URL('../dist/app.js',import.meta.url),'utf8');
   return src.then(source=>{
-    const transformed = source.replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;');
-    const testExports = `\nglobalThis.__uiTest={act,render,getState:()=>state,setState:v=>{state=v;},setView:v=>{view=v;},getView:()=>view,getModal:()=>$('#modal'),getApp:()=>$('#app'),getToast:()=>$('#toast')};`;
+    const transformed = source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;');
+    const testExports = `\nglobalThis.__uiTest={act,render,getState:()=>state,getRoster:()=>roster,setState:v=>{state=v;},setView:v=>{view=v;},getView:()=>view,getModal:()=>$('#modal'),getApp:()=>$('#app'),getToast:()=>$('#toast')};`;
     vm.runInNewContext(transformed+testExports,context,{filename:'dist/app.js'});
     return {ui:context.__uiTest,storage,elements,getElement};
   });
@@ -56,17 +58,16 @@ test('the actual UI action handlers carry a rescue build through character, gear
   ui.getState().fight.hp=1;
   await ui.act('combat:attack');
   assert.equal(ui.getState().last.type,'victory');
-  assert.equal(ui.getState().pending,0);
   assert.equal(ui.getState().totalExchanges,1);
   matches(ui.getApp().innerHTML,/ENCOUNTER COMPLETE/);
   noBrokenText(ui.getApp().innerHTML,'hunt result');
 
-  await ui.act('claim');
-  assert.equal(ui.getModal().open,true);
-  matches(ui.getModal().innerHTML,/Repair fittings/i);
-  await ui.act('quest:materials');
+  // Seed the earned contract state for the ability-tab checks; the separate
+  // progression suite verifies the actual XP thresholds and point awards.
+  G.awardXP(ui.getState(),G.xpNeeded(1)-ui.getState().xp);
+  ui.getState().quest=1;
   assert.equal(ui.getState().level,2);
-  assert.equal(ui.getState().quest,1);
+  assert.equal(ui.getState().points,4);
   await ui.act('nav:character');
   await ui.act('char-tab:attributes');
   noBrokenText(ui.getApp().innerHTML,'attributes');
@@ -90,14 +91,17 @@ test('the actual UI action handlers carry a rescue build through character, gear
   noBrokenText(ui.getModal().innerHTML,'equipment comparison');
   await ui.act('close');
   await ui.act('bag-tab:shop');
-  matches(ui.getApp().innerHTML,/Quay Outfitter/);
+  matches(ui.getApp().innerHTML,/Quay outfitter/);
   ui.getState().coins=100;
-  await ui.act('buy:penny');
+  await ui.act('buy-preview:penny');
+  matches(ui.getModal().innerHTML,/FULL PRICE/);
+  await ui.act('buy-confirm:penny');
   await ui.act('compare:penny');
   matches(ui.getModal().innerHTML,/What changes for your build/);
   await ui.act('close');
   await ui.act('equip:penny:accessory');
   assert.equal(ui.getState().gear.accessory,'penny');
+  ui.getState().materials['Repair fittings']=3;
   await ui.act('bag-tab:materials');
   matches(ui.getApp().innerHTML,/Materials on hand/);
   matches(ui.getApp().innerHTML,/Repair fittings/);
@@ -122,16 +126,22 @@ test('the actual UI action handlers carry a rescue build through character, gear
   assert.equal(ui.getState().itemMods.rod.prefix,'keen');
 
   await ui.act('nav:guide');
-  matches(ui.getApp().innerHTML,/Save format v3/);
-  matches(ui.getApp().innerHTML,/Imports v1, v2, and v3/);
+  matches(ui.getApp().innerHTML,/Save format v4/);
+  matches(ui.getApp().innerHTML,/Imports v1, v2, v3, and v4/);
   await ui.act('import');
-  matches(ui.getModal().innerHTML,/Import and replace/);
-  const legacy=G.fresh(); legacy.version=2; legacy.coins=41;
+  matches(ui.getModal().innerHTML,/Import as new character/);
+  const legacyId=ui.getRoster().activeId,existing=structuredClone(ui.getState()),legacy=G.fresh(); legacy.version=2; legacy.coins=41;
   getElement('#save-file').files=[{size:120,text:async()=>JSON.stringify(legacy)}];
   await ui.act('confirm-import');
-  assert.equal(ui.getState().version,3);
+  assert.equal(ui.getState().version,4);
   assert.equal(ui.getState().coins,41);
-  assert.ok(storage.has('crown-calamity-v1'),'successful UI actions persist the imported v3 save');
+  assert.equal(ui.getRoster().characters.length,2,'import adds a character instead of replacing the roster');
+  const importedId=ui.getRoster().activeId;assert.notEqual(importedId,legacyId);
+  await ui.act('character-manager');await ui.act(`switch-character:${legacyId}`);
+  assert.deepEqual(ui.getState(),existing,'the pre-import adventure remains intact');
+  await ui.act('character-manager');await ui.act(`switch-character:${importedId}`);
+  assert.equal(ui.getState().coins,41);
+  assert.ok(storage.has('crown-calamity-v1'),'successful UI actions persist the imported v2 save');
   await ui.act('export');
   matches(ui.getToast().textContent,/Save exported/);
   noBrokenText(ui.getApp().innerHTML,'save management screen');
@@ -151,4 +161,62 @@ test('rendered character and satchel retain every slot, including the second acc
   assert.equal(s.gear.offhand,null);
   matches(ui.getApp().innerHTML,/Occupied by Lockwarden’s Breach Pike/);
   assert.equal(G.equip(s,'shield','offhand'),false);
+  await ui.act('nav:character');await ui.act('char-tab:gear');
+  noBrokenText(ui.getApp().innerHTML,'interactive equipment diagram');
+  matches(ui.getApp().innerHTML,/generic body outline/);
+  const slotButtons=[...ui.getApp().innerHTML.matchAll(/data-action="slot:([a-z0-9]+)"/g)].map(match=>match[1]);
+  const expectedSlots=['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic'];
+  assert.equal(slotButtons.length,18,'each slot is clickable in the diagram and keyboard-friendly equipment list');
+  assert.deepEqual(slotButtons.slice(0,9),expectedSlots);
+  assert.deepEqual(slotButtons.slice(9),expectedSlots);
+  await ui.act('slot:offhand');
+  matches(ui.getModal().innerHTML,/Occupied by your two-handed Lockwarden’s Breach Pike/);
+});
+
+test('first-run wizard creates a local character and the roster preserves progress when creating and switching characters', async()=>{
+  const {ui,storage,getElement}=await bootApp(null);
+  noBrokenText(ui.getApp().innerHTML,'new character wizard');
+  contains(ui.getApp().innerHTML,'Who is joining the ledger?');
+  for(const id of ['new-name','new-race','new-origin','new-kit'])assert.ok(ui.getApp().innerHTML.includes(`id="${id}"`),id);
+  getElement('#new-name').value='Ada';getElement('#new-race').value='Stonekin';getElement('#new-origin').value='Canal clerk';getElement('#new-kit').value='caster';
+  await ui.act('create-character');
+  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().race,'Stonekin');assert.equal(ui.getState().origin,'Canal clerk');
+  assert.equal(ui.getState().coins,20);assert.deepEqual([...ui.getState().bag],['rod','focus','coat']);
+  noBrokenText(ui.getApp().innerHTML,'created character');
+  assert.equal(ui.getRoster().characters.length,1);
+  assert.ok(storage.has('crown-calamity-roster-v1'));
+
+  // Add a concrete change before switching, so the test proves the old adventure is saved.
+  await ui.act('nav:bag');await ui.act('bag-tab:shop');await ui.act('buy-preview:workgloves');await ui.act('buy-confirm:workgloves');
+  assert.equal(ui.getState().coins,4);assert.ok(ui.getState().bag.includes('workgloves'));
+  const firstId=ui.getRoster().activeId;
+  await ui.act('nav:character');await ui.act('character-manager');
+  contains(ui.getModal().innerHTML,'1 of 6 character slots used');
+  await ui.act('new-character-form');
+  getElement('#new-name').value='Bram';getElement('#new-race').value='Human';getElement('#new-origin').value='Bridge watch';getElement('#new-kit').value='breaker';
+  await ui.act('create-character');
+  assert.equal(ui.getState().name,'Bram');assert.equal(ui.getState().coins,20);
+  assert.deepEqual([...ui.getState().bag],['sword','shield','coat']);
+  const secondId=ui.getRoster().activeId;assert.notEqual(secondId,firstId);
+  await ui.act('character-manager');
+  assert.ok(ui.getModal().innerHTML.includes('Ada'));
+  await ui.act(`switch-character:${firstId}`);
+  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().coins,4);assert.ok(ui.getState().bag.includes('workgloves'));
+  await ui.act('character-manager');await ui.act(`switch-character:${secondId}`);
+  assert.equal(ui.getState().name,'Bram');assert.equal(ui.getState().coins,20);assert.deepEqual([...ui.getState().bag],['sword','shield','coat']);
+
+  await ui.act('nav:character');await ui.act('character-manager');
+  const before=structuredClone(ui.getState()),rosterBefore=structuredClone(ui.getRoster());
+  assert.equal(G.startFight(ui.getState(),'rats'),true);
+  await ui.act(`switch-character:${firstId}`);
+  assert.equal(ui.getState().fight.enemy,'rats');
+  assert.equal(ui.getRoster().activeId,secondId);
+  assert.equal(ui.getRoster().characters.length,rosterBefore.characters.length);
+  ui.getState().fight=null;
+  ui.getState().delve={node:0,path:null,campUsed:false};
+  const locked=structuredClone(ui.getState());
+  await ui.act(`switch-character:${firstId}`);
+  assert.deepEqual(ui.getState(),locked);
+  assert.equal(ui.getRoster().activeId,secondId);
+  assert.equal(before.name,'Bram');
 });

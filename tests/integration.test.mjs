@@ -17,23 +17,23 @@ function bootPackagedScript(script) {
   const elements=new Map(), errors=[],listeners={};
   const element=()=>({innerHTML:'',textContent:'',value:'',files:[],open:false,style:{setProperty(){}},classList:{add(){},remove(){},toggle(){}},addEventListener(){},querySelector(){return element();},querySelectorAll(){return [];},showModal(){this.open=true;},close(){this.open=false;},focus(){},click(){},getBoundingClientRect(){return {left:0,right:0,top:0,bottom:0};}});
   const document={querySelector(selector){if(!elements.has(selector))elements.set(selector,element());return elements.get(selector);},createElement(){return element();},addEventListener(type,fn){(listeners[type]??=[]).push(fn);}};
-  const context={document,localStorage:{getItem(){return null;},setItem(){}},window:{scrollTo(){}},console:{...console,error:(...args)=>errors.push(args)},Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){}};
+  const storage=new Map([['crown-calamity-v1',JSON.stringify(G.fresh())]]);
+  const context={document,localStorage:{getItem(key){return storage.get(key)??null;},setItem(key,value){storage.set(key,value);}},window:{scrollTo(){}},console:{...console,error:(...args)=>errors.push(args)},Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){}};
   vm.runInNewContext(script,context,{filename:'packaged-app.js'});
   return {elements,errors,listeners,click(action){const event={target:{closest(){return {disabled:false,dataset:{action}};}}};for(const fn of listeners.click||[])fn(event);}};
 }
 
-test('a new character can follow rescue into a legal level-two, three-active Reservoir build', () => {
-  const s = G.fresh();
+test('a new character can earn level two and equip a legal three-active Reservoir build', () => {
+  const s = G.createCharacter({name:'Sera Vale',race:'Human',origin:'Canal surveyor',kit:'bulwark'});
   assert.equal(G.startFight(s, 'rats'), true);
   s.fight.hp = 1;
   const win = exchange(s, 'attack', 1000);
   assert.equal(win.victory, true);
-  assert.equal(s.pending, 0);
   assert.equal(s.materials['Ledger scraps'], 1, 'the completed hunt pays its authored material');
-  assert.deepEqual(G.completeQuest(s, 'materials'), {leveled: 1});
+  G.awardXP(s,G.xpNeeded(1)-s.xp);
   assert.equal(s.level, 2);
   assert.equal(s.points, 4);
-  assert.equal(s.quest, 1);
+  s.quest=1;
 
   for (const id of ['brace', 'mend', 'reservoir']) assert.equal(G.learnAbility(s, id), true, id);
   for (const id of ['brace', 'mend']) assert.equal(G.equipAbility(s, id), true, id);
@@ -105,7 +105,7 @@ test('all character, equipment, and workbench mutations stay locked during an en
     s.materials = {'Runic residue': 4, 'Canal iron': 4, 'Salvaged fittings': 4, 'Repair fittings': 4};
     s.learnedAbilities.push('brace', 'mend');
     if (mode === 'fight') assert.equal(G.startFight(s, 'rats'), true);
-    else { assert.equal(G.startDelve(s), true); }
+    else { s.clears=1; assert.equal(G.startDelve(s), true); }
     const before = structuredClone(s);
     const attempts = [
       () => G.allocate(s, 'vit'), () => G.resetStats(s), () => G.practice(s, 'breaker'),
@@ -120,8 +120,8 @@ test('all character, equipment, and workbench mutations stay locked during an en
   }
 });
 
-test('old saves migrate to v3 and v3 preserves live encounter state and item modifications', () => {
-  for (const version of [1, 2]) {
+test('old saves migrate to v4 and v4 preserves live encounter state and item modifications', () => {
+  for (const version of [1, 2, 3]) {
     const old = G.fresh(); old.version = version;
     if (version === 1) delete old.stats.lck;
     old.level = 4; old.coins = 73; old.points = 3;
@@ -129,7 +129,7 @@ test('old saves migrate to v3 and v3 preserves live encounter state and item mod
     old.fight = {enemy:'crab',hp:123,round:2,startLevel:4,charge:1,used:['arc'],cooldowns:{brace:3},barrier:19,barrierTurns:1,exposed:true,exposedRound:3,healDeficit:7,sealUsed:false,source:'delve',dropChance:.24,channel:'arcane',streak:2,interruptImmune:0,vented:false};
     old.delve = {node:2,path:'records',campUsed:false}; old.nextActionAt = 1800;
     const loaded = G.loadSave(JSON.stringify(old));
-    assert.equal(loaded.version, 3);
+    assert.equal(loaded.version, G.VERSION);
     assert.equal(loaded.stats.lck, 8);
     assert.equal(loaded.coins, 73); assert.equal(loaded.points, 3);
     assert.equal(loaded.fight.barrier, 19); assert.equal(loaded.fight.exposed, true);
@@ -189,7 +189,7 @@ test('the package generator produces standalone code with all module exports and
     const packaged=bootPackagedScript(embedded);
     const app=()=>packaged.elements.get('#app').innerHTML;
     assert.equal(/\b(?:undefined|NaN)\b/.test(app()),false,'packaged landing view renders without missing data');
-    for (const [action,label] of [['nav:character','Character record'],['char-tab:attributes','YOUR ATTRIBUTES'],['char-tab:abilities','Active abilities'],['nav:bag','Personal effects'],['bag-tab:shop','Quay Outfitter'],['bag-tab:materials','Materials on hand'],['bag-tab:workbench','MUNICIPAL WORKBENCH'],['nav:journal','Adventure chronicle'],['nav:guide','FIELD GUIDE · RULES & SAVES']]) {
+    for (const [action,label] of [['nav:character','Character record'],['char-tab:attributes','YOUR ATTRIBUTES'],['char-tab:abilities','Active abilities'],['nav:bag','Personal effects'],['bag-tab:shop','Quay outfitter'],['bag-tab:materials','Materials on hand'],['bag-tab:workbench','MUNICIPAL WORKBENCH'],['nav:story','The work beneath the Quay'],['nav:journal','Adventure chronicle'],['nav:guide','FIELD GUIDE · RULES & SAVES']]) {
       packaged.click(action);
       assert.equal(app().includes(label),true,`packaged UI renders ${label}`);
       assert.equal(/\b(?:undefined|NaN)\b/.test(app()),false,`packaged ${label} has no missing values`);

@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.3.0
+# Crown & Calamity — playable solo prototype v0.4.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -28,13 +28,24 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from the Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## Implemented in v0.3
+## New in v0.4 — incremental growth and an authored opening
 
-- Seven attributes including Luck, levels 1–10, four points per level, free early respecs, exact per-point previews, equipment comparisons, and a target-specific combat inspector.
+- **Create and keep multiple characters:** first-run identity/kit creation, up to six separate local adventures, and safe character switching. Save imports add a character instead of replacing an existing one. Each new character starts with 20 coins and only the selected kit's gear.
+- **Spend early gold:** the Quay outfitter has reviewed buy/sell flows, affordable level-1 stock, comparisons, and clear sale values. Sell unequipped gear outside encounters; selling removes its upgrades/affixes, and buying it again gives clean base gear. Practice kits require owned gear and cannot recreate sold items.
+- **See equipped slots:** Character → Gear and the Satchel show a clickable nine-slot equipment map around a generic body outline, plus an accessible text list. This is a slot diagram, not a player portrait.
+- **Longer levels, smaller steps:** four parts per full level, one attribute point for each completed part, and no extra four-point award at the level boundary. The full-level XP curve is three times the earlier prototype. Both part and level progress are visible; the total discretionary points remain four per full level.
+- **A longer story introduction:** meet Mara, accept the minor Proof of Trouble job, report three completed rat encounters, then take the major Drainage Inspection contract. Clear three more encounters, secure the passage, explicitly rescue Mara, and report back. Later major contracts require specific accepted objectives, explicit story actions, and a recorded delve route. Minor jobs give nearer goals while the major story develops.
+- **Working physical skills:** sword/shield and blade starters learn Driving Strike immediately. Guardstrike combines a weaker physical hit with Guard for stamina. Physical skills require no focus; Arc Bolt and Wardcast still do. The main action bar follows the equipped loadout.
+
+The first minor contract yields 128 total XP after its three hunts and reward: level 1 part 2. The rescue chain reaches 312 total XP: level 2 part 1 with four earned attributes, before optional hunts or drops. These are provisional pacing numbers for playtesting, not a promised session duration.
+
+## Existing foundations
+
+- Seven attributes including Luck, levels 1–10, one point per progression part, free early respecs, exact per-point previews, equipment comparisons, and a target-specific combat inspector.
 - Earned ability learning: Arc Bolt, Brace, Disrupt, Mend, Driving Strike, Aegis, and Expose; Prepared, Sure Footing, and Reservoir passives. Three active slots, one passive, six shared attunement. Learn and prepare outside fights and expeditions.
 - Useful-contribution mastery with rank improvements and rank-3 choices for Arc Bolt, Brace, Disrupt, and Mend. Universal Attack, Defend, Recover, Withdraw, and encounter-specific Vent remain available without an ability slot.
 - Six repeatable ordinary enemies and the three-phase Acting Superintendent; readable intents and a shared 650 ms action delay. Extra inputs during the pause are discarded, never queued. Timers only re-enable controls.
-- Five story contracts, worker rescue callbacks, a branching solo delve, a single camp recovery, first-boss reward selection, event-driven achievements, and authored B.U.R.S.A.R. commentary.
+- Minor and major story contracts, worker rescue callbacks, a branching solo delve, a single camp recovery, first-boss reward selection, event-driven achievements, and authored B.U.R.S.A.R. commentary.
 - Character Overview/Attributes/Abilities tabs, all nine equipment slots, an outfit comparison, material-source hints, and explicit workbench cost/benefit confirmations. Higher-contrast text and system fonts preserve the readability fixes.
 - Original generated environmental art and a new seven-enemy atlas. The UI crops the shared atlas directly; it does not rely on external image references inside SVG files.
 
@@ -50,9 +61,11 @@ The current bag owns one copy of each base item ID. This version does not genera
 
 ## Saves and compatibility
 
-Save format v3 imports v1, v2, and v3. Old saves retain their invested attributes, unspent points, resources, equipment, progress, and valid mastery. Version-1 characters gain baseline Luck 8. Legacy core actions/passives stay learned; migration equips a legal trio and preserves the passive, and the remaining learned actions can be re-equipped outside encounters. New characters start with Arc Bolt and Prepared and earn the rest.
+Save format v4 imports v1–v4. Existing characters retain their full level, invested attributes, gear, skills, currency, and story progress. Older within-level XP is mapped proportionally to the slower curve; newly recognized completed parts grant their points once, and reimporting the migrated v4 save does not grant them again. Completed and pending legacy story milestones are retained without replaying a completed rescue.
 
-The level-1 attribute budget is 68: seven baseline values of 8 plus 12 starter investment. Luck improves critical and equipment-drop chances with diminishing returns. It does not alter guaranteed XP, coins, materials, boss choices, or the action delay.
+The local roster is stored separately from the active-character save. A legacy single-character save is adopted into the roster. Export the active character from the Field Guide before changing browser/device or opening a new download; repeat for other characters you want to back up. Online account sync is not implemented.
+
+The level-1 attribute budget is 68: seven baseline values of 8 plus 12 starter investment. At level L, part P, the budget is 68 + 4×(L−1) + (P−1). Luck improves critical and equipment-drop chances with diminishing returns. It does not alter guaranteed rewards or the 650 ms action delay.
 
 ## Design and future work
 
@@ -63,12 +76,16 @@ The original modular pack remains under `design/Crown-and-Calamity-Design-v0.1/`
 - [Ability progression and loadouts](design/14_Ability_Progression.md)
 - [Enemy art direction](design/15_Art_Direction.md)
 - [Dynamic gear assessment](design/16_Dynamic_Gear_Systems.md)
+- [Incremental leveling and migration](design/17_Incremental_Leveling.md)
+- [Shop and trading](design/18_Shop_and_Trading.md)
+- [Research: progression, successes, and struggles](design/19_Research_Progression_and_Retention.md)
+- [Story contracts](design/20_Story_Contracts.md)
 - [Online development roadmap](FUTURE-DEVELOPMENT.md)
 
 This is still a local solo prototype. Login, server-authoritative actions/randomness/rewards, account persistence, guilds, and multiplayer are future work. Local saves, clocks, and code remain editable. The shared delay limits rapid input; it is not production anti-cheat.
 
 ## Verification
 
-`npm test` passes 56 test cases, including the original combat checks, ability progression assertions, slot/ownership/cost rules, upgrades and affixes, old-save migration, live encounter round-trips, and UI action flows. The generated standalone is syntax-checked, booted in a JavaScript VM, and navigated through all five sections. The source archive is checked for all required modules and artwork.
+The automated suite covers combat, mastery/loadout rules, multipart XP and migration, all nine gear slots, shop prices and atomic spending, upgrade/affix removal on sale, roster creation/switch/import isolation, authored contract objectives/reward idempotency, physical skills without a focus, and live save round-trips. It also packages the complete offline HTML, syntax-checks it, and boots/navigates its UI using a minimal DOM test harness.
 
-The VM uses a minimal DOM stub and does not verify browser layout. Real-device visual and accessibility testing remains outstanding; the current execution environment has not supported browser rendering.
+The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 85 test cases.

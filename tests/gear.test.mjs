@@ -4,7 +4,7 @@ import {
   ITEMS, SLOTS, EXCHANGES, PREFIXES, SUFFIXES, resolveItem, slotChoices,
   equipItem, unequipItem, unequipReason, buyItem, exchangeMaterials,
   upgradePreview, upgradeItem, affixPreview, applyAffix, normalizeGearState,
-  effectiveItem
+  effectiveItem, buyPreview, sellPreview, sellItem
 } from '../dist/gear.js';
 
 const state=(overrides={})=>({level:10,coins:1000,materials:{'Ledger scraps':10,'Canal iron':10,'Runic residue':10,'Chainback shell':10,'Stamped brass':10,'Floodglass':10,'Floodglass Fragment':2,'Salvaged fittings':10,'Repair fittings':10},bag:['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band','cap','boots','rivethelm','waders','signet','pike'],gear:{weapon:'rod',offhand:'shield',body:'coat'},itemMods:{},fight:null,delve:null,...overrides});
@@ -67,6 +67,39 @@ test('buy and exchange spend exactly once and cannot grant duplicates',()=>{
   const receipt=exchangeMaterials(s,'ledger_fittings');assert.deepEqual(receipt.gained,{'Salvaged fittings':1});
   assert.equal(s.coins,70);assert.equal(s.materials['Ledger scraps'],0);assert.equal(s.materials['Salvaged fittings'],1);
   assert.equal(exchangeMaterials(s,'ledger_fittings'),false);assert.equal(s.coins,70);
+});
+
+test('starter shop stock is affordable after a few hunts and exposes its prices',()=>{
+  const s=state({level:1,coins:25,bag:['rod']});
+  for(const id of ['rod','sword','blade','shield','focus','charm','coat'])assert.ok(ITEMS[id].price>=8&&ITEMS[id].price<=25,`${id} has an early price`);
+  for(const id of ['cap','workgloves','wornboots'])assert.ok(buyPreview(s,id).allowed,`${id} is immediately available`);
+  assert.equal(buyPreview(s,'boots').allowed,false);assert.match(buyPreview(s,'boots').reason,/level 2/);
+  assert.equal(buyPreview(s,'sword').price,18);assert.equal(buyPreview(s,'sword').item.base,14);
+});
+
+test('buy and sell previews enforce ownership, equipment, level and encounter locks atomically',()=>{
+  const s=state({level:1,coins:18,bag:['rod','shield'],gear:{weapon:'rod',offhand:'shield'}});
+  const before=structuredClone(s);
+  assert.equal(sellPreview(s,'rod').allowed,false);assert.match(sellPreview(s,'rod').reason,/[Uu]nequip/);
+  assert.equal(sellItem(s,'rod'),false);assert.deepEqual(s,before);
+  assert.equal(sellItem(s,'cap'),false);assert.deepEqual(s,before);
+  assert.equal(buyPreview(s,'boots').allowed,false);
+  s.fight={enemy:'rats'};assert.equal(sellPreview(s,'shield').allowed,false);assert.equal(sellItem(s,'shield'),false);assert.equal(buyPreview(s,'cap').allowed,false);assert.equal(buyItem(s,'cap'),false);assert.deepEqual(s.bag,before.bag);assert.equal(s.coins,before.coins);
+  s.fight=null;s.delve={node:0};assert.equal(sellItem(s,'shield'),false);assert.equal(buyItem(s,'cap'),false);
+});
+
+test('selling removes unequipped item and mods, and every buy/sell cycle loses coins',()=>{
+  const s=state({level:1,coins:32,bag:['rod'],gear:{weapon:'rod'},materials:{'Salvaged fittings':1},itemMods:{workgloves:{upgrade:3,prefix:'sturdy'}}});
+  assert.equal(buyItem(s,'workgloves'),true);assert.equal(s.coins,16);assert.equal(s.itemMods.workgloves,undefined);
+  assert.equal(buyPreview(s,'workgloves').allowed,false);
+  const receipt=sellItem(s,'workgloves');assert.equal(receipt.coins,4);assert.equal(s.coins,20);assert.ok(!s.bag.includes('workgloves'));
+  assert.equal(s.itemMods.workgloves,undefined);assert.equal(buyItem(s,'workgloves'),true);assert.equal(s.coins,4);
+
+  const upgraded=state({level:1,coins:100,bag:['rod'],gear:{weapon:'rod'},materials:{'Salvaged fittings':1},itemMods:{}});
+  assert.equal(buyItem(upgraded,'workgloves'),true);assert.equal(upgradeItem(upgraded,'workgloves').upgrade,1);
+  const invested=100-upgraded.coins;const value=sellPreview(upgraded,'workgloves').price;
+  assert.ok(value<16);assert.ok(value<invested);assert.deepEqual(sellItem(upgraded,'workgloves'),{id:'workgloves',coins:value});
+  assert.equal(upgraded.itemMods.workgloves,undefined);assert.ok(upgraded.coins<100);
 });
 
 test('insufficient coin or material costs fail atomically',()=>{

@@ -270,3 +270,136 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
  #app .page.in-combat{padding-bottom:calc(380px + env(safe-area-inset-bottom))}
  #app .combat-controls{bottom:calc(68px + env(safe-area-inset-bottom));max-height:calc(100dvh - 160px - env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain}
 }
+
+/* Equipment diagram: a functional slot map centered on a generic outline. */
+#app .gear-diagram{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(88px,auto));grid-template-areas:"weapon head offhand" "accessory figure accessory2" "hands figure feet" "body figure relic";gap:9px;align-items:stretch;margin:17px 0 24px;max-width:900px}
+#app .gear-slot-card{display:flex;min-width:0;min-height:84px;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;padding:10px;background:#202c23;border:1px solid #56674c;text-align:left;overflow-wrap:anywhere}
+#app .gear-slot-card.empty{background:#18221b;border-style:dashed;color:#d2ddc8}
+#app .gear-slot-card:hover:not(:disabled),#app .gear-slot-card:focus-visible{background:#2c3b2d;border-color:#e0c58f}
+#app .gear-slot-label{font-size:11px;color:#f1d69a;letter-spacing:.45px;text-transform:uppercase}
+#app .gear-slot-card strong{font-size:13px;line-height:1.35;color:#fff8e8}
+#app .gear-slot-card small{font-size:11px;line-height:1.4;color:#c7d2be}
+#app .slot-weapon{grid-area:weapon}#app .slot-head{grid-area:head}#app .slot-offhand{grid-area:offhand}#app .slot-accessory{grid-area:accessory}#app .slot-accessory2{grid-area:accessory2}#app .slot-hands{grid-area:hands}#app .slot-feet{grid-area:feet}#app .slot-body{grid-area:body}#app .slot-relic{grid-area:relic}
+#app .gear-figure{grid-area:figure;display:flex;min-width:0;align-items:center;justify-content:center;flex-direction:column;gap:5px;border:1px solid #344234;border-radius:10px;background:radial-gradient(ellipse at center,#283629 0%,#19221b 72%);color:#becbb4}
+#app .gear-figure svg{width:min(74%,145px);height:calc(100% - 28px);max-height:280px;min-height:190px;fill:none;stroke:#c7d1bf;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+#app .gear-figure span{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#d8c18d}
+#app .equipment-list{border-top:1px solid #3b4838;padding-top:16px}
+#app .equipment-list h3{margin:0 0 5px}
+#app .equipment-list .equipment-slot-row{grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:7px 0}
+#app .equipment-slot-row .slot-list-open{display:flex;min-width:0;width:100%;align-items:center;gap:13px;padding:9px 10px;border:0;text-align:left;background:transparent}
+#app .equipment-slot-row .slot-list-open:hover{background:#263329}
+#app .equipment-slot-row .slot-list-open .slot-name{flex:0 0 132px}
+#app .equipment-slot-row .slot-list-open .slot-equipped{flex:1}
+#app .equipment-slot-row .slot-list-open:focus-visible{outline:2px solid #c5aa78;outline-offset:2px}
+#app .slot-choice-list{display:grid;gap:8px}
+#app .slot-choice-list .slot-choice{min-width:0;align-items:flex-start;flex-direction:column}
+#app .shop-mode-tabs{position:relative;top:auto;margin:0 0 16px;padding:0;background:transparent}
+#app .shop-mode-tabs button{min-width:100px}
+#app .shop-reason{margin:0;padding:7px 9px;font-size:12px!important}
+#app .item-card .item-card-top{align-items:center}
+#app .item-card button{width:100%}
+#app .sale-value{color:#e8ce91}
+@media(max-width:740px){
+ #app .gear-diagram{grid-template-rows:repeat(4,minmax(88px,auto));gap:6px;margin:13px -2px 19px}
+ #app .gear-slot-card{min-height:84px;padding:8px 7px;gap:4px}
+ #app .gear-slot-label{font-size:10px;letter-spacing:.15px}
+ #app .gear-slot-card strong{font-size:12px;overflow-wrap:anywhere}
+ #app .gear-slot-card small{font-size:10px;line-height:1.3}
+ #app .gear-figure{border-radius:8px}
+ #app .gear-figure svg{width:82%;min-height:190px;max-height:248px}
+ #app .equipment-list .equipment-slot-row{grid-template-columns:minmax(0,1fr) auto;gap:5px}
+ #app .equipment-slot-row .slot-list-open{gap:8px;padding:8px 4px}
+ #app .equipment-slot-row .slot-list-open .slot-name{flex-basis:92px;font-size:11px}
+ #app .equipment-slot-row .slot-list-open .slot-equipped small{font-size:11px}
+ #app .shop-mode-tabs{margin:0 -16px 14px;padding:0 16px}
+ #app .shop-mode-tabs button{flex:1}
+ #app .shop-reason{font-size:12px!important}
+}
+
+/* Multipart character progression, local roster, and the first-run creator. */
+#app .progression-panel{margin:13px 0 17px}
+#app .progression-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+#app .progression-head>div{display:grid;gap:5px}
+#app .progression-head strong{font:22px Georgia,serif;color:#fff1ca}
+#app .progression-head>span{font-size:12px;color:#d1dcc7}
+#app .progression-panel .xp-track{margin:0 0 15px}
+#app .part-track-label{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 7px;color:#e6d7ad;font-size:12px}
+#app .part-track-label span:first-child{font-size:10px;letter-spacing:.8px}
+#app .part-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+#app .part-track>span{height:8px;overflow:hidden;background:#343f32;border-radius:8px}
+#app .part-track>span.complete{background:#8da379}
+#app .part-track>span.current{background:#3d4634}
+#app .part-track>span.current i{display:block;height:100%;background:#dec58b;border-radius:8px}
+#app .character-header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#modal .character-list{display:grid;gap:8px;margin:15px 0}
+#modal .character-list-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:#172219;border:1px solid #475740;border-radius:5px}
+#modal .character-list-row>div{display:grid;gap:3px;min-width:0}
+#modal .character-list-row strong{font-size:16px;color:#fff4d5;overflow-wrap:anywhere}
+#modal .character-list-row small{font-size:12px;color:#cdd8c4;line-height:1.5}
+#modal .active-character-tag{padding:5px 9px;border:1px solid #8b946c;border-radius:20px;color:#f0dba8;font-size:11px;white-space:nowrap}
+.new-character-page{min-height:100dvh;padding:0 20px 40px;background:#111715;color:#f5f4e9}
+.wizard-brand{max-width:1040px;margin:0 auto;min-height:68px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #303b30;color:#e1c98e;font:20px Georgia,serif}
+.wizard-brand .icon{width:28px;height:28px}
+.wizard-brand small{margin-left:auto;color:#becbb4;font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.new-character-content{max-width:680px;margin:52px auto 0}
+.new-character-content h1{margin:9px 0;font-size:36px}
+.new-character-content>p{color:#cbd6c3;font-size:15px;line-height:1.7}
+#app .character-wizard{display:grid;gap:15px;margin-top:24px;padding:24px}
+#app .character-wizard label,#modal .modal-body label{display:block;margin:0;color:#e9e4d5;font-size:13px}
+#app .character-wizard input,#app .character-wizard select,#app .character-wizard textarea{display:block;width:100%;min-height:48px;margin-top:7px;padding:10px 12px;border:1px solid #59674e;border-radius:5px;background:#142018;color:#fff9eb;font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#app .character-wizard textarea,#modal textarea{resize:vertical;min-height:76px}
+#app .wizard-note{margin:0;color:#d2dfc9;font-size:13px;line-height:1.6}
+#modal textarea{display:block;width:100%;margin-top:7px;padding:10px 12px;border:1px solid #59674e;border-radius:5px;background:#142018;color:#fff9eb;font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+@media(max-width:740px){
+ #app .progression-panel{padding:15px}
+ #app .progression-head strong{font-size:20px}
+ #app .part-track-label{display:grid;gap:3px;font-size:11px}
+ #app .character-header{align-items:flex-start;flex-direction:column}
+ #app .character-header-actions{width:100%}
+ #app .character-header-actions button{flex:1}
+ #modal .character-list-row{align-items:flex-start;flex-direction:column}
+ #modal .character-list-row button{width:100%}
+ .new-character-page{padding:0 16px 32px}
+ .wizard-brand{min-height:58px;font-size:18px}
+ .wizard-brand small{font-size:10px}
+ .new-character-content{margin-top:32px}
+ .new-character-content h1{font-size:30px}
+ #app .character-wizard{padding:18px}
+}
+
+/* Story goals progress through player actions, never a timer. */
+.story-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:start}
+#app .story-intro h2{margin:12px 0;font-size:30px}
+.story-chapter-progress{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.story-chapter-progress span{border:1px solid #62705a;padding:8px 10px;border-radius:4px;color:#c7d0bd;font-size:12px}
+.story-chapter-progress .current{border-color:#dbc28e;color:#f6dfb5;background:#353b28}
+.story-chapter-progress .complete{border-color:#92ae75;color:#d6e9c5;background:#293b27}
+.story-contract.major{border-color:#817750}
+.story-contract.minor{border-color:#546849}
+#app .story-contract h3{font-size:25px}
+#app .story-employer{font-size:13px;color:#dfc694;margin-bottom:15px}
+.story-objectives{list-style:none;padding:0;margin:17px 0}
+.story-objectives li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #43513d;color:#e5e9da;font-size:14px;line-height:1.6}
+.story-objectives strong{white-space:nowrap;color:#e4cb95;font-size:13px}
+.story-objectives li.done{color:#c3dda8}
+.story-reward{font-size:13px;background:#283523;border:1px solid #566849;color:#f3dfb3;padding:11px;border-radius:4px;margin:15px 0}
+.story-buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+.story-buttons button{min-height:48px;font-size:14px}
+#app .story-hint{font-size:13px;color:#cad7bc;margin:10px 0}
+.story-contact{border-left:3px solid #b6a36e}
+.story-contact h3{margin-top:12px}
+.story-future summary{cursor:pointer;color:#e3cfa6;min-height:40px;font-size:15px}
+.story-future-row{padding:15px 0;border-bottom:1px solid #45513d}
+.story-future-row strong{display:block;font-family:Georgia,serif;font-size:20px;color:#f5efdb}
+.story-future-row span{color:#d3bd8e;font-size:12px}
+#app .story-future-row p{font-size:13px;color:#c6d1bb;margin:5px 0 0}
+.quest-panel .story-objectives li{font-size:13px}
+@media(max-width:1000px){.story-columns{grid-template-columns:1fr}}
+@media(max-width:740px){.story-chapter-progress{display:grid;grid-template-columns:1fr 1fr}.story-objectives li{font-size:14px}.story-buttons>button{width:100%}#app .mobile-nav button{min-width:48px;padding-left:6px;padding-right:6px}}
+
+/* Keep the requested body-slot map legible, including on narrow phones. */
+#app .gear-diagram{grid-template-areas:"weapon head offhand" "body figure relic" "hands figure accessory" "feet figure accessory2"}
+#app .gear-slot-label{font-size:12px}
+#app .gear-slot-card strong{font-size:14px;line-height:1.45}
+#app .gear-slot-card small{font-size:12px;line-height:1.5}
+@media(max-width:740px){#app .gear-slot-card{min-height:100px;padding:9px 7px}#app .gear-slot-card small{display:none}#app .gear-slot-label{font-size:12px}#app .gear-slot-card strong{font-size:13px}#app .gear-slot-card.empty strong{font-size:14px}}
