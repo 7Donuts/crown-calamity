@@ -1,0 +1,17 @@
+# Generated playable downloads; regenerate with python scripts-package.py.
+Crown-and-Calamity*.html
+Crown-and-Calamity*.zip
+
+# Checkout-local hosting identity, dependencies, and generated artifacts.
+.openai/
+node_modules/
+artifacts/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Player saves and local environment configuration.
+crown-calamity-level-*.json
+.env
+.env.*
+!.env.example

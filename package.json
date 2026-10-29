@@ -1,0 +1,10 @@
+{
+  "name": "crown-and-calamity",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "python -m http.server 4173 --directory dist",
+    "test": "node --test tests/*.test.mjs"
+  }
+}
