@@ -1,6 +1,7 @@
 import * as G from './engine.js';
 import {partThresholds} from './progression.js';
 import {recordStoryEvent} from './story.js';
+import * as Shifts from './shifts.js';
 
 export const LAB_SCENARIOS=Object.freeze([
   Object.freeze({id:'fresh_intro_goal',title:'First hunt · find the next goal',question:'Can you tell what to do next without someone explaining it?',task:'Read the goal, start one hunt, and say what action you expect to take afterward.',kit:'bulwark',level:1,part:1,enemy:'rats',description:'A synthetic level 1 character with the Bulwark kit and its selected starter gear.'}),
@@ -8,12 +9,14 @@ export const LAB_SCENARIOS=Object.freeze([
   Object.freeze({id:'heavy_telegraph',title:'A heavy telegraph · choose a response',question:'Does the intent make Guard or Guardstrike easy to compare?',task:'Respond to the Clawback Crab’s immediately displayed Slow grab heavy wind-up.',kit:'breaker',level:5,part:1,enemy:'crab',description:'A level 5 synthetic fixture with points earned through real engine progression. The hunt opens on Slow grab so the tester can respond at once; setup resolves no exchange and awards nothing.'}),
   Object.freeze({id:'build_equipment',title:'Build choice · inspect a sidegrade',question:'Can you tell what a piece of gear changes before buying it?',task:'Compare the equipped item with an available shop item, then buy, equip, or skip it.',kit:'caster',level:3,part:1,enemy:'wisp',startingCoins:120,description:'A level 3 caster fixture with a test purse. Purchases still use the production shop rules.'}),
   Object.freeze({id:'return_orientation',title:'Return after a break · recover your bearings',question:'Can you identify the current contract, build, and next useful action after returning?',task:'Review the active contract and objective, then start or decline the suggested hunt. Add a note about missing context.',kit:'duelist',level:2,part:1,enemy:'rats',description:'Synthetic handoff after the first minor contract: Lint Trap Rescue is active with one of three rat clears recorded.'}),
-  Object.freeze({id:'longer_level_pacing',title:'Part progress · is the next point visible?',question:'Does the part meter make a longer level feel like steady progress?',task:'Start part 3 of level 1, complete exchanges, and check whether the next point and level wrap are understandable.',kit:'bulwark',level:1,part:3,enemy:'rats',description:'A level 1 part 3 fixture created by awarding XP through the production progression rules.'})
+  Object.freeze({id:'longer_level_pacing',title:'Part progress · is the next point visible?',question:'Does the part meter make a longer level feel like steady progress?',task:'Start part 3 of level 1, complete exchanges, and check whether the next point and level wrap are understandable.',kit:'bulwark',level:1,part:3,enemy:'rats',description:'A level 1 part 3 fixture created by awarding XP through the production progression rules.'}),
+  Object.freeze({id:'night_shift',title:'Night Shift · push your luck, then clock out',question:'Is the choice between one more hunt and clocking out clear, and does the unfiled Overtime bonus feel fair to risk?',task:'Clock in, choose each hunt yourself, watch the unfiled receipts, pick a boon at a Midnight snack check-in, then clock out or keep going.',kit:'bulwark',level:3,part:1,enemy:'scavenger',shifts:true,description:'A level 3 fixture for the opt-in Night Shift prototype (Shifts). Base rewards stay immediate; Overtime adds an unfiled bonus that a defeat forfeits. Nothing is timed and nothing accrues while you are away. Every hunt and every action is your own tap.'})
 ]);
 
 const SCENARIO_BY_ID=new Map(LAB_SCENARIOS.map(s=>[s.id,s]));
 const primaryStat={bulwark:'vit',caster:'int',duelist:'fin',breaker:'mig'};
 const shopKinds=new Set(['buy','sell']);
+const MAX_SHIFT_HISTORY=20;
 const clone=value=>JSON.parse(JSON.stringify(value));
 
 function hashSeed(seed){
@@ -66,14 +69,14 @@ export function createLabSession({scenarioId,kit,seed=1}={}){
   const scenario=SCENARIO_BY_ID.get(scenarioId);if(!scenario)return null;
   const selectedKit=kit||scenario.kit,selectedSeed=(typeof seed==='string'&&seed.length<=128)||(typeof seed==='number'&&Number.isFinite(seed))?seed:1,character=makeFixture(scenario,selectedKit);if(!character)return null;
   const session={scenarioId,scenario:clone(scenario),seed:selectedSeed,kit:selectedKit,character,events:[],rounds:0,playerInputs:0,deniedInputs:0,
-    encountersStarted:0,victories:0,defeats:0,withdrawals:0,damageAttempted:0,damageUnreportedActions:0,hpLost:0,hpRestored:0,manaSpent:0,staminaSpent:0,shopActions:{attempted:0,completed:0},notes:'',starting:baseMetrics(character)};
+    encountersStarted:0,victories:0,defeats:0,withdrawals:0,damageAttempted:0,damageUnreportedActions:0,hpLost:0,hpRestored:0,manaSpent:0,staminaSpent:0,shopActions:{attempted:0,completed:0},notes:'',starting:baseMetrics(character),shift:null,shiftsStarted:0,shiftHistory:[],shiftLedger:[]};
   Object.defineProperty(session,'rng',{value:seededRng(selectedSeed),writable:true,enumerable:false});
   return session;
 }
 
 export function startLabHunt(session,enemyId,now){
   if(!session?.character)return false;input(session);const at=timestamp(session,now),character=session.character;
-  const started=G.startFight(character,enemyId,'hunt');
+  const started=G.startFight(character,enemyId,'hunt',Number.isFinite(now)?now:Date.now());
   if(started&&session.scenarioId==='heavy_telegraph'&&enemyId===session.scenario.enemy){
     const enemy=G.ENEMIES.find(value=>value.id===enemyId);character.fight.round=enemy.heavy;
   }
@@ -84,8 +87,8 @@ export function startLabHunt(session,enemyId,now){
 
 export function labAction(session,key,now){
   if(!session?.character)return {ok:false,reason:'No lab session'};
-  input(session);const at=timestamp(session,now),character=session.character,before={hp:character.hp,mp:character.mp,sp:character.sp,enemyHP:character.fight?.hp,enemy:character.fight?.enemy,round:character.fight?.round},info=G.actionInfo(character,key);
-  const result=G.exchange(character,key,session.rng,Number.isFinite(now)?now:Date.now());
+  input(session);const at=timestamp(session,now),character=session.character,shift=session.shift?.status==='open'?session.shift:null,before={hp:character.hp,mp:character.mp,sp:character.sp,enemyHP:character.fight?.hp,enemy:character.fight?.enemy,round:character.fight?.round},info=shift?Shifts.shiftActionInfo(character,shift,key):G.actionInfo(character,key);
+  const resolved=shift?Shifts.shiftExchange(character,shift,key,session.rng,Number.isFinite(now)?now:Date.now()):{result:G.exchange(character,key,session.rng,Number.isFinite(now)?now:Date.now()),effects:[]},result=resolved.result;
   if(!result.ok)session.deniedInputs++;else{
     session.rounds++;const damageKeys=new Set(['attack','cast','combo','disrupt','driving','guardstrike']);
     if(Number.isFinite(result.damage))session.damageAttempted+=Math.max(0,result.damage);else if(damageKeys.has(key))session.damageUnreportedActions++;
@@ -94,12 +97,79 @@ export function labAction(session,key,now){
   }
   const damageKeys=new Set(['attack','cast','combo','disrupt','driving','guardstrike']),damageUnknown=!!result.ok&&damageKeys.has(key)&&!Number.isFinite(result.damage);
   event(session,{type:'combat-input',key,enemy:before.enemy,roundBefore:before.round,accepted:!!result.ok,...(at!==undefined?{at}:{}),result:safeResult(result),damageAttempted:Number.isFinite(result.damage)?Math.max(0,result.damage):null,damageUnreported:damageUnknown,hpLost:Math.max(0,before.hp-character.hp),hpRestored:Math.max(0,character.hp-before.hp),cost:{mana:result.ok?Math.max(0,Number(info?.mp)||0):0,stamina:result.ok?Math.max(0,Number(info?.sp)||0):0},resources:{hpBefore:before.hp,hpAfter:character.hp,mpBefore:before.mp,mpAfter:character.mp,spBefore:before.sp,spAfter:character.sp}});
+  if(shift)settleShiftExchange(session,shift,result,resolved.effects,before.enemy,at);
   return result;
 }
 
+// Night Shift (Shifts) prototype: every call below is one explicit input. Nothing is timed, queued or accrued while away.
+const shiftStamp=at=>at!==undefined?{at}:{};
+function settleShiftExchange(session,shift,result,effects,enemyId,at){
+  for(const effect of effects)event(session,{type:'shift-effect',shiftId:shift.id,...effect,...shiftStamp(at)});
+  if(!result.ok)return;
+  const offerRng=seededRng(`${session.seed}|${shift.id}|snack|${shift.wins+1}`),settled=Shifts.settleExchange(session.character,shift,result,enemyId,offerRng);
+  if(!settled)return;
+  if(settled.event==='victory'){
+    event(session,{type:'shift-fight-end',shiftId:shift.id,outcome:'victory',pctApplied:settled.pct,wins:shift.wins,streak:shift.streak,unfiled:settled.unfiled,...shiftStamp(at)});
+    if(settled.offer)event(session,{type:'shift-offer',shiftId:shift.id,milestone:settled.offer.milestone,choices:[...settled.offer.choices],...shiftStamp(at)});
+  }else if(settled.event==='withdraw')event(session,{type:'shift-fight-end',shiftId:shift.id,outcome:'withdraw',wins:shift.wins,streak:0,unfiled:settled.unfiled,...shiftStamp(at)});
+  else if(settled.event==='defeat')event(session,{type:'shift-end',shiftId:shift.id,reason:'defeat',wins:shift.wins,forfeited:settled.forfeited,coinsLost:result.coinsLost,...shiftStamp(at)});
+}
+function shiftGate(session,now){
+  if(!session?.character||!session.scenario?.shifts)return null;
+  input(session);return {at:timestamp(session,now)};
+}
+export function labShiftStart(session,now){
+  const gate=shiftGate(session,now);if(!gate)return {ok:false,reason:'This scenario has no Night Shift.'};
+  const nowMs=Number.isFinite(now)?now:Date.now(),started=session.shift?.status==='open'?{ok:false,reason:'A Night Shift is already open.'}:Shifts.startShift(session.character,{id:`shift-${session.shiftsStarted+1}`,now:nowMs});
+  if(!started.ok){session.deniedInputs++;event(session,{type:'shift-start',accepted:false,reason:started.reason,...shiftStamp(gate.at)});return started;}
+  if(session.shift){session.shiftHistory.push(session.shift);if(session.shiftHistory.length>MAX_SHIFT_HISTORY)session.shiftHistory.shift();}
+  session.shift=started.shift;session.shiftsStarted++;
+  event(session,{type:'shift-start',accepted:true,shiftId:started.shift.id,rulesVersion:started.shift.rulesVersion,...shiftStamp(gate.at)});return started;
+}
+export function labShiftFight(session,enemyId,now){
+  const gate=shiftGate(session,now);if(!gate)return false;
+  const shift=session.shift,reason=Shifts.fightBlockReason(shift)||(session.character.fight?'An encounter is already active.':null);
+  if(reason){session.deniedInputs++;event(session,{type:'shift-fight-start',accepted:false,reason,...shiftStamp(gate.at)});return false;}
+  const risk=Shifts.atRisk(shift),streakBefore=shift.streak,inputsBefore=session.playerInputs,started=startLabHunt(session,enemyId,now);
+  session.playerInputs=inputsBefore;
+  if(!started)return false;
+  const record=Shifts.recordFightStart(shift,enemyId),effects=Shifts.applyFightStart(session.character,shift);
+  event(session,{type:'shift-fight-start',accepted:true,shiftId:shift.id,n:record.n,enemyId,streakBefore,overtimePctIfWon:Shifts.overtimePct(shift),atRisk:{coins:risk.coins,materials:risk.materials},...shiftStamp(gate.at)});
+  for(const effect of effects)event(session,{type:'shift-effect',shiftId:shift.id,...effect,...shiftStamp(gate.at)});
+  return true;
+}
+export function labShiftBreak(session,now){
+  const gate=shiftGate(session,now);if(!gate)return {ok:false,reason:'This scenario has no Night Shift.'};
+  const result=Shifts.useBreak(session.character,session.shift);
+  if(!result.ok){session.deniedInputs++;event(session,{type:'shift-break',accepted:false,reason:result.reason,...shiftStamp(gate.at)});return result;}
+  event(session,{type:'shift-break',accepted:true,shiftId:session.shift.id,pct:result.pct,healed:result.healed,...shiftStamp(gate.at)});return result;
+}
+export function labShiftBoon(session,milestone,boonId,now){
+  const gate=shiftGate(session,now);if(!gate)return {ok:false,reason:'This scenario has no Night Shift.'};
+  const result=session.character.fight?{ok:false,reason:'Pick a boon between fights.'}:Shifts.pickBoon(session.shift,milestone,boonId);
+  if(!result.ok){session.deniedInputs++;event(session,{type:'shift-pick',accepted:false,milestone,reason:result.reason,...shiftStamp(gate.at)});return result;}
+  event(session,{type:'shift-pick',accepted:true,shiftId:session.shift.id,milestone,boonId,...shiftStamp(gate.at)});return result;
+}
+export function labShiftSkip(session,milestone,now){
+  const gate=shiftGate(session,now);if(!gate)return {ok:false,reason:'This scenario has no Night Shift.'};
+  const result=Shifts.skipOffer(session.shift,milestone);
+  if(!result.ok){session.deniedInputs++;event(session,{type:'shift-skip',accepted:false,milestone,reason:result.reason,...shiftStamp(gate.at)});return result;}
+  event(session,{type:'shift-skip',accepted:true,shiftId:session.shift.id,milestone,...shiftStamp(gate.at)});return result;
+}
+export function labShiftClockOut(session,now){
+  const gate=shiftGate(session,now);if(!gate)return {ok:false,reason:'This scenario has no Night Shift.'};
+  const shift=session.shift,wins=shift?.wins,result=Shifts.clockOut(session.character,shift,session.shiftLedger);
+  if(!result.ok){session.deniedInputs++;event(session,{type:'shift-end',accepted:false,reason:result.reason,...shiftStamp(gate.at)});return result;}
+  if(result.duplicate)session.deniedInputs++;
+  event(session,{type:'shift-end',accepted:!result.duplicate,duplicate:!!result.duplicate,reason:'clock_out',shiftId:shift.id,wins,filed:result.filed,...shiftStamp(gate.at)});return result;
+}
+// Action info as the UI shows it and telemetry records it (boon-adjusted while a Shift is open).
+export function labActionInfo(session,key){return session.shift?.status==='open'?Shifts.shiftActionInfo(session.character,session.shift,key):G.actionInfo(session.character,key);}
+const shiftOpen=session=>session?.shift?.status==='open';
+
 export function labRest(session,now){
   if(!session?.character)return false;input(session);const at=timestamp(session,now),before={hp:session.character.hp,mp:session.character.mp,sp:session.character.sp};
-  const restored=G.restore(session.character);if(!restored)session.deniedInputs++;
+  const restored=shiftOpen(session)?false:G.restore(session.character);if(!restored)session.deniedInputs++;
   event(session,{type:'rest',accepted:restored,resourcesBefore:before,resourcesAfter:{hp:session.character.hp,mp:session.character.mp,sp:session.character.sp},...(at!==undefined?{at}:{})});return restored;
 }
 
@@ -111,7 +181,7 @@ const COMMANDS={
 export function labUse(session,command,...args){
   if(!session?.character||!COMMANDS[command])return {ok:false,reason:'Unknown lab command'};
   input(session);const before={coins:session.character.coins,points:session.character.points,gear:clone(session.character.gear),bag:[...session.character.bag]};
-  const result=COMMANDS[command](session.character,args),ok=!!result;if(!ok)session.deniedInputs++;
+  const result=shiftOpen(session)?false:COMMANDS[command](session.character,args),ok=!!result;if(!ok)session.deniedInputs++;
   if(shopKinds.has(command)){session.shopActions.attempted++;if(ok)session.shopActions.completed++;}
   event(session,{type:'engine-command',command,args:clone(args),accepted:ok,result:safeResult(typeof result==='object'?{ok,...result}:result),before,after:{coins:session.character.coins,points:session.character.points,gear:clone(session.character.gear),bag:[...session.character.bag]}});
   return result;
@@ -125,7 +195,19 @@ export function labSummary(session){
     starting:clone(session.starting),ending:{level:p.level,part:p.part,xp:p.levelXP,levelRequired:p.levelRequired,points:c.points,totalEarned:p.totalEarned,coins:c.coins,hp:c.hp,mp:c.mp,sp:c.sp,gear,activeAbilities:[...c.equippedAbilities],passive:c.passive},
     counters:{playerInputs:session.playerInputs,deniedInputs:session.deniedInputs,rounds:session.rounds,encountersStarted:session.encountersStarted,victories:session.victories,defeats:session.defeats,withdrawals:session.withdrawals,damageAttempted:session.damageAttempted,damageUnreportedActions:session.damageUnreportedActions,hpLost:session.hpLost,hpRestored:session.hpRestored,manaSpent:session.manaSpent,staminaSpent:session.staminaSpent,earnedPartPoints:Math.max(0,p.totalEarned-session.starting.totalEarned),shopActions:{...session.shopActions}},
     telemetryNotes:{damageAttempted:'Sum of damage values returned by the engine; the engine omits damage on defeat and withdrawal responses, counted as damageUnreportedActions.',hpLost:'Net HP lost between accepted exchanges after any healing in that exchange; it is not incoming enemy damage.',hpRestored:'Net HP increase between accepted exchanges; it is not the exact amount healed before the enemy response.'},
+    ...(session.scenario.shifts?{shifts:shiftReport(session)}:{}),
     events:clone(session.events),comments:session.notes,...(Number.isFinite(session.startTimestamp)?{startTimestamp:session.startTimestamp}:{})};
+}
+
+function sumReceipts(records,field){
+  const sum={coins:0,materials:{}};
+  for(const r of records)if(r[field]){sum.coins+=r[field].coins;for(const [k,v] of Object.entries(r[field].materials))sum.materials[k]=(sum.materials[k]||0)+v;}
+  return sum;
+}
+function shiftReport(session){
+  const records=[...session.shiftHistory,...(session.shift?[session.shift]:[])].map(Shifts.shiftSummary);
+  return {format:1,rulesVersion:Shifts.SHIFT_RULES_VERSION,prototype:true,started:session.shiftsStarted,recordsKept:records.length,recordsTruncated:session.shiftsStarted>records.length,filedTotals:sumReceipts(records,'filed'),forfeitedTotals:sumReceipts(records,'forfeited'),
+    notes:'Prototype rules on a disposable fixture. Unfiled receipts exist only inside a Night Shift and are filed once at clock-out. Defeat forfeits only the unfiled bonus; the engine applies its normal carried-coin loss and wound. Withdraw keeps unfiled receipts and resets the streak. Nothing is timed.',records};
 }
 
 export function compareBuilds({enemyId='rats',level=1,part=1,kits=['bulwark','caster','duelist','breaker'],seed=1}={}){

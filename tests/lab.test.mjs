@@ -3,8 +3,8 @@ import * as G from '../dist/engine.js';
 import * as Lab from '../dist/lab.js';
 
 {
-  assert.equal(Lab.LAB_SCENARIOS.length,6);
-  for(const id of ['fresh_intro_goal','routine_repetition','heavy_telegraph','build_equipment','return_orientation','longer_level_pacing'])assert.ok(Lab.LAB_SCENARIOS.some(s=>s.id===id));
+  assert.equal(Lab.LAB_SCENARIOS.length,7);
+  for(const id of ['fresh_intro_goal','routine_repetition','heavy_telegraph','build_equipment','return_orientation','longer_level_pacing','night_shift'])assert.ok(Lab.LAB_SCENARIOS.some(s=>s.id===id));
   assert.equal(Lab.createLabSession({scenarioId:'missing'}),null);
   const a=Lab.createLabSession({scenarioId:'fresh_intro_goal',seed:'same'});
   const b=Lab.createLabSession({scenarioId:'fresh_intro_goal',seed:'same'});
