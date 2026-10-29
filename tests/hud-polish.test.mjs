@@ -88,7 +88,9 @@ test('encounter outcome reports engine receipts and separates reward, salvage, d
   assert.match(markup, new RegExp(`\\+${receipt.xp} XP`));
   assert.match(markup, new RegExp(`\\+${receipt.coins}`));
   assert.ok(markup.includes(`+1 ${receipt.material}`));
-  assert.match(markup, /No equipment was found this time/);
+  assert.match(markup, /Spoils of the hunt/);
+  assert.doesNotMatch(markup, /Equipment roll|\d+\.\d+%|ENCOUNTER COMPLETE|enemy-token|encounter-result__status-seal|reward-grid/);
+  assert.match(markup, /aria-label="Victory rewards"/);
   assert.match(markup, /data-outcome="victory"/);
 
   winner.last = { ...receipt, material: '<svg onload=attack()>', loot: 'penny', salvaged: false, dropChance: 0.25 };
@@ -97,18 +99,18 @@ test('encounter outcome reports engine receipts and separates reward, salvage, d
   assert.ok(itemMarkup.includes('assets/items/item-atlas.png'));
   assert.match(itemMarkup, /&lt;svg onload=attack\(\)&gt;/);
   assert.doesNotMatch(itemMarkup, /<svg onload=/i);
-  assert.match(itemMarkup, /An equipment item was found/);
+  assert.match(itemMarkup, /class="encounter-loot"/);
 
   winner.last = { ...receipt, loot: null, salvaged: true, dropChance: 0.25 };
   const salvageMarkup = renderEncounterOutcome(winner);
   assert.match(salvageMarkup, /\+1 Salvaged fitting/);
-  assert.match(salvageMarkup, /duplicate became one Salvaged fitting/i);
+  assert.doesNotMatch(salvageMarkup, /Equipment roll|chance/i);
 
   for (const type of ['defeat', 'withdraw']) {
     winner.last = { ...receipt, type, xp: 0, coins: 0, material: null, loot: null, salvaged: false };
     const nonWin = renderEncounterOutcome(winner);
-    assert.doesNotMatch(nonWin, /class="encounter-result__rewards/);
-    assert.match(nonWin, type === 'defeat' ? /RECOVERY REQUIRED/ : /WITHDRAWAL RECORDED/);
+    assert.doesNotMatch(nonWin, /class="encounter-spoils/);
+    assert.match(nonWin, type === 'defeat' ? /Recovery required/ : /Withdrawal recorded/);
   }
 });
 

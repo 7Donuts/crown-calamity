@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.8.1
+# Crown & Calamity — playable solo prototype v0.8.2
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -27,6 +27,12 @@ python scripts-package.py
 Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy sprites, item atlas, emblem, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Records → Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
+
+## New in v0.8.2 — field HUD and illustrated spoils
+
+Health, Mana, Stamina, and Rest share one open status strip instead of four cards. Original colored pixel sprites match the world's moss, teal, cream, and amber palette; the existing resource-bar colors stay in place. The character sheet uses the same resource sprites.
+
+Victory now shows a treasure chest and an illustrated “Spoils of the hunt” list with the actual XP, coins, materials, equipment, and salvage earned. The redundant completion badge and equipment-roll percentage panel are removed. Defeat and withdrawal use recovery/map props. Reward calculations, Luck effects, saved receipts, combat pacing, and action routes are unchanged.
 
 ## Fixed in v0.8.1 — mobile layout
 

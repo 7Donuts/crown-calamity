@@ -45,6 +45,10 @@ Keep icon silhouettes simple and crisp at 24 px on an integer-scaled pixel grid.
 
 Maintain at least 4.5:1 contrast for ordinary text, at least 48 × 48 px primary touch targets, visible focus and disabled states, and clear spacing. Do not make state understandable through color alone. Keep the battle log, enemy intent, action requirement, reward, and next decision visually dominant over decoration. The interface must remain mobile-first and text-first.
 
+Resource and loot readouts are part of an adventurer's field HUD, not dashboard cards. Keep Health, Mana, Stamina, and Rest together on one shared strip, with open individual readouts and the existing moss/teal/amber fills. Present encounter spoils as an illustrated list: XP star, gold coin, supply bag, and actual equipment art beside the earned amounts. Avoid independent rounded tiles, category badges, duplicate completion labels, and roll-percentage panels. A treasure chest replaces the living enemy on victory; recovery and map props distinguish other outcomes.
+
+Status and loot sprites in `dist/ui-icons.js` use layered, original 24 × 24 SVG paths with stepped silhouettes, a slate outline, broad color areas, and a small cream highlight. The heart, potion, energy, campfire, chest, XP star, coin, and supply bag use the shared palette. They may be enlarged to 28–88 px for clear HUD and reward silhouettes; they remain decorative beside readable labels.
+
 The character overview uses warm cream paper with dark slate ink, compact stat groups, and a field-ledger identity mark. Keep the parchment scoped to the character record; action controls and encounter text keep their readable dark HUD surfaces. Journal props are decorative companions to text, never replacements for a reward, action label, or recovery state. Enlarge their viewports when source padding makes the silhouette too small.
 
 ## Asset inventory and production record

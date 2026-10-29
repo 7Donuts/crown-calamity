@@ -7,7 +7,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;
 const glyph = (name, cls = '') => UI_ICONS[name] ? `<svg class="sheet-glyph ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${UI_ICONS[name]}</svg>` : '';
 const SLOT_NAMES = { weapon: 'Weapon', offhand: 'Offhand', head: 'Head', body: 'Body', hands: 'Hands', feet: 'Feet', accessory: 'Accessory', accessory2: 'Second accessory', relic: 'Relic' };
 const ATTR_GLYPHS = { mig: 'sword', fin: 'hunt', int: 'guide', vit: 'heart', wil: 'mana', ins: 'overview', lck: 'spark' };
-const RESOURCE_GLYPHS = { hp: 'heart', mp: 'mana', sp: 'bolt', armor: 'shield', ward: 'spark', evasion: 'hunt' };
+const RESOURCE_GLYPHS = { hp: 'vitality', mp: 'flow', sp: 'vigor', armor: 'shield', ward: 'spark', evasion: 'hunt' };
 
 function equippedItemRows(state) {
   const gear = state?.gear || {};

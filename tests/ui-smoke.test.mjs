@@ -104,7 +104,7 @@ test('the actual UI action handlers carry a rescue build through character, gear
   await ui.act('combat:attack');
   assert.equal(ui.getState().last.type,'victory');
   assert.equal(ui.getState().totalExchanges,1);
-  matches(ui.getApp().innerHTML,/ENCOUNTER COMPLETE/);
+  matches(ui.getApp().innerHTML,/Spoils of the hunt/);
   noBrokenText(ui.getApp().innerHTML,'hunt result');
 
   // Seed the earned contract state for the ability-tab checks; the separate

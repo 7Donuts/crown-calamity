@@ -13,15 +13,17 @@
 #app .sidebar-footer { padding-top: 14px; }
 #app .sidebar-footer p { font-size: 13px; }
 
-/* Resource readouts become a tidy group of cards rather than one long bordered strip. */
+/* One field HUD: open readouts on a shared rule, without individual cards. */
 #app .resources {
   display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr)) minmax(170px,.9fr);
-  align-items: stretch;
-  gap: 10px;
-  padding: 0;
+  grid-template-columns: repeat(3,minmax(0,1fr)) minmax(170px,.85fr);
+  align-items: center;
+  gap: 18px;
   margin: 0 0 18px;
+  padding: 12px 0;
   border: 0;
+  border-block: 1px solid #536a73;
+  border-radius: 0;
   background: transparent;
   box-shadow: none;
   position: relative;
@@ -30,26 +32,27 @@
 }
 #app .resource, #app .resource-recovery {
   min-width: 0;
-  min-height: 76px;
+  min-height: 54px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border: 1px solid #536a73;
-  border-radius: 11px;
-  background: #2b3d46;
+  gap: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 #app .resource label { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; font-size: 14px; line-height: 1.3; }
-#app .resource-name { color: #d9e1df; font-size: 13px; white-space: nowrap; }
-#app .resource-name .icon { width: 17px; height: 17px; }
+#app .resource label .resource-name { display: inline-flex; align-items: center; gap: 6px; color: #d9e1df; font-size: 13px; white-space: nowrap; }
+#app .resource-name .icon, #app .resource-rest .icon { width: 28px; height: 28px; flex: 0 0 28px; stroke: none; }
 #app .resource label > span:last-child { color: #f2eee3; font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 #app .resource label .muted { color: #c4cdd0; }
-#app .resource .bar { height: 8px; border-radius: 6px; background: #1b2d36; }
-#app .resource .bar i { border-radius: 6px; }
-#app .resource-recovery { display: flex; flex: initial; min-width: 0; gap: 6px; }
-#app .resource-rest { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; gap: 7px; border-radius: 9px; padding: 8px 10px; font-size: 14px; }
-#app .resource-recovery small { color: #d0d8d6; font-size: 12px; line-height: 1.35; }
+#app .resource .bar { height: 8px; border-radius: 4px; background: #1b2d36; }
+#app .resource .bar i { border-radius: 4px; }
+#app .resource-recovery { display: flex; flex: initial; min-width: 0; gap: 3px; }
+#app .resource-rest { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; gap: 7px; border-radius: 5px; padding: 6px 10px; font-size: 14px; background: transparent; border-color: #8a805e; }
+#app .resource-recovery small { color: #c4cdd0; font-size: 12px; line-height: 1.35; text-align: center; }
 
 /* Keep character and bag tabs inside the page card system on every viewport. */
 #app .content .sheet-tabs, #app .content .bag-tabs {
@@ -129,7 +132,7 @@
 #app .page--character .page-title { margin-bottom: 10px; }
 #app .page--character .page-title p { max-width: 62ch; }
 #app .page--character .resources { gap: 8px; margin-bottom: 12px; }
-#app .page--character .resource, #app .page--character .resource-recovery { min-height: 68px; padding: 8px 10px; }
+#app .page--character .resource, #app .page--character .resource-recovery { min-height: 54px; padding: 0; }
 #app .page--character .resource-rest { min-height: 48px; }
 #app .page--character .content { padding-top: 18px; }
 #app .page--character .gear-diagram { gap: 8px; }
@@ -172,8 +175,9 @@
 
 @media (max-width: 1000px) {
   #app .resources { grid-template-columns: repeat(3,minmax(0,1fr)); }
-  #app .resource-recovery { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; }
-  #app .resource-recovery small { flex: 1 1 auto; }
+  #app .resource-recovery { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; border-top: 1px dashed #536a73; padding-top: 8px; }
+  #app .resource-recovery small { flex: 1 1 auto; text-align: left; }
+  #app .page--character .resource-recovery { padding-top: 8px; }
   #app .resource-rest { width: auto; min-width: 150px; }
   #app .page-title { align-items: flex-start; }
 }
@@ -189,13 +193,14 @@
   #app .page-title { margin-bottom: 12px; }
   #app .page-title h1 { font-size: 28px; }
   #app .page-title p { font-size: 14px; }
-  #app .resources { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; margin-bottom: 13px; }
-  #app .resource, #app .resource-recovery { min-height: 66px; padding: 8px; border-radius: 9px; }
+  #app .resources { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; padding-block: 10px; margin-bottom: 13px; }
+  #app .resource, #app .resource-recovery { min-height: 54px; padding-inline: 0; border-radius: 0; }
   #app .resource label { align-items: flex-start; flex-direction: column; gap: 3px; }
-  #app .resource-name { font-size: 12px; }
+  #app .resource-name .icon { width: 24px; height: 24px; flex-basis: 24px; }
+  #app .resource label .resource-name { font-size: 12px; }
   #app .resource label > span:last-child { font-size: 13px; }
   #app .resource .bar { height: 7px; }
-  #app .resource-recovery { min-height: 58px; gap: 8px; }
+  #app .resource-recovery { min-height: 54px; gap: 10px; }
   #app .resource-rest { min-width: 140px; padding: 7px 9px; }
   #app .resource-recovery small { font-size: 12px; }
   #app .chapter-seal { display: none; }
@@ -229,8 +234,8 @@
 }
 @media (max-width: 390px) {
   #app .resources { gap: 5px; }
-  #app .resource, #app .resource-recovery { padding: 7px 6px; }
-  #app .resource-name { font-size: 11px; }
+  #app .resource, #app .resource-recovery { padding-inline: 0; }
+  #app .resource label .resource-name { font-size: 11px; }
   #app .resource label > span:last-child { font-size: 12px; }
   #app .resource-rest { min-width: 132px; font-size: 13px; }
   #app .topbar-right { gap: 4px; }

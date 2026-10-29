@@ -1,7 +1,6 @@
 import * as G from './engine.js';
 import { MENU_ICONS } from './menu-icons.js';
 import { UI_ICONS } from './ui-icons.js';
-import { renderEnemyArt } from './enemy-art.js';
 import { renderItemArt } from './item-art.js';
 import { renderJournalArt } from './journal-art.js';
 
@@ -89,28 +88,17 @@ export function renderEncounterRecord(state) {
 
 function rewardRows(state, receipt, enemy) {
   const rows = [
-    `<span class="encounter-result__reward">${glyph('spark')}<span><small>EXPERIENCE</small><strong>+${Number(receipt.xp || 0).toLocaleString()} XP</strong></span></span>`,
-    `<span class="encounter-result__reward">${glyph('coin')}<span><small>COINS</small><strong>+${Number(receipt.coins || 0).toLocaleString()}</strong></span></span>`,
-    `<span class="encounter-result__reward">${glyph('materials')}<span><small>MATERIAL</small><strong>+1 ${esc(receipt.material || enemy?.material || 'Material')}</strong></span></span>`
+    `<li class="encounter-result__reward">${glyph('experience')}<span><small>EXPERIENCE</small><strong>+${Number(receipt.xp || 0).toLocaleString()} XP</strong></span></li>`,
+    `<li class="encounter-result__reward">${glyph('gold')}<span><small>COINS</small><strong>+${Number(receipt.coins || 0).toLocaleString()} coins</strong></span></li>`,
+    `<li class="encounter-result__reward">${glyph('supplies')}<span><small>MATERIAL</small><strong>+1 ${esc(receipt.material || enemy?.material || 'Material')}</strong></span></li>`
   ];
   if (receipt.loot) {
     const item = G.resolveItem(state, receipt.loot) || G.ITEMS[receipt.loot];
-    rows.push(`<span class="encounter-result__reward encounter-result__reward--item">${renderItemArt(receipt.loot, { size: 'small' })}<span><small>EQUIPMENT</small><strong>${esc(item?.name || receipt.loot)}</strong></span></span>`);
+    rows.push(`<li class="encounter-result__reward encounter-result__reward--item">${renderItemArt(receipt.loot, { size: 'large' })}<span><small>EQUIPMENT</small><strong>${esc(item?.name || receipt.loot)}</strong></span></li>`);
   } else if (receipt.salvaged) {
-    rows.push(`<span class="encounter-result__reward">${glyph('materials')}<span><small>SALVAGE</small><strong>+1 Salvaged fitting</strong></span></span>`);
+    rows.push(`<li class="encounter-result__reward">${glyph('supplies')}<span><small>SALVAGE</small><strong>+1 Salvaged fitting</strong></span></li>`);
   }
   return rows.join('');
-}
-
-function rollReceipt(receipt) {
-  if (!Number.isFinite(receipt?.dropChance)) return '';
-  const chance = `${(receipt.dropChance * 100).toFixed(2)}%`;
-  const result = receipt.loot
-    ? 'An equipment item was found.'
-    : receipt.salvaged
-      ? 'The duplicate became one Salvaged fitting.'
-      : 'No equipment was found this time.';
-  return `<details class="encounter-result__roll loot-receipt"><summary>${glyph('materials')}<span>Equipment roll <strong>${chance} chance</strong></span><span class="encounter-result__roll-cue">Details</span></summary><p>${esc(result)}</p></details>`;
 }
 
 function resultActions(state, receipt, enemy) {
@@ -140,25 +128,23 @@ export function renderEncounterOutcome(state) {
   const enemy = enemyFor(state, receipt.enemy);
   const won = receipt.type === 'victory';
   const defeated = receipt.type === 'defeat';
-  const label = won ? 'ENCOUNTER COMPLETE' : defeated ? 'RECOVERY REQUIRED' : 'WITHDRAWAL RECORDED';
   const title = won ? 'One problem. Properly filed.' : defeated ? 'Still on the payroll.' : 'Live to file another day.';
   const detail = won
     ? `${enemy?.name || 'The encounter'} defeated. The canal is a little less crowded.`
     : defeated
       ? 'The recovery house pulled you out. Completed rewards are safe. Rest, adjust your build, and try again.'
       : 'You left the encounter. Its provisional rewards were forfeited.';
-  const portrait = enemy ? renderEnemyArt(enemy, { animated: false }) : '';
-  const sticker = renderJournalArt(won ? 'victory' : defeated ? 'recovery' : 'field', { size: 'medium' });
+  const emblem = won ? glyph('treasure') : renderJournalArt(defeated ? 'recovery' : 'field', { size: 'large' });
+  const emblemLabel = won ? 'Victory rewards' : defeated ? 'Recovery required' : 'Withdrawal recorded';
   const rewardBlock = won
-    ? `<div class="encounter-result__rewards reward-grid" aria-label="Encounter rewards">${rewardRows(state, receipt, enemy)}</div>${rollReceipt(receipt)}`
+    ? `<section class="encounter-spoils" aria-label="Encounter rewards"><h3>Spoils of the hunt</h3><ul class="encounter-loot">${rewardRows(state, receipt, enemy)}</ul></section>`
     : '';
   const outcomeKind = won ? 'victory' : defeated ? 'defeat' : 'withdrawal';
 
   return `<section class="encounter-result outcome pulse" data-outcome="${outcomeKind}" aria-labelledby="encounter-result-title">
     <div class="encounter-result__top">
-      ${portrait ? `<div class="encounter-result__portrait">${portrait}</div>` : ''}
+      <div class="encounter-result__emblem" role="img" aria-label="${emblemLabel}">${emblem}</div>
       <div class="encounter-result__heading">
-        <div class="encounter-result__status-seal">${sticker}${glyph(won ? 'check' : defeated ? 'rest' : 'exit')}<span class="encounter-result__status-label">${label}</span></div>
         <h2 id="encounter-result-title">${title}</h2>
         <p>${esc(detail)}</p>
       </div>

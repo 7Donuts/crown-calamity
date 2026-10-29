@@ -21,49 +21,9 @@
   align-items: center;
 }
 
-#app .encounter-result__portrait {
-  width: 104px;
-  height: 104px;
-  display: grid;
-  place-items: center;
-  background: #30494d;
-  border: 2px solid #6b9085;
-  border-radius: 16px;
-  box-shadow: inset 0 0 0 3px #20363b, 0 3px 0 #15242b;
-}
-
-#app .encounter-result__portrait .enemy-token {
-  width: 96px;
-  height: 96px;
-  flex-basis: 96px;
-  border: 0;
-  border-radius: 12px;
-  background: transparent;
-  box-shadow: none;
-}
-
-#app .encounter-result__portrait .enemy-token::after { content: none; }
-#app .encounter-result__portrait .pixel-sprite { image-rendering: pixelated; }
-
-#app .encounter-result__status-seal {
-  width: fit-content;
-  max-width: 100%;
-  min-height: 70px;
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 9px;
-  padding: 5px 10px 5px 7px;
-  margin-bottom: 10px;
-  border: 1px solid #8a9878;
-  border-radius: 8px 8px 8px 2px;
-  background: #34483c;
-  color: #f0d39a;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .11em;
-  line-height: 1.3;
-}
+/* A treasure chest replaces the living enemy in the completed encounter. */
+#app .encounter-result__emblem { display: grid; place-items: center; width: 104px; height: 104px; }
+#app .encounter-result__emblem > .battle-glyph { width: 88px; height: 88px; flex-basis: 88px; }
 
 #app .battle-glyph {
   width: 20px;
@@ -91,19 +51,6 @@
   object-fit: fill;
 }
 
-#app .encounter-result__status-seal .battle-glyph {
-  width: 22px;
-  height: 22px;
-  flex-basis: 22px;
-  color: #f1c375;
-}
-
-#app .encounter-result__status-label {
-  min-width: 0;
-  flex: 1 1 125px;
-  overflow-wrap: anywhere;
-}
-
 #app .encounter-result__heading h2 {
   margin: 0 0 7px;
   color: #f4e8cb;
@@ -119,103 +66,27 @@
   line-height: 1.55;
 }
 
-#app .encounter-result__rewards.reward-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 1fr));
-  gap: 10px;
-  margin: 22px 0 0;
-  color: #edf0e5;
-  font-size: 15px;
-}
-
+/* An open loot ledger: illustrations and amounts share one line of spoils. */
+#app .encounter-spoils { margin-top: 20px; padding-top: 14px; border-top: 1px solid #536a73; }
+#app .encounter-spoils h3 { margin: 0 0 10px; color: #ead8ab; font: 20px/1.2 Georgia,serif; }
+#app .encounter-loot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 0; padding: 0; list-style: none; }
 #app .encounter-result__reward {
-  min-width: 0;
-  min-height: 64px;
   display: flex;
+  flex: 1 1 150px;
   align-items: center;
-  gap: 11px;
-  padding: 10px 13px;
-  border: 1px solid #49615e;
-  border-radius: 10px;
-  background: #1c3036;
-  color: #f0d39a;
-}
-
-#app .encounter-result__reward .battle-glyph,
-#app .encounter-result__reward .item-art {
-  width: 32px;
-  height: 32px;
-  flex: 0 0 32px;
-  color: #9bc8b4;
-}
-
-#app .encounter-result__reward .item-art { border-radius: 6px; }
-
-#app .encounter-result__reward > span:last-child {
   min-width: 0;
-  display: grid;
-  gap: 2px;
-}
-
-#app .encounter-result__reward small {
-  color: #bfd0c9;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  line-height: 1.25;
-}
-
-#app .encounter-result__reward strong {
-  color: #fff1d1;
-  font-size: 16px;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-#app .encounter-result__roll.loot-receipt {
-  max-width: 620px;
-  margin: 14px 0 0;
-  padding: 0;
-  border: 1px solid #526b68;
-  border-radius: 9px;
-  background: #1c3036;
-  color: #d8e4dc;
-  font-size: 15px;
-}
-
-#app .encounter-result__roll summary {
-  min-height: 48px;
-  display: flex;
-  align-items: center;
   gap: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
-  list-style: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
-
-#app .encounter-result__roll summary::-webkit-details-marker { display: none; }
-#app .encounter-result__roll summary .battle-glyph { color: #e3bd79; }
-#app .encounter-result__roll summary strong { color: #fff0ce; }
-
-#app .encounter-result__roll-cue {
-  margin-left: auto;
-  color: #a9c9bd;
-  font-size: 13px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-#app .encounter-result__roll[open] .encounter-result__roll-cue::after { content: ' open'; }
-#app .encounter-result__roll:not([open]) .encounter-result__roll-cue::after { content: ' closed'; }
-
-#app .encounter-result__roll p {
-  margin: 0;
-  padding: 9px 14px 13px 42px;
-  color: #d2ded8;
-  border-top: 1px solid #405a58;
-  font-size: 15px;
-  line-height: 1.5;
-}
+#app .encounter-result__reward > .battle-glyph { width: 40px; height: 40px; flex: 0 0 40px; }
+#app .encounter-result__reward > .item-art { width: 64px; height: 64px; flex: 0 0 64px; background: transparent; border: 0; }
+#app .encounter-result__reward > span:last-child { min-width: 0; display: grid; gap: 3px; }
+#app .encounter-result__reward small { color: #bfd0c9; font-size: 11px; letter-spacing: .07em; line-height: 1.2; }
+#app .encounter-result__reward strong { color: #fff1d1; font-size: 17px; line-height: 1.35; overflow-wrap: anywhere; }
 
 #app .encounter-result__actions.outcome-actions {
   display: grid;
@@ -395,16 +266,16 @@
 
 @media (max-width: 600px) {
   #app .encounter-result.outcome { padding: 18px; }
-  #app .encounter-result__top { grid-template-columns: 104px minmax(0, 1fr); gap: 14px; }
-  #app .encounter-result__status-seal { font-size: 11px; letter-spacing: .08em; }
-  #app .encounter-result__status-label { flex-basis: 100%; }
+  #app .encounter-result__top { grid-template-columns: 72px minmax(0, 1fr); gap: 12px; }
+  #app .encounter-result__emblem { width: 72px; height: 72px; }
+  #app .encounter-result__emblem > .battle-glyph { width: 72px; height: 72px; }
   #app .encounter-result__heading h2 { font-size: 25px; }
   #app .encounter-result__heading p { font-size: 15px; }
-  #app .encounter-result__rewards.reward-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 18px; }
-  #app .encounter-result__reward { min-height: 60px; gap: 8px; padding: 8px; }
+  #app .encounter-loot { gap: 10px 14px; }
+  #app .encounter-result__reward { flex-basis: 115px; gap: 8px; }
+  #app .encounter-result__reward:nth-child(n+3) { flex-basis: 100%; }
   #app .encounter-result__reward strong { font-size: 15px; }
   #app .encounter-result__reward small { font-size: 11px; }
-  #app .encounter-result__roll summary { flex-wrap: wrap; }
   #app .encounter-result__actions.outcome-actions { gap: 8px; }
   #app .encounter-result__actions button { min-height: 50px; padding: 9px; font-size: 14px; }
   #app .battle-report.report { padding: 14px; }
@@ -418,8 +289,10 @@
 }
 
 @media (max-width: 370px) {
-  #app .encounter-result__top { grid-template-columns: 1fr; }
-  #app .encounter-result__rewards.reward-grid { grid-template-columns: 1fr; }
+  #app .encounter-result__top { grid-template-columns: 64px minmax(0,1fr); gap: 10px; }
+  #app .encounter-result__emblem { width: 64px; height: 64px; }
+  #app .encounter-result__emblem > .battle-glyph { width: 64px; height: 64px; }
+  #app .encounter-result__heading h2 { font-size: 23px; }
   #app .encounter-result__actions.outcome-actions { grid-template-columns: 1fr; }
   #app .encounter-result__actions button { width: 100%; }
   #app .battle-report__header { flex-wrap: wrap; }
