@@ -26,3 +26,10 @@
 }
 
 .character-creator .cc-passive, .character-creator .cc-trait, .character-creator .cc-kit-note { font-size: 14px; line-height: 1.5; }
+
+/* Generated silhouettes retain their native proportions at every viewport. */
+.character-art svg.character-art__portrait { height: auto!important; aspect-ratio: 396.6 / 420; max-width: 100%; overflow: hidden; }
+
+#app .sheet-identity-mark:has(.character-art), #app .sheet-identity-mark .character-art { height: auto; }
+.character-creator .cc-race-art { height: 72px; }
+.character-creator .cc-portrait-preview { min-height: 148px; }

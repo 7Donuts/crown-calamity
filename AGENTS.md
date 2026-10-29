@@ -14,7 +14,7 @@ Run `npm test` (Node 22.8+) for all checks, or `node tests/engine.test.mjs` for 
 
 ## Established product requirements
 
-- Browser-based, mobile-first, readable, classless, text-first gameplay. Player portraits are now explicitly requested: keep the layered soft-pixel race creator and appearance selectors. Male/Female presentation is cosmetic. Preserve the accessible generic body-outline equipment diagram alongside the portrait.
+- Browser-based, mobile-first, readable, classless, text-first gameplay. Player portraits are explicitly requested. All new or revised illustrations, including character portraits, must use the canonical `ART-DIRECTION.md` positive and negative prompts and its approved visual references, and must be reviewed at their actual rendered size. Character generation uses the same image-generation tool and shared prompt/reference set as enemy, item, and scene art; do not create a separate portrait style or replace requested illustrations with hand-coded vectors. Runtime compositing, masking, and color selection may preserve the existing race and appearance selectors. Male/Female presentation is cosmetic. Preserve the accessible generic body-outline equipment diagram alongside the portrait.
 - One explicit input authorizes one exchange. No auto-repeat, input queue, held-key farming, offline gains, or automatic later exchanges.
 - Preserve the shared 650 ms combat delay across action buttons and encounters. The local delay is pacing, not production anti-cheat.
 - Comfortable repetition of familiar actions is valid play. Do not require constant action changes or treat repetition alone as abuse.
@@ -23,7 +23,7 @@ Run `npm test` (Node 22.8+) for all checks, or `node tests/engine.test.mjs` for 
 
 ## Design direction
 
-`ART-DIRECTION.md` is the canonical guide for new and revised visual assets, including the approved soft-pixel style. The older visual guidance in `design/15_Art_Direction.md` and `design/24_Arcane_HUD_Direction.md` is historical where it conflicts with that guide; `design/28_Soft_Pixel_Direction.md` records approved prototypes and defers production decisions to the canonical guide.
+`ART-DIRECTION.md` is the canonical guide for all new and revised visual assets, including character portraits. Its shared positive and negative prompts, approved visual references, and actual rendered-size review are mandatory. The older visual guidance in `design/15_Art_Direction.md` and `design/24_Arcane_HUD_Direction.md` is historical where it conflicts with that guide; `design/28_Soft_Pixel_Direction.md` records approved prototypes and defers production decisions to the canonical guide.
 
 The original pack in `design/Crown-and-Calamity-Design-v0.1/` is retained historical source. Its agreed-direction document supersedes older whole-fight-click proposals. The v0.2 attribute document and later user instructions supersede the old six-attribute budget.
 

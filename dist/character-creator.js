@@ -1,4 +1,4 @@
-import { RACES, resolveRace, normalizeAppearance, APPEARANCE_OPTIONS } from './races.js';
+import { RACES, resolveRace, normalizeAppearance, getAppearanceOptions, getAppearanceLabels } from './races.js';
 import { renderCharacterArt } from './character-art.js';
 
 const ATTRS = Object.freeze([
@@ -36,15 +36,17 @@ export function normalizeCreationDraft(draft = {}) {
 
 const select = (label, key, options, selected, id = '') => `<label class="cc-field"${id ? ` for="${id}"` : ''}><span>${esc(label)}</span><select ${id ? `id="${id}" ` : ''}data-creator-field="${esc(key)}">${options.map(o => `<option value="${esc(o.id)}"${o.id === selected ? ' selected' : ''}>${esc(o.label)}</option>`).join('')}</select></label>`;
 
-function appearanceFields(draft, { identity = false } = {}) {
+function appearanceFields(draft, raceId, { identity = false } = {}) {
   const appearance = draft.appearance;
+  const options = getAppearanceOptions(raceId);
+  const labels = getAppearanceLabels(raceId);
   const field = key => identity ? `appearance-${key}` : key;
   return `<div class="cc-appearance-grid">
-    ${select('Male / Female', field('presentation'), APPEARANCE_OPTIONS.presentation, appearance.presentation, identity ? 'appearance-presentation' : '')}
-    ${select('Hair style', field('hairStyle'), APPEARANCE_OPTIONS.hairStyle, appearance.hairStyle, identity ? 'appearance-hairStyle' : '')}
-    ${select('Hair color', field('hairColor'), APPEARANCE_OPTIONS.hairColor, appearance.hairColor, identity ? 'appearance-hairColor' : '')}
-    ${select('Eye color', field('eyeColor'), APPEARANCE_OPTIONS.eyeColor, appearance.eyeColor, identity ? 'appearance-eyeColor' : '')}
-    ${select('Skin tone', field('skinTone'), APPEARANCE_OPTIONS.skinTone, appearance.skinTone, identity ? 'appearance-skinTone' : '')}
+    ${select('Male / Female', field('presentation'), options.presentation, appearance.presentation, identity ? 'appearance-presentation' : '')}
+    ${select(labels.hairStyle, field('hairStyle'), options.hairStyle, appearance.hairStyle, identity ? 'appearance-hairStyle' : '')}
+    ${(appearance.hairStyle === 'shaved' && ['quayfolk', 'cobblekin'].includes(raceId)) ? `<p class="cc-kit-note">${raceId === 'cobblekin' ? 'Polished stone uses your stone tone; choose a crest to add mineral accents.' : 'Choose a hairstyle to add hair color.'}</p>` : select(labels.hairColor, field('hairColor'), options.hairColor, appearance.hairColor, identity ? 'appearance-hairColor' : '')}
+    ${select('Eye color', field('eyeColor'), options.eyeColor, appearance.eyeColor, identity ? 'appearance-eyeColor' : '')}
+    ${select(labels.skinTone, field('skinTone'), options.skinTone, appearance.skinTone, identity ? 'appearance-skinTone' : '')}
   </div>`;
 }
 
@@ -69,7 +71,7 @@ export function renderCharacterCreator({ draft, modal = false, canCreate = true 
       <div class="cc-kit-grid">${shownKits.map(k => `<button type="button" class="cc-kit-choice${k.id === d.kit ? ' is-selected' : ''}" data-action="creator-kit:${k.id}" aria-pressed="${k.id === d.kit}"><span class="cc-kit-name">${esc(k.name)}</span><strong>${esc(k.gear)}</strong><span>${esc(k.skill)}</span></button>`).join('')}</div>
       <p class="cc-kit-note">${esc(kit.note)} Your chosen kit is independent of your people.</p>
     </section>
-    <section class="cc-section cc-appearance" aria-labelledby="cc-appearance-title"><div class="cc-section-title"><div><h3 id="cc-appearance-title">Appearance</h3><p>Adjust your portrait. Appearance changes no combat stats.</p></div></div><div class="cc-appearance-layout"><div class="cc-portrait-preview" aria-live="polite">${renderCharacterArt(d.race, d.appearance, { size: 'large' })}</div>${appearanceFields(d)}</div></section>
+    <section class="cc-section cc-appearance" aria-labelledby="cc-appearance-title"><div class="cc-section-title"><div><h3 id="cc-appearance-title">Appearance</h3><p>Adjust your portrait. Appearance changes no combat stats.</p></div></div><div class="cc-appearance-layout"><div class="cc-portrait-preview" aria-live="polite">${renderCharacterArt(d.race, d.appearance, { size: 'large' })}</div>${appearanceFields(d, d.race)}</div></section>
     <button type="button" class="cc-create" data-action="creator-submit"${canCreate ? '' : ' disabled'}>${modal ? 'Create character' : 'Begin your adventure'}</button>
   </section>`;
 }
@@ -78,5 +80,5 @@ export function renderCharacterCreator({ draft, modal = false, canCreate = true 
 export function renderAppearanceEditor(state = {}, { draft } = {}) {
   const race = safeRace(state.race || state.raceId);
   const d = normalizeCreationDraft({ ...state, ...draft, race });
-  return `<section class="cc-identity-editor" aria-label="Character appearance"><div class="cc-portrait-preview">${renderCharacterArt(race, d.appearance, { size: 'large' })}</div>${appearanceFields(d, { identity: true })}</section>`;
+  return `<section class="cc-identity-editor" aria-label="Character appearance"><div class="cc-portrait-preview">${renderCharacterArt(race, d.appearance, { size: 'large' })}</div>${appearanceFields(d, race, { identity: true })}</section>`;
 }

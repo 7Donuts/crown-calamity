@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { RACES, resolveRace } from '../dist/races.js';
+import { RACES, resolveRace, getAppearanceOptions, getAppearanceLabels } from '../dist/races.js';
 import { APPEARANCE_OPTIONS, normalizeAppearance, renderCharacterArt } from '../dist/character-art.js';
 
 test('race starter spreads total 68 and respect the attribute floor', () => {
@@ -27,7 +27,27 @@ test('appearance normalizes hostile or unknown strings to enumerated values', ()
   const art = renderCharacterArt('emberling', result);
   assert.ok(!art.includes('onload'));
   assert.ok(!art.includes('javascript'));
-  assert.ok(!art.includes('url('));
+  assert.doesNotMatch(art, /(?:url\(|href=\")[^\"\)]*(?:javascript:|onerror|onload)/);
+  assert.ok(art.includes('assets/characters/emberling-atlas.png'), 'only the trusted atlas is rendered');
+});
+
+test('each people has a distinct appearance vocabulary with save-compatible option IDs', () => {
+  const expectedStyles = {
+    quayfolk: ['Crop', 'Tousled', 'Braid', 'Ponytail', 'Shaved'],
+    cobblekin: ['Riverworn', 'Pebble crown', 'Crystal cluster', 'Moss ridge', 'Polished'],
+    reedling: ['Smooth crest', 'Reed fan', 'Ribbon gills', 'Swept sail', 'Low fins'],
+    emberling: ['Sleek coat', 'Fluffy coat', 'Cheek tufts', 'Hearth ruff', 'Short coat']
+  };
+  const stableStyleIds = ['crop', 'tousled', 'braid', 'ponytail', 'shaved'];
+  for (const [race, labels] of Object.entries(expectedStyles)) {
+    const options = getAppearanceOptions(race);
+    assert.deepEqual(options.hairStyle.map(item => item.id), stableStyleIds);
+    assert.deepEqual(options.hairStyle.map(item => item.label), labels);
+    assert.deepEqual(options.hairColor.map(item => item.id), ['ink', 'chestnut', 'copper', 'wheat', 'moss']);
+  }
+  assert.deepEqual(getAppearanceLabels('cobblekin'), { hairStyle: 'Crest', hairColor: 'Mineral tone', skinTone: 'Stone tone' });
+  assert.deepEqual(getAppearanceLabels('reedling'), { hairStyle: 'Fins', hairColor: 'Fin color', skinTone: 'Skin tone' });
+  assert.deepEqual(getAppearanceLabels('emberling'), { hairStyle: 'Fur style', hairColor: 'Fur accents', skinTone: 'Base coat' });
 });
 
 test('every enumerated appearance combination renders and retains selector values', () => {

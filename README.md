@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.10.0
+# Crown & Calamity — playable solo prototype v0.10.1
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -28,9 +28,13 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## New in v0.10.0 — heritage, relic echoes, and deliberate recovery
+## New in v0.10.1 — one art direction, four distinct peoples
 
-Create a **Quayfolk**, **Cobblekin**, **Reedling**, or **Emberling** adventurer. Each race supplies a 68-point starting spread, a named passive, and a descriptive quirk; all attributes remain at least 8. Choose a simple Sword & shield, Blade & charm, or Rod & focus kit independently. Male/Female presentation, five hairstyles, and hair/eye/skin palettes update a real layered pixel portrait and persist with the character. Appearance has no combat effect. See [race and identity rules](design/30_Races_and_Identity.md).
+Generated character art now follows the same mandatory [art direction](ART-DIRECTION.md), prompts and approved references as the other game illustrations. Four distinct anatomies and species-specific cosmetics replace the shared human hairstyle treatment. Existing saves retain their appearance IDs.
+
+## v0.10.0 — heritage, relic echoes, and deliberate recovery
+
+Create a **Quayfolk**, **Cobblekin**, **Reedling**, or **Emberling** adventurer. Each race supplies a 68-point starting spread, a named passive, and a descriptive quirk; all attributes remain at least 8. Choose a simple Sword & shield, Blade & charm, or Rod & focus kit independently. Male/Female presentation and five species-specific forms update a generated soft-pixel portrait and persist with the character. Quayfolk choose hairstyles, Cobblekin choose stone crests and minerals, Reedlings choose fins and gills, and Emberlings choose fur coats and ruffs. Eye and surface palettes remain cosmetic. Appearance has no combat effect. See [race and identity rules](design/30_Races_and_Identity.md).
 
 Older saves keep their invested attributes and all progress. Edit identity offers a **one-time heritage adoption** to add a racial passive without rebaking those attributes; cosmetic appearance stays editable. Free early respecs still reclaim the twelve points above the seven-attribute minimum.
 

@@ -505,17 +505,821 @@
       "id": "race-portraits",
       "src": "character-art.js",
       "purpose": "Layered customizable portraits for four races and Male/Female presentation",
-      "sha256": "af71dd008adbb59cccce0ae08e22d3ef028830ed7a1725c26add603a8fe0bdf0",
-      "width": 48,
-      "height": 64,
-      "mode": "SVG rect layers",
+      "sha256": "8d07ffeac0ddc46adfbfd13e8868bd275c325a3abd320d95af6e29a3318e24a9",
+      "width": 396.6,
+      "height": 420,
+      "mode": "SVG atlas crop/filter compositor",
       "alpha": true,
       "displaySizes": [
         64,
         96,
         128
       ],
-      "provenance": "Original stepped pixel character layers and safe enumerated palettes. Four race silhouettes, all hairstyles and colors available to either presentation. Appearance data lives in races.js; portrait frame is logical48 by64."
+      "provenance": "Runtime crops and palette filters for four original generated PNG atlases. No hand-coded character illustration; species-specific labels and safe saved appearance IDs. See character-atlas records for exact source dimensions and measured bounds."
+    },
+    {
+      "id": "character-atlas-quayfolk",
+      "src": "assets/characters/quayfolk-atlas.png",
+      "purpose": "quayfolk species-specific appearance atlas; two presentations and five forms",
+      "sha256": "12a96cd1690124a76ac4fcb7d8fe347a330f34587a33642c4e198b21ae36d7d8",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "columnWidth": 396.6,
+        "rowSplit": 414,
+        "frameHeights": [
+          414,
+          379
+        ],
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "verticalOffsets": [
+          0,
+          36
+        ]
+      },
+      "frames": [
+        {
+          "column": 0,
+          "presentation": "female",
+          "sourceBounds": [
+            0,
+            0,
+            397,
+            414
+          ],
+          "visibleBounds": [
+            102,
+            51,
+            309,
+            410
+          ]
+        },
+        {
+          "column": 1,
+          "presentation": "female",
+          "sourceBounds": [
+            397,
+            0,
+            793,
+            414
+          ],
+          "visibleBounds": [
+            462,
+            39,
+            732,
+            410
+          ]
+        },
+        {
+          "column": 2,
+          "presentation": "female",
+          "sourceBounds": [
+            793,
+            0,
+            1190,
+            414
+          ],
+          "visibleBounds": [
+            869,
+            52,
+            1097,
+            410
+          ]
+        },
+        {
+          "column": 3,
+          "presentation": "female",
+          "sourceBounds": [
+            1190,
+            0,
+            1586,
+            414
+          ],
+          "visibleBounds": [
+            1251,
+            20,
+            1537,
+            410
+          ]
+        },
+        {
+          "column": 4,
+          "presentation": "female",
+          "sourceBounds": [
+            1586,
+            0,
+            1983,
+            414
+          ],
+          "visibleBounds": [
+            1674,
+            78,
+            1878,
+            410
+          ]
+        },
+        {
+          "column": 0,
+          "presentation": "male",
+          "sourceBounds": [
+            0,
+            414,
+            397,
+            793
+          ],
+          "visibleBounds": [
+            105,
+            437,
+            305,
+            787
+          ]
+        },
+        {
+          "column": 1,
+          "presentation": "male",
+          "sourceBounds": [
+            397,
+            414,
+            793,
+            793
+          ],
+          "visibleBounds": [
+            477,
+            430,
+            715,
+            787
+          ]
+        },
+        {
+          "column": 2,
+          "presentation": "male",
+          "sourceBounds": [
+            793,
+            414,
+            1190,
+            793
+          ],
+          "visibleBounds": [
+            875,
+            437,
+            1097,
+            787
+          ]
+        },
+        {
+          "column": 3,
+          "presentation": "male",
+          "sourceBounds": [
+            1190,
+            414,
+            1586,
+            793
+          ],
+          "visibleBounds": [
+            1251,
+            416,
+            1515,
+            787
+          ]
+        },
+        {
+          "column": 4,
+          "presentation": "male",
+          "sourceBounds": [
+            1586,
+            414,
+            1983,
+            793
+          ],
+          "visibleBounds": [
+            1674,
+            468,
+            1878,
+            787
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged; same canonical positive/negative prompt headers and approved Ledger Rat/Bracken Quay reference images. Species-specific forms and anatomy reviewed at runtime size. Runtime masks recolor source pixels without replacing generated outlines or painting transparent margins.",
+      "approvalStatus": "Reviewed at 64px and 128px using actual runtime SVG rasterization; browser layout check unavailable."
+    },
+    {
+      "id": "character-atlas-cobblekin",
+      "src": "assets/characters/cobblekin-atlas.png",
+      "purpose": "cobblekin species-specific appearance atlas; two presentations and five forms",
+      "sha256": "0c7c1df8ed713174f3d635adfccd67a2d84a370fede3ebf69fbf5d4dd4c7e25b",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "columnWidth": 396.6,
+        "rowSplit": 396,
+        "frameHeights": [
+          396,
+          397
+        ],
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "verticalOffsets": [
+          31,
+          43
+        ]
+      },
+      "frames": [
+        {
+          "column": 0,
+          "presentation": "female",
+          "sourceBounds": [
+            0,
+            0,
+            397,
+            396
+          ],
+          "visibleBounds": [
+            52,
+            48,
+            356,
+            378
+          ]
+        },
+        {
+          "column": 1,
+          "presentation": "female",
+          "sourceBounds": [
+            397,
+            0,
+            793,
+            396
+          ],
+          "visibleBounds": [
+            440,
+            21,
+            746,
+            379
+          ]
+        },
+        {
+          "column": 2,
+          "presentation": "female",
+          "sourceBounds": [
+            793,
+            0,
+            1190,
+            396
+          ],
+          "visibleBounds": [
+            834,
+            24,
+            1128,
+            379
+          ]
+        },
+        {
+          "column": 3,
+          "presentation": "female",
+          "sourceBounds": [
+            1190,
+            0,
+            1586,
+            396
+          ],
+          "visibleBounds": [
+            1230,
+            40,
+            1532,
+            379
+          ]
+        },
+        {
+          "column": 4,
+          "presentation": "female",
+          "sourceBounds": [
+            1586,
+            0,
+            1983,
+            396
+          ],
+          "visibleBounds": [
+            1632,
+            55,
+            1928,
+            379
+          ]
+        },
+        {
+          "column": 0,
+          "presentation": "male",
+          "sourceBounds": [
+            0,
+            396,
+            397,
+            793
+          ],
+          "visibleBounds": [
+            32,
+            412,
+            384,
+            763
+          ]
+        },
+        {
+          "column": 1,
+          "presentation": "male",
+          "sourceBounds": [
+            397,
+            396,
+            793,
+            793
+          ],
+          "visibleBounds": [
+            428,
+            396,
+            770,
+            763
+          ]
+        },
+        {
+          "column": 2,
+          "presentation": "male",
+          "sourceBounds": [
+            793,
+            396,
+            1190,
+            793
+          ],
+          "visibleBounds": [
+            822,
+            400,
+            1163,
+            762
+          ]
+        },
+        {
+          "column": 3,
+          "presentation": "male",
+          "sourceBounds": [
+            1190,
+            396,
+            1586,
+            793
+          ],
+          "visibleBounds": [
+            1223,
+            412,
+            1565,
+            762
+          ]
+        },
+        {
+          "column": 4,
+          "presentation": "male",
+          "sourceBounds": [
+            1586,
+            396,
+            1983,
+            793
+          ],
+          "visibleBounds": [
+            1623,
+            427,
+            1957,
+            762
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged; same canonical positive/negative prompt headers and approved Ledger Rat/Bracken Quay reference images. Species-specific forms and anatomy reviewed at runtime size. Runtime masks recolor source pixels without replacing generated outlines or painting transparent margins.",
+      "approvalStatus": "Reviewed at 64px and 128px using actual runtime SVG rasterization; browser layout check unavailable."
+    },
+    {
+      "id": "character-atlas-reedling",
+      "src": "assets/characters/reedling-atlas.png",
+      "purpose": "reedling species-specific appearance atlas; two presentations and five forms",
+      "sha256": "7c4975e0da102b329b078e18f89075c9882cce3ad6dda29a92168cbba26b1015",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "columnWidth": 396.6,
+        "rowSplit": 396,
+        "frameHeights": [
+          396,
+          397
+        ],
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "verticalOffsets": [
+          17,
+          33
+        ]
+      },
+      "frames": [
+        {
+          "column": 0,
+          "presentation": "female",
+          "sourceBounds": [
+            0,
+            0,
+            397,
+            396
+          ],
+          "visibleBounds": [
+            47,
+            66,
+            325,
+            392
+          ]
+        },
+        {
+          "column": 1,
+          "presentation": "female",
+          "sourceBounds": [
+            397,
+            0,
+            793,
+            396
+          ],
+          "visibleBounds": [
+            442,
+            35,
+            740,
+            392
+          ]
+        },
+        {
+          "column": 2,
+          "presentation": "female",
+          "sourceBounds": [
+            793,
+            0,
+            1190,
+            396
+          ],
+          "visibleBounds": [
+            862,
+            81,
+            1137,
+            393
+          ]
+        },
+        {
+          "column": 3,
+          "presentation": "female",
+          "sourceBounds": [
+            1190,
+            0,
+            1586,
+            396
+          ],
+          "visibleBounds": [
+            1247,
+            19,
+            1518,
+            393
+          ]
+        },
+        {
+          "column": 4,
+          "presentation": "female",
+          "sourceBounds": [
+            1586,
+            0,
+            1983,
+            396
+          ],
+          "visibleBounds": [
+            1656,
+            81,
+            1921,
+            393
+          ]
+        },
+        {
+          "column": 0,
+          "presentation": "male",
+          "sourceBounds": [
+            0,
+            396,
+            397,
+            793
+          ],
+          "visibleBounds": [
+            38,
+            451,
+            335,
+            772
+          ]
+        },
+        {
+          "column": 1,
+          "presentation": "male",
+          "sourceBounds": [
+            397,
+            396,
+            793,
+            793
+          ],
+          "visibleBounds": [
+            437,
+            423,
+            744,
+            772
+          ]
+        },
+        {
+          "column": 2,
+          "presentation": "male",
+          "sourceBounds": [
+            793,
+            396,
+            1190,
+            793
+          ],
+          "visibleBounds": [
+            844,
+            464,
+            1153,
+            772
+          ]
+        },
+        {
+          "column": 3,
+          "presentation": "male",
+          "sourceBounds": [
+            1190,
+            396,
+            1586,
+            793
+          ],
+          "visibleBounds": [
+            1242,
+            409,
+            1540,
+            773
+          ]
+        },
+        {
+          "column": 4,
+          "presentation": "male",
+          "sourceBounds": [
+            1586,
+            396,
+            1983,
+            793
+          ],
+          "visibleBounds": [
+            1645,
+            467,
+            1938,
+            773
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged; same canonical positive/negative prompt headers and approved Ledger Rat/Bracken Quay reference images. Species-specific forms and anatomy reviewed at runtime size. Runtime masks recolor source pixels without replacing generated outlines or painting transparent margins.",
+      "approvalStatus": "Reviewed at 64px and 128px using actual runtime SVG rasterization; browser layout check unavailable."
+    },
+    {
+      "id": "character-atlas-emberling",
+      "src": "assets/characters/emberling-atlas.png",
+      "purpose": "emberling species-specific appearance atlas; two presentations and five forms",
+      "sha256": "39a849baa122196f85679cd17c64114083583ae14e5ad6603d137097630131ed",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "columnWidth": 396.6,
+        "rowSplit": 396,
+        "frameHeights": [
+          396,
+          397
+        ],
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "verticalOffsets": [
+          23,
+          38
+        ]
+      },
+      "frames": [
+        {
+          "column": 0,
+          "presentation": "female",
+          "sourceBounds": [
+            0,
+            0,
+            397,
+            396
+          ],
+          "visibleBounds": [
+            64,
+            29,
+            353,
+            386
+          ]
+        },
+        {
+          "column": 1,
+          "presentation": "female",
+          "sourceBounds": [
+            397,
+            0,
+            793,
+            396
+          ],
+          "visibleBounds": [
+            419,
+            29,
+            731,
+            387
+          ]
+        },
+        {
+          "column": 2,
+          "presentation": "female",
+          "sourceBounds": [
+            793,
+            0,
+            1190,
+            396
+          ],
+          "visibleBounds": [
+            814,
+            33,
+            1190,
+            386
+          ]
+        },
+        {
+          "column": 3,
+          "presentation": "female",
+          "sourceBounds": [
+            1190,
+            0,
+            1586,
+            396
+          ],
+          "visibleBounds": [
+            1190,
+            18,
+            1528,
+            386
+          ]
+        },
+        {
+          "column": 4,
+          "presentation": "female",
+          "sourceBounds": [
+            1586,
+            0,
+            1983,
+            396
+          ],
+          "visibleBounds": [
+            1620,
+            31,
+            1892,
+            387
+          ]
+        },
+        {
+          "column": 0,
+          "presentation": "male",
+          "sourceBounds": [
+            0,
+            396,
+            397,
+            793
+          ],
+          "visibleBounds": [
+            58,
+            409,
+            355,
+            768
+          ]
+        },
+        {
+          "column": 1,
+          "presentation": "male",
+          "sourceBounds": [
+            397,
+            396,
+            793,
+            793
+          ],
+          "visibleBounds": [
+            414,
+            409,
+            737,
+            768
+          ]
+        },
+        {
+          "column": 2,
+          "presentation": "male",
+          "sourceBounds": [
+            793,
+            396,
+            1190,
+            793
+          ],
+          "visibleBounds": [
+            809,
+            413,
+            1118,
+            768
+          ]
+        },
+        {
+          "column": 3,
+          "presentation": "male",
+          "sourceBounds": [
+            1190,
+            396,
+            1586,
+            793
+          ],
+          "visibleBounds": [
+            1190,
+            405,
+            1533,
+            768
+          ]
+        },
+        {
+          "column": 4,
+          "presentation": "male",
+          "sourceBounds": [
+            1586,
+            396,
+            1983,
+            793
+          ],
+          "visibleBounds": [
+            1614,
+            413,
+            1892,
+            768
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged; same canonical positive/negative prompt headers and approved Ledger Rat/Bracken Quay reference images. Species-specific forms and anatomy reviewed at runtime size. Runtime masks recolor source pixels without replacing generated outlines or painting transparent margins.",
+      "approvalStatus": "Reviewed at 64px and 128px using actual runtime SVG rasterization; browser layout check unavailable."
     }
   ]
 }
