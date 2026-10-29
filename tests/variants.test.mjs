@@ -206,6 +206,16 @@ test('flagged rewards are bounded multipliers plus one extra material; pity, mas
   assert.equal('bonus' in a.last, false); assert.equal('variant' in a.last, false, 'regular receipts are unchanged');
 });
 
+test('a flagged victory receipt carries both the variant reward data and the case file summary, and case files count by enemy ID', () => {
+  const s = fresh(5); offerAt(s, 'rats', 'stuffed');
+  win(s, 'rats', { special: true });
+  assert.deepEqual(s.last.variant, { id: 'stuffed', version: 1 }); assert.ok(s.last.bonus && s.last.materials === 2);
+  assert.equal(s.last.case.wins, 1); assert.equal(s.caseFiles.rats.wins, 1);
+  win(s, 'rats');
+  assert.equal(s.caseFiles.rats.wins, 2, 'a regular win adds to the same enemy file');
+  assert.equal('bonus' in s.last, false);
+});
+
 test('pity protection still guarantees equipment on a flagged victory and resets the counter', () => {
   const s = fresh(5); offerAt(s, 'rats', 'squeaky'); s.equipmentMisses = 5;
   win(s, 'rats', { special: true });

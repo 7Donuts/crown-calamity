@@ -470,3 +470,60 @@ test('a pending Special Edition is disclosed on the hunting list before any exch
   contains(report,'Reward adjusted accordingly');contains(report,'+2 Prize tokens');
   assert.deepEqual(state.variantOffers,{});assert.equal(state.variantMeters.crab,0);
 });
+
+test('Field Guide hazard notes, local records and title selection render from real save data (R3, R7c, R7d)',async()=>{
+  const {ui}=await bootApp();
+  const state=ui.getState();
+  state.level=10;state.stats={mig:30,fin:8,int:8,vit:30,wil:8,ins:8,lck:8};state.visited=['rats','scavenger','wisp','boss'];
+  state.caseFiles={rats:{wins:9,fewestExchanges:40,leastLost:900},scavenger:{wins:31,fewestExchanges:5,leastLost:0,noDamage:true},wisp:{wins:120,fewestExchanges:6,leastLost:44}};
+  state.achievements=[{id:'citizen',title:'Load-Bearing Citizen',text:'Standing upright.'}];
+  G.restore(state);
+  await ui.act('nav:guide');
+  let html=ui.getApp().innerHTML;
+  noBrokenText(html,'Field Guide');
+  contains(html,'HAZARD NOTES');contains(html,'Local records (this device only)');
+  matches(html,/not shared, not ranked/i,'records are labeled private and unranked');
+  assert.doesNotMatch(html,/leaderboard/i);
+  matches(html,/Nesting Rat Swarm<\/span><span class="case-file-count">9 wins · 1 to the lore page/,'rats are one win from the lore page');
+  assert.doesNotMatch(html.match(/data-case="rats"[\s\S]*?<\/details>/)[0],/Lore page<\/h4>/,'locked notes are not shown');
+  matches(html,/data-case="scavenger"[\s\S]*?<h4>Move pattern<\/h4>[\s\S]*?Clutch the sack[\s\S]*?Grabby lunge[\s\S]*?case-heavy/,'30 wins list the pattern and mark the heavy move');
+  const wisp=html.match(/data-case="wisp"[\s\S]*?<\/details>/)[0];
+  contains(wisp,'FILED · 100');contains(wisp,'Hit chance');contains(wisp,'Expected damage');
+  assert.doesNotMatch(html,/data-case="crab"/,'enemies the stuffie has not met are not listed');
+  matches(html,/Fewest exchanges<\/dt><dd>5<\/dd>[\s\S]*?No-damage clear<\/dt><dd>Yes/,'records table shows saved bests');
+
+  await ui.act('nav:character');
+  html=ui.getApp().innerHTML;
+  contains(html,'sheet-title-picker');contains(html,'data-action="title:citizen"');
+  assert.doesNotMatch(html,/class="sheet-title"/);
+  await ui.act('title:citizen');
+  assert.equal(state.titleId,'citizen');
+  html=ui.getApp().innerHTML;
+  matches(html,/<p class="sheet-title"[^>]*>Load-Bearing Citizen<\/p>/);
+  contains(html,'identity-title');
+  await ui.act('title:rescue');
+  assert.equal(state.titleId,'citizen','an unearned title cannot be chosen through the UI handler');
+  await ui.act('title:none');
+  assert.equal(state.titleId,undefined);
+  noBrokenText(ui.getApp().innerHTML,'character sheet');
+});
+
+test('a win in the app files a hazard note, a personal best and one journal entry',async()=>{
+  const {ui}=await bootApp();
+  const state=ui.getState();
+  state.level=10;state.stats={mig:30,fin:8,int:8,vit:30,wil:8,ins:8,lck:8};G.restore(state);
+  state.caseFiles={rats:{wins:9,fewestExchanges:40,leastLost:900}};
+  await ui.act('hunt:rats');
+  state.fight.hp=1;
+  ui.setClock(Math.max(state.nextActionAt||0,Date.now())+1000);
+  await ui.act('combat:attack');
+  assert.equal(state.last.type,'victory');
+  assert.equal(state.caseFiles.rats.wins,10);
+  const html=ui.getApp().innerHTML;
+  contains(html,'New personal best');contains(html,'Hazard note unlocked');
+  assert.equal(state.journal.filter(j=>j.kind==='growth'&&/Hazard note/.test(j.title)).length,1);
+  noBrokenText(html,'victory report');
+  const journalCount=state.journal.length;
+  ui.render();ui.render();
+  assert.equal(state.journal.length,journalCount,'rendering never files the notice again');
+});

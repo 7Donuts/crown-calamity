@@ -17,6 +17,8 @@ import {PARTS_PER_LEVEL,LEVEL_CAP,xpNeeded,partForXP,progression,pointBudget,adv
 export {PARTS_PER_LEVEL,LEVEL_CAP,xpNeeded,progression,pointBudget};
 import {normalizeRecovery,restStatus as recoveryStatus,finishRest as completeRest,cancelRest as abandonRest,applyDeathPenalty,REST_DURATION_MS,WOUND_DURATION_MS,DEATH_COIN_CAP,DEATH_COIN_RATE} from './recovery.js';
 export {REST_DURATION_MS,WOUND_DURATION_MS,DEATH_COIN_CAP,DEATH_COIN_RATE};
+import {CASE_MILESTONES,CASE_ENEMY_IDS,CASE_LORE,normalizeRecords,countExchange,countDamageTaken,recordVictory,caseFileView,earnedTitles,currentTitle,setTitle} from './records.js';
+export {CASE_MILESTONES,CASE_ENEMY_IDS,CASE_LORE,caseFileView,earnedTitles,currentTitle,setTitle};
 export const VERSION=4;
 export const ACTION_DELAY_MS=650;
 export const MANA_REGEN_PER_EXCHANGE=2;
@@ -42,7 +44,7 @@ export const QUESTS=[
 {title:'Tagged for Sale',text:'An appraiser guards the missing crew’s records. Recover them before the next rinse cycle.',target:'inspector',xp:180},
 {title:'The Laundry Works',text:'Reach level 6 and enter the Laundry Works. Find out why the washer has turned against the town.',target:'boss',xp:250}
 ];
-export function fresh(){return normalizeRelics(normalizeStory(normalizeRecovery(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',raceId:null,appearance:normalizeAppearance('quayfolk'),relicSockets:[],origin:'Former Gutter Canal surveyor',level:1,part:1,xp:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:66,sp:65,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,variantMeters:{},variantOffers:{},materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional stuffie',text:'Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,restReadyAt:0,woundedUntil:0,visited:['rats'],settings:{details:false}}))));}
+export function fresh(){return normalizeRelics(normalizeStory(normalizeRecovery(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',raceId:null,appearance:normalizeAppearance('quayfolk'),relicSockets:[],origin:'Former Gutter Canal surveyor',level:1,part:1,xp:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:66,sp:65,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,variantMeters:{},variantOffers:{},materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional stuffie',text:'Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,restReadyAt:0,woundedUntil:0,visited:['rats'],caseFiles:{},settings:{details:false}}))));}
 export const STARTER_KITS={
  bulwark:{gear:['rod','shield'],starterAbility:'arc',stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8}},
  caster:{gear:['rod','focus'],starterAbility:'arc',stats:{mig:8,fin:8,int:16,vit:8,wil:12,ins:8,lck:8}},
@@ -154,12 +156,13 @@ if(diff>=-2){for(const key of f.used.slice(0,3)){const m=s.mastery[key];if(!m||m
 recordStoryEvent(s,{type:'victory',enemy:e.id,eventId:'victory:'+e.id+':'+s.kills[e.id]});
 if(e.id==='boss'){s.clears++;if(s.clears===1){s.pending='bossLoot';journal(s,'The Quay will stay dry','The Spin Cycle’s corrupted directive is suspended. Fluffington Quay’s barriers hold. The missing Seam Crew are fluffy, damp and safe in the upper maintenance tunnels.');}if(s.delve&&!s.delve.campUsed)achievement(s,'budget','Budget Emergency','“Fluff conserved. Therapist not included.”');}
 s.last={type:'victory',enemy:e.id,xp,coins:rw.coins,material:e.material,loot,salvaged,dropChance,dropProtected,leveled,...(rw.bonus?{variant:f.variant,materials:rw.materials,bonus:rw.bonus}:{}),...(vv.granted?{variantOffer:vv.granted}:{})};addLog(s,`${e.name} defeated. +${xp} XP · +${rw.coins} coins · ${rw.materials>1?rw.materials+' × ':''}${materialLabel(e.material)}.`,'reward');s.fight=null;
+recordVictory(s,e,f);
 if(s.delve){s.delve.node++;if(e.id==='boss'){s.delve=null;restore(s);}}}
 export function exchange(s,key,rng=Math.random,now=Date.now()){
  const f=s.fight;if(!f)return {ok:false,reason:'No active encounter'};
  const info=actionInfo(s,key);if(!info||info.reason)return {ok:false,reason:info?.reason||'Unknown action'};
  const retryAfterMs=actionDelayRemaining(s,now);if(retryAfterMs)return {ok:false,reason:'Brief action delay. Tap again when ready.',retryAfterMs};
- s.nextActionAt=now+ACTION_DELAY_MS;
+ s.nextActionAt=now+ACTION_DELAY_MS;countExchange(f);
  const e=fightEnemy(f),t=totals(s),i=intent(s),w=effectiveItem(s,s.gear.weapon),oldCharge=f.charge||0,profile=actionProfile(s,key,e.id);
  f.charge=0;const opening=f.opening===true;f.opening=false;s.mp-=info.mp;s.sp-=info.sp;
  let guarded=GUARD_ACTIONS.includes(key),interrupted=false,damage=0,channel=null,critical=false,healed=0;
@@ -198,7 +201,7 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  if(guarded&&prevented>=20){s.usefulGuards=(s.usefulGuards||0)+1;if(i.heavy)s.guardCount++;if(s.passive==='reservoir'){f.charge=1;if(!s.discoveries.includes('reservoir')){s.discoveries.push('reservoir');journal(s,'Interaction discovered · Stored Pressure','A useful Guard stores one charge. Your next Arc Bolt or Wardcast gains 10% raw spell damage. One charge, expires after the next exchange. “The shield is not an approved charging station. Procurement has been informed.”','discovery');}addLog(s,'Reservoir charged. Next spell +10% (expires next exchange).','special');}if(s.gear.relic==='seal'&&!f.sealUsed){f.barrier=Math.max(f.barrier,Math.min(Math.floor(t.hp*.3),15));f.barrierTurns=Math.max(f.barrierTurns,1);f.sealUsed=true;addLog(s,'Superintendent’s Seal grants 15 barrier.','defend');}if(s.guardCount>=3)achievement(s,'citizen','Load-Bearing Citizen','“You have discovered the tactical applications of remaining upright. Engineering has been informed.”',15);}
  hit=resolveHit({...hitInput,barrier:f.barrier});prevented=hit.prevented;incoming=hit.incoming;const absorbed=hit.absorbed;f.barrier-=absorbed;
  if(absorbed>0){if(key==='brace'&&!f.used.includes('brace'))f.used.push('brace');if(key==='aegis'&&!f.used.includes('aegis'))f.used.push('aegis');}
- s.hp=Math.max(0,s.hp-incoming);f.healDeficit=(f.healDeficit||0)+incoming;if(!interrupted)addLog(s,`${i.name}${enemyGlance?' · glancing hit':''}: ${incoming} damage${prevented?` · ${prevented} guarded`:''}${absorbed?` · ${absorbed} absorbed`:''}.`,'enemy');
+ countDamageTaken(f,incoming);s.hp=Math.max(0,s.hp-incoming);f.healDeficit=(f.healDeficit||0)+incoming;if(!interrupted)addLog(s,`${i.name}${enemyGlance?' · glancing hit':''}: ${incoming} damage${prevented?` · ${prevented} guarded`:''}${absorbed?` · ${absorbed} absorbed`:''}.`,'enemy');
  const variantNote=variantResponse(f,i,interrupted);if(variantNote)addLog(s,variantNote,'special');
  let openingGranted=false;if(guarded&&i.heavy&&!interrupted&&s.hp>0){f.opening=true;openingGranted=true;addLog(s,`Opening: ${i.name} overreached. Your next damaging action cannot glance and deals ${openingPercent()} damage.`,'special');}
  if(key==='guard')s.sp=Math.min(t.sp,s.sp+2);if(f.barrierTurns>0&&--f.barrierTurns===0)f.barrier=0;if(f.exposed&&(f.exposedRound??f.round)<=f.round){f.exposed=false;f.exposedRound=null;}f.round++;
@@ -260,7 +263,7 @@ export function loadSave(raw){
   if(attunementUsed(out)>6)return null;
   out.equipmentMisses=Number.isInteger(out.equipmentMisses)?clamp(out.equipmentMisses,0,5):0;
   if(typeof out.settings.lastHunt!=='string'||!ENEMIES.some(e=>e.id!=='boss'&&e.id===out.settings.lastHunt))delete out.settings.lastHunt;
-  normalizeGearState(out);normalizeRelics(out);normalizeRecovery(out);
+  normalizeGearState(out);normalizeRelics(out);normalizeRecovery(out);normalizeRecords(out);
   const ancestry=Object.hasOwn(RACES,out.raceId)?RACES[out.raceId]:null;out.raceId=ancestry?.id||null;out.appearance=normalizeAppearance(ancestry?.id||resolveRace(out.race)?.id||'quayfolk',out.appearance);if(ancestry)out.race=ancestry.name;
   const resourceCaps=totals(out);out.hp=Math.min(out.hp,resourceCaps.hp);out.mp=Math.min(out.mp,resourceCaps.mp);out.sp=Math.min(out.sp,resourceCaps.sp);if(!out.gear.weapon||!ITEMS[out.gear.weapon])return null;
   normalizeVariants(out);

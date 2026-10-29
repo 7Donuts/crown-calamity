@@ -179,7 +179,7 @@ Materials (save keys change, see migration):
 The theme makes several of the review's proposals easier to explain:
 
 - Shifts (R2) become Past Bedtime runs. Lights out starts the run; each win adds a Past Bedtime bonus; a Midnight Snack check-in offers the boon choice; Back to the Toy Box banks it.
-- Case files (R3) become Hazard Tags in the Field Guide.
+- Case files (R3) become Hazard notes in the Field Guide (not "Hazard Tags": the word "tag" is reserved for the care-tag voice; implemented in v0.12.0, design 37).
 - Flagged elites (R4) become Special Edition enemies ("Special Edition Nesting Rat Swarm: Holiday Colorway"). Rare spawns become a Golden Rat or a Gift-Wrapped Raccoon.
 - Restoration (R5) becomes Rebuilding Fluffington: a Sewing Circle, the Button Bank, Night-light Row, and a Training Pillow that reports damage per exchange.
 - Loot grades (R6) become collector condition: Played-With, Gently Used, Like New, Pristine, Boxed.
@@ -214,6 +214,7 @@ Done:
 - Vocabulary: resource names, Fluff up (Rest), Back on the shelf (Defeated), Drying off (Recovering), Hunker down (Defend), Shake it off (Recover), Go still (Withdraw), Pop the lid (Vent pressure), Stitch (level part), Merit badges (Achievements) and Keychain loops (Relic echo sockets). Standard names appear beside the themed ones in labels, aria text and previews.
 - Materials keep their save keys (`'Ledger scraps'` and so on). A display-label map and `materialLabel()` in `dist/gear.js` route every UI and newly generated log or journal mention through the themed names (Lint, Lost buttons, Static charge, Prize tokens, Price stickers, Squeaker cores, Drum fragment, Spare thread, Patches). Journal entries already stored in saves keep their old wording.
 - B.U.R.S.A.R. is expanded once in the Field Guide, the header reads STUFFIE SERVICES, and care-label style lines ("NOTICE · ...") appear on arrival cards and a few system messages.
+- Later in v0.12.0 (R3, R7c, R7d, display and additive save data only): Hazard notes (case files) with a lore page per enemy in the stuffie voice and B.U.R.S.A.R. lines, "Local records (this device only)", "New personal best" in the victory report, and a display-only title under the name drawn from earned Merit badges (Achievements). See `design/37`.
 
 R4 follow-up (v0.12.0): enemy variants ship as "Special Edition" hunts (not "Limited Edition"; "Mint" is not used) with the affixes Reinforced packaging, Extra stuffed, Squeaky and Static-charged, offered after six victories over the same enemy, disclosed on the hunting list with a NOTICE care-label line and B.U.R.S.A.R. footer, and always optional beside the regular hunt. Colorways keep their own word. See `design/37`, R4.
 
