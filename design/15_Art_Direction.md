@@ -1,4 +1,6 @@
-# Enemy Art Direction
+# Historical enemy art direction (superseded)
+
+This document preserves the earlier detailed, engraved-gouache visual treatment and atlas notes. Its visual treatment is superseded by the approved soft-pixel style in the canonical [ART-DIRECTION.md](../ART-DIRECTION.md). Existing art and dimensions recorded below describe that earlier production pass; use the canonical guide for new assets and replacements. The no-player-portraits rule remains in force.
 
 The enemy illustrations use a shared dark-fantasy language: engraved ink contours, textured gouache, low canal-side light, muted teal magic, and worn brass. The palette and shadow treatment follow the Bracken Quay environment painting. Each enemy has a distinct silhouette and prop that reads at small sizes: paper-scroll rats, a hooded canal scavenger, a teal paper wisp, a chain-backed crab, a siltbound clipboard inspector, a mossy armored hound, and the mechanical Acting Superintendent.
 

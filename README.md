@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.6.0
+# Crown & Calamity — playable solo prototype v0.7.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -24,23 +24,19 @@ Create the standalone offline game and complete source ZIP:
 python scripts-package.py
 ```
 
-Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy atlas, HUD sigil, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Records → Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
+Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy sprites, item atlas, emblem, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Records → Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## Current art study — Soft Pixel
+## New in v0.7.0 — the approved soft pixel world
 
-User feedback rejected the earlier ornate, highly detailed boards. The current exploration is softer pixel art: rounded characters, broad color groups, a muted slate/teal/moss palette, warm lanterns, and small decorative idle loops. The game’s production artwork has not been replaced by this study.
+All live illustration paths now use the approved soft pixel direction: the canal scene, all seven enemies, equipment families, B.U.R.S.A.R. emblem, favicon, and filled pixel menu glyphs. The interface uses quieter slate-blue panels, cream/amber highlights, dusty teal, and moss accents. Text stays normal readable type.
 
-Open `design/soft-pixel/index.html` to inspect the scene and a four-frame rat at UI size. Pause the motion or switch sprite size; reduced-motion preferences keep the sprite still. This page is independent of the game and never reads or writes campaign saves. The generated frames are concept references and still need palette/grid/alignment cleanup for production.
+- The rat uses its four-pose sheet during encounters; the other six enemies share one transparent atlas with a small decorative idle bob. Hunting-list art stays still, and reduced-motion preferences stop both types of motion. Animation never resolves a combat action or changes the shared 650 ms pacing.
+- The item atlas has fourteen equipment families covering all 25 catalog IDs, plus material and toolkit illustrations. Higher-tier items can share a family silhouette; their names, stats, upgrade state, and comparisons distinguish them. New art appears in vendors, the satchel, gear slots, purchase/sale reviews, and upgrade comparisons.
+- [ART-DIRECTION.md](ART-DIRECTION.md) is the canonical guide: palette, shape language, scale, registration, animation, UI, accessibility, export requirements, checklist, and prompt templates. [The asset manifest](dist/art-manifest.json) records measured dimensions, crop grids, transparency, content bounds, and hashes. Art helpers remain separate from combat rules and saves.
 
-```sh
-python3 scripts-soft-pixel-preview.py
-```
-
-This creates the independent offline `Crown-and-Calamity-Soft-Pixel-Preview.html`. The source ZIP includes its source page, unchanged image studies, and generator; the generated preview is excluded to avoid duplicating its embedded images.
-
-See [Soft Pixel direction](design/28_Soft_Pixel_Direction.md). The earlier five boards remain as historical exploration.
+The original [soft pixel study](design/28_Soft_Pixel_Direction.md) and its independent animation preview remain reference material. Generate that preview with `python3 scripts-soft-pixel-preview.py`. Earlier rejected boards remain in `design/art-proposals/` as historical exploration and are never loaded by the live game.
 
 ## New in v0.6.0 — a clearer market and menu structure
 
@@ -84,7 +80,7 @@ The first minor contract yields 128 total XP after its three hunts and reward: l
 - Six repeatable ordinary enemies and the three-phase Acting Superintendent; readable intents and a shared 650 ms action delay. Extra inputs during the pause are discarded, never queued. Timers only re-enable controls.
 - Minor and major story contracts, worker rescue callbacks, a branching solo delve, a single camp recovery, first-boss reward selection, event-driven achievements, and authored B.U.R.S.A.R. commentary.
 - Character Overview/Attributes/Abilities tabs, all nine equipment slots, an outfit comparison, material-source hints, and explicit workbench cost/benefit confirmations. Higher-contrast text and system fonts preserve the readability fixes.
-- Original generated environmental art and a new seven-enemy atlas. The UI crops the shared atlas directly; it does not rely on external image references inside SVG files.
+- Soft pixel environment, six-enemy atlas, four-pose rat sheet, equipment atlas, and matching identity/glyph art. Runtime renderers share measured crop metadata; offline packaging embeds the required illustrations.
 
 ## Equipment, materials, and modifiers
 
@@ -132,4 +128,4 @@ This is still a local solo prototype. Login, server-authoritative actions/random
 
 The automated suite covers combat, mastery/loadout rules, multipart XP and migration, all nine gear slots, shop prices and atomic spending, upgrade/affix removal on sale, roster creation/switch/import isolation, authored contract objectives/reward idempotency, physical skills without a focus, and live save round-trips. It also packages the complete offline HTML, syntax-checks it, and boots/navigates its UI using a minimal DOM test harness.
 
-The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 107 test cases, including lab storage isolation, seeded replay, timing, telemetry limits, vendor filtering/comparisons, and both standalone game pages. Gallery and art-preview embedding are checked separately.
+The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 112 test cases, including lab storage isolation, seeded replay, timing, telemetry limits, vendor comparisons, complete art coverage/crops, metadata integrity, and both standalone game pages. Gallery and art-preview embedding are checked separately.

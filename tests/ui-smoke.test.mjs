@@ -7,6 +7,9 @@ import * as C from '../dist/characters.js';
 import * as StoryUI from '../dist/story-ui.js';
 import * as MarketUI from '../dist/market-ui.js';
 import {MENU_ICONS} from '../dist/menu-icons.js';
+import {UI_ICONS} from '../dist/ui-icons.js';
+import * as EnemyArt from '../dist/enemy-art.js';
+import * as ItemArt from '../dist/item-art.js';
 
 function bootApp(initialSave=G.fresh()) {
   const elements = new Map();
@@ -27,7 +30,7 @@ function bootApp(initialSave=G.fresh()) {
   };
   const storage = new Map(initialSave?[["crown-calamity-v1",JSON.stringify(initialSave)]]:[]);
   const context = {
-    __GAME_ENGINE__:G, __CHARACTER_MODULE__:C, __STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, document,
+    __GAME_ENGINE__:G, __CHARACTER_MODULE__:C, __STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, __UI_ICONS__:UI_ICONS, __ENEMY_ART__:EnemyArt, __ITEM_ART__:ItemArt, document,
     localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},
     window:{scrollTo(){}}, console,
     Blob, URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},
@@ -36,7 +39,7 @@ function bootApp(initialSave=G.fresh()) {
   };
   const src = readFile(new URL('../dist/app.js',import.meta.url),'utf8');
   return src.then(source=>{
-    const transformed = source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;');
+    const transformed = source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;');
     const testExports = `\nglobalThis.__uiTest={act,render,getState:()=>state,getRoster:()=>roster,setState:v=>{state=v;},setView:v=>{view=v;},getView:()=>view,getModal:()=>$('#modal'),getApp:()=>$('#app'),getToast:()=>$('#toast')};`;
     vm.runInNewContext(transformed+testExports,context,{filename:'dist/app.js'});
     return {ui:context.__uiTest,storage,elements,getElement};

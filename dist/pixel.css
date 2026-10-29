@@ -1,0 +1,203 @@
+/* Soft pixel presentation for the B.U.R.S.A.R. interface. Load after the other UI styles. */
+:root, body, #app, #modal, #toast {
+  --bg: #26343d;
+  --side: #2d3b44;
+  --card: #33424b;
+  --card2: #3c4b54;
+  --line: #53656c;
+  --text: #f2eee3;
+  --muted: #c4cdd0;
+  --gold: #d9b66e;
+  --green: #9bb987;
+  --teal: #75b9b8;
+  --red: #d69788;
+  --blue: #91b5c5;
+  --font: ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body, #app { background: var(--bg); color: var(--text); font-size: 16px; }
+#app { --hud-brass: var(--gold); --hud-brass-dim: #a87d36; --hud-teal: var(--teal); --hud-ink: var(--bg); }
+#app .icon, #app .menu-icon, #modal .menu-icon {
+  fill: currentColor;
+  stroke: none;
+  shape-rendering: crispEdges;
+  image-rendering: pixelated;
+  filter: none;
+}
+#app :is(.content,.main-column,.side-column,.panel,.item-card,.ability-card,.journal-entry,.guide-section,.vendor-card),
+#modal :is(.modal-body,.compare>div,.vendor-compare>div) { min-width: 0; }
+#app .bursar-shell { background: var(--bg); }
+#app .sidebar { background: var(--side); border-color: var(--line); box-shadow: 3px 0 0 #172027; }
+#app .brand, #app .nav-link.active { color: var(--gold); }
+#app .brand { padding-bottom: 28px; }
+#app .brand svg { image-rendering: pixelated; filter: none; }
+#app .wordmark { letter-spacing: .04em; }
+#app .nav-link { min-height: 48px; border-radius: 9px; color: #c8d0d2; }
+#app .nav-link.active { background: #394a50; border: 1px solid #557278; }
+#app .nav-link .icon { color: var(--teal); }
+#app .nav-link.active .icon { color: var(--gold); }
+#app .interface-header { overflow: visible; background: #2b3740; border-color: var(--line); }
+#app .interface-header::after { content: none; display: none; }
+#app .bursar-interface img { image-rendering: pixelated; filter: none; }
+#app .bursar-interface strong { color: #f3d184; font-family: var(--font); letter-spacing: .06em; }
+#app .bursar-interface small, #app .topbar .place { font-family: var(--font); letter-spacing: 0; }
+#app .topbar .place, #app .save-label { color: var(--muted); }
+#app .save-dot, #app .chapter-seal i { background: var(--green); box-shadow: none; }
+#app .coins { color: var(--gold); font-family: var(--font); }
+#app .level-box { border-radius: 8px; border-color: #8d7448; }
+#app .page-title { border-color: var(--line); }
+#app .page-title h1, #app .panel h2, #app .panel h3, #app .hero h2,
+#app .encounter h2, #app .outcome h2 { color: #fbf3df; text-shadow: none; font-family: var(--font); font-weight: 700; }
+#app .page-title p, #app .panel p, #app .hero p, #app .character-header p,
+#app .guide-section p, #app .guide-section li { color: #d2d9d9; }
+#app .chapter-seal { border: 1px solid var(--line); border-radius: 9px; color: var(--muted); font: 12px var(--font); letter-spacing: 0; padding: 8px 10px; }
+#app .resources { background: #2a3940; border: 1px solid #4b6067; border-radius: 12px; box-shadow: 0 3px 0 #172128; }
+#app .resources::before { content: none; display: none; }
+#app .resources .bar, #app .enemy-health .bar { border: 0; border-radius: 6px; background: #1b252c; }
+#app .resources .bar i, #app .enemy-health .bar i,
+#app .resources .mp .bar i, #app .resources .sp .bar i {
+  border-radius: 6px;
+  background: var(--green);
+  box-shadow: none;
+}
+#app .resources .mp .bar i { background: var(--teal); }
+#app .resources .sp .bar i { background: var(--gold); }
+#app .resource label { color: var(--muted); font: 12px var(--font); letter-spacing: .03em; }
+#app .resource-recovery small { color: var(--muted); font-size: 12px; }
+#app .resource-rest { min-height: 48px; border: 1px solid #a78747; border-radius: 10px; background: #3c4b42; color: #fff1c8; font-size: 15px; }
+#app .panel, #app .hunt-row, #app .item-card, #app .report, #app .outcome, #app .encounter,
+#app .ability-card, #app .mastery-card, #app .vendor-card, #app .hero, #app .bursar-stage,
+#app .rune-console, #app .gear-figure, #app .gear-slot-card, #modal .compare>div,
+#modal .vendor-compare>div {
+  border-radius: 10px;
+  box-shadow: 0 3px 0 #192229;
+}
+#app .panel, #app .item-card, #app .ability-card, #app .mastery-card {
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+#app .panel::after { content: none; display: none; }
+#app .panel-label, #app .eyebrow, #app .nav-label { color: #f0ca76; }
+#app .nav-label, #app .eyebrow, #app .panel-label { font-size: 12px; letter-spacing: .08em; }
+#app .panel-label { line-height: 1.45; }
+#app .hero { border: 1px solid #4c686c; box-shadow: 0 3px 0 #172128; image-rendering: pixelated; }
+#app .hero::after { background: linear-gradient(0deg,#202a32e8 0%,#202a3277 46%,#202a3222 100%); }
+#app .hero .eyebrow { color: #f4d582; }
+#app .region-pill { color: #f0e8d4; border: 1px solid #718b88; border-radius: 8px; }
+#app .hero-footer button, #app .story-buttons button, #app .modal-actions button,
+#app .vendor-actions button, #app .workbench-actions button, #app .item-card button,
+#app .ability-card button, #app .save-controls button { min-height: 48px; }
+#app .hunt-row { border: 1px solid var(--line); border-left: 4px solid #79976b; background: #2b3941; }
+#app .hunt-row:hover:not(:disabled), #app .hunt-row:focus-visible { border-color: var(--teal); background: #35474e; }
+#app .hunt-name { color: #f5eddd; }
+#app .hunt-info p { color: var(--muted); font-size: 13px; }
+#app .hunt-meta, #app .hunt-level { color: #d3ddcf; font-family: var(--font); }
+#app .hunt-level { border-radius: 7px; }
+#app .enemy-token { overflow: hidden; border: 2px solid #5b7773; border-radius: 12px; background: #2d4548; }
+#app .enemy-token::after { content: none; display: none; }
+#app .enemy-token img { image-rendering: pixelated; filter: none; }
+#app .enemy-token .pixel-sprite { position: absolute; display: block; max-width: none; object-fit: fill; image-rendering: pixelated; }
+#app .enemy-token.enemy-idle .pixel-sprite { animation: enemy-pixel-bob 1.4s steps(2,end) infinite; }
+#app .enemy-token.enemy-idle.rat-idle .pixel-sprite { animation: enemy-pixel-bob 1.4s steps(2,end) infinite, rat-idle-frames 1.6s steps(1,end) infinite; }
+@keyframes enemy-pixel-bob { 50% { translate: 0 -2px; } }
+@keyframes rat-idle-frames {
+  0%, 24.99% { transform: translate(0,0); }
+  25%, 49.99% { transform: translateX(-50%); }
+  50%, 74.99% { transform: translateY(-50%); }
+  75%, 99.99% { transform: translate(-50%,-50%); }
+}
+#app .bursar-stage { border: 1px solid #536c72; background: #2d3e47; box-shadow: 0 3px 0 #172128; }
+#app .bursar-stage::before, #app .encounter-top::after { content: none; display: none; }
+#app .encounter-top { background-color: #27363e; }
+#app .encounter-top .enemy-token { border: 2px solid #608780; border-radius: 12px; box-shadow: 0 3px 0 #172128; background: #30464b; }
+#app .stage-readout h2, #app .stage-readout p { text-shadow: none; }
+#app .encounter-badges span { border-color: #536a6b; border-radius: 7px; background: #27383f; }
+#app .enemy-health { background: #2b3b40; border-bottom-color: var(--line); }
+#app .enemy-health label, #app .combat-timing, #app .combat-hint { color: var(--muted); font-family: var(--font); }
+#app .intent { border-color: var(--line); border-radius: 0 0 10px 10px; background: #33434a; }
+#app .intent.heavy { border-top-color: #9c8050; background: #50454a; }
+#app .intent strong { color: #f4d184; font-family: var(--font); }
+#app .intent small { color: #e2e4dc; }
+#app .rune-console { border: 1px solid #4b6269; background: #27363e; box-shadow: 0 3px 0 #172128; }
+#app .rune-console::before, #app .rune-console::after { content: none; display: none; }
+#app .action-btn { border: 1px solid #526a6d; border-radius: 10px; background: #34464d; box-shadow: 0 3px 0 #19242a; }
+#app .action-btn:hover:not(:disabled), #app .action-btn:focus-visible { background: #415b60; border-color: var(--teal); }
+#app .action-btn.preferred { border-color: #d6ad56; background: #4b4b3b; box-shadow: 0 3px 0 #19242a; }
+#app .action-btn .icon { color: var(--teal); }
+#app .action-btn.preferred .icon { color: #f2d27e; }
+#app .rune-console .secondary-actions button { border-radius: 9px; border-color: #52666b; background: #304148; font-size: 13px; }
+#app .action-delay-track { background: #44575a; }
+#app .action-delay-track i { background: var(--teal); }
+#app .gear-figure { border: 1px solid #52686b; background: #2a3b40; box-shadow: none; }
+#app .gear-figure svg { shape-rendering: crispEdges; stroke: #cbd9d3; stroke-width: 3; stroke-linecap: butt; stroke-linejoin: miter; filter: none; }
+#app .gear-slot-card { border: 1px solid #53686b; background: #304048; }
+#app .gear-slot-card.filled { border-left: 4px solid var(--gold); }
+#app .gear-slot-card.empty { border-style: dashed; }
+#app .gear-slot-label { color: #f1cf81; font-size: 12px; }
+#app .gear-slot-card strong, #app .gear-slot-card small { color: #e0e6df; }
+#app .ability-card.equipped { border-color: var(--gold); box-shadow: inset 4px 0 var(--gold), 0 3px 0 #192229; }
+#app .ability-card h3, #app .mastery-card h3 { font-family: var(--font); }
+#app :is(.tabs button,.vendor-tabs button,.shop-mode-tabs button) { border-radius: 9px 9px 0 0; }
+#app :is(.tabs button.active,.vendor-tabs button.active,.shop-mode-tabs button.active) { color: #ffe7a5; }
+#app .tabs button.active::after { border-radius: 3px 3px 0 0; background: var(--teal); }
+#app .item-symbol { width: 48px; height: 48px; flex: 0 0 48px; display: grid; place-items: center; border-radius: 10px; background: #3c4d55; }
+#app .item-symbol .item-art { width: 48px; height: 48px; }
+#app .vendor-price { color: #e5c681; }
+#app .item-lore { border-color: var(--line); }
+#app .item-lore summary { color: var(--teal); font-size: 13px; }
+#app :is(.story-contract,.journal-entry,.guide-topic,.workbench-item,.exchange-card) { border-radius: 10px; }
+#app .story-contract, #app .journal-entry, #app .guide-topic, #app .workbench-item, #app .exchange-card { border-color: var(--line); }
+#app .story-objectives li, #app .material-row, #app .equipment-slot-row { border-color: var(--line); }
+#app .story-buttons button, #app .vendor-actions button { border-radius: 9px; }
+#app button, #modal button { border-radius: 9px; }
+#app button:focus-visible, #modal button:focus-visible, #app a:focus-visible,
+#app input:focus-visible, #app select:focus-visible { outline-color: var(--gold); }
+#app .primary, #modal .primary { background: var(--gold); border-color: #e7c881; color: #29343a; }
+#app .primary:hover:not(:disabled), #modal .primary:hover:not(:disabled) { background: #e2bf78; }
+#app .subtle, #modal .subtle { background: #35454c; border-color: #53666b; color: var(--text); }
+#app .danger, #modal .danger { color: #ffd3c4; border-color: #aa6659; }
+#app :is(.point-notice,.ability-reason,.error-banner,.locked-note) { border-radius: 9px; }
+#app .modal-actions { gap: 9px; }
+#modal { background: #2a3740; color: var(--text); border-color: #597178; border-radius: 12px; }
+#modal h2, #modal h3, #modal h4, #modal strong { color: #fff2d4; -webkit-text-fill-color: currentColor; }
+#modal p, #modal label, #modal small { color: #d5dddd; -webkit-text-fill-color: currentColor; }
+#modal :is(.compare>div,.vendor-compare>div) { border-color: var(--line); background: #34444b; }
+#modal .comparison-table th, #modal .comparison-table td { border-color: var(--line); }
+#modal .modal-head { background: #2a3740; }
+#modal :is(input,select,textarea) { background: #202b32; color: var(--text); -webkit-text-fill-color: currentColor; border-color: #60747a; border-radius: 8px; }
+#app .page:not(.in-combat) { font-size: 16px; }
+#app .page:not(.in-combat) :is(.tiny,.panel-label,.eyebrow,.item-card small,.vendor-card small,.ability-card small,.resource label) { font-size: 12px; }
+#app :is(.panel p,.item-card p,.ability-card p,.journal-entry p,.guide-section p,.guide-section li,.story-hint,.story-objectives li,.vendor-card p) { font-size: max(13px,1em); }
+#app :is(.main-column,.side-column,.item-card,.ability-card,.story-contract,.vendor-card) { overflow-wrap: anywhere; }
+#app :is(.layout,.story-columns,.item-grid,.ability-grid,.vendor-stock) { min-width: 0; }
+#app .mobile-nav { background: #27343c; border-color: #526369; backdrop-filter: none; }
+#app .mobile-nav button { min-height: 48px; color: #b7c5c7; font-size: 11px; }
+#app .mobile-nav button.active { color: #f2d184; }
+#app .topbar, #app .resources, #app .panel, #app .hunt-row, #app .item-card,
+#app .vendor-card, #app .ability-card, #app .journal-entry { backdrop-filter: none; }
+#modal .vendor-compare .eyebrow, #modal .comparison-table caption { color: #dce3df; }
+@media (prefers-reduced-motion: reduce) {
+  #app .enemy-token.enemy-idle .pixel-sprite { animation: none !important; translate: none !important; }
+  #app .enemy-token.enemy-idle.rat-idle .pixel-sprite { transform: none !important; }
+}
+#app .page:not(.in-combat) button, #modal button { min-height: 48px; }
+#app .page:not(.in-combat) .text-button { min-height: 48px; }
+.item-art { position: relative; display: inline-block; flex: 0 0 auto; overflow: hidden; vertical-align: middle; background: #34434a; border-radius: 7px; image-rendering: pixelated; }
+.item-art--small { width: 32px; height: 32px; }
+.item-art--medium { width: 48px; height: 48px; }
+.item-art--large { width: 64px; height: 64px; }
+.item-art img { position: absolute; display: block; max-width: none; image-rendering: pixelated; object-fit: fill; }
+#app .vendor-card-heading .item-symbol { width: 48px; height: 48px; flex: 0 0 48px; }
+#app .vendor-card-heading .item-symbol .item-art { width: 48px; height: 48px; }
+
+/* Enemy atlas art is clipped by the outer .enemy-token viewport. */
+#app .enemy-token { position: relative; overflow: hidden; }
+#app .enemy-token > .pixel-sprite { position: absolute; max-width: none; image-rendering: pixelated; object-fit: fill; }
+
+/* Keep first-run and lab-adjacent surfaces in the same quiet palette. */
+#app .new-character-page { background: #26343d; color: #f2eee3; }
+#app .character-wizard { background: #33424b; border-color: #53656c; }
+#app .character-wizard input,#app .character-wizard select { background: #26343d; color: #f2eee3; border-color: #60747a; }
+#app .hero::before,#app .encounter-top { image-rendering: pixelated; }
+#app .gear-slot-card > .item-art { background: transparent; }
+#modal .compare .item-art,#modal .vendor-compare .item-art { display: block; margin: 8px 0; }

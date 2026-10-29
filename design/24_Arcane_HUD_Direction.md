@@ -1,4 +1,6 @@
-# Arcane HUD Direction
+# Historical Arcane HUD direction (superseded)
+
+This document preserves the earlier ornate BURSAR sigil and HUD image treatment. Its visual treatment is superseded by the approved soft-pixel style in the canonical [ART-DIRECTION.md](../ART-DIRECTION.md); the new emblem, favicon, and UI glyph set should follow that guide. Readability, touch target, one-action-per-tap, timing, and reduced-motion constraints below remain product requirements.
 
 The interface should feel like a well-kept municipal instrument with a magical intelligence behind it: practical, calm, and a little uncanny. BURSAR is the bureau's arcane control system, represented by one brass rune-ring sigil with a geometric crown at its center and restrained teal runelight. Its language joins old canal-city craft to precise system feedback without making the play surface look like a software dashboard.
 

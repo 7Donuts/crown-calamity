@@ -1,0 +1,400 @@
+{
+  "version": 1,
+  "direction": "soft-pixel",
+  "canonicalGuide": "../ART-DIRECTION.md",
+  "assets": [
+    {
+      "id": "bracken-quay",
+      "src": "assets/bracken-quay.png",
+      "purpose": "Main canal scene",
+      "sha256": "b2b6c519d194caa2fa70c5870914b7263e7bee4375da63c7f12d7b250bae064e",
+      "displaySizes": [
+        320,
+        576
+      ],
+      "provenance": "Approved soft-pixel stall study copied unchanged.",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "alpha": false
+    },
+    {
+      "id": "enemy-atlas",
+      "src": "assets/enemies/enemy-atlas.png",
+      "purpose": "Six enemy illustrations",
+      "sha256": "0defd9c14474f87d02b895ba00ea4b0fe8dcf50eee5c9aca976d287ee36dcff6",
+      "displaySizes": [
+        48,
+        100,
+        192
+      ],
+      "provenance": "Original transparent image-generation atlas, referenced to the approved rat and stall.",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "layout": {
+        "columns": 3,
+        "rows": 2,
+        "frameWidth": 512.0,
+        "frameHeight": 512.0
+      },
+      "frameContent": [
+        {
+          "col": 0,
+          "row": 0,
+          "visibleBounds": [
+            33,
+            135,
+            497,
+            504
+          ]
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "visibleBounds": [
+            89,
+            64,
+            444,
+            498
+          ]
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "visibleBounds": [
+            18,
+            174,
+            492,
+            507
+          ]
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "visibleBounds": [
+            58,
+            33,
+            505,
+            448
+          ]
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "visibleBounds": [
+            21,
+            49,
+            487,
+            451
+          ]
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "visibleBounds": [
+            62,
+            20,
+            475,
+            448
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ledger-rat-idle",
+      "src": "assets/enemies/ledger-rat-idle.png",
+      "purpose": "Four held Ledger Rat poses",
+      "sha256": "0ef6cabfe5c5c6d04ad383b398868ae12ca103b793210a82448a251f62e38179",
+      "displaySizes": [
+        48,
+        100,
+        192
+      ],
+      "provenance": "Approved four-pose study copied unchanged; decorative idle only.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "layout": {
+        "columns": 2,
+        "rows": 2,
+        "frameWidth": 627.0,
+        "frameHeight": 627.0
+      },
+      "frameContent": [
+        {
+          "col": 0,
+          "row": 0,
+          "visibleBounds": [
+            103,
+            160,
+            556,
+            567
+          ]
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "visibleBounds": [
+            110,
+            160,
+            554,
+            555
+          ]
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "visibleBounds": [
+            111,
+            151,
+            556,
+            559
+          ]
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "visibleBounds": [
+            102,
+            160,
+            554,
+            567
+          ]
+        }
+      ]
+    },
+    {
+      "id": "item-atlas",
+      "src": "assets/items/item-atlas.png",
+      "purpose": "Fourteen equipment families for twenty-five item IDs, plus materials and toolkit art",
+      "sha256": "4889ca48a0966ef99d950120a9c0e803bfb0b3a676b04ba6c99fa52750871e0b",
+      "displaySizes": [
+        32,
+        48,
+        64
+      ],
+      "provenance": "Original image-generation atlas, spacing-corrected through image generation.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "layout": {
+        "columns": 4,
+        "rows": 4,
+        "frameWidth": 313.5,
+        "frameHeight": 313.5
+      },
+      "frameContent": [
+        {
+          "col": 0,
+          "row": 0,
+          "visibleBounds": [
+            92,
+            118,
+            251,
+            275
+          ]
+        },
+        {
+          "col": 1,
+          "row": 0,
+          "visibleBounds": [
+            77,
+            91,
+            243,
+            275
+          ]
+        },
+        {
+          "col": 2,
+          "row": 0,
+          "visibleBounds": [
+            80,
+            100,
+            233,
+            270
+          ]
+        },
+        {
+          "col": 3,
+          "row": 0,
+          "visibleBounds": [
+            75,
+            110,
+            233,
+            267
+          ]
+        },
+        {
+          "col": 0,
+          "row": 1,
+          "visibleBounds": [
+            86,
+            90,
+            225,
+            269
+          ]
+        },
+        {
+          "col": 1,
+          "row": 1,
+          "visibleBounds": [
+            94,
+            87,
+            237,
+            272
+          ]
+        },
+        {
+          "col": 2,
+          "row": 1,
+          "visibleBounds": [
+            54,
+            114,
+            257,
+            253
+          ]
+        },
+        {
+          "col": 3,
+          "row": 1,
+          "visibleBounds": [
+            62,
+            92,
+            261,
+            265
+          ]
+        },
+        {
+          "col": 0,
+          "row": 2,
+          "visibleBounds": [
+            64,
+            80,
+            260,
+            258
+          ]
+        },
+        {
+          "col": 1,
+          "row": 2,
+          "visibleBounds": [
+            70,
+            80,
+            275,
+            252
+          ]
+        },
+        {
+          "col": 2,
+          "row": 2,
+          "visibleBounds": [
+            75,
+            73,
+            246,
+            258
+          ]
+        },
+        {
+          "col": 3,
+          "row": 2,
+          "visibleBounds": [
+            75,
+            101,
+            244,
+            241
+          ]
+        },
+        {
+          "col": 0,
+          "row": 3,
+          "visibleBounds": [
+            70,
+            67,
+            236,
+            219
+          ]
+        },
+        {
+          "col": 1,
+          "row": 3,
+          "visibleBounds": [
+            63,
+            39,
+            240,
+            226
+          ]
+        },
+        {
+          "col": 2,
+          "row": 3,
+          "visibleBounds": [
+            43,
+            74,
+            252,
+            226
+          ]
+        },
+        {
+          "col": 3,
+          "row": 3,
+          "visibleBounds": [
+            55,
+            43,
+            260,
+            232
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bursar-sigil",
+      "src": "assets/hud/bursar-sigil.png",
+      "purpose": "B.U.R.S.A.R. pixel identity mark",
+      "sha256": "847a83e16e4e199c5f787e78f92012dee51a542ce36e6d6f499f374995fe891f",
+      "displaySizes": [
+        31,
+        36
+      ],
+      "provenance": "Original simple pixel crown/control mark using the approved references.",
+      "width": 1305,
+      "height": 1206,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "crown",
+      "src": "assets/crown.svg",
+      "purpose": "Pixel crown favicon",
+      "sha256": "2884fa55a40e593dae1d3f143619b53e9844810953fa1c471cf365b52c30657e",
+      "displaySizes": [
+        16,
+        32
+      ],
+      "provenance": "Original filled integer-grid SVG glyph.",
+      "width": 32,
+      "height": 32,
+      "mode": "SVG",
+      "alpha": true
+    }
+  ]
+}

@@ -21,6 +21,8 @@ The canonical repository is https://github.com/7Donuts/crown-calamity.
 
 ## Design direction
 
+`ART-DIRECTION.md` is the canonical guide for new and revised visual assets, including the approved soft-pixel style. The older visual guidance in `design/15_Art_Direction.md` and `design/24_Arcane_HUD_Direction.md` is historical where it conflicts with that guide; `design/28_Soft_Pixel_Direction.md` records approved prototypes and defers production decisions to the canonical guide.
+
 The original pack in `design/Crown-and-Calamity-Design-v0.1/` is retained historical source. Its agreed-direction document supersedes older whole-fight-click proposals. The v0.2 attribute document and later user instructions supersede the old six-attribute budget.
 
 `FUTURE-DEVELOPMENT.md` records login, server-controlled progression, online play, and guild requirements. These are future work. Do not represent client-controlled saves, combat, or rewards as secure online systems. Future server logic must own action timing, random rolls, ownership checks, and atomic reward grants.

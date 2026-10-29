@@ -180,6 +180,8 @@ test('the package generator produces standalone code with all module exports and
     assert.equal(html.includes('assets/enemies/enemy-atlas.png'),false,'enemy atlas references are embedded in the standalone');
     assert.equal(html.includes('assets/hud/bursar-sigil.png'),false,'the HUD sigil is embedded offline');
     assert.equal(html.includes('href="hud.css"'),false,'the HUD stylesheet is embedded offline');
+    assert.equal(html.includes('href="pixel.css"'),false,'the approved pixel theme is embedded offline');
+    for(const asset of ['assets/enemies/ledger-rat-idle.png','assets/items/item-atlas.png'])assert.equal(html.includes(asset),false,`${asset} is embedded offline`);
     const style = html.match(/<style>([\s\S]*?)<\/style>/)?.[1];
     assert.ok(style,'standalone has embedded CSS');
     assert.equal(/^(?:450|500|550|600|650|700);/m.test(style),false,'embedded font-import cleanup does not leave URL fragments in the stylesheet');

@@ -1,6 +1,8 @@
-# Soft pixel art direction
+# Approved soft-pixel references (prototype)
 
-The user feedback is that the earlier ornate, highly detailed images felt generic and too high-resolution. This prototype tests a gentler, simpler pixel look: rounded forms, chunky color clusters, a compact muted palette, warm lantern light, and a friendly rather than grim creature. These two generated images are exploratory references, not finished production assets.
+The style and these two references are approved starting points for production. The canonical rules, palette, scale guidance, accessibility requirements, and prompt templates now live in [ART-DIRECTION.md](../ART-DIRECTION.md). This document records the studies and should not override that guide.
+
+The earlier ornate, highly detailed images felt generic and too high-resolution. These studies establish a gentler look: rounded forms, chunky color clusters, a compact muted palette, warm lantern light, and friendly rather than grim creatures. They are approved visual references, not precision production assets.
 
 ## Prototype files
 
@@ -9,11 +11,11 @@ The user feedback is that the earlier ornate, highly detailed images felt generi
 
 Both files are preserved unchanged from image generation. No resize, crop, repaint, or other pixel editing was applied.
 
-## Suggested production rules
+## Prototype observations
 
-Use a logical sprite grid around 32 × 32 pixels for small creatures and a roughly 96 × 64 logical canvas for scene backdrops. The PNG dimensions are storage dimensions, not a mandate to render every source pixel: display sprites with nearest-neighbor scaling at whole-number multiples of their logical size. Favor about 12–16 colors per asset, broad readable silhouettes, and large color groups. Keep slate blue-gray, dusty teal, soft moss, parchment, and amber as a shared palette; use warm light as a small focal accent.
+The original suggestions of a 32 × 32 creature grid and 96 × 64 backdrop canvas were rough study targets, not fixed production dimensions. Follow the scale budgets and sixteen-color role palette in the canonical guide; treat source PNG dimensions as container size rather than display size. Favor readable silhouettes, broad color groups, and warm light as a small focal accent.
 
-If the rat frames are used, keep the loop slow and decorative: a small idle bob and ear or tail twitch, with no gameplay timing or action implied. Disable the animation when `prefers-reduced-motion: reduce` is set; the neutral pose remains visible. Production sprite frames should be authored or reviewed on the intended logical grid before treating this generated sheet as a precise animation source.
+The rat sheet's poses suggest a decorative idle bob and ear or tail twitch, with no gameplay timing or action implied. Disable animation when `prefers-reduced-motion: reduce` is set; keep the neutral pose visible. Production sprite frames need stable scale and foot registration before they are used as an animation atlas.
 
 Generated for a visual direction prototype on 2026-10-29. The images were inspected and copied unchanged from the image-generation output.
 
