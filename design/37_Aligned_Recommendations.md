@@ -186,7 +186,7 @@ Display-only renames still collide if two meanings share one phrase. These need 
 | "Toy box": defeat text ("returned you to the toy box"), Shift banking ("Back to the Toy Box"), Toy Box Crown and Citadel | `design/35` | Defeat and banking carry opposite emotional weight; give banking its own phrase. |
 | "Lost & Found": the Defeat term, the Lost & Found Dock, the Lost & Found Ledger | `design/35` | One of the three should change. Defeat is the most frequent string and should be unambiguous. |
 | "Patches" (material), "Merit patches" (achievements), Patchwork Collective (brand) | `design/35` | Rename one family; achievements shown as a cosmetic on the portrait must not read as a currency. |
-| "Tags": Price tags (material), Hazard Tags (case files), hang tags (portrait), the care tag (system voice) | `design/35` | Four unrelated tag systems in one UI; reserve "tag" for the system voice. |
+| "Tags": Price tags (material), Hazard Tags (case files), hang tags (portrait), the care tag (system voice) | `design/35` | Four unrelated tag systems in one UI; reserve "tag" for the system voice. Resolved for case files in v0.12.0: they are "Hazard notes". |
 | "Limited Edition" (enemy variant) versus "Limited: Marmalade" (colorway) | `design/35` | Use a different word for colorways. |
 | "Mint" (top condition grade) versus "Mint-in-Box Magpie" (rare spawn) | `design/35` | Rename one. |
 | "Fluff up" (Rest) versus "Catch your fluff" (Recover) | `design/35` | Players will confuse a four-second Rest with the combat Recover action. |
@@ -272,6 +272,8 @@ Changes:
 
 Client now, server later: counters and records locally in an additive `caseFiles` map; server later owns victory counts (add "case counters" to the Phase 1 persistence list) and any bonus derived from them.
 
+Status: Implemented in v0.12.0 (information-only default, Q7). Named "Hazard notes (case files)" in the Field Guide; the word "tag" stays reserved for the care-tag voice, so this replaces "Hazard Tags" from `design/35`. Per enemy ID, an additive `caseFiles[id] = {wins, fewestExchanges?, leastLost?, noDamage?}` counts accepted victories only (not Go still (Withdraw), defeat or a `practice` fight, and by enemy ID whatever variant the fight carries); there is no retroactive credit and old saves default to `{}`. Milestones at 10, 30 and 100 wins unlock, once each, a lore page with a B.U.R.S.A.R. line, the full move pattern with the heavy move marked (the boss's under-30% pattern included), and a stamp with the hit chance and expected damage from `actionProfile`, the same calculation combat uses. Each unlock writes one growth journal entry and one line in the victory report (`last.case`). Records: fewest exchanges, least Stuffing (Health) lost (Stuffing actually lost after guard and barrier, summed over the fight) and a no-damage flag, counted from exchanges the engine resolved (`fight.rec`, advanced right after the 650 ms check, so rejected taps never count). "New personal best" appears only when a stored record is strictly beaten (a first no-damage clear also counts); the first win sets a silent baseline. A fight saved before this feature keeps its exchange count (from its completed rounds) but records no Stuffing loss. The Field Guide section is labeled "Local records (this device only)" and says plainly the records are not shared, not ranked and earn no reward. The logic lives in `dist/records.js` (no imports); `dist/engine.js` has three one-line call sites. The optional numeric edge was not built.
+
 ### R4 (revised). Flagged elites and rare spawns
 
 Keeps: variety in what pressing Hunt produces; Luck gaining a lasting identity after the drop pool is exhausted; cosmetic rather than power rewards for rare spawns.
@@ -353,9 +355,13 @@ Changes: titles are a display layer over the existing `s.achievements` array. Ad
 
 Server later: achievements are already on the Phase 1 persistence list, so titles derive from stored data. Titles and merit patches are the natural candidates for the "cosmetic recognition" option in the Phase 1 prototype-to-live decision.
 
+Status: Implemented in v0.12.0 (titles only; merit patches on the portrait are not built). The player may wear one earned title or none. It is stored as `titleId`, an achievement ID (a different name from the achievement's own `title`), and is validated against `s.achievements` on every load and every read; an unknown, unearned or malformed value is dropped. The displayed text is the achievement's existing authored title (Percussive Maintenance, Load-Bearing Citizen, Not a Clerical Error, Budget Emergency); no second string system and no new achievements were added. It appears under the name on the character sheet (with the chooser, labeled display only) and in the top bar identity button, and changes no number.
+
 ### R7d (revised). Local records, not leaderboards
 
 Replace "leaderboard key" with "local record". Personal bests and Ordinance clears are private, labeled local, unverifiable, and carry no rewards that matter economically. Public rankings stay out of scope until a server records results (`design/22`; `FUTURE-DEVELOPMENT.md`, Phase 5). A static, clearly fictional comparison mock is the documented way to test appetite (`design/22`, question 5).
+
+Status: Implemented in v0.12.0 for the case-file records (see R3). The wording is "Local records (this device only)", "personal best" and "New personal best"; the UI states they are not shared or ranked and pays nothing. The word "leaderboard" and any ranking or comparison language appear nowhere in the player UI (a test checks the victory report and the Field Guide). Ordinance clears will reuse the same wording when R7 ships.
 
 ### R8 (revised). Content breadth
 
@@ -420,12 +426,13 @@ Dependencies are marked "needs". Items flagged "server" must wait for server aut
 | System | Server must own | Idempotency or uniqueness key |
 | --- | --- | --- |
 | Shifts | Shift record, streak, filed receipts, boon offers, bonus values, bank and clock-out | Shift ID plus action ID; one bank per Shift |
-| Case files | Victory counters, any derived bonus | Per character and enemy ID; counter advances only inside the victory grant |
+| Case files (Hazard notes) | Victory counters, any derived bonus | Per character and enemy ID; counter advances only inside the victory grant (local: `caseFiles[id].wins`, `dist/records.js`) |
+| Local records | Fewest exchanges, least Stuffing lost, no-damage flag, if ever shown as verified or ranked | Per character and enemy ID; computed from server-resolved exchanges; until then private, unverifiable and unrewarded (local: same `caseFiles[id]` entry) |
 | Variant meter and flagged elites | Meter, offer, affix, rewards | Encounter ID; offer persisted before the first exchange |
 | Works Ledger and bounties | Purchases, completion, bounty rotation | Project or bounty ID per character |
 | Seniority | Rank XP and rank grants | Inside the atomic victory grant |
 | Ordinances | Entry choice, run record, reward multiplier | Run ID |
-| Titles | Equipped title (derived from stored achievements) | Achievement ID |
+| Titles | Equipped title (derived from stored achievements) | Achievement ID (local: `titleId`, validated against `achievements`) |
 | Item instances and grades | Creation, ownership, provenance, grade rolls | Instance ID; one creation per victory receipt |
 
 ## 7. Open questions for the owner
@@ -438,7 +445,7 @@ Numbers refer back to the sections above.
 4. Shift defeat rules. Is forfeiting only the unfiled Shift bonus acceptable as an addition to the defeat rule in `AGENTS.md`? Should Withdraw end the streak but keep filed receipts (proposed), or end the Shift?
 5. Free-cast definition. Should a spell reduced to zero mana by a boon grant the 2-mana regeneration? Proposed: no. `AGENTS.md` and `design/32` should say so.
 6. Luck. May Luck influence variant odds or rare spawn odds? `design/12` and `design/16` allow only one small, capped, displayed new influence, and `design/23` flags Luck's acquisition advantage as a PvP concern.
-7. Case-file edge. Information-only unlocks (proposed default) or a bounded numeric edge against that enemy?
+7. Case-file edge. Information-only unlocks (proposed default) or a bounded numeric edge against that enemy? (Owner default applied in v0.12.0: information only.)
 8. Brand features and more brands. Is any mechanical brand feature in scope (it needs an `AGENTS.md` edit), and is a fifth brand wanted? Prize Grade is described as Luck-leaning, which intersects question 6.
 9. Appearance migration. What should existing characters look like after the forms ship, and how is a legacy character with no heritage shown? Design 35 decision 3 (distinct forms per brand or every species in every brand) is still open and drives the art volume.
 10. Naming gap. Design 35 renames races, NPCs, enemies, regions, materials and mechanics, but not gear (Inspector's Rod, Surveyor's Blade, Ledger cap, Sluicewalker boots), abilities (Arc Bolt, Disrupt), achievements (Load-Bearing Citizen) or contract titles. Rename them in the text pass, leave them as municipal flavor, or decide case by case?

@@ -1,0 +1,62 @@
+/* Hazard notes, local records and titles (design 37 R3, R7c, R7d). Light text on the dark panels; the character sheet keeps its own paper ink. */
+
+/* Victory report: unlock and personal-best notices */
+#app .case-notices { display: grid; gap: 10px; margin-top: 16px; }
+#app .case-notice { padding: 12px 14px; border: 1px solid #6f8a86; border-left: 4px solid #d6ad56; border-radius: 8px; background: rgba(8,16,14,.5); color: #f5f4e9; }
+#app .case-notice h4 { margin: 0 0 6px; color: #ead8ab; font: 17px/1.25 Georgia,serif; }
+#app .case-notice ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+#app .case-notice li { color: #f5f4e9; font-size: 15px; line-height: 1.45; }
+#app .case-notice li span { color: #d6e0d8; }
+#app .case-notice li strong { color: #fff5d7; }
+#app .case-notice .care-label { margin-top: 10px; }
+#app .case-private { margin: 8px 0 0; color: #c4cdbd; font-size: 13px; line-height: 1.45; }
+#app .case-notice .text-button { margin-top: 6px; min-height: 48px; }
+
+/* Field Guide: hazard note cards */
+#app .case-files > h3, #app .local-records > h3 { margin: 4px 0 8px; color: #ead8ab; font: 20px/1.25 Georgia,serif; }
+#app .case-list { display: grid; gap: 10px; margin-top: 12px; }
+#app .case-file { border: 1px solid #43503e; border-radius: 8px; background: rgba(8,16,14,.4); color: #f5f4e9; }
+#app .case-file > summary { display: grid; gap: 2px; min-height: 48px; padding: 10px 14px; cursor: pointer; list-style: revert; }
+#app .case-file-name { color: #eedbb0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
+#app .case-file-count { color: #c4cdbd; font-size: 14px; }
+#app .case-file[open] > summary { border-bottom: 1px solid #43503e; }
+#app .case-file > :not(summary) { margin-left: 14px; margin-right: 14px; }
+#app .case-file > :last-child { margin-bottom: 14px; }
+#app .case-milestones { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-top: 12px; padding: 0; list-style: none; }
+#app .case-milestones li { display: grid; gap: 1px; padding: 8px; border: 1px dashed #6b7a68; border-radius: 6px; color: #c4cdbd; font-size: 13px; line-height: 1.3; }
+#app .case-milestones li.reached { border-style: solid; border-color: #d6ad56; color: #f5f4e9; }
+#app .case-milestones strong { color: #ead8ab; font-size: 18px; }
+#app .case-milestones small { color: #c4cdbd; font-size: 12px; }
+#app .case-section { margin-top: 14px; padding-top: 10px; border-top: 1px solid #36442f; }
+#app .case-section h4 { margin: 0 0 6px; color: #ead8ab; font-size: 16px; }
+#app .case-section p { color: #f5f4e9; }
+#app .case-moves { display: grid; gap: 6px; margin: 0 0 8px; padding-left: 22px; color: #f5f4e9; font-size: 15px; }
+#app .case-moves li { overflow-wrap: anywhere; }
+#app .case-moves small { display: block; color: #c4cdbd; font-size: 13px; line-height: 1.4; }
+#app .case-heavy { margin-left: 8px; padding: 1px 7px; border: 1px solid #d6ad56; border-radius: 99px; color: #f0c477; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+#app .case-stamp { display: inline-block; margin: 2px 0 10px; padding: 4px 12px; border: 3px double #d6ad56; border-radius: 4px; color: #f0c477 !important; font: 700 18px/1.2 Georgia,serif; letter-spacing: .12em; transform: rotate(-3deg); }
+#app .case-readout, #app .record-row dl { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 8px; margin: 0 0 8px; }
+#app .case-readout div, #app .record-row dl div { padding: 8px 10px; border-radius: 6px; background: rgba(255,255,255,.06); }
+#app .case-readout dt, #app .record-row dt { color: #c4cdbd; font-size: 12px; letter-spacing: .04em; }
+#app .case-readout dd, #app .record-row dd { margin: 2px 0 0; color: #fff5d7; font-size: 16px; font-weight: 700; }
+#app .record-row { margin-top: 12px; padding-top: 10px; border-top: 1px solid #36442f; }
+#app .record-row > strong { display: block; margin-bottom: 6px; color: #eedbb0; font-size: 16px; overflow-wrap: anywhere; }
+
+/* Character sheet: title under the name and the chooser (paper surface, dark ink) */
+#app .ttrpg-sheet .sheet-identity-copy > p.sheet-title { margin: 0 0 4px; color: #245653; font-size: 15px; font-weight: 800; letter-spacing: .04em; }
+#app .sheet-title-picker .title-note { margin: 0 0 10px; color: var(--sheet-muted); font-size: 14px; }
+#app .title-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+#app .title-choice { display: grid; align-content: center; gap: 2px; flex: 1 1 150px; min-height: 48px; padding: 9px 12px; border: 1px solid #536a73; border-radius: 6px; background: #f8efd9; color: #1b2d36; text-align: left; cursor: pointer; }
+#app .title-choice strong { color: inherit; font-size: 15px; }
+#app .title-choice small { color: inherit; font-size: 12px; line-height: 1.35; opacity: .9; }
+#app .title-choice.selected { border-color: #1b2d36; background: #344954; color: #f1e6c8; box-shadow: inset 0 0 0 2px #f0c477; }
+#app .title-empty { margin: 0; color: var(--sheet-muted); font-size: 14px; }
+
+/* Top bar identity */
+#app .identity-name { display: inline-grid; line-height: 1.15; text-align: right; }
+#app .identity-title { color: #f0c477; font-size: 11px; font-weight: 700; letter-spacing: .03em; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 420px) {
+  #app .case-milestones { grid-template-columns: 1fr; }
+  #app .case-milestones li { grid-template-columns: auto 1fr auto; align-items: baseline; gap: 8px; }
+}

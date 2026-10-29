@@ -102,6 +102,24 @@ function rewardRows(state, receipt, enemy) {
   return rows.join('');
 }
 
+const CASE_UNLOCKS = { 10: 'Lore page opened', 30: 'Move pattern filed', 100: 'Case file stamped' };
+const PB_LABELS = { exchanges: 'Fewest exchanges', lost: 'Least Stuffing (Health) lost', noDamage: 'No-damage clear' };
+
+/** Hazard-note unlocks and personal bests from this win. Reads the receipt only (receipt.case, written by the engine). */
+function caseNotices(receipt, enemy) {
+  const c = receipt?.case;
+  if (!c || typeof c !== 'object') return '';
+  const unlocked = Array.isArray(c.unlocked) ? c.unlocked.filter(m => Object.hasOwn(CASE_UNLOCKS, m)) : [];
+  const best = Array.isArray(c.personalBest) ? c.personalBest.filter(k => Object.hasOwn(PB_LABELS, k)) : [];
+  if (!unlocked.length && !best.length) return '';
+  const shown = { exchanges: c.exchanges, lost: c.lost, noDamage: 0 };
+  const bestRows = best.map(k => `<li><strong>${PB_LABELS[k]}</strong>${k === 'noDamage' || !Number.isInteger(shown[k]) ? '' : ` <span>${shown[k]}</span>`}</li>`).join('');
+  const bursar = best.includes('noDamage') ? 'NOTICE · Not one stitch disturbed. Please stop showing off, politely.' : 'NOTICE · Efficiency noted. Do not let it go to your stuffing.';
+  const bestBlock = best.length ? `<div class="case-notice case-notice--best"><h4>New personal best</h4><ul>${bestRows}</ul><p class="care-label">${bursar}</p><p class="case-private">Local record, this device only. Not shared or ranked.</p></div>` : '';
+  const unlockBlock = unlocked.length ? `<div class="case-notice case-notice--unlock"><h4>Hazard note unlocked</h4><ul>${unlocked.map(m => `<li><strong>${esc(enemy?.name || 'This enemy')}</strong> <span>${m} wins: ${CASE_UNLOCKS[m]}</span></li>`).join('')}</ul>${actionButton('open-guide', `${glyph('chevron')}<span>Open it in the Field Guide</span>`, 'text-button')}</div>` : '';
+  return `<section class="case-notices" aria-label="Hazard notes and local records">${unlockBlock}${bestBlock}</section>`;
+}
+
 function resultActions(state, receipt, enemy) {
   const won = receipt.type === 'victory';
   let primary;
@@ -157,6 +175,7 @@ export function renderEncounterOutcome(state, { celebrate = false } = {}) {
     ${defeated?`<p class="recovery-receipt">${Number.isFinite(receipt.coinsLost)?`<strong>${receipt.coinsLost} coins</strong> covered the call-out. `:''}Your levels and gear are safe. A short fluff up (Rest) will put you back on your paws; drying off (Recovering) takes at least 12 seconds after a knockout.</p>`:''}
     ${won?renderStoryNudge(state):''}
     ${rewardBlock}
+    ${won?caseNotices(receipt, enemy):''}
     ${resultActions(state, receipt, enemy)}
   </section>`;
 }
