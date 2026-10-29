@@ -342,3 +342,56 @@
   #app .mobile-nav button > span:not(.badge) { min-width: 0; max-width: 100%; white-space: nowrap; }
   #app .mobile-nav button:focus-visible { outline-offset: -3px; }
 }
+
+/* Small illustrated props, shared by navigation, services and field menus. */
+#app .sidebar .nav-link > .icon { width: 26px; height: 26px; flex-basis: 26px; }
+#app .tabs .menu-icon, #app .planning-tabs .menu-icon { width: 24px; height: 24px; flex: 0 0 24px; }
+#app .social-toggle .icon { width: 26px; height: 26px; flex-basis: 26px; }
+#app .workbench-howto { display: grid; gap: 5px; margin: 12px 0; padding-left: 22px; color: #d2d9d9; font-size: 14px; }
+#app .workbench-stock { padding: 12px 0; margin-bottom: 14px; border-block: 1px solid #536a73; }
+#app .workbench-stock h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; }
+#app .workbench-stock h3 .icon { width: 28px; height: 28px; }
+#app .workbench-stock ul { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; padding: 0; margin: 0; }
+#app .workbench-stock li { color: #d2d9d9; font-size: 14px; }
+#app .workbench-stock li strong { color: #f0c477; }
+#app .workbench-project { display: grid; grid-template-columns: 72px minmax(0,1fr); gap: 12px; border-left: 3px solid #d9b66e; padding: 12px 14px; margin-bottom: 16px; background: #2c3c42; }
+#app .workbench-project h3 { margin: 5px 0; }
+#app .workbench-project p, #app .workbench-project li { font-size: 14px; line-height: 1.5; }
+#app .workbench-project ol { margin: 8px 0; padding-left: 20px; }
+#app .workbench-project li + li { margin-top: 5px; }
+#app .workbench-project-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#app .workbench-project-actions button { flex: 1 1 150px; min-height: 48px; white-space: normal; }
+#app .workbench-availability { display: block; color: #f0d49d; font-size: 13px; line-height: 1.4; margin: 8px 0; }
+#app .exchange-card .cost-ledger { color: #d2d9d9; font-size: 13px; line-height: 1.5; }
+#app .spoils-location { margin: 12px 0 0; color: #c4cdd0; font-size: 13px; }
+#app .spoils-links { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 4px; }
+#app .spoils-links button { display: inline-flex; align-items: center; gap: 7px; min-height: 48px; }
+#app .encounter-result__reward .text-button { width: fit-content; min-height: 48px; padding: 4px 0; font-size: 13px; text-align: left; }
+@media (max-width: 740px) {
+  #app .mobile-nav .icon { width: 24px; height: 24px; flex: 0 0 24px; }
+  #app .workbench-project { grid-template-columns: minmax(0,1fr); padding: 12px; gap: 4px; }
+  #app .workbench-project > .item-art { width: 64px; height: 64px; }
+}
+
+/* Decorative reactions follow accepted exchanges; CSS never advances a turn. */
+#app .battle-feedback { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; min-height: 54px; padding: 8px 14px; border-top: 1px solid #536a73; background: #263b42; color: #d2d9d9; }
+#app .battle-feedback strong { display: inline-flex; align-items: center; gap: 7px; color: #e9dfc5; font-size: 15px; }
+#app .battle-feedback .icon { width: 24px; height: 24px; }
+#app .battle-feedback > span { font-size: 13px; line-height: 1.4; }
+#app .battle-feedback--idle { color: #bccbc9; font-style: italic; }
+#app .battle-feedback.is-critical { border-left: 3px solid #f0c477; }
+#app .battle-feedback.is-critical strong { color: #f0c477; }
+#app .battle-feedback.is-impact { border-left: 3px solid #d69788; }
+#app .battle-feedback--new { animation: feedback-arrive 260ms ease-out both; }
+#app .battle-hit .enemy-token { animation: enemy-nudge 180ms ease-out; }
+#app .battle-critical .enemy-token { animation: critical-nudge 320ms ease-out; }
+#app .resource-hit .bar { animation: damage-mark 380ms ease-out; }
+#app button:active:not(:disabled) { transform: translateY(1px); }
+@keyframes feedback-arrive { from { opacity: .45; } to { opacity: 1; } }
+@keyframes enemy-nudge { 0%,100% { transform: translateX(0); } 40% { transform: translateX(3px); } }
+@keyframes critical-nudge { 0%,100% { transform: translateX(0); filter: none; } 25% { transform: translateX(-4px); filter: drop-shadow(0 0 5px #f0c477); } 60% { transform: translateX(3px); } }
+@keyframes damage-mark { from { box-shadow: 0 0 0 3px #d6978880; } to { box-shadow: 0 0 0 0 #d6978800; } }
+@media (prefers-reduced-motion: reduce) {
+  #app .battle-feedback--new, #app .battle-hit .enemy-token, #app .battle-critical .enemy-token, #app .resource-hit .bar { animation: none; }
+  #app button:active:not(:disabled) { transform: none; }
+}

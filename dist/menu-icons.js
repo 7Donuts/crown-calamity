@@ -17,7 +17,7 @@ export const MENU_ICONS = Object.freeze({
   attributes: UI_ICONS.spark,
   abilities: UI_ICONS.bolt,
   gear: UI_ICONS.shield,
-  story: UI_ICONS.journal,
+  story: UI_ICONS.scroll,
   minor: UI_ICONS.check,
   major: UI_ICONS.crown,
   journal: UI_ICONS.journal,
@@ -26,6 +26,7 @@ export const MENU_ICONS = Object.freeze({
   characters: UI_ICONS.character,
   lab: UI_ICONS.lab,
   close: UI_ICONS.close,
+  chat: UI_ICONS.chat,
 });
 
 export function menuIcon(name, cls = '') {

@@ -77,3 +77,7 @@ Build a dedicated player-to-player resolver before drawing match conclusions fro
 | Chat, trading, banks, and moderation scope | Relevant social/economic features |
 
 These requirements guide future architecture. They do not expand the current prototype into a production multiplayer service in this iteration.
+
+### Equipment streak and reactive HUD
+
+Production servers must own the per-character equipment-miss counter, the natural drop roll, duplicate conversion, and the sixth-victory guarantee as part of the same atomic victory grant. Saved local counters and client animations are not evidence of rewards. Client last-hunt preference is presentation only; validate enemy access on every server encounter request. Real-time combat feedback must be driven by accepted server results and event IDs so reconnection or a rerender cannot replay a reward grant.

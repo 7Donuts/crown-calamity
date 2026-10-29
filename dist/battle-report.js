@@ -1,3 +1,4 @@
+import {renderStoryNudge} from './story-ui.js';
 import * as G from './engine.js';
 import { MENU_ICONS } from './menu-icons.js';
 import { UI_ICONS } from './ui-icons.js';
@@ -94,7 +95,7 @@ function rewardRows(state, receipt, enemy) {
   ];
   if (receipt.loot) {
     const item = G.resolveItem(state, receipt.loot) || G.ITEMS[receipt.loot];
-    rows.push(`<li class="encounter-result__reward encounter-result__reward--item">${renderItemArt(receipt.loot, { size: 'large' })}<span><small>EQUIPMENT</small><strong>${esc(item?.name || receipt.loot)}</strong></span></li>`);
+    rows.push(`<li class="encounter-result__reward encounter-result__reward--item">${renderItemArt(receipt.loot, { size: 'large' })}<span><small>EQUIPMENT</small><strong>${esc(item?.name || receipt.loot)}</strong>${actionButton('compare:'+receipt.loot,'Inspect & equip →','text-button')}</span></li>`);
   } else if (receipt.salvaged) {
     rows.push(`<li class="encounter-result__reward">${glyph('supplies')}<span><small>SALVAGE</small><strong>+1 Salvaged fitting</strong></span></li>`);
   }
@@ -121,27 +122,31 @@ function resultActions(state, receipt, enemy) {
   return `<div class="encounter-result__actions outcome-actions">${primary}${secondary}</div>`;
 }
 
+function treasureChest() {
+  return `<span class="loot-chest" aria-hidden="true"><svg class="loot-chest__sprite" viewBox="0 0 24 24" shape-rendering="crispEdges" focusable="false"><g class="loot-chest__lid"><path fill="#1B2D36" d="M4 4h16v2h2v8H2V6h2z"/><path fill="#D99551" d="M4 6h16v6H4z"/><path fill="#F0C477" d="M4 6h16v2H4z"/><path fill="#6BA397" d="M6 8h2v4H6zM16 8h2v4h-2z"/><path fill="#F1E6C8" d="M4 6h4v2H4z"/></g><path fill="#1B2D36" d="M2 12h20v8h-2v2H4v-2H2z"/><path fill="#AE6940" d="M4 14h16v6H4z"/><path fill="#D99551" d="M4 14h16v2H4z"/><path fill="#6BA397" d="M6 14h2v6H6zM16 14h2v6h-2z"/><path fill="#F0C477" d="M10 12h4v5h-4z"/><path fill="#1B2D36" d="M10 14h2v2h-2z"/></svg>${[1,2,3].map(n=>`<span class="loot-coin loot-coin--${n}">${glyph('gold')}</span>`).join('')}</span>`;
+}
+
 /** Render the outcome from the engine's saved receipt; no combat math is inferred. */
-export function renderEncounterOutcome(state) {
+export function renderEncounterOutcome(state, { celebrate = false } = {}) {
   const receipt = state?.last;
   if (!receipt) return '';
   const enemy = enemyFor(state, receipt.enemy);
   const won = receipt.type === 'victory';
   const defeated = receipt.type === 'defeat';
-  const title = won ? 'One problem. Properly filed.' : defeated ? 'Still on the payroll.' : 'Live to file another day.';
+  const title = won ? 'One problem. Properly filed.' : defeated ? 'Temporarily out of hero.' : 'Live to file another day.';
   const detail = won
     ? `${enemy?.name || 'The encounter'} defeated. The canal is a little less crowded.`
     : defeated
-      ? 'The recovery house pulled you out. Completed rewards are safe. Rest, adjust your build, and try again.'
+      ? 'The Quay’s recovery crew fished you out, gear and all. They also kept a story. Rest up; the canals can wait.'
       : 'You left the encounter. Its provisional rewards were forfeited.';
-  const emblem = won ? glyph('treasure') : renderJournalArt(defeated ? 'recovery' : 'field', { size: 'large' });
+  const emblem = won ? treasureChest() : renderJournalArt(defeated ? 'recovery' : 'field', { size: 'large' });
   const emblemLabel = won ? 'Victory rewards' : defeated ? 'Recovery required' : 'Withdrawal recorded';
   const rewardBlock = won
-    ? `<section class="encounter-spoils" aria-label="Encounter rewards"><h3>Spoils of the hunt</h3><ul class="encounter-loot">${rewardRows(state, receipt, enemy)}</ul></section>`
+    ? `<section class="encounter-spoils" aria-label="Encounter rewards"><h3>Spoils of the hunt</h3><ul class="encounter-loot">${rewardRows(state, receipt, enemy)}</ul><p class="spoils-location">${receipt.loot?'Equipment is in Satchel → Spare gear.':receipt.salvaged?'Duplicate equipment became Salvaged fittings.':'No equipment recovered this time.'} Coins and materials have been saved.</p><div class="spoils-links">${actionButton('bag-tab:materials',`${glyph('supplies')}<span>View materials →</span>`,'text-button')}${actionButton('bag-tab:workbench',`${glyph('workbench')}<span>Use the workbench →</span>`,'text-button')}</div></section>`
     : '';
   const outcomeKind = won ? 'victory' : defeated ? 'defeat' : 'withdrawal';
 
-  return `<section class="encounter-result outcome pulse" data-outcome="${outcomeKind}" aria-labelledby="encounter-result-title">
+  return `<section class="encounter-result outcome" data-outcome="${outcomeKind}" data-reactive="${celebrate?outcomeKind:'still'}" aria-labelledby="encounter-result-title">
     <div class="encounter-result__top">
       <div class="encounter-result__emblem" role="img" aria-label="${emblemLabel}">${emblem}</div>
       <div class="encounter-result__heading">
@@ -149,6 +154,7 @@ export function renderEncounterOutcome(state) {
         <p>${esc(detail)}</p>
       </div>
     </div>
+    ${won?renderStoryNudge(state):''}
     ${rewardBlock}
     ${resultActions(state, receipt, enemy)}
   </section>`;

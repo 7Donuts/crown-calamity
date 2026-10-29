@@ -184,7 +184,7 @@ function createApp(initialSave, { clock = { now: 0 }, timers = [], metrics = { e
   };
   return readFile(new URL('../dist/app.js', import.meta.url), 'utf8').then(source => {
     const transformed = source
-      .replace("import {renderStory,renderStorySummary} from './story-ui.js';", 'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;')
+      .replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';", 'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;')
       .replace("import * as G from './engine.js';", 'const G=globalThis.__GAME_ENGINE__;')
       .replace("import * as C from './characters.js';", 'const C=globalThis.__CHARACTER_MODULE__;')
       .replace("import * as M from './market-ui.js';", 'const M=globalThis.__MARKET_UI__;')
@@ -320,4 +320,20 @@ test('world and community navigation labels planned features and leaves campaign
   await ui.act('nav:hunt');
   assert.match(ui.getApp().innerHTML, /An honest day/);
   assert.equal(JSON.stringify(state), before, 'returning to the local hunt does not start an encounter');
+});
+
+
+test('victory feedback plays once for an accepted exchange, then reopening the receipt keeps the chest still', async()=>{
+  const state=G.fresh();G.startFight(state,'rats');state.fight.hp=1;
+  const {ui}=await createApp(state);
+  await ui.act('combat:attack');
+  let markup=ui.getApp().innerHTML;
+  assert.match(markup,/data-outcome="victory" data-reactive="victory"/);
+  assert.equal((markup.match(/class="loot-coin loot-coin--/g)||[]).length,3);
+  assert.match(markup,/class="loot-chest__lid"/);
+  assert.equal(ui.getState().totalExchanges,1);
+  const snapshot=JSON.stringify(ui.getState());
+  await ui.act('nav:world');await ui.act('nav:hunt');markup=ui.getApp().innerHTML;
+  assert.match(markup,/data-outcome="victory" data-reactive="still"/);
+  assert.equal(JSON.stringify(ui.getState()),snapshot);
 });

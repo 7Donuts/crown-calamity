@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.8.2
+# Crown & Calamity — playable solo prototype v0.9.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -27,6 +27,17 @@ python scripts-package.py
 Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy sprites, item atlas, emblem, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Records → Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
+
+## New in v0.9.0 — clearer goals and a livelier Quay
+
+- The hunt shortcut remembers the character's last local opponent. With no previous choice, it names the toughest unlocked opponent. The introduction still points new adventurers to Mara.
+- Mobile navigation has a direct **World** destination. Community chat, friends, guilds, and holdings are accessible there; Chronicle and Field Guide remain in its records tabs. Online features remain clearly marked, disabled placeholders.
+- All menu and navigation glyphs now use original colored pixel props. Combat has brief critical, impact, healing, guard, interrupt, and recovery feedback; victory opens the chest and tosses decorative coins. These effects do not resolve turns or grant rewards. Reduced motion uses still feedback.
+- Story milestones appear on hunt rewards. A newly completed objective opens the next report or interaction, and a claimed contract offers the next explicit story decision. Contracts and interactions still need a player click; no automatic acceptance or claiming is introduced.
+- Coins and one material remain guaranteed per victory. Equipment keeps its Luck-based natural drop roll; after five consecutive victories without equipment or duplicate salvage, the sixth guarantees an equipment reward. A natural drop or duplicate salvage resets the saved counter. Existing saves begin with zero misses; defeats and withdrawals do not advance it. Duplicate equipment becomes Salvaged fittings.
+- The workbench shows held materials, missing quantities, material sources, and a guided first-cap project. Every craft, upgrade and reforge still previews its cost and requires confirmation. Reward receipts link straight to materials, the workbench, and equipment comparison.
+
+The tone is lighter municipal fantasy: helpful goals, recoverable mishaps, and occasional paperwork jokes. Enemy critical hits are not a combat mechanic; incoming reactions reflect actual normal/heavy damage.
 
 ## New in v0.8.2 — field HUD and illustrated spoils
 

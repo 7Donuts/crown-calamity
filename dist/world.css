@@ -102,3 +102,6 @@
   #app .social-drawer .planning-tabs { flex-wrap: wrap; }
   #app .social-drawer .planning-tabs button { flex-basis: calc(50% - 4px); }
 }
+#app .world-community-open { display: inline-flex; align-items: center; gap: 9px; min-height: 48px; margin: 0 0 16px; padding: 9px 12px; color: #f2e7ca; border-color: #a78747; background: #344b49; text-align: left; }
+#app .world-community-open .menu-icon { width: 26px; height: 26px; flex: 0 0 26px; }
+@media(max-width:740px) { #app .world-community-open { width: 100%; justify-content: center; white-space: normal; } }

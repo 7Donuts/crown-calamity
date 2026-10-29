@@ -468,7 +468,7 @@
       "id": "status-loot-sprites",
       "src": "ui-icons.js",
       "purpose": "Colored heart, potion, energy, campfire, treasure chest, XP star, gold coin, supply bag UI illustrations",
-      "sha256": "5a37ecf401127590692f07ada31f921f8cba3ac3932c7b4cbc86fda19e4ab908",
+      "sha256": "e7865602943dd85e17797ac26b73f9bc9d003a50c3986ea79b68f4bae49b1e8d",
       "width": 24,
       "height": 24,
       "mode": "SVG path fragments",
@@ -482,6 +482,24 @@
         88
       ],
       "provenance": "Original integer-grid layered SVG paths using the canonical slate, moss, teal, cream and amber palette; decorative beside HTML labels."
+    },
+    {
+      "id": "pixel-menu-props",
+      "src": "pixel-menu-art.js",
+      "purpose": "Original colored navigation, menu, control and service props",
+      "sha256": "7dc6b35f384b9eef1d7e489260ab3021dd4f7a4d44556b9a9b7cbb09de207636",
+      "width": 24,
+      "height": 24,
+      "mode": "SVG paths from 12 by 12 logical pixel grids",
+      "alpha": true,
+      "displaySizes": [
+        20,
+        24,
+        26,
+        28,
+        36
+      ],
+      "provenance": "Original hand-authored grids with runtime dimension and palette validation; slate, teal, moss, cream and amber palette from ART-DIRECTION.md."
     }
   ]
 }

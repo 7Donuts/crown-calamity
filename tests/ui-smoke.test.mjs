@@ -43,7 +43,7 @@ function bootApp(initialSave=G.fresh()) {
   };
   const src = readFile(new URL('../dist/app.js',import.meta.url),'utf8');
   return src.then(source=>{
-    const transformed = source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
+    const transformed = source.replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';",'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
     const testExports = `\nglobalThis.__uiTest={act,render,getState:()=>state,getRoster:()=>roster,setState:v=>{state=v;},setView:v=>{view=v;},getView:()=>view,getModal:()=>$('#modal'),getApp:()=>$('#app'),getToast:()=>$('#toast')};`;
     vm.runInNewContext(transformed+testExports,context,{filename:'dist/app.js'});
     return {ui:context.__uiTest,storage,elements,getElement};
@@ -266,4 +266,58 @@ test('first-run wizard creates a local character and the roster preserves progre
   assert.deepEqual(ui.getState(),locked);
   assert.equal(ui.getRoster().activeId,secondId);
   assert.equal(before.name,'Bram');
+});
+
+test('hunt shortcut selects the toughest unlocked enemy and remembers the last local hunt through reload',async()=>{
+ const save=G.fresh();G.storyAction(save,'meet_mara');
+ let {ui}=await bootApp(save);
+ let hero=ui.getApp().innerHTML.match(/<div class="hero">[\s\S]*?<div class="section-row">/)[0];
+ assert.match(hero,/data-action="hunt:wisp"/);assert.doesNotMatch(hero,/Enter the canals/);
+ await ui.act('hunt:scavenger');assert.equal(ui.getState().settings.lastHunt,'scavenger');
+ ui.getState().fight=null;ui.getState().last=null;ui.render();
+ hero=ui.getApp().innerHTML.match(/<div class="hero">[\s\S]*?<div class="section-row">/)[0];assert.match(hero,/data-action="hunt:scavenger"/);
+ const loaded=G.loadSave(JSON.stringify(ui.getState()));({ui}=await bootApp(loaded));
+ hero=ui.getApp().innerHTML.match(/<div class="hero">[\s\S]*?<div class="section-row">/)[0];assert.match(hero,/data-action="hunt:scavenger"/);
+});
+
+test('workbench makes a first cap from actual hunt materials and grants its gear only on confirmation',async()=>{
+ const s=G.createCharacter({name:'Crafter',kit:'breaker'});s.coins=100;s.materials={'Ledger scraps':5};
+ const {ui}=await bootApp(s);await ui.act('bag-tab:workbench');
+ const live=ui.getState();assert.match(ui.getApp().innerHTML,/A FIRST PROJECT/);assert.match(ui.getApp().innerHTML,/5<\/strong> Ledger scraps/);
+ assert.match(ui.getApp().innerHTML,/Still need 1 Salvaged fittings/);
+ const before=JSON.stringify(live);await ui.act('exchange:ledger_fittings');assert.equal(JSON.stringify(live),before);
+ await ui.act('exchange-confirm:ledger_fittings');assert.equal(live.materials['Ledger scraps'],2);assert.equal(live.materials['Salvaged fittings'],1);
+ await ui.act('exchange:craft_cap');assert.equal(live.bag.includes('cap'),false);await ui.act('exchange-confirm:craft_cap');
+ assert.equal(live.bag.includes('cap'),true);assert.equal(live.coins,87);assert.equal(live.materials['Ledger scraps'],0);assert.equal(live.materials['Salvaged fittings'],0);
+ assert.doesNotMatch(ui.getApp().innerHTML,/A FIRST PROJECT/);await ui.act('equip:cap:head');assert.equal(live.gear.head,'cap');
+});
+
+test('the final required victory prompts a report and claiming it offers the next explicit contract',async()=>{
+ const s=G.fresh();G.storyAction(s,'meet_mara');G.acceptContract(s,'proof_of_trouble');
+ for(let n=0;n<2;n++){G.startFight(s,'rats');s.fight.hp=1;G.exchange(s,'attack',()=>.99,s.nextActionAt||1000);}
+ G.startFight(s,'rats');s.fight.hp=1;s.nextActionAt=0;
+ const {ui}=await bootApp(s);await ui.act('combat:attack');
+ assert.match(ui.getApp().innerHTML,/CONTRACT READY TO REPORT/);
+ assert.equal(ui.getModal().open,true);assert.match(ui.getModal().innerHTML,/YOUR NEXT STORY STEP/);assert.match(ui.getModal().innerHTML,/story-claim:proof_of_trouble:coins/);
+ assert.equal(G.contractStatus(ui.getState(),'proof_of_trouble').ready,true);
+ await ui.act('story-claim:proof_of_trouble:coins');
+ assert.equal(G.contractStatus(ui.getState(),'proof_of_trouble').completed,true);
+ assert.equal(ui.getModal().open,true);assert.match(ui.getModal().innerHTML,/Next contract: Drainage Inspection/);assert.match(ui.getModal().innerHTML,/story-accept:drainage_inspection/);
+ assert.equal(G.contractStatus(ui.getState(),'drainage_inspection').active,false,'the prompt never accepts a contract for the player');
+ await ui.act('story-accept:drainage_inspection');assert.equal(ui.getModal().open,false);assert.equal(G.contractStatus(ui.getState(),'drainage_inspection').active,true);
+});
+
+test('the rescue hunt receipt points to the passage interaction rather than requiring more random hunts',async()=>{
+ const s=G.fresh();G.storyAction(s,'meet_mara');G.acceptContract(s,'proof_of_trouble');
+ for(let n=0;n<3;n++){G.startFight(s,'rats');s.fight.hp=1;G.exchange(s,'attack',()=>.99,s.nextActionAt||1000);}
+ G.claimContract(s,'proof_of_trouble');G.acceptContract(s,'drainage_inspection');
+ for(let n=0;n<2;n++){G.startFight(s,'rats');s.fight.hp=1;G.exchange(s,'attack',()=>.99,s.nextActionAt);}
+ G.startFight(s,'rats');s.fight.hp=1;s.nextActionAt=0;
+ const {ui}=await bootApp(s);await ui.act('combat:attack');
+ assert.match(ui.getApp().innerHTML,/NEXT STORY STEP/);assert.match(ui.getModal().innerHTML,/story-action:secure_passage/);
+ assert.equal(G.contractStatus(ui.getState(),'drainage_inspection').ready,false);
+ await ui.act('story-action:secure_passage');await ui.act('story-next');
+ assert.match(ui.getModal().innerHTML,/story-action:rescue_mara/);
+ const wins=ui.getState().kills.rats;await ui.act('story-action:rescue_mara');await ui.act('story-next');
+ assert.match(ui.getModal().innerHTML,/story-claim:drainage_inspection:coins/);assert.equal(ui.getState().kills.rats,wins,'story progression needs the authored interactions, not extra combat');
 });

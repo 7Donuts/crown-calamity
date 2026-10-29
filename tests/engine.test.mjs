@@ -126,3 +126,36 @@ test('Insight no longer penalizes critical chance and Sure Footing applies exact
 });
 
 test('save imports reject malformed resource and currency fields before rendering',()=>{for(const key of ['hp','mp','sp','coins','xp'])for(const value of ['<img src=x onerror=alert(1)>',-1,1.25,null]){const s=G.fresh();s[key]=value;assert.equal(G.loadSave(JSON.stringify(s)),null,key+' '+String(value));}});
+
+test('equipment drought protection grants loot or salvage by the sixth victory and survives reload',()=>{
+ let s=G.createCharacter({name:'Quartermaster',kit:'breaker'});const coins=s.coins;
+ for(let n=1;n<=6;n++){
+  assert.ok(G.startFight(s,'rats'));s.fight.hp=1;
+  assert.equal(G.exchange(s,'attack',()=>.99,s.nextActionAt||1000).victory,true);
+  assert.equal(s.materials['Ledger scraps'],n,'materials remain guaranteed even when equipment misses');
+  assert.equal(s.coins,coins+9*n);
+  if(n<6){assert.equal(s.last.loot,null);assert.equal(s.equipmentMisses,n);}
+  else{assert.equal(s.last.loot,'penny');assert.equal(s.equipmentMisses,0);assert.equal(s.last.dropProtected,true);}
+  const loaded=G.loadSave(JSON.stringify(s));assert.ok(loaded);s=loaded;
+ }
+ assert.ok(G.startFight(s,'rats'));s.fight.hp=1;
+ const rolls=[.5,.5,0,0];G.exchange(s,'attack',()=>rolls.shift()??0,s.nextActionAt);
+ assert.equal(s.last.salvaged,true);assert.equal(s.equipmentMisses,0);
+ assert.equal(s.materials['Salvaged fittings'],1,'owned equipment becomes visible workshop material');
+ const snapshot=JSON.stringify(s);assert.equal(G.exchange(s,'attack',()=>0,s.nextActionAt).ok,false);assert.equal(JSON.stringify(s),snapshot,'a completed fight cannot grant a second reward');
+});
+
+test('natural equipment drops reset a saved drought and legacy saves start with a valid counter',()=>{
+ const s=G.createCharacter({name:'Finder',kit:'breaker'});s.equipmentMisses=4;G.startFight(s,'rats');s.fight.hp=1;G.exchange(s,'attack',()=>0,1000);
+ assert.equal(s.last.loot,'penny');assert.equal(s.last.dropProtected,false);assert.equal(s.equipmentMisses,0);
+ const old={...s};delete old.equipmentMisses;assert.equal(G.loadSave(JSON.stringify(old)).equipmentMisses,0);
+ old.equipmentMisses=-500;assert.equal(G.loadSave(JSON.stringify(old)).equipmentMisses,0);
+ old.equipmentMisses=500;assert.equal(G.loadSave(JSON.stringify(old)).equipmentMisses,5);
+});
+
+test('exchange feedback describes actual player criticals and heavy incoming damage without extra rolls or turns',()=>{
+ const s=G.fresh();G.startFight(s,'rats');s.fight.round=2;s.fight.hp=5000;const hp=s.hp;
+ let calls=0;const result=G.exchange(s,'attack',()=>{calls++;return 0;},1000);
+ assert.equal(result.critical,true);assert.equal(result.heavy,true);assert.equal(result.incoming,hp-s.hp);assert.ok(result.damage>0);assert.equal(result.healed,0);assert.equal(s.totalExchanges,1);assert.equal(calls,3,'the feedback exposes existing calculations and draws no new randomness');
+ const snapshot=JSON.stringify(s);const blocked=G.exchange(s,'attack',()=>{throw new Error('No roll during cooldown');},1001);assert.equal(blocked.ok,false);assert.equal(JSON.stringify(s),snapshot);
+});

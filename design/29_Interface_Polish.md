@@ -27,3 +27,13 @@ The World page names only known places in the Bracken Quay chapter: the Lower Ca
 Guilds, friend search and requests, holdings, land permissions and improvements, and the World/Guild/Whisper chat channels are presentation placeholders. Their controls are disabled, their lists and message history are empty, and no online accounts, player records, plots, prices, or passive income are shown. Closing the social drawer removes it from the page; the drawer does not keep a blank rail open.
 
 These placeholders make planned areas visible while keeping the current local solo game distinct from future multiplayer work. Actual shared features need their own product rules and trusted online implementation before the disabled controls can become actions. See [FUTURE-DEVELOPMENT.md](../FUTURE-DEVELOPMENT.md) for the roadmap.
+
+## Goals, discoveries, and reactions (v0.9.0)
+
+The local hunt shortcut prefers the character's last valid, unlocked hunt, otherwise the strongest unlocked ordinary enemy. World is a direct mobile destination; its records tabs retain Chronicle and Field Guide, and an explicit community opener exposes planned chat, friends, guilds, and holdings.
+
+Newly ready contract reports and authored interactions appear in a prompt on victory. The receipt retains the next step if the prompt is dismissed. Reporting an objective offers the next available decision; acceptance, story interactions, reward selection, and claiming remain explicit inputs. A victory that does not open a new step only updates the inline objective.
+
+Workshop stock, missing amounts, and a first cap project explain how guaranteed hunt materials become gear. Reward receipts link directly to the right inventory and workshop views. Six victories cannot all miss equipment: the sixth yields a natural or protected drop, with duplicates converted to Salvaged fittings. Only victories advance this per-character counter, and any equipment/salvage reward resets it.
+
+Combat feedback is transient UI state derived from the accepted exchange result. CSS handles brief motion; it never calls an action, draws randomness, or modifies character state. Timers still only re-enable controls. Reduced motion leaves text and a still chest. Reopening a receipt does not replay its celebration. Tone stays light, useful, and forgiving.

@@ -302,3 +302,40 @@
 @media (prefers-reduced-motion: reduce) {
   #app .encounter-result.pulse { animation: none; }
 }
+
+/* Open treasure, a few decorative coins, and a gentle reveal of earned spoils. */
+#app .loot-chest { display: block; position: relative; width: 88px; height: 88px; }
+#app .loot-chest__sprite { display: block; width: 100%; height: 100%; overflow: visible; }
+#app .loot-chest__lid { transform-box: view-box; transform-origin: 4px 12px; transform: translateY(-2px) rotate(-16deg); }
+#app .loot-coin { position: absolute; left: 32px; top: 20px; width: 24px; height: 24px; opacity: 0; pointer-events: none; }
+#app .loot-coin .battle-glyph { width: 24px; height: 24px; }
+#app .encounter-result[data-reactive="victory"] .loot-chest__lid { animation: chest-open 500ms ease-out both; }
+#app .encounter-result[data-reactive="victory"] .loot-coin { animation: coin-toss 700ms ease-out var(--coin-delay,130ms) both; }
+#app .loot-coin--1 { --coin-x: -24px; --coin-turn: -40deg; }
+#app .loot-coin--2 { --coin-x: 0px; --coin-turn: 20deg; --coin-delay: 190ms; }
+#app .loot-coin--3 { --coin-x: 26px; --coin-turn: 70deg; --coin-delay: 250ms; }
+#app .encounter-result[data-reactive="victory"] .encounter-result__reward { animation: spoils-arrive 320ms ease-out both; }
+#app .encounter-result[data-reactive="victory"] .encounter-result__reward:nth-child(2) { animation-delay: 70ms; }
+#app .encounter-result[data-reactive="victory"] .encounter-result__reward:nth-child(3) { animation-delay: 140ms; }
+#app .encounter-result[data-reactive="victory"] .encounter-result__reward:nth-child(4) { animation-delay: 210ms; }
+#app .encounter-result[data-reactive="defeat"] { animation: recovery-arrive 450ms ease-out; }
+@keyframes chest-open { from { transform: none; } to { transform: translateY(-2px) rotate(-16deg); } }
+@keyframes coin-toss { 0% { opacity: 0; transform: translate(0,0) scale(.5); } 30% { opacity: 1; transform: translate(calc(var(--coin-x)*.5),-38px) rotate(var(--coin-turn)); } 100% { opacity: 0; transform: translate(var(--coin-x),10px) rotate(var(--coin-turn)); } }
+@keyframes spoils-arrive { from { opacity: .3; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes recovery-arrive { from { opacity: .5; } to { opacity: 1; } }
+@media(max-width:600px) { #app .loot-chest { width: 72px; height: 72px; } #app .loot-coin { left: 24px; top: 16px; } }
+@media(max-width:370px) { #app .loot-chest { width: 64px; height: 64px; } }
+@media(prefers-reduced-motion:reduce) {
+  #app .encounter-result[data-reactive] .loot-chest__lid,
+  #app .encounter-result[data-reactive] .loot-coin,
+  #app .encounter-result[data-reactive] .encounter-result__reward,
+  #app .encounter-result[data-reactive="defeat"] { animation: none; }
+  #app .loot-coin { display: none; }
+}
+
+/* Story dispatch belongs with earned rewards, including on narrow phones. */
+#app .reward-story-step { margin: 16px 0 0; padding: 14px 0; border-block: 1px solid #9b8659; color: #f1e6c8; }
+#app .reward-story-step .eyebrow { color: #f0c477; font-size: 12px; }
+#app .reward-story-step h3 { margin: 5px 0; color: #f1e6c8; font-size: 21px; }
+#app .reward-story-step p { margin: 0 0 8px; font-size: 14px; line-height: 1.5; }
+#app .reward-story-step button { min-height: 48px; max-width: 100%; padding: 9px 14px; white-space: normal; }

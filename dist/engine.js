@@ -25,7 +25,7 @@ export const QUESTS=[
 {title:'Someone Expendable',text:'An inspector guards the missing crew’s records. Recover them before the next surge.',target:'inspector',xp:180},
 {title:'The Municipal Works',text:'Reach level 6 and enter the works. Find out why the pumps have turned against the town.',target:'boss',xp:250}
 ];
-export function fresh(){return normalizeStory(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',origin:'Former canal surveyor',level:1,part:1,xp:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:120,sp:100,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional adventurer',text:'Bracken Quay is staying dry. The people who keep it that way are not. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,visited:['rats'],settings:{details:false}}));}
+export function fresh(){return normalizeStory(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',origin:'Former canal surveyor',level:1,part:1,xp:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:120,sp:100,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional adventurer',text:'Bracken Quay is staying dry. The people who keep it that way are not. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,visited:['rats'],settings:{details:false}}));}
 export const STARTER_KITS={
  bulwark:{gear:['rod','shield'],starterAbility:'arc',stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8}},
  caster:{gear:['rod','focus'],starterAbility:'arc',stats:{mig:8,fin:8,int:16,vit:8,wil:12,ins:8,lck:8}},
@@ -101,7 +101,7 @@ export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
  available:available&&(!['combo','guardstrike'].includes(key)||['shield','gateShield'].includes(s.gear.offhand)),live:!!f};
 }
 export function restore(s){if(s.fight||s.delve)return false;let t=totals(s);s.hp=t.hp;s.mp=t.mp;s.sp=t.sp;return true;}
-export function startFight(s,id,source='hunt'){if(s.fight||s.hp<=0)return false;const e=ENEMIES.find(x=>x.id===id);if(!e|| (source==='hunt'&&e.id==='boss'))return false;if(source==='hunt'&&e.level>s.level+2)return false;if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+10);s.sp=Math.min(t.sp,s.sp+10);}s.fight={enemy:id,hp:e.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false};s.last=null;s.log=[];if(!s.visited.includes(id))s.visited.push(id);return true;}
+export function startFight(s,id,source='hunt'){if(s.fight||s.hp<=0)return false;const e=ENEMIES.find(x=>x.id===id);if(!e|| (source==='hunt'&&e.id==='boss'))return false;if(source==='hunt'&&e.level>s.level+2)return false;if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+10);s.sp=Math.min(t.sp,s.sp+10);}s.fight={enemy:id,hp:e.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false};if(source==='hunt')(s.settings??={}).lastHunt=id;s.last=null;s.log=[];if(!s.visited.includes(id))s.visited.push(id);return true;}
 export function intent(s){const f=s.fight;if(!f)return null;const e=ENEMIES.find(x=>x.id===f.enemy),idx=f.round%e.pattern.length;let heavy=idx===e.heavy;let name=e.pattern[idx];if(e.id==='boss'&&f.hp/e.hp<.3){heavy=idx===2;name=heavy?'Emergency discharge':idx===0?'Armor shutters open':'Ward shutters open';}return {name,heavy,interruptible:heavy,damage:Math.floor(e.damage*(heavy?2.15:e.id==='scavenger'&&idx===0?.5:1)),warded:e.id==='wisp'&&idx===0,guarded:e.id==='scavenger'&&idx===0};}
 export function hasFocus(s){return Object.values(s.gear).some(id=>effectiveItem(s,id)?.focus);}
 export function primaryActions(s){
@@ -120,11 +120,13 @@ function achievement(s,id,title,text,coins=0){if(s.achievements.some(a=>a.id===i
 function gainXP(s,amount){const gained=advanceXP(s,amount);if(gained.parts){const label=`${gained.parts} attribute point${gained.parts===1?'':'s'} earned`;journal(s,`${label} · Level ${s.level} Part ${s.part}`,`Progress is saved at ${s.level}.${s.part}. Allocate your available points whenever you are ready.`,'growth');}return gained.levels;}
 export function awardXP(s,n){return gainXP(s,n);}
 function victory(s,e,rng){const f=s.fight,dropChance=f.dropChance??totals(s).equipmentDropChance,diff=e.level-f.startLevel,factor=diff<=-6?.25:diff<=-3?.6:diff>=6?1.25:diff>=3?1.2:1;let xp=Math.floor((20+12*e.level)*(e.id==='boss'?2:1)*factor);const leveled=gainXP(s,xp);s.coins+=e.coins;s.materials[e.material]=(s.materials[e.material]||0)+1;s.kills[e.id]=(s.kills[e.id]||0)+1;
-let loot=null,salvaged=false;if(rng()<dropChance){let pool=['penny','oilskin','gateShield','grips','lantern','floodrod'].filter(id=>ITEMS[id].level<=s.level);if(pool.length){loot=pool[Math.floor(rng()*pool.length)];if(!s.bag.includes(loot))s.bag.push(loot);else{salvaged=true;s.materials['Salvaged fittings']=(s.materials['Salvaged fittings']||0)+1;loot=null;}}}
+const misses=Number.isInteger(s.equipmentMisses)?clamp(s.equipmentMisses,0,5):0,dropProtected=misses>=5;
+let loot=null,salvaged=false;if(rng()<dropChance||dropProtected){let pool=['penny','oilskin','gateShield','grips','lantern','floodrod'].filter(id=>ITEMS[id].level<=s.level);if(pool.length){loot=pool[Math.floor(rng()*pool.length)];if(!s.bag.includes(loot))s.bag.push(loot);else{salvaged=true;s.materials['Salvaged fittings']=(s.materials['Salvaged fittings']||0)+1;loot=null;}}}
+s.equipmentMisses=loot||salvaged?0:Math.min(5,misses+1);
 if(diff>=-2){for(const key of f.used.slice(0,3)){const m=s.mastery[key];if(!m||m.rank>=3)continue;m.marks++;if(m.marks>=3+2*m.rank){m.marks-=3+2*m.rank;m.rank++;journal(s,`${ABILITIES[key]?.name||key} · rank ${m.rank}`,'Practice has become something rather more useful.','growth');}}}
 recordStoryEvent(s,{type:'victory',enemy:e.id,eventId:'victory:'+e.id+':'+s.kills[e.id]});
 if(e.id==='boss'){s.clears++;if(s.clears===1){s.pending='bossLoot';journal(s,'The city will stay dry','The Superintendent’s corrupted directive is suspended. Bracken Quay’s barriers hold. The missing crew are alive in the upper maintenance tunnels.');}if(s.delve&&!s.delve.campUsed)achievement(s,'budget','Budget Emergency','“Resources conserved. Therapist not included.”');}
-s.last={type:'victory',enemy:e.id,xp,coins:e.coins,material:e.material,loot,salvaged,dropChance,leveled};addLog(s,`${e.name} defeated. +${xp} XP · +${e.coins} coins · ${e.material}.`,'reward');s.fight=null;
+s.last={type:'victory',enemy:e.id,xp,coins:e.coins,material:e.material,loot,salvaged,dropChance,dropProtected,leveled};addLog(s,`${e.name} defeated. +${xp} XP · +${e.coins} coins · ${e.material}.`,'reward');s.fight=null;
 if(s.delve){s.delve.node++;if(e.id==='boss'){s.delve=null;restore(s);}}}
 export function exchange(s,key,rng=Math.random,now=Date.now()){
  const f=s.fight;if(!f)return {ok:false,reason:'No active encounter'};
@@ -133,7 +135,7 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  s.nextActionAt=now+ACTION_DELAY_MS;
  const e=ENEMIES.find(x=>x.id===f.enemy),t=totals(s),i=intent(s),w=effectiveItem(s,s.gear.weapon),oldCharge=f.charge||0,profile=actionProfile(s,key,e.id);
  f.charge=0;s.mp-=info.mp;s.sp-=info.sp;
- let guarded=['guard','brace','combo','guardstrike'].includes(key),interrupted=false,damage=0,channel=null,critical=false;
+ let guarded=['guard','brace','combo','guardstrike'].includes(key),interrupted=false,damage=0,channel=null,critical=false,healed=0;
  if(['attack','disrupt','driving','guardstrike','cast','combo'].includes(key)){
   channel=profile.channel;const glance=rng()>profile.hitChance;critical=!glance&&rng()<t.critChance;damage=glance?profile.glance:critical?profile.critical:profile.normal;
   f.hp=Math.max(0,f.hp-damage);addLog(s,`${info.label}${critical?' · critical':''}${glance?' · glancing hit':''}: ${damage} ${channel} damage${oldCharge&&channel==='arcane'?' · Reservoir +10%':''}${f.exposed?' · exposed':''}.`,'attack');
@@ -141,7 +143,7 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
   if(key==='disrupt'&&i.interruptible&&!glance&&f.interruptImmune<=f.round){if(!f.used.includes('disrupt'))f.used.push('disrupt');interrupted=true;f.interruptImmune=f.round+(s.mastery?.disrupt?.choice==='immunity'?3:4);addLog(s,`${i.name} interrupted. The enemy loses its response.`,'special');if(e.id==='boss')achievement(s,'maintenance','Percussive Maintenance','“The approved shutdown procedure was unavailable. Apparently you were available.”',20);}
   if(f.channel===channel)f.streak++;else{f.channel=channel;f.streak=1;}
  }else if(key==='mend'){
-  const heal=Math.min(t.hp-s.hp,Math.floor(t.mendHealing));s.hp+=heal;const usefulHeal=Math.min(heal,f.healDeficit||0);f.healDeficit=Math.max(0,(f.healDeficit||0)-usefulHeal);if(usefulHeal>0&&!f.used.includes('mend'))f.used.push('mend');addLog(s,`Mend restored ${heal} health.`,'heal');
+  const heal=Math.min(t.hp-s.hp,Math.floor(t.mendHealing));healed=heal;s.hp+=heal;const usefulHeal=Math.min(heal,f.healDeficit||0);f.healDeficit=Math.max(0,(f.healDeficit||0)-usefulHeal);if(usefulHeal>0&&!f.used.includes('mend'))f.used.push('mend');addLog(s,`Mend restored ${heal} health.`,'heal');
  }else if(key==='aegis'){
   const cap=Math.floor(t.hp*.3),base=Math.floor(55+8*(s.mastery?.aegis?.rank||1));f.barrier=Math.min(cap,Math.max(f.barrier,base));f.barrierTurns=2;f.cooldowns.aegis=f.round+4;f.streak=0;addLog(s,`Aegis raised a ${f.barrier}-point barrier for two enemy responses.`,'defend');
  }else if(key==='expose'){
@@ -158,7 +160,7 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  }
  if(key==='disrupt')f.cooldowns.disrupt=f.round+4;
  if(key==='mend')f.cooldowns.mend=f.round+(s.mastery?.mend?.choice==='recovery'?2:3);
- s.totalExchanges++;if(f.hp<=0){victory(s,e,rng);return {ok:true,victory:true,damage};}
+ s.totalExchanges++;if(f.hp<=0){victory(s,e,rng);return {ok:true,victory:true,damage,critical,incoming:0,heavy:false,absorbed:0,prevented:0,healed};}
  const enemyAcc=25+4*e.level,playerEvasion=t.evasion,enemyHit=clamp(.85+.3*(enemyAcc-playerEvasion)/(enemyAcc+playerEvasion+40),.65,.98),enemyGlance=!interrupted&&rng()>enemyHit;
  let incoming=interrupted?0:Math.floor(i.damage*(enemyGlance?.55:1)*(1-clamp((e.id==='wisp'?t.ward:t.armor)/((e.id==='wisp'?t.ward:t.armor)+100+8*e.level),0,.65))*(f.vented&&e.id==='boss'?.7:1));
  let prevented=guarded?Math.ceil(incoming*.35):0;incoming-=prevented;
@@ -168,9 +170,9 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  if(absorbed>0){if(key==='brace'&&!f.used.includes('brace'))f.used.push('brace');if(key==='aegis'&&!f.used.includes('aegis'))f.used.push('aegis');}
  s.hp=Math.max(0,s.hp-incoming);f.healDeficit=(f.healDeficit||0)+incoming;if(!interrupted)addLog(s,`${i.name}${enemyGlance?' · glancing hit':''}: ${incoming} damage${prevented?` · ${prevented} guarded`:''}${absorbed?` · ${absorbed} absorbed`:''}.`,'enemy');
  s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+4);if(f.barrierTurns>0&&--f.barrierTurns===0)f.barrier=0;if(f.exposed&&(f.exposedRound??f.round)<=f.round){f.exposed=false;f.exposedRound=null;}f.round++;
- if(s.hp<=0){s.fight=null;s.delve=null;s.last={type:'defeat',enemy:e.id};journal(s,'A tactical relocation','The recovery house fetched you from the canal. Completed rewards are safe. Recover at Bracken Quay and prepare another attempt.');return {ok:true,defeat:true};}
- if(key==='withdraw'){s.fight=null;s.last={type:'withdraw',enemy:e.id};if(s.delve)s.delve=null;return {ok:true,withdraw:true};}
- return {ok:true,damage};
+ if(s.hp<=0){s.fight=null;s.delve=null;s.last={type:'defeat',enemy:e.id};journal(s,'A tactical relocation','The recovery house fetched you from the canal. Completed rewards are safe. Recover at Bracken Quay and prepare another attempt.');return {ok:true,defeat:true,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed};}
+ if(key==='withdraw'){s.fight=null;s.last={type:'withdraw',enemy:e.id};if(s.delve)s.delve=null;return {ok:true,withdraw:true,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed};}
+ return {ok:true,damage,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,interrupted};
 }
 export function allocate(s,k){if(s.fight||s.delve||s.points<1||!Object.hasOwn(ATTRS,k))return false;const before=totals(s);s.stats[k]++;s.points--;const after=totals(s);s.hp+=after.hp-before.hp;s.mp+=after.mp-before.mp;s.sp+=after.sp-before.sp;return true;}
 export function capResources(s){const t=totals(s);s.hp=Math.min(s.hp,t.hp);s.mp=Math.min(s.mp,t.mp);s.sp=Math.min(s.sp,t.sp);}
@@ -224,6 +226,8 @@ export function loadSave(raw){
   }
   const base=fresh(),out={...base,...s,version:s.version,stats,settings:{...base.settings,...s.settings}};migrateLegacyProgression(out);out.version=VERSION;out.points=Number.isInteger(out.points)&&out.points>=0?out.points:0;normalizeAbilities(out,{legacy:s.version<3});
   if(attunementUsed(out)>6)return null;
+  out.equipmentMisses=Number.isInteger(out.equipmentMisses)?clamp(out.equipmentMisses,0,5):0;
+  if(typeof out.settings.lastHunt!=='string'||!ENEMIES.some(e=>e.id!=='boss'&&e.id===out.settings.lastHunt))delete out.settings.lastHunt;
   normalizeGearState(out);if(!out.gear.weapon||!ITEMS[out.gear.weapon])return null;
   if(out.fight){out.fight.barrier??=0;out.fight.barrierTurns??=0;out.fight.healDeficit??=0;out.fight.exposed??=false;}
   if(!s.story)delete out.story;normalizeStory(out,{legacy:!s.story});

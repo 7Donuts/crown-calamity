@@ -8,6 +8,14 @@ Make a welcoming, weathered canal fantasy with a small edge of mystery. Shapes s
 
 Keep the existing papers, brass, and teal identity, with restrained use of each. Move away from elaborate engraved metal, high-frequency texture, gothic spectacle, ornamental soulslike noise, and generic grimdark. The art should still feel magical and weathered, but approachable at the small sizes where players see it. Use two or three value steps for each material. Favor large pixel clusters and clean color boundaries; avoid dithering, micro-hatching, tiny glints, neon glow, and surface noise that becomes fuzz when scaled down.
 
+## Lighthearted adventure and reactions
+
+The game should not take itself too seriously. Bracken Quay is a hopeful, welcoming town with an absurd municipal bureau, ambitious vermin, and machinery with opinions. Use gentle, dry humor in props and occasional short lines. Keep setbacks recoverable and make the joke about the situation, never about the player's intelligence, build, or failure. Avoid grim death imagery, punitive scolding, or jokes that obscure an objective, cost, or rule.
+
+All navigation and menu art now uses original colored pixel props from `dist/pixel-menu-art.js`, on a 12 × 12 logical grid rendered as 24 × 24 SVG. Distinguish story scrolls, chronicle books, maps, adventurer kit, canvas satchels, and market stalls by silhouette. The palette and stepped outlines match status and loot sprites. Keep primary mobile icons at 24 px and desktop navigation props at 26 px; labels remain readable HTML.
+
+Reactions are short, decorative, and tied to real accepted events: a critical jolt, a damage mark, healing/guard/interrupt feedback, a recovery transition, and an opening chest with three decorative coin particles. Show actual damage and reward numbers. A particle is not another coin grant. Play celebrations once when the exchange resolves; reopening a receipt keeps a still, open chest. Reduced motion removes shakes, glows, fades, coin movement, and press movement while keeping text and results visible.
+
 ## Shared palette
 
 This working palette has sixteen colors. It is a role palette: artists can choose a subset for each asset, and should reserve the brightest values for focal information. New production sheets should stay near sixteen colors per asset unless a clear readability need justifies a documented exception.

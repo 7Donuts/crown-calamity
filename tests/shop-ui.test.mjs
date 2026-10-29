@@ -21,7 +21,7 @@ async function bootWithSave(save) {
   const document={querySelector:getElement,createElement:element,addEventListener(){}};
   const context={__GAME_ENGINE__:G,__CHARACTER_MODULE__:C,__STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, __UI_ICONS__:UI_ICONS, __ENEMY_ART__:EnemyArt, __ITEM_ART__:ItemArt, __CHARACTER_SHEET__:CharacterSheet, __BATTLE_REPORT__:BattleReport, __WORLD_UI__:WorldUI,document,localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},window:{scrollTo(){}},console,Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},structuredClone};
   const source=await readFile(new URL('../dist/app.js',import.meta.url),'utf8');
-  const transformed=source.replace("import {renderStory,renderStorySummary} from './story-ui.js';",'const {renderStory,renderStorySummary}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
+  const transformed=source.replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';",'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
   vm.runInNewContext(transformed+`\nglobalThis.__uiTest={act,getState:()=>state,getApp:()=>$('#app'),getModal:()=>$('#modal'),getToast:()=>$('#toast')};`,context,{filename:'dist/app.js'});
   return {ui:context.__uiTest,storage};
 }
@@ -64,12 +64,16 @@ test('separate vendor menus compare through an overlay and purchased stock disap
   noMissing(ui.getApp().innerHTML);
 });
 
-test('mobile has six main destinations and Records retains the Field Guide and save tools',async()=>{
+test('mobile has a direct World destination and retains Chronicle, Field Guide and save tools',async()=>{
   const {ui}=await bootWithSave(G.fresh());
   const mobile=ui.getApp().innerHTML.match(/<nav class="mobile-nav"[\s\S]*?<\/nav>/)?.[0];
   assert.ok(mobile);
   assert.equal([...mobile.matchAll(/data-action="nav:/g)].length,6);
-  assert.match(mobile,/nav:market/);assert.match(mobile,/Records/);
+  assert.match(mobile,/nav:market/);assert.match(mobile,/nav:world/);assert.match(mobile,/>World<\/span>/);
+  await ui.act('nav:world');
+  contains(ui.getApp().innerHTML,'data-action="social-open:chat"');
+  contains(ui.getApp().innerHTML,'data-action="world-tab:holdings"');
+  contains(ui.getApp().innerHTML,'data-action="nav:journal"');
   await ui.act('nav:journal');
   assert.match(ui.getApp().innerHTML,/<div class="tabs records-tabs"[\s\S]*?data-action="nav:guide"/);
   await ui.act('nav:guide');
