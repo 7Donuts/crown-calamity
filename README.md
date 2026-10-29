@@ -60,7 +60,7 @@ Starting a desktop encounter scrolls the combat actions into view, respecting re
 
 ## New in v0.9.0 — clearer goals and a livelier Quay
 
-- The hunt shortcut remembers the character's last local opponent. With no previous choice, it names the toughest unlocked opponent. The introduction still points new adventurers to Mara.
+- The hunt shortcut names the opponent an accepted contract still needs defeated (for example Ledger Rats for Mara's first job). With no such contract it returns to the character's last local opponent, and with no previous choice it names the toughest unlocked opponent. The introduction still points new adventurers to Mara.
 - Mobile navigation has a direct **World** destination. Community chat, friends, guilds, and holdings are accessible there; Chronicle and Field Guide remain in its records tabs. Online features remain clearly marked, disabled placeholders.
 - All menu and navigation glyphs now use original colored pixel props. Combat has brief critical, impact, healing, guard, interrupt, and recovery feedback; victory opens the chest and tosses decorative coins. These effects do not resolve turns or grant rewards. Reduced motion uses still feedback.
 - Story milestones appear on hunt rewards. A newly completed objective opens the next report or interaction, and a claimed contract offers the next explicit story decision. Contracts and interactions still need a player click; no automatic acceptance or claiming is introduced.

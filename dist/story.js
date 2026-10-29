@@ -104,6 +104,16 @@ export function contractStatus(s,id){
  return {id,title:c.title,text:c.text,employer:c.employer,chapter:c.chapter,kind:c.kind,majorIndex:c.majorIndex??null,available:!accepted&&!completed&&prereqsMet(s,id),active:accepted,ready:accepted&&(legacy||objectives.every(o=>o.done)),completed,requirements,objectives,reward:{...c.reward,materials:{...c.reward.materials}}};
 }
 export function activeContracts(s){if(!s)return [];ensureStory(s);return s.story.accepted.map(id=>contractStatus(s,id)).filter(Boolean);}
+// The enemy an accepted contract still needs defeated (first incomplete victory objective), or null.
+// eligible(enemyId) lets the caller skip enemies it cannot offer (locked tiers, bosses, delve-only targets).
+export function contractHuntTarget(s,eligible=()=>true){
+ if(!s)return null;ensureStory(s);
+ for(const id of s.story.accepted){const c=STORY_CONTRACTS[id],rows=c&&!complete(s,id)?objectiveRows(s,id):[];
+  for(let i=0;i<rows.length;i++){const obj=c.objectives[i];if(rows[i].done)continue;
+   const enemy=obj.source==='victories'?obj.enemy:obj.source==='routeVictory'?({records:'inspector',overflow:'hound'})[s.story.choices.contractRoutes?.[id]]:null;
+   if(enemy&&ENEMY_IDS.has(enemy)&&eligible(enemy))return enemy;}}
+ return null;
+}
 export function availableContracts(s){if(!s)return [];ensureStory(s);return CONTRACT_IDS.map(id=>contractStatus(s,id)).filter(c=>c?.available);}
 export function storyState(s){
  if(!s)return null;ensureStory(s);const stage=stageFor(s),nextMajor=MAJOR_IDS.find(id=>!complete(s,id));

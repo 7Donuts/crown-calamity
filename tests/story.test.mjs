@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   STORY_CONTRACTS, storyState, contractStatus, activeContracts, availableContracts,
-  acceptContract, storyAction, availableStoryActions, recordStoryEvent, claimContract, normalizeStory
+  acceptContract, contractHuntTarget, storyAction, availableStoryActions, recordStoryEvent, claimContract, normalizeStory
 } from '../dist/story.js';
 
 const make=(overrides={})=>({version:5,level:1,quest:0,pending:null,coins:20,materials:{},fight:null,delve:null,story:null,...overrides});
@@ -108,4 +108,27 @@ test('legacy quest and pending contracts migrate without erasing rescue or achie
   const mergedLegacy=make({version:5,quest:2,pending:null,story:freshBase});normalizeStory(mergedLegacy,{legacy:true});
   assert.ok(mergedLegacy.story.completed.includes('permit_with_teeth'));assert.equal(mergedLegacy.story.events.actions.mara_rescued,1);
   normalizeStory(mergedLegacy,{legacy:true});assert.equal(mergedLegacy.story.completed.filter(id=>id==='permit_with_teeth').length,1);
+});
+
+test('contractHuntTarget names the enemy of the first incomplete victory objective of an accepted contract',()=>{
+  const s=make();normalizeStory(s);
+  assert.equal(contractHuntTarget(s),null,'nothing accepted');
+  beginIntro(s);
+  assert.equal(contractHuntTarget(s),'rats');
+  assert.equal(contractHuntTarget(s,id=>id!=='rats'),null,'caller eligibility is respected');
+  completeObjective(s,'rats',3);
+  assert.equal(contractHuntTarget(s),null,'a finished objective no longer points at its enemy');
+  assert.ok(claimContract(s,'proof_of_trouble','coins'));
+  assert.equal(contractHuntTarget(s),null,'claimed contracts do not count');
+  s.level=3;assert.ok(acceptContract(s,'drainage_inspection'));assert.equal(contractHuntTarget(s),'rats');
+  completeObjective(s,'rats',3);assert.equal(contractHuntTarget(s),null,'action objectives never name an enemy');
+});
+
+test('contractHuntTarget follows the chosen route and lets the caller skip delve-only enemies',()=>{
+  const s=make({level:6});normalizeStory(s);
+  s.story.accepted=['municipal_works'];
+  const hunts=id=>id!=='boss';
+  assert.equal(contractHuntTarget(s,hunts),null,'no route chosen yet and the boss is delve-only');
+  s.story.choices.contractRoutes={municipal_works:'overflow'};assert.equal(contractHuntTarget(s,hunts),'hound');
+  s.story.choices.contractRoutes={municipal_works:'records'};assert.equal(contractHuntTarget(s,hunts),'inspector');
 });

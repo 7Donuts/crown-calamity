@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CHARACTER_ATLASES, normalizeAppearance, renderCharacterArt } from '../dist/character-art.js';
+import { buildPackage } from './package-helper.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const races = Object.keys(CHARACTER_ATLASES);
@@ -77,10 +78,14 @@ test('saved appearance values are normalized safely before they enter the portra
 });
 
 test('offline campaign embeds the four exact portrait PNGs used by the renderer', async () => {
-  const html = await readFile(resolve(root, 'Crown-and-Calamity.html'), 'utf8');
-  for (const [race, atlas] of Object.entries(CHARACTER_ATLASES)) {
-    const original = await readFile(resolve(root, 'dist', atlas.src));
-    const encoded = original.toString('base64');
-    assert.ok(html.includes(`data:image/png;base64,${encoded}`), `${race} atlas is embedded in standalone HTML`);
+  const pkg = await buildPackage();
+  try {
+    for (const [race, atlas] of Object.entries(CHARACTER_ATLASES)) {
+      const original = await readFile(resolve(root, 'dist', atlas.src));
+      const encoded = original.toString('base64');
+      assert.ok(pkg.html.includes(`data:image/png;base64,${encoded}`), `${race} atlas is embedded in standalone HTML`);
+    }
+  } finally {
+    await pkg.cleanup();
   }
 });

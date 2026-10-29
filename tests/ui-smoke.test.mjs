@@ -9,6 +9,7 @@ import * as Races from '../dist/races.js';
 import * as CharacterArt from '../dist/character-art.js';
 import * as RelicUI from '../dist/relic-ui.js';
 import * as StoryUI from '../dist/story-ui.js';
+import {recordStoryEvent} from '../dist/story.js';
 import * as MarketUI from '../dist/market-ui.js';
 import {MENU_ICONS} from '../dist/menu-icons.js';
 import {UI_ICONS} from '../dist/ui-icons.js';
@@ -357,6 +358,19 @@ test('hunt shortcut selects the toughest unlocked enemy and remembers the last l
  hero=ui.getApp().innerHTML.match(/<div class="hero">[\s\S]*?<div class="section-row">/)[0];assert.match(hero,/data-action="hunt:scavenger"/);
  const loaded=G.loadSave(JSON.stringify(ui.getState()));({ui}=await bootApp(loaded));
  hero=ui.getApp().innerHTML.match(/<div class="hero">[\s\S]*?<div class="section-row">/)[0];assert.match(hero,/data-action="hunt:scavenger"/);
+});
+
+test('hunt shortcut prefers the accepted contract enemy, then the last hunt, then the toughest unlocked enemy',async()=>{
+ const save=G.fresh();G.storyAction(save,'meet_mara');G.acceptContract(save,'proof_of_trouble');
+ let {ui}=await bootApp(save);
+ const hero=()=>ui.getApp().innerHTML.match(/<div class="hero">[\s\S]*?<div class="section-row">/)[0];
+ assert.match(hero(),/data-action="hunt:rats"/);assert.doesNotMatch(hero(),/hunt:wisp/);assert.match(hero(),/Advances your active contract/);
+ ui.getState().settings.lastHunt='scavenger';ui.render();
+ assert.match(hero(),/data-action="hunt:rats"/,'an active contract outranks the last hunt');
+ for(let i=0;i<3;i++)recordStoryEvent(ui.getState(),{type:'victory',enemy:'rats',eventId:`ui-${i}`});
+ ui.render();
+ assert.match(hero(),/data-action="hunt:scavenger"/,'a finished contract falls back to the last hunt');
+ delete ui.getState().settings.lastHunt;ui.render();assert.match(hero(),/data-action="hunt:wisp"/,'then to the toughest unlocked enemy');
 });
 
 test('workbench makes a first cap from actual hunt materials and grants its gear only on confirmation',async()=>{
