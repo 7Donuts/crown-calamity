@@ -57,6 +57,12 @@ Design cooperative encounters, public events, and optional PvP after the trusted
 
 Territory, kingdoms, markets, and broader politics remain later possibilities. Each needs a defined purpose and a reliable economy before implementation.
 
+## PvP prerequisites for the current stats
+
+The [stat audit](design/23_Stat_and_PvP_Audit.md) leaves all seven attributes provisional. Compare equal investment and legal equipment, mastery, and ability budgets; level alone does not make a fair matchup. Luck's acquisition advantage needs separate consideration from its modest critical-hit contribution, and accuracy/evasion must be evaluated with the current 55% glancing-damage floor.
+
+Build a dedicated player-to-player resolver before drawing match conclusions from solo fights. Define a bounded paired-turn submission protocol, simultaneous/ordered resolution, defensive-action lifetime, disconnect outcomes, and information revealed before each choice. Faster clicking must not give extra turns. The 650 ms solo pacing delay is not a PvP initiative rule. Test burst damage, healing/Guard/resource loops, stalemates, and several same-budget loadouts under server-owned rolls and snapshots. Only change shared attribute formulas after those comparisons reveal a concrete problem.
+
 ## Decisions to make when work reaches each phase
 
 | Decision | Needed before |

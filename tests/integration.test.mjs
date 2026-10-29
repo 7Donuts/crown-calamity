@@ -14,13 +14,13 @@ const requiredGear = ['SLOTS','EXCHANGES','PREFIXES','SUFFIXES','resolveItem','s
 const exchange = (s, action, now) => G.exchange(s, action, () => .5, now);
 
 function bootPackagedScript(script) {
-  const elements=new Map(), errors=[],listeners={};
+  const elements=new Map(), errors=[],listeners={},storageOps={reads:0,writes:0};
   const element=()=>({innerHTML:'',textContent:'',value:'',files:[],open:false,style:{setProperty(){}},classList:{add(){},remove(){},toggle(){}},addEventListener(){},querySelector(){return element();},querySelectorAll(){return [];},showModal(){this.open=true;},close(){this.open=false;},focus(){},click(){},getBoundingClientRect(){return {left:0,right:0,top:0,bottom:0};}});
   const document={querySelector(selector){if(!elements.has(selector))elements.set(selector,element());return elements.get(selector);},createElement(){return element();},addEventListener(type,fn){(listeners[type]??=[]).push(fn);}};
   const storage=new Map([['crown-calamity-v1',JSON.stringify(G.fresh())]]);
-  const context={document,localStorage:{getItem(key){return storage.get(key)??null;},setItem(key,value){storage.set(key,value);}},window:{scrollTo(){}},console:{...console,error:(...args)=>errors.push(args)},Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){}};
+  const context={document,localStorage:{getItem(key){storageOps.reads++;return storage.get(key)??null;},setItem(key,value){storageOps.writes++;storage.set(key,value);}},window:{scrollTo(){}},console:{...console,error:(...args)=>errors.push(args)},Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){}};
   vm.runInNewContext(script,context,{filename:'packaged-app.js'});
-  return {elements,errors,listeners,click(action){const event={target:{closest(){return {disabled:false,dataset:{action}};}}};for(const fn of listeners.click||[])fn(event);}};
+  return {elements,errors,listeners,context,storageOps,click(action){const event={target:{closest(){return {disabled:false,dataset:{action}};}}};for(const fn of listeners.click||[])fn(event);}};
 }
 
 test('a new character can earn level two and equip a legal three-active Reservoir build', () => {
@@ -178,6 +178,8 @@ test('the package generator produces standalone code with all module exports and
     assert.equal(/^\s*import\s+[^\n]+\s+from\s+['"]\./m.test(html),false,'standalone has no unresolved local ES module imports');
     assert.equal(/^\s*export\s+(?:const|function)\b/m.test(html),false,'bundled browser script has no unresolved exports');
     assert.equal(html.includes('assets/enemies/enemy-atlas.png'),false,'enemy atlas references are embedded in the standalone');
+    assert.equal(html.includes('assets/hud/bursar-sigil.png'),false,'the HUD sigil is embedded offline');
+    assert.equal(html.includes('href="hud.css"'),false,'the HUD stylesheet is embedded offline');
     const style = html.match(/<style>([\s\S]*?)<\/style>/)?.[1];
     assert.ok(style,'standalone has embedded CSS');
     assert.equal(/^(?:450|500|550|600|650|700);/m.test(style),false,'embedded font-import cleanup does not leave URL fragments in the stylesheet');
@@ -195,8 +197,28 @@ test('the package generator produces standalone code with all module exports and
       assert.equal(/\b(?:undefined|NaN)\b/.test(app()),false,`packaged ${label} has no missing values`);
     }
     assert.deepEqual(packaged.errors,[],'packaged screens run without caught application errors');
+    const lab=await readFile(path.join(copy,'Crown-and-Calamity-Playtest-Lab.html'),'utf8');
+    assert.equal(/^\s*import\s+[^\n]+\s+from\s+['"]\./m.test(lab),false,'offline lab has no unresolved local imports');
+    assert.equal(lab.includes('href="lab.css"'),false);
+    assert.equal(lab.includes('crown-calamity-v1'),false,'offline lab does not bundle campaign storage code');
+    const labScript=lab.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
+    assert.ok(labScript);
+    const labSyntax=spawnSync('node',['--check','--input-type=module'],{input:labScript,encoding:'utf8'});
+    assert.equal(labSyntax.status,0,labSyntax.stderr);
+    const labBoot=bootPackagedScript(labScript+'\nglobalThis.__labTest={handleAction,getSession:()=>session};');
+    const labApp=()=>labBoot.elements.get('#lab-app').innerHTML;
+    assert.match(labApp(),/Stat audit/);
+    labBoot.context.document.querySelector('#scenario-select').value='routine_repetition';
+    labBoot.context.document.querySelector('#kit-select').value='breaker';
+    labBoot.context.document.querySelector('#seed-input').value='offline';
+    labBoot.context.__labTest.handleAction('start-session');
+    labBoot.context.__labTest.handleAction('start-hunt');
+    labBoot.context.__labTest.handleAction('lab-action:attack');
+    assert.equal(labBoot.context.__labTest.getSession().rounds,1,'bundled lab executes a real synthetic exchange');
+    assert.equal(/\b(?:undefined|NaN)\b/.test(labApp()),false);
+    assert.deepEqual(labBoot.storageOps,{reads:0,writes:0},'offline lab never reads or writes the real roster');
     const zip = spawnSync('unzip',['-Z1',`Crown-and-Calamity-v${copiedPackage.version}.zip`],{cwd:copy,encoding:'utf8'});
     assert.equal(zip.status,0,zip.stderr);
-    for (const entry of ['dist/engine.js','dist/gear.js','dist/abilities.js','dist/assets/enemies/enemy-atlas.png']) assert.ok(zip.stdout.split('\n').includes(entry),`source archive contains ${entry}`);
+    for (const entry of ['dist/engine.js','dist/gear.js','dist/abilities.js','dist/lab.js','dist/balance.js','dist/lab-ui.js','Crown-and-Calamity-Playtest-Lab.html','dist/assets/enemies/enemy-atlas.png']) assert.ok(zip.stdout.split('\n').includes(entry),`source archive contains ${entry}`);
   } finally { await rm(temp,{recursive:true,force:true}); }
 });

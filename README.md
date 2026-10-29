@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.4.0
+# Crown & Calamity — playable solo prototype v0.5.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -24,9 +24,19 @@ Create the standalone offline game and complete source ZIP:
 python scripts-package.py
 ```
 
-Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy atlas, and favicon. The versioned downloads are generated locally and ignored by Git.
+Then open `Crown-and-Calamity.html` directly in a modern browser. The package embeds the game modules, styling, environment, enemy atlas, HUD sigil, and favicon. It also produces `Crown-and-Calamity-Playtest-Lab.html`; keep both unversioned HTML files together to use the Field Guide link offline. The source ZIP contains both standalone pages. The versioned downloads are generated locally and ignored by Git.
 
 Progress is browser-local. Export a save from the Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
+
+## New in v0.5 — an arcane HUD and a disposable playtest lab
+
+- **Fantasy system interface:** an original B.U.R.S.A.R. rune sigil, brass instrument frames, teal system readouts, segmented vitals, encounter intent framing, and an equipment projection. The UI keeps explicit text, readable dark surfaces, touch controls, and reduced-motion support.
+- **Six isolated loop tests:** `/lab.html` when served, or `Crown-and-Calamity-Playtest-Lab.html` offline. Choose a scenario, kit, and repeatable random seed; take hunts and exchanges manually. Test the opening goal, comfortable repetition, a heavy wind-up, buying/equipping a sidegrade, returning to a contract, and multipart pacing.
+- **Reviewable session reports:** explicit inputs, accepted exchanges, outcomes, costs, part points, shop choices, and self-reported reflections export as JSON. Damage attempts include overkill and omit final attacks the engine does not report; HP loss/restoration are net changes per exchange, not exact incoming damage or healing. The report documents these limits.
+- **Provisional stat audit:** equal-budget projections at levels 1/5/10 and one-point effects use shared formulas. Luck currently favors acquisition over direct combat. These are neutral-target estimates, not PvP match results; no stat retuning or PvP mode is included.
+- **Text RPG research:** niche comparisons and a small-session plan separate observed mechanics from hypotheses. They do not claim market demand, retention results, or player-tested satisfaction.
+
+The lab never reads or writes campaign saves or the character roster. It has no auto-combat, account connection, or background progression. Closing or resetting it discards the attempt; export a report first if you want to retain it. Use the campaign for full story/delve playtests; the lab is a focused fixture bench, not an additional persistent adventure.
 
 ## New in v0.4 — incremental growth and an authored opening
 
@@ -80,6 +90,10 @@ The original modular pack remains under `design/Crown-and-Calamity-Design-v0.1/`
 - [Shop and trading](design/18_Shop_and_Trading.md)
 - [Research: progression, successes, and struggles](design/19_Research_Progression_and_Retention.md)
 - [Story contracts](design/20_Story_Contracts.md)
+- [Text RPG comparisons](design/21_Text_RPG_Comparisons.md)
+- [Niche playtest plan](design/22_Niche_Playtest_Plan.md)
+- [Stat and PvP audit](design/23_Stat_and_PvP_Audit.md)
+- [Arcane HUD direction](design/24_Arcane_HUD_Direction.md)
 - [Online development roadmap](FUTURE-DEVELOPMENT.md)
 
 This is still a local solo prototype. Login, server-authoritative actions/randomness/rewards, account persistence, guilds, and multiplayer are future work. Local saves, clocks, and code remain editable. The shared delay limits rapid input; it is not production anti-cheat.
@@ -88,4 +102,4 @@ This is still a local solo prototype. Login, server-authoritative actions/random
 
 The automated suite covers combat, mastery/loadout rules, multipart XP and migration, all nine gear slots, shop prices and atomic spending, upgrade/affix removal on sale, roster creation/switch/import isolation, authored contract objectives/reward idempotency, physical skills without a focus, and live save round-trips. It also packages the complete offline HTML, syntax-checks it, and boots/navigates its UI using a minimal DOM test harness.
 
-The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 85 test cases.
+The test harness does not verify browser layout. Real-device visual and accessibility testing remains outstanding because this execution environment has not supported browser rendering. The current release passes 92 test cases, including lab storage isolation, seeded replay, timing, telemetry limits, and both standalone pages.
