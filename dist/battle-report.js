@@ -123,7 +123,7 @@ function resultActions(state, receipt, enemy) {
 }
 
 function treasureChest() {
-  return `<span class="loot-chest" aria-hidden="true"><svg class="loot-chest__sprite" viewBox="0 0 24 24" shape-rendering="crispEdges" focusable="false"><g class="loot-chest__lid"><path fill="#1B2D36" d="M4 4h16v2h2v8H2V6h2z"/><path fill="#D99551" d="M4 6h16v6H4z"/><path fill="#F0C477" d="M4 6h16v2H4z"/><path fill="#6BA397" d="M6 8h2v4H6zM16 8h2v4h-2z"/><path fill="#F1E6C8" d="M4 6h4v2H4z"/></g><path fill="#1B2D36" d="M2 12h20v8h-2v2H4v-2H2z"/><path fill="#AE6940" d="M4 14h16v6H4z"/><path fill="#D99551" d="M4 14h16v2H4z"/><path fill="#6BA397" d="M6 14h2v6H6zM16 14h2v6h-2z"/><path fill="#F0C477" d="M10 12h4v5h-4z"/><path fill="#1B2D36" d="M10 14h2v2h-2z"/></svg>${[1,2,3].map(n=>`<span class="loot-coin loot-coin--${n}">${glyph('gold')}</span>`).join('')}</span>`;
+  return `<span class="loot-chest" aria-hidden="true">${glyph('treasureClosed','loot-chest__closed')}${glyph('treasure','loot-chest__open')}${[1,2,3].map(n=>`<span class="loot-coin loot-coin--${n}">${glyph('gold')}</span>`).join('')}</span>`;
 }
 
 /** Render the outcome from the engine's saved receipt; no combat math is inferred. */

@@ -246,7 +246,6 @@ body, #app { font-size: 16px; }
   background: radial-gradient(ellipse at center,#294139 0%,#17241e 73%);
   box-shadow: inset 0 0 22px #72aaa41a;
 }
-#app .gear-figure svg { filter: drop-shadow(0 0 4px #82b9ad38); }
 #app .gear-slot-card { border-radius: 1px; border-color: #58664e; background: #1a2821; }
 #app .gear-slot-card.filled { border-left: 3px solid #c1a969; }
 #app .gear-slot-card.empty { border-style: dashed; }

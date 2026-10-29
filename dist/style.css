@@ -281,7 +281,6 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
 #app .gear-slot-card small{font-size:11px;line-height:1.4;color:#c7d2be}
 #app .slot-weapon{grid-area:weapon}#app .slot-head{grid-area:head}#app .slot-offhand{grid-area:offhand}#app .slot-accessory{grid-area:accessory}#app .slot-accessory2{grid-area:accessory2}#app .slot-hands{grid-area:hands}#app .slot-feet{grid-area:feet}#app .slot-body{grid-area:body}#app .slot-relic{grid-area:relic}
 #app .gear-figure{grid-area:figure;display:flex;min-width:0;align-items:center;justify-content:center;flex-direction:column;gap:5px;border:1px solid #344234;border-radius:10px;background:radial-gradient(ellipse at center,#283629 0%,#19221b 72%);color:#becbb4}
-#app .gear-figure svg{width:min(74%,145px);height:calc(100% - 28px);max-height:280px;min-height:190px;fill:none;stroke:#c7d1bf;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
 #app .gear-figure span{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#d8c18d}
 #app .equipment-list{border-top:1px solid #3b4838;padding-top:16px}
 #app .equipment-list h3{margin:0 0 5px}
@@ -310,7 +309,6 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
  #app .gear-slot-card strong{font-size:12px;overflow-wrap:anywhere}
  #app .gear-slot-card small{font-size:10px;line-height:1.3}
  #app .gear-figure{border-radius:8px}
- #app .gear-figure svg{width:82%;min-height:190px;max-height:248px}
  #app .equipment-list .equipment-slot-row{grid-template-columns:minmax(0,1fr);gap:5px}
  #app .equipment-list .equipment-slot-row .slot-unequip{grid-column:1;justify-self:end;min-height:48px}
  #app .equipment-slot-row .slot-list-open{gap:8px;padding:8px 4px}
@@ -409,3 +407,5 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
 #app .gear-slot-card strong{font-size:14px;line-height:1.45}
 #app .gear-slot-card small{font-size:12px;line-height:1.5}
 @media(max-width:740px){#app .gear-slot-card{min-height:100px;padding:9px 7px}#app .gear-slot-card small{display:none}#app .gear-slot-label{font-size:12px}#app .gear-slot-card strong{font-size:13px}#app .gear-slot-card.empty strong{font-size:14px}}
+#app .gear-figure img{width:min(74%,120px);height:calc(100% - 28px);max-height:280px;min-height:190px;object-fit:contain}
+@media(max-width:740px){#app .gear-figure img{width:82%;min-height:190px;max-height:248px}}

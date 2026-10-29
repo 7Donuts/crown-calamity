@@ -1,5 +1,5 @@
 import { renderJournalArt } from './journal-art.js';
-import { menuIcon } from './menu-icons.js';
+import { UI_ICONS } from './ui-icons.js';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const TABS = Object.freeze({ world: 'World', guilds: 'Guilds', friends: 'Friends', holdings: 'Holdings' });
@@ -9,7 +9,7 @@ const localPlaces = Object.freeze([
   { name: 'Sluice Walk', mark: 'NEARBY CHAPTER ROUTE', description: 'A narrow canal path through the old district.' },
   { name: 'Municipal Works', mark: 'KNOWN LOCAL EXPEDITION', description: 'The flood-control works under the town.' }
 ]);
-const icon = name => menuIcon(name);
+const icon = name => `<svg class="menu-icon pixel-glyph" viewBox="0 0 24 24" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${UI_ICONS[name]||''}</svg>`;
 
 function tabs(actionPrefix, labels, selected) {
   return `<nav class="planning-tabs" aria-label="${actionPrefix === 'world-tab' ? 'World sections' : 'Social sections'}">${Object.entries(labels).map(([id, label]) => `<button type="button" data-action="${actionPrefix}:${id}" aria-pressed="${id === selected}" class="${id === selected ? 'active' : ''}">${icon(({ world:'guide', guilds:'major', friends:'characters', holdings:'workbench', chat:'journal' })[id])}${esc(label)}</button>`).join('')}</nav>`;
