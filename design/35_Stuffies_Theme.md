@@ -215,6 +215,8 @@ Done:
 - Materials keep their save keys (`'Ledger scraps'` and so on). A display-label map and `materialLabel()` in `dist/gear.js` route every UI and newly generated log or journal mention through the themed names (Lint, Lost buttons, Static charge, Prize tokens, Price stickers, Squeaker cores, Drum fragment, Spare thread, Patches). Journal entries already stored in saves keep their old wording.
 - B.U.R.S.A.R. is expanded once in the Field Guide, the header reads STUFFIE SERVICES, and care-label style lines ("NOTICE · ...") appear on arrival cards and a few system messages.
 
+R4 follow-up (v0.12.0): enemy variants ship as "Special Edition" hunts (not "Limited Edition"; "Mint" is not used) with the affixes Reinforced packaging, Extra stuffed, Squeaky and Static-charged, offered after six victories over the same enemy, disclosed on the hunting list with a NOTICE care-label line and B.U.R.S.A.R. footer, and always optional beside the regular hunt. Colorways keep their own word. See `design/37`, R4.
+
 Pending:
 
 - Art pass: portraits, scenes, NPCs, enemies and item art still show the prototype art, so appearance option labels, item names and item descriptions are deliberately unchanged. Brand copy describes identity and voice, not specific materials.

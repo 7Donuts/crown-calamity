@@ -18,6 +18,7 @@ import * as ItemArt from '../dist/item-art.js';
 import * as CharacterSheet from '../dist/character-sheet.js';
 import * as BattleReport from '../dist/battle-report.js';
 import * as WorldUI from '../dist/world-ui.js';
+import * as VariantUI from '../dist/variant-ui.js';
 
 function bootApp(initialSave=G.fresh()) {
   const fakeClock={now:Date.now()};
@@ -42,14 +43,14 @@ function bootApp(initialSave=G.fresh()) {
   const storage = new Map(initialSave?[["crown-calamity-v1",JSON.stringify(initialSave)]]:[]);
   const currentTime=()=>Math.max(fakeClock.now,Date.now());
   const game={...G,
-    startFight:(s,id,source)=>G.startFight(s,id,source,currentTime()),
+    startFight:(s,id,source,_now,opts)=>G.startFight(s,id,source,currentTime(),opts),
     exchange:(s,key,rng)=>G.exchange(s,key,rng,currentTime()),
     restStatus:s=>G.restStatus(s,fakeClock.now),
     beginRest:s=>G.beginRest(s,fakeClock.now),
     finishRest:s=>G.finishRest(s,fakeClock.now)
   };
   const context = {
-    __GAME_ENGINE__:game, __FAKE_CLOCK__:fakeClock, __UI_TEST_STATE__:uiTestState, __CHARACTER_MODULE__:C, __CHARACTER_CREATOR__:Creator, __RACES__:Races, __CHARACTER_ART__:CharacterArt, __RELIC_UI__:RelicUI, __STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, __UI_ICONS__:UI_ICONS, __ENEMY_ART__:EnemyArt, __ITEM_ART__:ItemArt, __CHARACTER_SHEET__:CharacterSheet, __BATTLE_REPORT__:BattleReport, __WORLD_UI__:WorldUI, document,
+    __VARIANT_UI__:VariantUI,__GAME_ENGINE__:game, __FAKE_CLOCK__:fakeClock, __UI_TEST_STATE__:uiTestState, __CHARACTER_MODULE__:C, __CHARACTER_CREATOR__:Creator, __RACES__:Races, __CHARACTER_ART__:CharacterArt, __RELIC_UI__:RelicUI, __STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, __UI_ICONS__:UI_ICONS, __ENEMY_ART__:EnemyArt, __ITEM_ART__:ItemArt, __CHARACTER_SHEET__:CharacterSheet, __BATTLE_REPORT__:BattleReport, __WORLD_UI__:WorldUI, document,
     localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},
     window:{scrollTo(){uiTestState.windowScrolls++;},matchMedia(query){return {matches:query.includes('min-width')?uiTestState.desktopLayout:false};}}, console,
     Blob, URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},
@@ -58,7 +59,7 @@ function bootApp(initialSave=G.fresh()) {
   };
   const src = readFile(new URL('../dist/app.js',import.meta.url),'utf8');
   return src.then(source=>{
-    const transformed = source.replace("import * as Creator from './character-creator.js';",'const Creator=globalThis.__CHARACTER_CREATOR__;').replace("import {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS} from './races.js';",'const {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS}=globalThis.__RACES__;').replace("import {renderCharacterArt} from './character-art.js';",'const {renderCharacterArt}=globalThis.__CHARACTER_ART__;').replace("import * as RUI from './relic-ui.js';",'const RUI=globalThis.__RELIC_UI__;').replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';",'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
+    const transformed = source.replace("import * as Creator from './character-creator.js';",'const Creator=globalThis.__CHARACTER_CREATOR__;').replace("import {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS} from './races.js';",'const {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS}=globalThis.__RACES__;').replace("import {renderCharacterArt} from './character-art.js';",'const {renderCharacterArt}=globalThis.__CHARACTER_ART__;').replace("import * as RUI from './relic-ui.js';",'const RUI=globalThis.__RELIC_UI__;').replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';",'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderVariantOffer,renderVariantProgress,renderVariantBanner} from './variant-ui.js';",'const {renderVariantOffer,renderVariantProgress,renderVariantBanner}=globalThis.__VARIANT_UI__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
     const testExports = `\nglobalThis.__uiTest={act,render,getState:()=>state,getRoster:()=>roster,setState:v=>{state=v;},setView:v=>{view=v;},getView:()=>view,getModal:()=>$('#modal'),getApp:()=>$('#app'),getToast:()=>$('#toast'),advanceClock:ms=>{globalThis.__FAKE_CLOCK__.now+=ms;},setClock:ms=>{globalThis.__FAKE_CLOCK__.now=ms;},startFight:(...args)=>G.startFight(...args),exchange:(...args)=>G.exchange(...args),scrollCount:()=>globalThis.__UI_TEST_STATE__.encounterScrolls,windowScrollCount:()=>globalThis.__UI_TEST_STATE__.windowScrolls,setDesktop:v=>{globalThis.__UI_TEST_STATE__.desktopLayout=v;},setField:(selector,value)=>{const e=$(selector);if(e)e.value=value;},changeCreatorField:(key,value)=>{const e=$('[data-creator-field="'+key+'"]');e.dataset.creatorField=key;e.value=value;for(const fn of document.listeners.change||[])fn({target:e});}};`;
     vm.runInNewContext(transformed+testExports,context,{filename:'dist/app.js'});
     return {ui:context.__uiTest,storage,elements,getElement,game};
@@ -436,4 +437,36 @@ test('combat UI explains zero-mana recovery and reports actual gains without rew
   contains(ui.getApp().innerHTML,'+10 Sparkle (mana)','Recover feedback includes both the active and passive recovery');
   ui.advanceClock(60000);ui.render();
   assert.equal(state.mp,12,'waiting and re-rendering do not restore mana');
+});
+
+test('a pending Special Edition is disclosed on the hunting list before any exchange, beside the regular hunt, and its fight is a separate explicit start',async()=>{
+  const save=G.fresh();save.level=5;save.quest=3;save.kills.crab=6;save.variantMeters={crab:6,rats:2};save.variantOffers={crab:{id:'reinforced',version:1}};
+  const {ui}=await bootApp(save);
+  const state=ui.getState();
+  await ui.act('nav:hunt');
+  const html=ui.getApp().innerHTML;
+  noBrokenText(html,'hunting list with an offer');
+  for(const text of ['SPECIAL EDITION · OPTIONAL','Reinforced packaging Clawback Crab','+25% armor and ward.','Reward:','XP ×1.25','coins ×1.4','+1 extra Prize tokens','NOTICE · This one came with extra packaging. Reward adjusted accordingly.','Optional. The regular hunt stays available','Nesting Rat Swarm 2/6'])contains(html,text);
+  contains(html,'data-action="hunt:crab"','the regular crab hunt is still offered');
+  contains(html,'data-action="hunt-special:crab"','the Special Edition has its own start button');
+  assert.equal(state.fight,null,'viewing the list starts nothing');assert.equal(state.totalExchanges,0);
+  assert.equal(html.includes('hunt-special:rats'),false,'only the enemy with a pending offer gets a card');
+  await ui.act('hunt:crab');
+  assert.ok(state.fight);assert.equal('variant' in state.fight,false,'declining by choosing the regular hunt carries no variant');
+  assert.deepEqual(state.variantOffers.crab,{id:'reinforced',version:1},'declining leaves the offer pending');
+  assert.equal(ui.getApp().innerHTML.includes('SPECIAL EDITION'),false,'a regular fight shows no Special Edition banner');
+  state.fight=null;state.last=null;ui.render();
+  await ui.act('hunt-special:crab');
+  assert.deepEqual(state.fight.variant,{id:'reinforced',version:1});assert.equal(state.totalExchanges,0,'starting spends no exchange');
+  const fight=ui.getApp().innerHTML;
+  noBrokenText(fight,'special encounter');
+  contains(fight,'SPECIAL EDITION · Reinforced packaging');contains(fight,'ARMOR 60');contains(fight,'WARD 11');contains(fight,'class="intent');
+  assert.ok(fight.indexOf('variant-banner')<fight.indexOf('class="intent'),'the disclosure comes before the intent and the controls');
+  state.fight.hp=1;ui.setClock(state.nextActionAt);
+  await ui.act('combat:attack');
+  assert.equal(state.last.type,'victory');
+  const report=ui.getApp().innerHTML;
+  noBrokenText(report,'special victory report');
+  contains(report,'Reward adjusted accordingly');contains(report,'+2 Prize tokens');
+  assert.deepEqual(state.variantOffers,{});assert.equal(state.variantMeters.crab,0);
 });

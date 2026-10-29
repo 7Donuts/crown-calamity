@@ -1,0 +1,28 @@
+/* Special Edition offer card, encounter banner and victory note (design 37, R4). Light text on dark surfaces throughout. */
+#app .variant-offer { margin: -2px 0 6px; padding: 12px 14px; border: 1px solid #b99a55; border-left: 3px solid #e2c06f; background: linear-gradient(100deg, #2b271a, #1d221a); color: #f4ecd2; display: grid; gap: 8px; }
+#app .variant-offer__head { display: grid; gap: 2px; }
+#app .variant-offer__eyebrow { font: 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .06em; color: #f0d58f; }
+#app .variant-offer__head strong { font: 600 18px/1.25 Georgia, 'Times New Roman', serif; color: #fff3cf; }
+#app .variant-offer p { margin: 0; font-size: 14px; line-height: 1.45; color: #efead7; }
+#app .variant-offer__effect { color: #fff6dc; font-weight: 600; }
+#app .variant-offer__effect span { font-weight: 400; color: #d9d6c2; }
+#app .variant-offer__stats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 6px; }
+#app .variant-offer__stats li { padding: 6px 8px; border: 1px solid #c9b77940; background: #0d1713aa; display: grid; gap: 1px; font: 12px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace; color: #dcd6bd; }
+#app .variant-offer__stats strong { font-size: 15px; color: #fff3cf; }
+#app .variant-offer__stats small { color: #c4cfbe; font-size: 11px; }
+#app .variant-offer .care-label { max-width: none; }
+#app .variant-offer__optional { color: #d9dfcf; font-size: 13px; }
+#app .variant-offer__start { min-height: 48px; width: 100%; }
+#app .variant-offer__source { font: 10px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; color: #c9c6b0; }
+#app .variant-progress { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: #d9dfcf; }
+#app .variant-banner { margin-top: 8px; padding: 8px 10px; border: 1px solid #b99a55; border-left: 3px solid #e2c06f; background: #2b271ad0; display: grid; gap: 3px; color: #f4ecd2; }
+#app .variant-banner strong { font: 12px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .06em; color: #f0d58f; }
+#app .variant-banner span { font-size: 13px; line-height: 1.4; color: #efead7; }
+#app .variant-banner__state { color: #fff3cf; font-weight: 600; }
+#app .variant-receipt { margin: 10px 0 0; padding: 8px 10px; border-left: 3px solid #e2c06f; background: rgba(255, 255, 255, .06); color: #f4ecd2; font-size: 14px; line-height: 1.45; }
+@media (max-width: 520px) {
+  #app .variant-offer { padding: 10px; }
+  #app .variant-offer__head strong { font-size: 16px; }
+  #app .variant-banner { margin-top: 6px; padding: 6px 8px; }
+  #app .variant-banner span { font-size: 12px; }
+}

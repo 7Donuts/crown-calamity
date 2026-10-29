@@ -19,6 +19,7 @@ import { renderEncounterRecord, renderEncounterOutcome } from '../dist/battle-re
 import * as CharacterSheet from '../dist/character-sheet.js';
 import * as BattleReport from '../dist/battle-report.js';
 import * as WorldUI from '../dist/world-ui.js';
+import * as VariantUI from '../dist/variant-ui.js';
 
 const text = value => String(value).replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"').replaceAll('&#39;', "'");
 
@@ -179,6 +180,7 @@ function createApp(initialSave, { clock = { now: 0 }, timers = [], metrics = { e
     __GAME_ENGINE__: game, __CHARACTER_MODULE__: C, __CHARACTER_CREATOR__:Creator, __RACES__:Races, __CHARACTER_ART__:CharacterArt, __RELIC_UI__:RelicUI, __STORY_UI__: StoryUI, __MARKET_UI__: MarketUI,
     __MENU_ICONS__: MENU_ICONS, __UI_ICONS__: UI_ICONS, __ENEMY_ART__: EnemyArt, __ITEM_ART__: ItemArt,
     __WORLD_UI__: WorldUI,
+    __VARIANT_UI__: VariantUI,
     localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
     document, window: { scrollTo() {} }, console, Blob,
     URL: { createObjectURL: () => 'blob:test', revokeObjectURL() {} },
@@ -202,7 +204,7 @@ function createApp(initialSave, { clock = { now: 0 }, timers = [], metrics = { e
       .replace("import {renderItemArt,renderServiceArt} from './item-art.js';", 'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;')
       .replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';", 'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;')
       .replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';", 'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;')
-      .replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';", 'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
+      .replace("import {renderVariantOffer,renderVariantProgress,renderVariantBanner} from './variant-ui.js';",'const {renderVariantOffer,renderVariantProgress,renderVariantBanner}=globalThis.__VARIANT_UI__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';", 'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
     context.__CHARACTER_SHEET__ = CharacterSheet;
     context.__BATTLE_REPORT__ = BattleReport;
     context.__WORLD_UI__ = WorldUI;
