@@ -20,7 +20,8 @@ import * as Lab from '../dist/lab.js';
     const s=Lab.createLabSession({scenarioId:scenario.id,seed:7});
     assert.ok(s,scenario.id);
     assert.equal(s.character.level,scenario.level);
-    assert.equal(s.character.part,scenario.part);
+    assert.equal('part' in s.character,false);
+    if(scenario.id==='longer_level_pacing')assert.equal(s.character.xp,150);
     assert.equal(s.character.points,0,'fixture progression points are allocated into its build');
     assert.equal(Object.values(s.character.stats).reduce((a,b)=>a+b,0),G.pointBudget(s.character),scenario.id);
     assert.equal(s.character.hp,G.totals(s.character).hp,`${scenario.id} fixture starts at full health`);
@@ -71,7 +72,7 @@ import * as Lab from '../dist/lab.js';
 
 {
   const s=Lab.createLabSession({scenarioId:'build_equipment',seed:3});
-  assert.equal(s.character.coins,120);
+  assert.equal(s.character.coins,200);
   assert.equal(Lab.labUse(s,'buy','oilskin'),true);
   const resale=G.sellPreview(s.character,'oilskin').price;
   assert.equal(Lab.labUse(s,'sell','oilskin').coins,resale);

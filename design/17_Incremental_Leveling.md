@@ -1,28 +1,28 @@
 # Incremental Leveling and Character Creation
 
-This prototype uses four rewarded parts for each full level. Part 1 is the starting state. Crossing a part threshold grants one attribute point, including the part 4 threshold that wraps to the next level's part 1. Wrapping a level grants no additional points. The level cap is 10; reaching level 10 part 1 has awarded 36 progression points from the nine completed levels, and no further XP or points are awarded.
+Each completed level grants four attribute points. XP accumulates continuously within the current level; partial progress grants no points. The level cap is 10; reaching level 10 awards 36 progression points from the nine completed levels, and no further XP or points are awarded.
 
-## XP curve and part thresholds
+## XP curve
 
-The old per-level requirement is multiplied by three:
+The per-level requirement remains:
 
 `XP required at level L = 3 × (100 + 40 × (L − 1) + 8 × (L − 1)²)`
 
-Level 1 therefore takes 300 XP. The four cumulative thresholds use `ceil(levelXP × part / 4)`, so no XP is discarded when a level requirement is not divisible by four.
+Level 1 therefore takes 300 XP. The XP curve is unchanged.
 
-| Current level | XP for full level | Part 2 at | Part 3 at | Part 4 at | Wrap at |
-|---:|---:|---:|---:|---:|---:|
-| 1 | 300 | 75 | 150 | 225 | 300 |
-| 2 | 444 | 111 | 222 | 333 | 444 |
-| 3 | 636 | 159 | 318 | 477 | 636 |
-| 4 | 876 | 219 | 438 | 657 | 876 |
-| 5 | 1,164 | 291 | 582 | 873 | 1,164 |
-| 6 | 1,500 | 375 | 750 | 1,125 | 1,500 |
-| 7 | 1,884 | 471 | 942 | 1,413 | 1,884 |
-| 8 | 2,316 | 579 | 1,158 | 1,737 | 2,316 |
-| 9 | 2,796 | 699 | 1,398 | 2,097 | 2,796 |
+| Current level | XP for full level |
+|---:|---:|
+| 1 | 300 |
+| 2 | 444 |
+| 3 | 636 |
+| 4 | 876 |
+| 5 | 1,164 |
+| 6 | 1,500 |
+| 7 | 1,884 |
+| 8 | 2,316 |
+| 9 | 2,796 |
 
-XP remains cumulative within the current level. A single reward can cross several part and level boundaries; every crossed part is awarded once and leftover XP carries forward. Any leftover XP at the level 10 cap is discarded. The exported `progression(state)` helper reports current level and part, XP within the part and level, the next part reward, total points earned from progression, and the cap state. A compact growth entry records multi-part gains.
+XP remains cumulative within the current level. A single reward can cross several level boundaries; each completed level grants four points and leftover XP carries forward. Any leftover XP at the level 10 cap is discarded. The exported `progression(state)` helper reports current level, XP within the level, required XP, next reward, total points earned from progression, and cap state.
 
 ## Early pacing with minor and major contracts
 
@@ -32,13 +32,13 @@ This gives the first major chapter a meaningful short-term reward before the ful
 
 ## Attribute budget
 
-The level 1 character budget remains 68: 56 baseline points across seven attributes and 12 points distributed in the selected starter build. Every progression part adds one point. At level L, part P, the total invested budget is `68 + 4 × (L − 1) + (P − 1)`. A free reset returns this entire budget to the player while leaving the earned progression and gear untouched. Gear bonuses remain outside the invested budget.
+The level 1 character budget remains 68: 56 baseline points across seven attributes and 12 points distributed in the selected starter build. Each full level adds four points. At level L, the total invested budget is `68 + 4 × (L − 1)`, plus any legacy partial-level points already awarded. A free reset returns this entire budget to the player while leaving the earned progression and gear untouched. Gear bonuses remain outside the invested budget.
 
-Abilities and equipment continue to check full character level. Part progress does not satisfy a level requirement. Arc Bolt remains available to every character from level 1. Driving Strike is also learnable at level 1 and has no quest requirement, so physical starter kits can begin with a relevant active ability.
+Abilities and equipment continue to check full character level. Arc Bolt remains available to every character from level 1. Driving Strike is also learnable at level 1 and has no quest requirement, so physical starter kits can begin with a relevant active ability.
 
-## Migration from versions 1–3
+## Migration from versions 1–4
 
-Migration preserves the character's current level, invested attributes, and unspent points. The fraction of the old within-level XP requirement is mapped to the same fraction of the new three-times requirement. Each new part threshold already crossed at that mapped fraction grants one attribute point. Version 4 saves record the mapped XP and part, so loading the migrated save again does not repeat those awards. Level 10 remains capped and gains no migration points.
+Migration preserves the character's current level, XP, invested attributes, and unspent points. Versions 1–3 map the fraction of the old within-level XP requirement to the same fraction of the three-times requirement, then preserve points already paid by crossed legacy thresholds. Version 4 XP is already normalized and remains unchanged. A hidden `levelPointsPaid` value tracks the 0–3 legacy points already awarded in the current level; reaching the next full level grants only the remainder needed to reach four, then clears that value. This prevents loss of earned points without granting duplicate lifetime points. Migration runs once and removes the old part marker; level 10 remains capped.
 
 ## Character creation and starter equipment
 

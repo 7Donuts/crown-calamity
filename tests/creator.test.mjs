@@ -8,7 +8,7 @@ test('creation draft normalizes its text lengths and supplies seven race stats w
     ...defaultCreationDraft(),
     name: 'n'.repeat(40),
     origin: 'o'.repeat(90),
-    race: 'reedling'
+    race: 'bunny'
   });
 
   assert.equal(draft.name.length, 32);
@@ -17,7 +17,7 @@ test('creation draft normalizes its text lengths and supplies seven race stats w
   assert.equal(Object.values(draft.stats).reduce((sum, value) => sum + value, 0), 68);
   const html = renderCharacterCreator({ draft });
   assert.match(html, /68 points total/);
-  assert.match(html, /data-action="creator-race:reedling"/);
+  assert.match(html, /data-action="creator-race:bunny"/);
   assert.equal((html.match(/class="cc-stat"/g) || []).length, 7);
   for (const race of Object.values(RACES)) {
     assert.equal(Object.values(race.stats).reduce((sum, value) => sum + value, 0), 68);
@@ -32,13 +32,13 @@ test('creator safely escapes name and origin values in rendered fields', () => {
   assert.doesNotMatch(html, /<img src=x|<script>bad/);
 });
 
-test('creator exposes four race choices and Male/Female appearance options', () => {
+test('creator exposes five race choices and Male/Female appearance options', () => {
   const html = renderCharacterCreator();
 
-  for (const race of ['quayfolk', 'cobblekin', 'reedling', 'emberling']) {
+  for (const race of ['bear', 'bunny', 'unicorn', 'wolf', 'cat']) {
     assert.match(html, new RegExp(`data-action="creator-race:${race}"`));
   }
-  assert.equal((html.match(/class="cc-race-choice/g) || []).length, 4);
+  assert.equal((html.match(/class="cc-race-choice/g) || []).length, 5);
   assert.match(html, /<option value="female" selected>Female<\/option>/);
   assert.match(html, /<option value="male">Male<\/option>/);
 });

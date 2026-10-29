@@ -22,7 +22,7 @@ export function baseVendorItem(id) {
   return ITEMS[id] || null;
 }
 
-// Rows retain unavailable previews so the UI can explain price, level, or lock reasons.
+// Rows retain unavailable previews so the UI can explain tier and lock state.
 export function vendorStock(state, vendorId, mode = 'buy') {
   if (!VENDORS[vendorId] || !['buy', 'sell'].includes(mode)) return [];
   const ids = mode === 'buy'

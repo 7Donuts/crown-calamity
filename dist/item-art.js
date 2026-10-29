@@ -54,7 +54,22 @@ export const ITEM_ART = Object.freeze({
   band: frames.ring,
   seal: frames.signet,
   signet: frames.signet,
-  pike: frames.pike
+  pike: frames.pike,
+  spoolblade:frames.blade,teacupMace:frames.sword,lullabyRod:frames.focusRod,
+  quiltBuckler:frames.buckler,thimbleFocus:frames.crystalFocus,wardingBlanket:frames.canalstone,
+  buttonShield:frames.buckler,tinnyFocus:frames.crystalFocus,stitchedWard:frames.canalstone,
+  pillowCap:frames.cap,earmuffCrown:frames.cap,thimbleHelm:frames.cap,teaCosyHood:frames.cap,
+  ribbonVisor:frames.cap,kettleHelmet:frames.cap,starryHood:frames.cap,paradeBonnet:frames.cap,
+  quiltedVest:frames.coat,kettleApron:frames.coat,velvetWaistcoat:frames.coat,rainCape:frames.coat,
+  storybookTunic:frames.coat,festivalCoat:frames.coat,cloudPajamas:frames.coat,captainJacket:frames.coat,
+  ribbonMitts:frames.gloves,thimbleGauntlets:frames.gloves,pastryMitts:frames.gloves,spoolBracers:frames.gloves,
+  starGloves:frames.gloves,mittenMitts:frames.gloves,captainsGloves:frames.gloves,woollyWristguards:frames.gloves,
+  slipperBoots:frames.boots,rainGaloshes:frames.boots,sockSkates:frames.boots,buttonClogs:frames.boots,
+  cloudSlippers:frames.boots,paradeBoots:frames.boots,stargazerShoes:frames.boots,
+  thimblePendant:frames.pendant,spoolBracelet:frames.pendant,teaCharm:frames.canalstone,
+  toyCompass:frames.ring,buttonLocket:frames.ring,bellPendant:frames.pendant,ribbonBrooch:frames.pendant,
+  threadSpool:frames.materials,patchworkHeart:frames.signet,luckyButton:frames.canalstone,dreamBell:frames.signet,
+  thimbleGuard:frames.signet,amberMarble:frames.canalstone,ribbonKnot:frames.pendant,stuffingSatchel:frames.toolkit
 });
 
 const sizes = new Set(['small', 'medium', 'large']);

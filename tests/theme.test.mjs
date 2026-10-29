@@ -6,14 +6,15 @@ import { MATERIAL_LABELS, materialLabel, EXCHANGES, PREFIXES, SUFFIXES } from '.
 import { STORY_CONTRACTS } from '../dist/story.js';
 import { VENDORS } from '../dist/vendors.js';
 
-// The v0.11.0 stuffie text pass is display only. These checks pin the identifiers and numbers it must not touch.
+// The v0.12.0 identity pass uses canonical stuffie IDs while preserving non-identity game data.
 
-test('brand display names, short aliases, and legacy names all resolve to the unchanged race IDs', () => {
+test('stuffie display names and legacy race aliases resolve to canonical IDs', () => {
   const expected = {
-    quayfolk: ['Cuddleworth Classics', 'cuddleworth', 'Quayfolk', 'Human', 'humans'],
-    cobblekin: ['Sturdy Stitch Workwear', 'sturdy stitch', 'Cobblekin', 'Stonekin', 'Dwarf'],
-    reedling: ['Floppables by Pellet & Pip', 'floppables', 'Reedlings', 'Reedling'],
-    emberling: ['Lullabrite Nightlight Pals', 'lullabrite', 'Emberlings', 'Emberling']
+    bear: ['Cuddleworth Bears', 'cuddleworth', 'Quayfolk', 'Human', 'humans', 'Cuddleworth Classics'],
+    wolf: ['Sturdy Stitch Wolves', 'sturdy stitch', 'Cobblekin', 'Stonekin', 'Dwarf', 'Sturdy Stitch Workwear'],
+    bunny: ['Pellet & Pip Bunnies', 'floppables', 'Reedlings', 'Reedling', 'Floppables by Pellet & Pip'],
+    unicorn: ['Lullabrite Unicorns', 'lullabrite', 'Emberlings', 'Emberling', 'Lullabrite Nightlight Pals'],
+    cat: ['Purrfect Patch Cats', 'cat', 'cats']
   };
   for (const [id, names] of Object.entries(expected)) {
     for (const name of names) {
@@ -22,28 +23,28 @@ test('brand display names, short aliases, and legacy names all resolve to the un
     }
     assert.equal(resolveRace(RACES[id].name)?.id, id, 'every stored display name resolves back to its ID');
   }
-  assert.equal(resolveRace('Floppables  by   Pellet & Pip')?.id, 'reedling', 'inner spacing is collapsed');
+  assert.equal(resolveRace('Floppables  by   Pellet & Pip')?.id, 'bunny', 'inner spacing is collapsed');
   assert.equal(resolveRace('Canalborn'), null);
-  assert.deepEqual(Object.keys(RACES), ['quayfolk', 'cobblekin', 'reedling', 'emberling']);
+  assert.deepEqual(Object.keys(RACES), ['bear', 'wolf', 'bunny', 'unicorn', 'cat']);
 });
 
 test('legacy saves with raceId null resolve their race name without gaining a passive', () => {
   const legacyHuman = { ...G.fresh(), version: 4, race: 'Human', raceId: null, appearance: { presentation: 'female', hairStyle: 'nonsense' } };
   const human = G.loadSave(JSON.stringify(legacyHuman));
   assert.equal(human.raceId, null, 'no brand passive is adopted automatically');
-  assert.equal(resolveRace(human.race).id, 'quayfolk');
-  assert.equal(human.appearance.hairStyle, 'tousled', 'quayfolk defaults normalize an invalid appearance');
+  assert.equal(resolveRace(human.race).id, 'bear');
+  assert.equal(human.appearance.hairStyle, 'tousled', 'bear defaults normalize an invalid appearance');
 
   const brandNamed = { ...G.fresh(), version: 4, race: 'Floppables by Pellet & Pip', raceId: null, appearance: { presentation: 'female', hairStyle: 'nonsense' } };
   const loaded = G.loadSave(JSON.stringify(brandNamed));
   assert.equal(loaded.raceId, null);
-  assert.equal(resolveRace(loaded.race).id, 'reedling');
-  assert.equal(loaded.appearance.hairStyle, 'braid', 'reedling defaults normalize an invalid appearance');
+  assert.equal(resolveRace(loaded.race).id, 'bunny');
+  assert.equal(loaded.appearance.hairStyle, 'braid', 'bunny defaults normalize an invalid appearance');
 
   const adopted = G.loadSave(JSON.stringify(brandNamed));
-  assert.equal(G.adoptRace(adopted, 'Lullabrite Nightlight Pals'), true);
-  assert.equal(adopted.raceId, 'emberling');
-  assert.equal(adopted.race, 'Lullabrite Nightlight Pals');
+  assert.equal(G.adoptRace(adopted, 'Lullabrite Unicorns'), true);
+  assert.equal(adopted.raceId, 'unicorn');
+  assert.equal(adopted.race, 'Lullabrite Unicorns');
 });
 
 test('saved race strings follow the race ID on load', () => {
@@ -103,9 +104,9 @@ test('enemy, contract and vendor identifiers and mechanical numbers are unchange
   assert.deepEqual(Object.keys(STORY_CONTRACTS), ['proof_of_trouble', 'drainage_inspection', 'permit_with_teeth', 'runic_research', 'bent_gate', 'shell_repairs', 'someone_expendable', 'floodgate_watch', 'municipal_works']);
   assert.deepEqual(Object.values(STORY_CONTRACTS).map(c => c.reward.xp), [32, 88, 120, 34, 142, 38, 168, 58, 240]);
   assert.deepEqual(Object.keys(VENDORS), ['weaponsmith', 'armorer', 'curio']);
-  assert.deepEqual(Object.values(RACES).map(r => Object.values(r.stats).join(' ')), ['10 10 10 10 10 9 9', '12 8 8 13 10 9 8', '8 12 10 8 9 13 8', '8 9 13 8 12 9 9']);
-  assert.deepEqual(Object.values(RACES).map(r => Object.values(r.passive).join(' ')), ['4 4 4 0 0 0', '12 0 0 1 0 0', '0 0 8 0 0 2', '0 8 0 0 1 0']);
-  assert.equal(G.VERSION, 4);
+  assert.deepEqual(Object.values(RACES).map(r => Object.values(r.stats).join(' ')), ['10 10 10 10 10 9 9', '12 8 8 13 10 9 8', '8 12 10 8 9 13 8', '8 9 13 8 12 9 9', '8 12 8 9 9 10 12']);
+  assert.deepEqual(Object.values(RACES).map(r => Object.values(r.passive).join(' ')), ['4 4 4 0 0 0', '12 0 0 1 0 0', '0 0 8 0 0 2', '0 8 0 0 1 0', '0 4 4 0 0 1']);
+  assert.equal(G.VERSION, 5);
   assert.equal(G.ACTION_DELAY_MS, 650);
 });
 

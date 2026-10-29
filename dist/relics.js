@@ -3,12 +3,26 @@
 import { ITEMS, effectiveItem } from './gear.js';
 
 export const RELIC_SOCKET_COUNT = 3;
-export const RELIC_UNLOCK_COSTS = Object.freeze([250, 1250, 6250]);
+export const RELIC_UNLOCK_COSTS = Object.freeze([5000, 25000, 125000]);
 export const RELIC_EFFECT_SCALES = Object.freeze([0.5, 0.25, 0.125]);
 export const RELIC_COPY_BASE_COST = 150;
 export const RELIC_COPY_MULTIPLIER = 4;
+// Echoes may strengthen an authored effect, but never create another trigger.
+export const RELIC_EFFECTS = Object.freeze({
+  signet: { name: 'Tide Ledger', desc: 'Recover restores 2 extra Sparkle (mana).' },
+  seal: { name: 'Superintendent’s Seal', desc: 'The first useful Guard each fight grants 15 barrier.' },
+  threadSpool: { name: 'Spare Thread', desc: 'The first useful Guard each fight restores 2 Bounce (stamina).' },
+  patchworkHeart: { name: 'Patchwork Heart', desc: 'Victory restores 5% of missing Stuffing (health).' },
+  luckyButton: { name: 'Lucky Button', desc: 'Victory grants 5% extra coins.' },
+  dreamBell: { name: 'Dream Bell', desc: 'Victory restores 2 Sparkle (mana).' },
+  thimbleGuard: { name: 'Thimble Guard', desc: 'The first useful Guard each fight adds 4 barrier.' },
+  amberMarble: { name: 'Amber Marble', desc: 'Your first damaging action each fight deals 3 extra damage.' },
+  ribbonKnot: { name: 'Ribbon Knot', desc: 'A free physical strike restores 1 Sparkle (mana).' },
+  stuffingSatchel: { name: 'Stuffing Satchel', desc: 'Mend restores 10% more Stuffing (health).' }
+});
 
 const validRelic = id => !!ITEMS[id] && ITEMS[id].slot === 'relic';
+const hasEchoEffect = id => !!(RELIC_EFFECTS[id] || ITEMS[id]?.relicEffect);
 const copy = value => JSON.parse(JSON.stringify(value));
 const echoCost = (count, price = 0) => Math.min(Number.MAX_SAFE_INTEGER, Math.max(RELIC_COPY_BASE_COST, price || 0) * (RELIC_COPY_MULTIPLIER ** Math.min(count, 24)));
 const locked = s => !!(s?.fight || s?.delve || (Number.isFinite(s?.restReadyAt) && s.restReadyAt > 0) || (Number.isFinite(s?.woundedUntil) && s.woundedUntil > Date.now()));
@@ -87,13 +101,13 @@ function echoPreview(s, slot, baseId) {
       : !socket?.unlocked ? 'Unlock this relic socket first.'
         : !item ? 'Choose a valid relic item.'
           : !owned(s, baseId) ? 'You must own this relic before attuning an echo.'
-            : !hasFlatEffect ? 'This relic has only a core effect. Upgrade or reforge it to add flat bonuses before attuning an echo.'
+        : !hasFlatEffect && !hasEchoEffect(baseId) ? 'This relic has no echoable effect.'
               : socket.relicId === baseId ? 'That relic is already attuned here.'
                 : (s.coins || 0) < coinCost ? 'You cannot afford this relic echo.' : null;
   const later = licensedHere ? 0 : echoCost(priorLicenses + 1, item?.price);
   return { allowed: !reason, reason, slot: index, relicId: baseId, name: item?.name || null,
     coinCost, duplicateCount, effectScale, nextCost: later,
-    effect: item ? { stats: { ...(item.stats || {}) }, armor: item.armor || 0, ward: item.ward || 0 } : null };
+    effect: item ? { stats: { ...(item.stats || {}) }, armor: item.armor || 0, ward: item.ward || 0, unique: RELIC_EFFECTS[baseId] || null } : null };
 }
 
 export function attuneRelicPreview(s, slot, baseId) { return echoPreview(s, slot, baseId); }
@@ -121,7 +135,13 @@ export function clearRelic(s, slot) {
 }
 
 export function relicBonuses(s) {
-  const out = { stats: {}, armor: 0, ward: 0 };
+  const out = { stats: {}, armor: 0, ward: 0, effects: {} };
+  const addEffect = (id, scale) => {
+    if (!RELIC_EFFECTS[id] || scale <= 0) return;
+    out.effects[id] = (out.effects[id] || 0) + scale;
+  };
+  const coreId = s?.gear?.relic;
+  if (validRelic(coreId)) addEffect(coreId, 1);
   const sockets = ensured(s) || [];
   const used = {};
   sockets.forEach(socket => {
@@ -132,10 +152,15 @@ export function relicBonuses(s) {
     const scale = s?.gear?.relic === id
       ? RELIC_EFFECT_SCALES[duplicateCount] || 0
       : duplicateCount === 0 ? 1 : RELIC_EFFECT_SCALES[duplicateCount - 1] || 0;
+    addEffect(id, scale);
     for (const [stat, value] of Object.entries(item.stats || {})) out.stats[stat] = (out.stats[stat] || 0) + value * scale;
     out.armor += (item.armor || 0) * scale;
     out.ward += (item.ward || 0) * scale;
     used[id] = (used[id] || 0) + 1;
   });
   return out;
+}
+
+export function relicEffectStrength(s, id) {
+  return relicBonuses(s).effects?.[id] || 0;
 }

@@ -108,18 +108,17 @@ test('offhand comparison while wielding a pike is blocked without illegal total 
   noBrokenValues(modal.body);
 });
 
-test('high-level stock remains comparable when the shared buy rule blocks purchase', () => {
-  const s = G.fresh();
-  s.level = 1;
-  const data = stockComparison(s, 'ironsword');
-  assert.ok(data);
-  assert.equal(data.preview.allowed, false);
-  assert.match(data.preview.reason, /Requires level 6/);
-  assert.ok(data.changes.length > 0, 'the item still has an inspectable build projection');
-  const modal = renderStockComparison(s, 'ironsword');
-  assert.match(modal.body, /Lockwarden’s Sword/);
-  assert.match(modal.body, /Requires level 6/);
-  assert.match(modal.body, /Review purchase · 95 coins/);
-  assert.match(modal.body, /disabled/);
+test('high-tier stock remains comparable and purchasable at any level when affordable',()=>{
+  const s=G.fresh();s.level=1;s.coins=100000;
+  const data=stockComparison(s,'ironsword');
+  assert.ok(data);assert.equal(data.preview.allowed,true);
+  assert.equal(data.item.tier,6);
+  assert.ok(data.changes.length>0,'the item still has an inspectable build projection');
+  const modal=renderStockComparison(s,'ironsword');
+  assert.match(modal.body,/Lockwarden’s Sword/);
+  assert.match(modal.body,/VENDOR ITEM · TIER 6/);
+  assert.doesNotMatch(modal.body,/Requires level/);
+  assert.match(modal.body,/Review purchase · \d+ coins/);
+  assert.doesNotMatch(modal.body,/disabled/);
   noBrokenValues(modal.body);
 });

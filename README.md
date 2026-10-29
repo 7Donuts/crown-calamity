@@ -1,4 +1,4 @@
-# Crown & Calamity: playable solo prototype v0.12.0
+# Crown & Calamity: playable solo prototype v0.13.0
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -28,7 +28,18 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## New in v0.12.0: reading the telegraph, Special Editions, Hazard notes, and a Night Shift prototype
+## New in v0.13.0: full levels, a smaller market, and five plush types
+
+- Levels use the same full-level XP curve and now award four attributes on level-up, with no parts or Stitch counters. V1–v4 saves migrate to v5; already-earned partial rewards are kept and counted against the next level award so no one loses points or receives them twice.
+- Buying and selling use compact rows. Compare stays beside stock; purchase review offers Buy to Satchel or Buy & Equip, with a legal accessory slot choice and atomic two-handed/offhand handling.
+- The catalog contains 80 base items: ten each for weapon, offhand, head, body, hands, feet, accessories and relics. The same ten accessories fit either accessory slot. Gear has no character-level restriction; tier prices grow by ×2.4, making expensive focused upgrades compete with filling empty slots.
+- Ten relics have distinct conditional benefits, from extra recovery and first-hit damage to victory mending and first-Guard barriers. Extra sockets cost 5,000 / 25,000 / 125,000 gold; same-relic licenses multiply by four and effects diminish without creating additional turns or repeating once-per-fight triggers.
+- The Sewing Kit keeps the last item selected and refreshes its inspector after upgrades/reforges/crafting. Stale confirmations cannot buy another operation.
+- Choose a Cuddleworth Bear, Pellet & Pip Bunny, Lullabrite Unicorn, Sturdy Stitch Wolf, or Purrfect Patch Cat. All fifty presentation/form poses are original generated soft-pixel plush artwork. Native fabric colors are preserved by default, with cosmetic pattern, palette and eye options. Prior race IDs remain import aliases and invested stats stay yours.
+
+The shared 650ms combat delay, four-second rest, non-mana action regeneration, telegraph/Openings, Special Editions and local records remain. The Night Shift stays lab-only. See [gear economy](design/38_Gear_Economy.md) and [stuffie production art](design/39_Stuffie_Art_Production.md).
+
+## v0.12.0: reading the telegraph, Special Editions, Hazard notes, and a Night Shift prototype
 
 These changes follow the reconciled plan in [design 37](design/37_Aligned_Recommendations.md). Saves stay compatible: every new field is additive and defaulted, there is no save format change, and v1 to v4 saves still import.
 

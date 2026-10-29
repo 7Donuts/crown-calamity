@@ -45,6 +45,46 @@ test('a new character can earn level two and equip a legal three-active Reservoi
   assert.equal(G.ACTION_DELAY_MS, 650);
 });
 
+test('a v4 partial level migrates once, earns the remaining level points, then buys and equips by tier', () => {
+  const legacy = G.fresh();
+  legacy.version = 4;
+  delete legacy.levelPointsPaid;
+  legacy.race = 'Human';
+  legacy.raceId = null;
+  legacy.level = 1;
+  legacy.xp = 150;
+  legacy.part = 3;
+  legacy.points = 2; // Two milestone points were already awarded in v4.
+  legacy.stats = {mig: 10, fin: 8, int: 10, vit: 10, wil: 10, ins: 10, lck: 10};
+  legacy.hp = 123; legacy.mp = 17; legacy.sp = 29;
+  legacy.coins = 0;
+
+  const loaded = G.loadSave(JSON.stringify(legacy));
+  assert.ok(loaded, 'the old partial-level save remains importable');
+  assert.equal(loaded.version, G.VERSION);
+  assert.equal(loaded.levelPointsPaid, 2);
+  assert.equal(Object.hasOwn(loaded, 'part'), false);
+  assert.deepEqual(loaded.stats, legacy.stats, 'invested attributes survive migration');
+  assert.deepEqual([loaded.hp, loaded.mp, loaded.sp], [123, 17, 29], 'current resources survive migration');
+
+  G.awardXP(loaded, G.xpNeeded(1) - loaded.xp);
+  assert.equal(loaded.level, 2);
+  assert.equal(loaded.points, 4, 'the level award covers only the two milestones not already paid');
+  assert.equal(loaded.levelPointsPaid, 0);
+  assert.equal(G.progression(loaded).totalEarned, 4);
+
+  const item = G.resolveItem(loaded, 'pillowCap');
+  const price = G.buyPreview(loaded, 'pillowCap').price;
+  loaded.coins = price;
+  const bought = G.buyAndEquip(loaded, 'pillowCap', 'head');
+  assert.ok(bought, 'a Tier 2 item is available before level 2+ gating could apply');
+  assert.equal(bought.slot, 'head');
+  assert.equal(loaded.coins, 0, 'purchase spends exactly once');
+  assert.equal(loaded.gear.head, 'pillowCap');
+  assert.ok(loaded.bag.includes('pillowCap'));
+  assert.equal(G.loadSave(JSON.stringify(loaded)).gear.head, 'pillowCap', 'the migrated and equipped character round-trips');
+});
+
 test('gear mutations share real combat totals and damage profiles, then recipe costs stay atomic', () => {
   for (const name of requiredGear) assert.ok(G[name] !== undefined, `engine export ${name}`);
   const s = G.fresh();
@@ -120,7 +160,7 @@ test('all character, equipment, and workbench mutations stay locked during an en
   }
 });
 
-test('old saves migrate to v4 and v4 preserves live encounter state and item modifications', () => {
+test('v1–4 saves migrate to v5 and v5 preserves live encounter state and item modifications', () => {
   for (const version of [1, 2, 3]) {
     const old = G.fresh(); old.version = version;
     if (version === 1) delete old.stats.lck;

@@ -69,13 +69,20 @@ test('lab shop and equip controls use the same affordability and ownership rules
   const {ui,get}=await bootLab();
   get('#scenario-select').value='build_equipment';get('#kit-select').value='caster';get('#seed-input').value='shop';
   ui.handleAction('start-session');
-  const s=ui.getSession(),price=G.buyPreview(s.character,'oilskin').price;
+  const s=ui.getSession();s.character.coins=5000;const price=G.buyPreview(s.character,'oilskin').price;
   ui.handleAction('lab-buy:oilskin');
-  assert.equal(s.character.coins,120-price);
+  assert.equal(s.character.coins,5000-price);
   assert.ok(s.character.bag.includes('oilskin'));
   ui.handleAction('lab-equip:oilskin:body');
   assert.equal(s.character.gear.body,'oilskin');
   assert.equal(/\b(?:undefined|NaN)\b/.test(get('#lab-app').innerHTML),false);
+});
+
+test('the disposable recovery hint includes the equipped signet benefit',async()=>{
+  const {ui,get}=await bootLab();get('#scenario-select').value='fresh_intro_goal';get('#kit-select').value='bulwark';get('#seed-input').value='recover';ui.handleAction('start-session');ui.handleAction('start-hunt');
+  const c=ui.getSession().character;c.bag.push('signet');c.gear.relic='signet';ui.render();
+  assert.equal(G.recoverProfile(c).mana+G.recoverProfile(c).passiveMana,12);
+  assert.match(get('#lab-app').innerHTML,/Shake it off \(Recover\) restores 12 Sparkle \(mana\) total and 10 Bounce \(stamina\)/);
 });
 
 test('the Night Shift scenario clocks in, shows the risk, offers a stored boon check-in, locks shopping and clocks out once',async()=>{

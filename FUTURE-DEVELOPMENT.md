@@ -6,7 +6,7 @@ The current interface includes a World page and a social drawer as planning plac
 
 ## Character theme: stuffies
 
-Players will be stuffed animals powering up and surviving a dangerous world of things that dislike stuffies—or like them too much. The theme and gameplay adaptation are deferred to a later pass; the approved soft-pixel style stays. See [the recorded theme direction](design/35_Stuffies_Theme.md).
+Players will be stuffed animals powering up and surviving a dangerous world of things that dislike stuffies—or like them too much. The v0.13 character creator now implements five bipedal plush types and original generated artwork; broader world/gameplay adaptation can continue later. The approved soft-pixel style stays. See [the recorded theme direction](design/35_Stuffies_Theme.md).
 
 ## Build the solo game with an online future
 

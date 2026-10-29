@@ -490,7 +490,7 @@
       "id": "race-portraits",
       "src": "character-art.js",
       "purpose": "Layered customizable portraits for four races and Male/Female presentation",
-      "sha256": "8d07ffeac0ddc46adfbfd13e8868bd275c325a3abd320d95af6e29a3318e24a9",
+      "sha256": "caa7e2af259c7a6ec98220af9f8a9d8037b20515e0d9544fc570ff5052fb9202",
       "width": 396.6,
       "height": 420,
       "mode": "SVG atlas crop/filter compositor",
@@ -500,811 +500,7 @@
         96,
         128
       ],
-      "provenance": "Runtime crops and palette filters for four original generated PNG atlases. No hand-coded character illustration; species-specific labels and safe saved appearance IDs. See character-atlas records for exact source dimensions and measured bounds."
-    },
-    {
-      "id": "character-atlas-quayfolk",
-      "src": "assets/characters/quayfolk-atlas.png",
-      "purpose": "quayfolk species-specific appearance atlas; two presentations and five forms",
-      "sha256": "12a96cd1690124a76ac4fcb7d8fe347a330f34587a33642c4e198b21ae36d7d8",
-      "width": 1983,
-      "height": 793,
-      "mode": "RGBA",
-      "alpha": true,
-      "alphaExtrema": [
-        0,
-        255
-      ],
-      "displaySizes": [
-        64,
-        96,
-        128
-      ],
-      "layout": {
-        "columns": 5,
-        "rows": 2,
-        "columnWidth": 396.6,
-        "rowSplit": 414,
-        "frameHeights": [
-          414,
-          379
-        ],
-        "runtimeViewport": [
-          396.6,
-          420
-        ],
-        "verticalOffsets": [
-          0,
-          36
-        ]
-      },
-      "frames": [
-        {
-          "column": 0,
-          "presentation": "female",
-          "sourceBounds": [
-            0,
-            0,
-            397,
-            414
-          ],
-          "visibleBounds": [
-            102,
-            51,
-            309,
-            410
-          ]
-        },
-        {
-          "column": 1,
-          "presentation": "female",
-          "sourceBounds": [
-            397,
-            0,
-            793,
-            414
-          ],
-          "visibleBounds": [
-            462,
-            39,
-            732,
-            410
-          ]
-        },
-        {
-          "column": 2,
-          "presentation": "female",
-          "sourceBounds": [
-            793,
-            0,
-            1190,
-            414
-          ],
-          "visibleBounds": [
-            869,
-            52,
-            1097,
-            410
-          ]
-        },
-        {
-          "column": 3,
-          "presentation": "female",
-          "sourceBounds": [
-            1190,
-            0,
-            1586,
-            414
-          ],
-          "visibleBounds": [
-            1251,
-            20,
-            1537,
-            410
-          ]
-        },
-        {
-          "column": 4,
-          "presentation": "female",
-          "sourceBounds": [
-            1586,
-            0,
-            1983,
-            414
-          ],
-          "visibleBounds": [
-            1674,
-            78,
-            1878,
-            410
-          ]
-        },
-        {
-          "column": 0,
-          "presentation": "male",
-          "sourceBounds": [
-            0,
-            414,
-            397,
-            793
-          ],
-          "visibleBounds": [
-            105,
-            437,
-            305,
-            787
-          ]
-        },
-        {
-          "column": 1,
-          "presentation": "male",
-          "sourceBounds": [
-            397,
-            414,
-            793,
-            793
-          ],
-          "visibleBounds": [
-            477,
-            430,
-            715,
-            787
-          ]
-        },
-        {
-          "column": 2,
-          "presentation": "male",
-          "sourceBounds": [
-            793,
-            414,
-            1190,
-            793
-          ],
-          "visibleBounds": [
-            875,
-            437,
-            1097,
-            787
-          ]
-        },
-        {
-          "column": 3,
-          "presentation": "male",
-          "sourceBounds": [
-            1190,
-            414,
-            1586,
-            793
-          ],
-          "visibleBounds": [
-            1251,
-            416,
-            1515,
-            787
-          ]
-        },
-        {
-          "column": 4,
-          "presentation": "male",
-          "sourceBounds": [
-            1586,
-            414,
-            1983,
-            793
-          ],
-          "visibleBounds": [
-            1674,
-            468,
-            1878,
-            787
-          ]
-        }
-      ],
-      "provenance": "Original image-generation PNG copied unchanged; same canonical positive/negative prompt headers and approved Ledger Rat/Bracken Quay reference images. Species-specific forms and anatomy reviewed at runtime size. Runtime masks recolor source pixels without replacing generated outlines or painting transparent margins.",
-      "approvalStatus": "Reviewed at 64px and 128px using actual runtime SVG rasterization; browser layout check unavailable."
-    },
-    {
-      "id": "character-atlas-cobblekin",
-      "src": "assets/characters/cobblekin-atlas.png",
-      "purpose": "cobblekin species-specific appearance atlas; two presentations and five forms",
-      "sha256": "0c7c1df8ed713174f3d635adfccd67a2d84a370fede3ebf69fbf5d4dd4c7e25b",
-      "width": 1983,
-      "height": 793,
-      "mode": "RGBA",
-      "alpha": true,
-      "alphaExtrema": [
-        0,
-        255
-      ],
-      "displaySizes": [
-        64,
-        96,
-        128
-      ],
-      "layout": {
-        "columns": 5,
-        "rows": 2,
-        "columnWidth": 396.6,
-        "rowSplit": 396,
-        "frameHeights": [
-          396,
-          397
-        ],
-        "runtimeViewport": [
-          396.6,
-          420
-        ],
-        "verticalOffsets": [
-          31,
-          43
-        ]
-      },
-      "frames": [
-        {
-          "column": 0,
-          "presentation": "female",
-          "sourceBounds": [
-            0,
-            0,
-            397,
-            396
-          ],
-          "visibleBounds": [
-            52,
-            48,
-            356,
-            378
-          ]
-        },
-        {
-          "column": 1,
-          "presentation": "female",
-          "sourceBounds": [
-            397,
-            0,
-            793,
-            396
-          ],
-          "visibleBounds": [
-            440,
-            21,
-            746,
-            379
-          ]
-        },
-        {
-          "column": 2,
-          "presentation": "female",
-          "sourceBounds": [
-            793,
-            0,
-            1190,
-            396
-          ],
-          "visibleBounds": [
-            834,
-            24,
-            1128,
-            379
-          ]
-        },
-        {
-          "column": 3,
-          "presentation": "female",
-          "sourceBounds": [
-            1190,
-            0,
-            1586,
-            396
-          ],
-          "visibleBounds": [
-            1230,
-            40,
-            1532,
-            379
-          ]
-        },
-        {
-          "column": 4,
-          "presentation": "female",
-          "sourceBounds": [
-            1586,
-            0,
-            1983,
-            396
-          ],
-          "visibleBounds": [
-            1632,
-            55,
-            1928,
-            379
-          ]
-        },
-        {
-          "column": 0,
-          "presentation": "male",
-          "sourceBounds": [
-            0,
-            396,
-            397,
-            793
-          ],
-          "visibleBounds": [
-            32,
-            412,
-            384,
-            763
-          ]
-        },
-        {
-          "column": 1,
-          "presentation": "male",
-          "sourceBounds": [
-            397,
-            396,
-            793,
-            793
-          ],
-          "visibleBounds": [
-            428,
-            396,
-            770,
-            763
-          ]
-        },
-        {
-          "column": 2,
-          "presentation": "male",
-          "sourceBounds": [
-            793,
-            396,
-            1190,
-            793
-          ],
-          "visibleBounds": [
-            822,
-            400,
-            1163,
-            762
-          ]
-        },
-        {
-          "column": 3,
-          "presentation": "male",
-          "sourceBounds": [
-            1190,
-            396,
-            1586,
-            793
-          ],
-          "visibleBounds": [
-            1223,
-            412,
-            1565,
-            762
-          ]
-        },
-        {
-          "column": 4,
-          "presentation": "male",
-          "sourceBounds": [
-            1586,
-            396,
-            1983,
-            793
-          ],
-          "visibleBounds": [
-            1623,
-            427,
-            1957,
-            762
-          ]
-        }
-      ],
-      "provenance": "Original image-generation PNG copied unchanged; same canonical positive/negative prompt headers and approved Ledger Rat/Bracken Quay reference images. Species-specific forms and anatomy reviewed at runtime size. Runtime masks recolor source pixels without replacing generated outlines or painting transparent margins.",
-      "approvalStatus": "Reviewed at 64px and 128px using actual runtime SVG rasterization; browser layout check unavailable."
-    },
-    {
-      "id": "character-atlas-reedling",
-      "src": "assets/characters/reedling-atlas.png",
-      "purpose": "reedling species-specific appearance atlas; two presentations and five forms",
-      "sha256": "7c4975e0da102b329b078e18f89075c9882cce3ad6dda29a92168cbba26b1015",
-      "width": 1983,
-      "height": 793,
-      "mode": "RGBA",
-      "alpha": true,
-      "alphaExtrema": [
-        0,
-        255
-      ],
-      "displaySizes": [
-        64,
-        96,
-        128
-      ],
-      "layout": {
-        "columns": 5,
-        "rows": 2,
-        "columnWidth": 396.6,
-        "rowSplit": 396,
-        "frameHeights": [
-          396,
-          397
-        ],
-        "runtimeViewport": [
-          396.6,
-          420
-        ],
-        "verticalOffsets": [
-          17,
-          33
-        ]
-      },
-      "frames": [
-        {
-          "column": 0,
-          "presentation": "female",
-          "sourceBounds": [
-            0,
-            0,
-            397,
-            396
-          ],
-          "visibleBounds": [
-            47,
-            66,
-            325,
-            392
-          ]
-        },
-        {
-          "column": 1,
-          "presentation": "female",
-          "sourceBounds": [
-            397,
-            0,
-            793,
-            396
-          ],
-          "visibleBounds": [
-            442,
-            35,
-            740,
-            392
-          ]
-        },
-        {
-          "column": 2,
-          "presentation": "female",
-          "sourceBounds": [
-            793,
-            0,
-            1190,
-            396
-          ],
-          "visibleBounds": [
-            862,
-            81,
-            1137,
-            393
-          ]
-        },
-        {
-          "column": 3,
-          "presentation": "female",
-          "sourceBounds": [
-            1190,
-            0,
-            1586,
-            396
-          ],
-          "visibleBounds": [
-            1247,
-            19,
-            1518,
-            393
-          ]
-        },
-        {
-          "column": 4,
-          "presentation": "female",
-          "sourceBounds": [
-            1586,
-            0,
-            1983,
-            396
-          ],
-          "visibleBounds": [
-            1656,
-            81,
-            1921,
-            393
-          ]
-        },
-        {
-          "column": 0,
-          "presentation": "male",
-          "sourceBounds": [
-            0,
-            396,
-            397,
-            793
-          ],
-          "visibleBounds": [
-            38,
-            451,
-            335,
-            772
-          ]
-        },
-        {
-          "column": 1,
-          "presentation": "male",
-          "sourceBounds": [
-            397,
-            396,
-            793,
-            793
-          ],
-          "visibleBounds": [
-            437,
-            423,
-            744,
-            772
-          ]
-        },
-        {
-          "column": 2,
-          "presentation": "male",
-          "sourceBounds": [
-            793,
-            396,
-            1190,
-            793
-          ],
-          "visibleBounds": [
-            844,
-            464,
-            1153,
-            772
-          ]
-        },
-        {
-          "column": 3,
-          "presentation": "male",
-          "sourceBounds": [
-            1190,
-            396,
-            1586,
-            793
-          ],
-          "visibleBounds": [
-            1242,
-            409,
-            1540,
-            773
-          ]
-        },
-        {
-          "column": 4,
-          "presentation": "male",
-          "sourceBounds": [
-            1586,
-            396,
-            1983,
-            793
-          ],
-          "visibleBounds": [
-            1645,
-            467,
-            1938,
-            773
-          ]
-        }
-      ],
-      "provenance": "Original image-generation PNG copied unchanged; same canonical positive/negative prompt headers and approved Ledger Rat/Bracken Quay reference images. Species-specific forms and anatomy reviewed at runtime size. Runtime masks recolor source pixels without replacing generated outlines or painting transparent margins.",
-      "approvalStatus": "Reviewed at 64px and 128px using actual runtime SVG rasterization; browser layout check unavailable."
-    },
-    {
-      "id": "character-atlas-emberling",
-      "src": "assets/characters/emberling-atlas.png",
-      "purpose": "emberling species-specific appearance atlas; two presentations and five forms",
-      "sha256": "39a849baa122196f85679cd17c64114083583ae14e5ad6603d137097630131ed",
-      "width": 1983,
-      "height": 793,
-      "mode": "RGBA",
-      "alpha": true,
-      "alphaExtrema": [
-        0,
-        255
-      ],
-      "displaySizes": [
-        64,
-        96,
-        128
-      ],
-      "layout": {
-        "columns": 5,
-        "rows": 2,
-        "columnWidth": 396.6,
-        "rowSplit": 396,
-        "frameHeights": [
-          396,
-          397
-        ],
-        "runtimeViewport": [
-          396.6,
-          420
-        ],
-        "verticalOffsets": [
-          23,
-          38
-        ]
-      },
-      "frames": [
-        {
-          "column": 0,
-          "presentation": "female",
-          "sourceBounds": [
-            0,
-            0,
-            397,
-            396
-          ],
-          "visibleBounds": [
-            64,
-            29,
-            353,
-            386
-          ]
-        },
-        {
-          "column": 1,
-          "presentation": "female",
-          "sourceBounds": [
-            397,
-            0,
-            793,
-            396
-          ],
-          "visibleBounds": [
-            419,
-            29,
-            731,
-            387
-          ]
-        },
-        {
-          "column": 2,
-          "presentation": "female",
-          "sourceBounds": [
-            793,
-            0,
-            1190,
-            396
-          ],
-          "visibleBounds": [
-            814,
-            33,
-            1190,
-            386
-          ]
-        },
-        {
-          "column": 3,
-          "presentation": "female",
-          "sourceBounds": [
-            1190,
-            0,
-            1586,
-            396
-          ],
-          "visibleBounds": [
-            1190,
-            18,
-            1528,
-            386
-          ]
-        },
-        {
-          "column": 4,
-          "presentation": "female",
-          "sourceBounds": [
-            1586,
-            0,
-            1983,
-            396
-          ],
-          "visibleBounds": [
-            1620,
-            31,
-            1892,
-            387
-          ]
-        },
-        {
-          "column": 0,
-          "presentation": "male",
-          "sourceBounds": [
-            0,
-            396,
-            397,
-            793
-          ],
-          "visibleBounds": [
-            58,
-            409,
-            355,
-            768
-          ]
-        },
-        {
-          "column": 1,
-          "presentation": "male",
-          "sourceBounds": [
-            397,
-            396,
-            793,
-            793
-          ],
-          "visibleBounds": [
-            414,
-            409,
-            737,
-            768
-          ]
-        },
-        {
-          "column": 2,
-          "presentation": "male",
-          "sourceBounds": [
-            793,
-            396,
-            1190,
-            793
-          ],
-          "visibleBounds": [
-            809,
-            413,
-            1118,
-            768
-          ]
-        },
-        {
-          "column": 3,
-          "presentation": "male",
-          "sourceBounds": [
-            1190,
-            396,
-            1586,
-            793
-          ],
-          "visibleBounds": [
-            1190,
-            405,
-            1533,
-            768
-          ]
-        },
-        {
-          "column": 4,
-          "presentation": "male",
-          "sourceBounds": [
-            1586,
-            396,
-            1983,
-            793
-          ],
-          "visibleBounds": [
-            1614,
-            413,
-            1892,
-            768
-          ]
-        }
-      ],
-      "provenance": "Original image-generation PNG copied unchanged; same canonical positive/negative prompt headers and approved Ledger Rat/Bracken Quay reference images. Species-specific forms and anatomy reviewed at runtime size. Runtime masks recolor source pixels without replacing generated outlines or painting transparent margins.",
-      "approvalStatus": "Reviewed at 64px and 128px using actual runtime SVG rasterization; browser layout check unavailable."
+      "provenance": "Five original generated bipedal plush animal atlases, measured whole-pose crops, native factory colors by default and optional safe palette composites. No code-drawn character illustration; see character-atlas records."
     },
     {
       "id": "generated-icon-adventure",
@@ -2650,6 +1846,1531 @@
       ],
       "provenance": "Original generated PNG preserved unchanged; canonical shared prompt/reference set. Favicon reuses the approved generated identity illustration.",
       "approvalStatus": "Runtime size raster review; browser layout unavailable."
+    },
+    {
+      "id": "character-atlas-bear",
+      "src": "assets/characters/bear-atlas.png",
+      "purpose": "Bipedal plush bear stuffie; five species-specific forms and two presentations",
+      "sha256": "fbae08403520bf731b0a83efcabf60578ee4d5c3d7bd7679f7fa724444df03ba",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "nominalColumnWidth": 396.6,
+        "nominalRowHeight": 396.5,
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "anchor": "visible feet baseline y410; preserve whole-pose proportions",
+        "note": "Each pose is measured and cropped individually. Ears/tails can cross nominal cell boundaries; do not replace these bounds with equal-cell slicing."
+      },
+      "frames": [
+        {
+          "index": 0,
+          "presentation": "female",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 98,
+          "y": 18,
+          "width": 276,
+          "height": 367,
+          "sourceBounds": [
+            98,
+            18,
+            374,
+            385
+          ],
+          "visibleBounds": [
+            98,
+            18,
+            374,
+            385
+          ],
+          "renderScale": 1.008174386920981,
+          "renderOffset": [
+            59.171934604904635,
+            40.0
+          ]
+        },
+        {
+          "index": 1,
+          "presentation": "female",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 472,
+          "y": 18,
+          "width": 279,
+          "height": 367,
+          "sourceBounds": [
+            472,
+            18,
+            751,
+            385
+          ],
+          "visibleBounds": [
+            472,
+            18,
+            751,
+            385
+          ],
+          "renderScale": 1.008174386920981,
+          "renderOffset": [
+            57.65967302452316,
+            40.0
+          ]
+        },
+        {
+          "index": 2,
+          "presentation": "female",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 855,
+          "y": 15,
+          "width": 284,
+          "height": 372,
+          "sourceBounds": [
+            855,
+            15,
+            1139,
+            387
+          ],
+          "visibleBounds": [
+            855,
+            15,
+            1139,
+            387
+          ],
+          "renderScale": 0.9946236559139785,
+          "renderOffset": [
+            57.06344086021505,
+            40.0
+          ]
+        },
+        {
+          "index": 3,
+          "presentation": "female",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1258,
+          "y": 16,
+          "width": 276,
+          "height": 370,
+          "sourceBounds": [
+            1258,
+            16,
+            1534,
+            386
+          ],
+          "visibleBounds": [
+            1258,
+            16,
+            1534,
+            386
+          ],
+          "renderScale": 1.0,
+          "renderOffset": [
+            60.30000000000001,
+            40.0
+          ]
+        },
+        {
+          "index": 4,
+          "presentation": "female",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1645,
+          "y": 15,
+          "width": 279,
+          "height": 370,
+          "sourceBounds": [
+            1645,
+            15,
+            1924,
+            385
+          ],
+          "visibleBounds": [
+            1645,
+            15,
+            1924,
+            385
+          ],
+          "renderScale": 1.0,
+          "renderOffset": [
+            58.80000000000001,
+            40.0
+          ]
+        },
+        {
+          "index": 5,
+          "presentation": "male",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 89,
+          "y": 397,
+          "width": 284,
+          "height": 366,
+          "sourceBounds": [
+            89,
+            397,
+            373,
+            763
+          ],
+          "visibleBounds": [
+            89,
+            397,
+            373,
+            763
+          ],
+          "renderScale": 1.010928961748634,
+          "renderOffset": [
+            54.74808743169399,
+            40.0
+          ]
+        },
+        {
+          "index": 6,
+          "presentation": "male",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 477,
+          "y": 397,
+          "width": 280,
+          "height": 366,
+          "sourceBounds": [
+            477,
+            397,
+            757,
+            763
+          ],
+          "visibleBounds": [
+            477,
+            397,
+            757,
+            763
+          ],
+          "renderScale": 1.010928961748634,
+          "renderOffset": [
+            56.769945355191254,
+            40.0
+          ]
+        },
+        {
+          "index": 7,
+          "presentation": "male",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 855,
+          "y": 400,
+          "width": 283,
+          "height": 364,
+          "sourceBounds": [
+            855,
+            400,
+            1138,
+            764
+          ],
+          "visibleBounds": [
+            855,
+            400,
+            1138,
+            764
+          ],
+          "renderScale": 1.0164835164835164,
+          "renderOffset": [
+            54.467582417582435,
+            40.0
+          ]
+        },
+        {
+          "index": 8,
+          "presentation": "male",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1249,
+          "y": 401,
+          "width": 285,
+          "height": 363,
+          "sourceBounds": [
+            1249,
+            401,
+            1534,
+            764
+          ],
+          "visibleBounds": [
+            1249,
+            401,
+            1534,
+            764
+          ],
+          "renderScale": 1.019283746556474,
+          "renderOffset": [
+            53.05206611570247,
+            39.99999999999994
+          ]
+        },
+        {
+          "index": 9,
+          "presentation": "male",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1639,
+          "y": 401,
+          "width": 286,
+          "height": 363,
+          "sourceBounds": [
+            1639,
+            401,
+            1925,
+            764
+          ],
+          "visibleBounds": [
+            1639,
+            401,
+            1925,
+            764
+          ],
+          "renderScale": 1.019283746556474,
+          "renderOffset": [
+            52.54242424242423,
+            39.99999999999994
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged. Mandatory ART-DIRECTION.md positive/negative headers and approved Ledger Rat / Bracken Quay references; bunny short-ear form refined through image generation. Original fabric/trim/eyes shown by default; alternate appearance colors composite original cropped raster pixels with source-alpha/luminance filters.",
+      "approvalStatus": "Root reviewed actual runtime art at 64px and128px. Browser layout verification unavailable in this sandbox."
+    },
+    {
+      "id": "character-atlas-bunny",
+      "src": "assets/characters/bunny-atlas.png",
+      "purpose": "Bipedal plush bunny stuffie; five species-specific forms and two presentations",
+      "sha256": "79252bdfbf3ac90481ec10a5746856a99a40de376c22e81888b56fef0790064d",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "nominalColumnWidth": 396.6,
+        "nominalRowHeight": 396.5,
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "anchor": "visible feet baseline y410; preserve whole-pose proportions",
+        "note": "Each pose is measured and cropped individually. Ears/tails can cross nominal cell boundaries; do not replace these bounds with equal-cell slicing."
+      },
+      "frames": [
+        {
+          "index": 0,
+          "presentation": "female",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 77,
+          "y": 100,
+          "width": 336,
+          "height": 297,
+          "sourceBounds": [
+            77,
+            100,
+            413,
+            397
+          ],
+          "visibleBounds": [
+            77,
+            100,
+            413,
+            397
+          ],
+          "renderScale": 1.1011904761904763,
+          "renderOffset": [
+            13.300000000000011,
+            82.94642857142856
+          ]
+        },
+        {
+          "index": 1,
+          "presentation": "female",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 487,
+          "y": 19,
+          "width": 248,
+          "height": 374,
+          "sourceBounds": [
+            487,
+            19,
+            735,
+            393
+          ],
+          "visibleBounds": [
+            487,
+            19,
+            735,
+            393
+          ],
+          "renderScale": 0.9893048128342246,
+          "renderOffset": [
+            75.62620320855616,
+            40.0
+          ]
+        },
+        {
+          "index": 2,
+          "presentation": "female",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 862,
+          "y": 14,
+          "width": 246,
+          "height": 383,
+          "sourceBounds": [
+            862,
+            14,
+            1108,
+            397
+          ],
+          "visibleBounds": [
+            862,
+            14,
+            1108,
+            397
+          ],
+          "renderScale": 0.9660574412532638,
+          "renderOffset": [
+            79.47493472584857,
+            40.0
+          ]
+        },
+        {
+          "index": 3,
+          "presentation": "female",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1193,
+          "y": 113,
+          "width": 361,
+          "height": 284,
+          "sourceBounds": [
+            1193,
+            113,
+            1554,
+            397
+          ],
+          "visibleBounds": [
+            1193,
+            113,
+            1554,
+            397
+          ],
+          "renderScale": 1.0249307479224377,
+          "renderOffset": [
+            13.300000000000011,
+            118.9196675900277
+          ]
+        },
+        {
+          "index": 4,
+          "presentation": "female",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1651,
+          "y": 65,
+          "width": 239,
+          "height": 332,
+          "sourceBounds": [
+            1651,
+            65,
+            1890,
+            397
+          ],
+          "visibleBounds": [
+            1651,
+            65,
+            1890,
+            397
+          ],
+          "renderScale": 1.1144578313253013,
+          "renderOffset": [
+            65.1222891566265,
+            39.99999999999994
+          ]
+        },
+        {
+          "index": 5,
+          "presentation": "male",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 77,
+          "y": 462,
+          "width": 333,
+          "height": 301,
+          "sourceBounds": [
+            77,
+            462,
+            410,
+            763
+          ],
+          "visibleBounds": [
+            77,
+            462,
+            410,
+            763
+          ],
+          "renderScale": 1.1111111111111112,
+          "renderOffset": [
+            13.300000000000011,
+            75.55555555555554
+          ]
+        },
+        {
+          "index": 6,
+          "presentation": "male",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 481,
+          "y": 397,
+          "width": 254,
+          "height": 365,
+          "sourceBounds": [
+            481,
+            397,
+            735,
+            762
+          ],
+          "visibleBounds": [
+            481,
+            397,
+            735,
+            762
+          ],
+          "renderScale": 1.0136986301369864,
+          "renderOffset": [
+            69.56027397260274,
+            40.0
+          ]
+        },
+        {
+          "index": 7,
+          "presentation": "male",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 855,
+          "y": 404,
+          "width": 253,
+          "height": 359,
+          "sourceBounds": [
+            855,
+            404,
+            1108,
+            763
+          ],
+          "visibleBounds": [
+            855,
+            404,
+            1108,
+            763
+          ],
+          "renderScale": 1.0306406685236769,
+          "renderOffset": [
+            67.92395543175488,
+            40.0
+          ]
+        },
+        {
+          "index": 8,
+          "presentation": "male",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1192,
+          "y": 463,
+          "width": 367,
+          "height": 300,
+          "sourceBounds": [
+            1192,
+            463,
+            1559,
+            763
+          ],
+          "visibleBounds": [
+            1192,
+            463,
+            1559,
+            763
+          ],
+          "renderScale": 1.008174386920981,
+          "renderOffset": [
+            13.300000000000011,
+            107.54768392370573
+          ]
+        },
+        {
+          "index": 9,
+          "presentation": "male",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1651,
+          "y": 426,
+          "width": 246,
+          "height": 335,
+          "sourceBounds": [
+            1651,
+            426,
+            1897,
+            761
+          ],
+          "visibleBounds": [
+            1651,
+            426,
+            1897,
+            761
+          ],
+          "renderScale": 1.1044776119402986,
+          "renderOffset": [
+            62.449253731343276,
+            40.0
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged. Mandatory ART-DIRECTION.md positive/negative headers and approved Ledger Rat / Bracken Quay references; bunny short-ear form refined through image generation. Original fabric/trim/eyes shown by default; alternate appearance colors composite original cropped raster pixels with source-alpha/luminance filters.",
+      "approvalStatus": "Root reviewed actual runtime art at 64px and128px. Browser layout verification unavailable in this sandbox."
+    },
+    {
+      "id": "character-atlas-unicorn",
+      "src": "assets/characters/unicorn-atlas.png",
+      "purpose": "Bipedal plush unicorn stuffie; five species-specific forms and two presentations",
+      "sha256": "c06f70be23581437e6ddef7df6754e2054fa3fa981a3eabb4825a9f0512fa6ee",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "nominalColumnWidth": 396.6,
+        "nominalRowHeight": 396.5,
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "anchor": "visible feet baseline y410; preserve whole-pose proportions",
+        "note": "Each pose is measured and cropped individually. Ears/tails can cross nominal cell boundaries; do not replace these bounds with equal-cell slicing."
+      },
+      "frames": [
+        {
+          "index": 0,
+          "presentation": "female",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 80,
+          "y": 33,
+          "width": 339,
+          "height": 354,
+          "sourceBounds": [
+            80,
+            33,
+            419,
+            387
+          ],
+          "visibleBounds": [
+            80,
+            33,
+            419,
+            387
+          ],
+          "renderScale": 1.0451977401129944,
+          "renderOffset": [
+            21.138983050847457,
+            40.0
+          ]
+        },
+        {
+          "index": 1,
+          "presentation": "female",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 488,
+          "y": 21,
+          "width": 313,
+          "height": 366,
+          "sourceBounds": [
+            488,
+            21,
+            801,
+            387
+          ],
+          "visibleBounds": [
+            488,
+            21,
+            801,
+            387
+          ],
+          "renderScale": 1.010928961748634,
+          "renderOffset": [
+            40.089617486338796,
+            40.0
+          ]
+        },
+        {
+          "index": 2,
+          "presentation": "female",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 857,
+          "y": 29,
+          "width": 303,
+          "height": 358,
+          "sourceBounds": [
+            857,
+            29,
+            1160,
+            387
+          ],
+          "visibleBounds": [
+            857,
+            29,
+            1160,
+            387
+          ],
+          "renderScale": 1.0335195530726258,
+          "renderOffset": [
+            41.72178770949719,
+            40.0
+          ]
+        },
+        {
+          "index": 3,
+          "presentation": "female",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1225,
+          "y": 32,
+          "width": 307,
+          "height": 357,
+          "sourceBounds": [
+            1225,
+            32,
+            1532,
+            389
+          ],
+          "visibleBounds": [
+            1225,
+            32,
+            1532,
+            389
+          ],
+          "renderScale": 1.0364145658263306,
+          "renderOffset": [
+            39.21036414565825,
+            39.99999999999994
+          ]
+        },
+        {
+          "index": 4,
+          "presentation": "female",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1628,
+          "y": 33,
+          "width": 300,
+          "height": 354,
+          "sourceBounds": [
+            1628,
+            33,
+            1928,
+            387
+          ],
+          "visibleBounds": [
+            1628,
+            33,
+            1928,
+            387
+          ],
+          "renderScale": 1.0451977401129944,
+          "renderOffset": [
+            41.52033898305086,
+            40.0
+          ]
+        },
+        {
+          "index": 5,
+          "presentation": "male",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 80,
+          "y": 397,
+          "width": 339,
+          "height": 362,
+          "sourceBounds": [
+            80,
+            397,
+            419,
+            759
+          ],
+          "visibleBounds": [
+            80,
+            397,
+            419,
+            759
+          ],
+          "renderScale": 1.022099447513812,
+          "renderOffset": [
+            25.054143646408875,
+            40.0
+          ]
+        },
+        {
+          "index": 6,
+          "presentation": "male",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 488,
+          "y": 391,
+          "width": 313,
+          "height": 368,
+          "sourceBounds": [
+            488,
+            391,
+            801,
+            759
+          ],
+          "visibleBounds": [
+            488,
+            391,
+            801,
+            759
+          ],
+          "renderScale": 1.0054347826086956,
+          "renderOffset": [
+            40.949456521739165,
+            40.00000000000006
+          ]
+        },
+        {
+          "index": 7,
+          "presentation": "male",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 857,
+          "y": 397,
+          "width": 303,
+          "height": 362,
+          "sourceBounds": [
+            857,
+            397,
+            1160,
+            759
+          ],
+          "visibleBounds": [
+            857,
+            397,
+            1160,
+            759
+          ],
+          "renderScale": 1.022099447513812,
+          "renderOffset": [
+            43.45193370165748,
+            40.0
+          ]
+        },
+        {
+          "index": 8,
+          "presentation": "male",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1225,
+          "y": 403,
+          "width": 307,
+          "height": 358,
+          "sourceBounds": [
+            1225,
+            403,
+            1532,
+            761
+          ],
+          "visibleBounds": [
+            1225,
+            403,
+            1532,
+            761
+          ],
+          "renderScale": 1.0335195530726258,
+          "renderOffset": [
+            39.65474860335195,
+            40.0
+          ]
+        },
+        {
+          "index": 9,
+          "presentation": "male",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1628,
+          "y": 400,
+          "width": 300,
+          "height": 359,
+          "sourceBounds": [
+            1628,
+            400,
+            1928,
+            759
+          ],
+          "visibleBounds": [
+            1628,
+            400,
+            1928,
+            759
+          ],
+          "renderScale": 1.0306406685236769,
+          "renderOffset": [
+            43.703899721448494,
+            40.0
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged. Mandatory ART-DIRECTION.md positive/negative headers and approved Ledger Rat / Bracken Quay references; bunny short-ear form refined through image generation. Original fabric/trim/eyes shown by default; alternate appearance colors composite original cropped raster pixels with source-alpha/luminance filters.",
+      "approvalStatus": "Root reviewed actual runtime art at 64px and128px. Browser layout verification unavailable in this sandbox."
+    },
+    {
+      "id": "character-atlas-wolf",
+      "src": "assets/characters/wolf-atlas.png",
+      "purpose": "Bipedal plush wolf stuffie; five species-specific forms and two presentations",
+      "sha256": "fe19f6a90ed15c6fa25ea1148edd714fe1b28035ea577c97f03f045c47d57c6d",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "nominalColumnWidth": 396.6,
+        "nominalRowHeight": 396.5,
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "anchor": "visible feet baseline y410; preserve whole-pose proportions",
+        "note": "Each pose is measured and cropped individually. Ears/tails can cross nominal cell boundaries; do not replace these bounds with equal-cell slicing."
+      },
+      "frames": [
+        {
+          "index": 0,
+          "presentation": "female",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 39,
+          "y": 12,
+          "width": 370,
+          "height": 363,
+          "sourceBounds": [
+            39,
+            12,
+            409,
+            375
+          ],
+          "visibleBounds": [
+            39,
+            12,
+            409,
+            375
+          ],
+          "renderScale": 1.0,
+          "renderOffset": [
+            13.300000000000011,
+            47.0
+          ]
+        },
+        {
+          "index": 1,
+          "presentation": "female",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 450,
+          "y": 11,
+          "width": 361,
+          "height": 364,
+          "sourceBounds": [
+            450,
+            11,
+            811,
+            375
+          ],
+          "visibleBounds": [
+            450,
+            11,
+            811,
+            375
+          ],
+          "renderScale": 1.0164835164835164,
+          "renderOffset": [
+            14.824725274725296,
+            40.0
+          ]
+        },
+        {
+          "index": 2,
+          "presentation": "female",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 848,
+          "y": 13,
+          "width": 312,
+          "height": 362,
+          "sourceBounds": [
+            848,
+            13,
+            1160,
+            375
+          ],
+          "visibleBounds": [
+            848,
+            13,
+            1160,
+            375
+          ],
+          "renderScale": 1.022099447513812,
+          "renderOffset": [
+            38.85248618784533,
+            40.0
+          ]
+        },
+        {
+          "index": 3,
+          "presentation": "female",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1213,
+          "y": 10,
+          "width": 353,
+          "height": 365,
+          "sourceBounds": [
+            1213,
+            10,
+            1566,
+            375
+          ],
+          "visibleBounds": [
+            1213,
+            10,
+            1566,
+            375
+          ],
+          "renderScale": 1.0136986301369864,
+          "renderOffset": [
+            19.382191780821927,
+            40.0
+          ]
+        },
+        {
+          "index": 4,
+          "presentation": "female",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1605,
+          "y": 12,
+          "width": 331,
+          "height": 363,
+          "sourceBounds": [
+            1605,
+            12,
+            1936,
+            375
+          ],
+          "visibleBounds": [
+            1605,
+            12,
+            1936,
+            375
+          ],
+          "renderScale": 1.019283746556474,
+          "renderOffset": [
+            29.608539944903583,
+            39.99999999999994
+          ]
+        },
+        {
+          "index": 5,
+          "presentation": "male",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 38,
+          "y": 410,
+          "width": 373,
+          "height": 357,
+          "sourceBounds": [
+            38,
+            410,
+            411,
+            767
+          ],
+          "visibleBounds": [
+            38,
+            410,
+            411,
+            767
+          ],
+          "renderScale": 0.9919571045576407,
+          "renderOffset": [
+            13.300000000000011,
+            55.87131367292227
+          ]
+        },
+        {
+          "index": 6,
+          "presentation": "male",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 452,
+          "y": 408,
+          "width": 362,
+          "height": 359,
+          "sourceBounds": [
+            452,
+            408,
+            814,
+            767
+          ],
+          "visibleBounds": [
+            452,
+            408,
+            814,
+            767
+          ],
+          "renderScale": 1.022099447513812,
+          "renderOffset": [
+            13.300000000000011,
+            43.06629834254147
+          ]
+        },
+        {
+          "index": 7,
+          "presentation": "male",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 839,
+          "y": 410,
+          "width": 321,
+          "height": 357,
+          "sourceBounds": [
+            839,
+            410,
+            1160,
+            767
+          ],
+          "visibleBounds": [
+            839,
+            410,
+            1160,
+            767
+          ],
+          "renderScale": 1.0364145658263306,
+          "renderOffset": [
+            31.955462184873937,
+            39.99999999999994
+          ]
+        },
+        {
+          "index": 8,
+          "presentation": "male",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1213,
+          "y": 408,
+          "width": 353,
+          "height": 359,
+          "sourceBounds": [
+            1213,
+            408,
+            1566,
+            767
+          ],
+          "visibleBounds": [
+            1213,
+            408,
+            1566,
+            767
+          ],
+          "renderScale": 1.0306406685236769,
+          "renderOffset": [
+            16.391922005571047,
+            40.0
+          ]
+        },
+        {
+          "index": 9,
+          "presentation": "male",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1606,
+          "y": 408,
+          "width": 327,
+          "height": 359,
+          "sourceBounds": [
+            1606,
+            408,
+            1933,
+            767
+          ],
+          "visibleBounds": [
+            1606,
+            408,
+            1933,
+            767
+          ],
+          "renderScale": 1.0306406685236769,
+          "renderOffset": [
+            29.79025069637885,
+            40.0
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged. Mandatory ART-DIRECTION.md positive/negative headers and approved Ledger Rat / Bracken Quay references; bunny short-ear form refined through image generation. Original fabric/trim/eyes shown by default; alternate appearance colors composite original cropped raster pixels with source-alpha/luminance filters.",
+      "approvalStatus": "Root reviewed actual runtime art at 64px and128px. Browser layout verification unavailable in this sandbox."
+    },
+    {
+      "id": "character-atlas-cat",
+      "src": "assets/characters/cat-atlas.png",
+      "purpose": "Bipedal plush cat stuffie; five species-specific forms and two presentations",
+      "sha256": "a5b06d5891e8e3531a5885bec03f82a03cda0974db9180cf45decc559f00861a",
+      "width": 1983,
+      "height": 793,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "displaySizes": [
+        64,
+        96,
+        128
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 2,
+        "nominalColumnWidth": 396.6,
+        "nominalRowHeight": 396.5,
+        "runtimeViewport": [
+          396.6,
+          420
+        ],
+        "anchor": "visible feet baseline y410; preserve whole-pose proportions",
+        "note": "Each pose is measured and cropped individually. Ears/tails can cross nominal cell boundaries; do not replace these bounds with equal-cell slicing."
+      },
+      "frames": [
+        {
+          "index": 0,
+          "presentation": "female",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 48,
+          "y": 24,
+          "width": 338,
+          "height": 358,
+          "sourceBounds": [
+            48,
+            24,
+            386,
+            382
+          ],
+          "visibleBounds": [
+            48,
+            24,
+            386,
+            382
+          ],
+          "renderScale": 1.0335195530726258,
+          "renderOffset": [
+            23.635195530726264,
+            40.0
+          ]
+        },
+        {
+          "index": 1,
+          "presentation": "female",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 441,
+          "y": 25,
+          "width": 321,
+          "height": 354,
+          "sourceBounds": [
+            441,
+            25,
+            762,
+            379
+          ],
+          "visibleBounds": [
+            441,
+            25,
+            762,
+            379
+          ],
+          "renderScale": 1.0451977401129944,
+          "renderOffset": [
+            30.545762711864427,
+            40.0
+          ]
+        },
+        {
+          "index": 2,
+          "presentation": "female",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 825,
+          "y": 25,
+          "width": 329,
+          "height": 354,
+          "sourceBounds": [
+            825,
+            25,
+            1154,
+            379
+          ],
+          "visibleBounds": [
+            825,
+            25,
+            1154,
+            379
+          ],
+          "renderScale": 1.0451977401129944,
+          "renderOffset": [
+            26.36497175141244,
+            40.0
+          ]
+        },
+        {
+          "index": 3,
+          "presentation": "female",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1218,
+          "y": 28,
+          "width": 357,
+          "height": 354,
+          "sourceBounds": [
+            1218,
+            28,
+            1575,
+            382
+          ],
+          "visibleBounds": [
+            1218,
+            28,
+            1575,
+            382
+          ],
+          "renderScale": 1.0364145658263306,
+          "renderOffset": [
+            13.299999999999983,
+            43.10924369747897
+          ]
+        },
+        {
+          "index": 4,
+          "presentation": "female",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1627,
+          "y": 27,
+          "width": 319,
+          "height": 355,
+          "sourceBounds": [
+            1627,
+            27,
+            1946,
+            382
+          ],
+          "visibleBounds": [
+            1627,
+            27,
+            1946,
+            382
+          ],
+          "renderScale": 1.0422535211267605,
+          "renderOffset": [
+            32.06056338028171,
+            40.0
+          ]
+        },
+        {
+          "index": 5,
+          "presentation": "male",
+          "styleIndex": 0,
+          "column": 0,
+          "x": 48,
+          "y": 412,
+          "width": 339,
+          "height": 355,
+          "sourceBounds": [
+            48,
+            412,
+            387,
+            767
+          ],
+          "visibleBounds": [
+            48,
+            412,
+            387,
+            767
+          ],
+          "renderScale": 1.0422535211267605,
+          "renderOffset": [
+            21.638028169014092,
+            40.0
+          ]
+        },
+        {
+          "index": 6,
+          "presentation": "male",
+          "styleIndex": 1,
+          "column": 1,
+          "x": 438,
+          "y": 412,
+          "width": 324,
+          "height": 356,
+          "sourceBounds": [
+            438,
+            412,
+            762,
+            768
+          ],
+          "visibleBounds": [
+            438,
+            412,
+            762,
+            768
+          ],
+          "renderScale": 1.0393258426966292,
+          "renderOffset": [
+            29.92921348314607,
+            40.0
+          ]
+        },
+        {
+          "index": 7,
+          "presentation": "male",
+          "styleIndex": 2,
+          "column": 2,
+          "x": 830,
+          "y": 413,
+          "width": 325,
+          "height": 354,
+          "sourceBounds": [
+            830,
+            413,
+            1155,
+            767
+          ],
+          "visibleBounds": [
+            830,
+            413,
+            1155,
+            767
+          ],
+          "renderScale": 1.0451977401129944,
+          "renderOffset": [
+            28.455367231638434,
+            40.0
+          ]
+        },
+        {
+          "index": 8,
+          "presentation": "male",
+          "styleIndex": 3,
+          "column": 3,
+          "x": 1218,
+          "y": 414,
+          "width": 355,
+          "height": 353,
+          "sourceBounds": [
+            1218,
+            414,
+            1573,
+            767
+          ],
+          "visibleBounds": [
+            1218,
+            414,
+            1573,
+            767
+          ],
+          "renderScale": 1.0422535211267605,
+          "renderOffset": [
+            13.300000000000011,
+            42.08450704225356
+          ]
+        },
+        {
+          "index": 9,
+          "presentation": "male",
+          "styleIndex": 4,
+          "column": 4,
+          "x": 1627,
+          "y": 415,
+          "width": 317,
+          "height": 353,
+          "sourceBounds": [
+            1627,
+            415,
+            1944,
+            768
+          ],
+          "visibleBounds": [
+            1627,
+            415,
+            1944,
+            768
+          ],
+          "renderScale": 1.048158640226629,
+          "renderOffset": [
+            32.166855524079324,
+            40.0
+          ]
+        }
+      ],
+      "provenance": "Original image-generation PNG copied unchanged. Mandatory ART-DIRECTION.md positive/negative headers and approved Ledger Rat / Bracken Quay references; bunny short-ear form refined through image generation. Original fabric/trim/eyes shown by default; alternate appearance colors composite original cropped raster pixels with source-alpha/luminance filters.",
+      "approvalStatus": "Root reviewed actual runtime art at 64px and128px. Browser layout verification unavailable in this sandbox."
     }
   ]
 }

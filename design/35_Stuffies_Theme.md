@@ -1,3 +1,5 @@
+> v0.13 update: the five playable animal types and generated bipedal plush art are now implemented. Canonical types are bear/bunny/unicorn/wolf/cat. The older four-brand proposal below is historical where it conflicts with [the production record](39_Stuffie_Art_Production.md). Existing race IDs migrate through aliases without resetting stats or inventory.
+
 # Future character theme: stuffies
 
 User direction: player characters are **stuffed animals** ("stuffies"), powering up and surviving a dangerous world of things that **do not like stuffies, or like them too much**.

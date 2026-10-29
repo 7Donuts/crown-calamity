@@ -1,3 +1,5 @@
+> Historical v0.10.1 production record. Superseded by [the v0.13 stuffie production record](39_Stuffie_Art_Production.md). Old runtime atlases are retired; their originals remain in Git history.
+
 # Generated character art — v0.10.1
 
 [ART-DIRECTION.md](../ART-DIRECTION.md) is mandatory for all new and revised game art. There is no separate character style. Every atlas below was generated with its shared positive/negative prompt headers and the approved runtime Ledger Rat and Bracken Quay reference images. Final generated PNGs are copied unchanged into production; intermediate studies remain outside the game.

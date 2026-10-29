@@ -43,7 +43,7 @@ test('case files start empty for a new character and old saves default to an emp
     assert.ok(loaded, `v${version} save imports`);
     assert.deepEqual(loaded.caseFiles, {}, `v${version} starts from zero with no retroactive credit`);
     assert.equal(loaded.titleId, undefined);
-    assert.equal(loaded.version, 4, 'no save format bump');
+    assert.equal(loaded.version, 5, 'older records migrate into the current save format');
   }
 });
 

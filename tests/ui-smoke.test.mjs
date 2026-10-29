@@ -160,6 +160,9 @@ test('the actual UI action handlers carry a rescue build through character, gear
   for (const text of ['Might','Finesse','Intellect','Vitality','Will','Insight','Luck']) assert.ok(ui.getApp().innerHTML.includes(text),text);
   await ui.act('char-tab:overview');
   for (const text of ['BUILD INSPECTOR','Equipment-drop chance','Normal / critical / glancing']) assert.ok(ui.getApp().innerHTML.includes(text),text);
+  const progress=ui.getApp().innerHTML.match(/<section class="panel progression-panel">[\s\S]*?<\/section>/)?.[0];
+  assert.ok(progress);assert.match(progress,/LEVEL PROGRESS/);assert.match(progress,/\+4 attribute points/);
+  assert.doesNotMatch(progress,/part|stitch|seam|milestone/i,'the progress notice shows only full-level XP');
 
   await ui.act('char-tab:abilities');
   noBrokenText(ui.getApp().innerHTML,'ability screen');
@@ -203,23 +206,23 @@ test('the actual UI action handlers carry a rescue build through character, gear
   await ui.act('upgrade:rod');
   matches(ui.getModal().innerHTML,/BEFORE[\s\S]*AFTER/);
   matches(ui.getModal().innerHTML,/No currency or materials are spent until you confirm/);
-  await ui.act('upgrade-confirm:rod');
+  await ui.act(ui.getModal().innerHTML.match(/data-action="(upgrade-confirm:[^"]+)"/)[1]);
   assert.equal(ui.getState().itemMods.rod.upgrade,1);
   await ui.act('affix-menu:rod:prefix');
   await ui.act('affix-preview:rod:prefix:keen');
   matches(ui.getModal().innerHTML,/Keen/);
-  await ui.act('affix-confirm:rod:prefix:keen');
+  await ui.act(ui.getModal().innerHTML.match(/data-action="(affix-confirm:[^"]+)"/)[1]);
   assert.equal(ui.getState().itemMods.rod.prefix,'keen');
 
   await ui.act('nav:guide');
-  matches(ui.getApp().innerHTML,/Save format v4/);
-  matches(ui.getApp().innerHTML,/Imports v1, v2, v3, and v4/);
+  matches(ui.getApp().innerHTML,/Save format v5/);
+  matches(ui.getApp().innerHTML,/Imports v1, v2, v3, v4, and v5/);
   await ui.act('import');
   matches(ui.getModal().innerHTML,/Import as new character/);
   const legacyId=ui.getRoster().activeId,existing=structuredClone(ui.getState()),legacy=G.fresh(); legacy.version=2; legacy.coins=41;
   getElement('#save-file').files=[{size:120,text:async()=>JSON.stringify(legacy)}];
   await ui.act('confirm-import');
-  assert.equal(ui.getState().version,4);
+  assert.equal(ui.getState().version,5);
   assert.equal(ui.getState().coins,41);
   assert.equal(ui.getRoster().characters.length,2,'import adds a character instead of replacing the roster');
   const importedId=ui.getRoster().activeId;assert.notEqual(importedId,legacyId);
@@ -262,24 +265,24 @@ test('the character gear page retains every slot while Satchel keeps spare equip
 });
 
 test('relic resonance UI reviews each unlock and copy license without replacing core gear slots',async()=>{
-  const s=G.fresh();s.coins=20_000;s.bag.push('signet','seal');s.gear.relic='signet';
+  const s=G.fresh();s.coins=2_000_000;s.bag.push('signet','seal');s.gear.relic='signet';
   const {ui}=await bootApp(s);
   await ui.act('nav:character');await ui.act('char-tab:gear');
   assert.equal(Object.keys(G.SLOTS).length,9,'echoes do not add ordinary gear slots');
   assert.match(ui.getApp().innerHTML,/CORE RELIC · FULL EFFECT/);
   for(const index of [1,2,3])assert.match(ui.getApp().innerHTML,new RegExp(`LOOP ${index} · LOCKED`));
 
-  const unlockCosts=[250,1250,6250];
+  const unlockCosts=[0,1,2].map(index=>G.unlockRelicPreview(s,index).coinCost);
   for(let index=0;index<unlockCosts.length;index++){
     await ui.act(`relic-unlock:${index}`);
     assert.match(ui.getModal().innerHTML,new RegExp(`Cost: ${unlockCosts[index]} coins`));
     await ui.act(`relic-unlock-confirm:${index}`);
     assert.equal(ui.getState().relicSockets[index].unlocked,true);
   }
-  const copyCosts=[150,600,2400];
-  for(let index=0;index<copyCosts.length;index++){
+  for(let index=0;index<3;index++){
+    const copyCost=G.attuneRelicPreview(ui.getState(),index,'signet').coinCost;
     await ui.act(`relic-attune:${index}:signet`);
-    assert.match(ui.getModal().innerHTML,new RegExp(`Cost: ${copyCosts[index]} coins`));
+    assert.match(ui.getModal().innerHTML,new RegExp(`Cost: ${copyCost} coins`));
     await ui.act(`relic-attune-confirm:${index}:signet`);
     assert.equal(ui.getState().relicSockets[index].relicId,'signet');
   }
@@ -292,13 +295,13 @@ test('first-run wizard creates a local character and the roster preserves progre
   noBrokenText(ui.getApp().innerHTML,'new character wizard');
   contains(ui.getApp().innerHTML,'Make your stuffie');
   for(const id of ['new-name','new-race','new-origin','new-kit'])assert.ok(ui.getApp().innerHTML.includes(`id="${id}"`),id);
-  await ui.act('creator-race:reedling');await ui.act('creator-kit:caster');
-  getElement('#new-name').value='Ada';getElement('#new-race').value='reedling';getElement('#new-origin').value='Canal clerk';getElement('#new-kit').value='caster';
+  await ui.act('creator-race:bunny');await ui.act('creator-kit:caster');
+  getElement('#new-name').value='Ada';getElement('#new-race').value='bunny';getElement('#new-origin').value='Canal clerk';getElement('#new-kit').value='caster';
   ui.changeCreatorField('hairColor','copper');
   await ui.act('create-character');
-  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().race,'Floppables by Pellet & Pip');assert.equal(ui.getState().raceId,'reedling');assert.equal(ui.getState().origin,'Canal clerk');
+  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().race,'Pellet & Pip Bunnies');assert.equal(ui.getState().raceId,'bunny');assert.equal(ui.getState().origin,'Canal clerk');
   assert.equal(ui.getState().coins,20);assert.deepEqual([...ui.getState().bag],['rod','focus','coat']);
-  assert.deepEqual(ui.getState().stats,Races.RACES.reedling.stats);
+  assert.deepEqual(ui.getState().stats,Races.RACES.bunny.stats);
   assert.equal(ui.getState().appearance.hairColor,'copper');
   noBrokenText(ui.getApp().innerHTML,'created character');
   assert.equal(ui.getRoster().characters.length,1);
@@ -315,8 +318,8 @@ test('first-run wizard creates a local character and the roster preserves progre
   assert.equal(G.loadSave(JSON.stringify(ui.getState())).appearance.hairColor,'copper','appearance survives save import normalization');
 
   // Add a concrete change before switching, so the test proves the old adventure is saved.
-  await ui.act('nav:bag');await ui.act('bag-tab:shop');await ui.act('vendor:armorer');await ui.act('buy-preview:workgloves');await ui.act('buy-confirm:workgloves');
-  assert.equal(ui.getState().coins,4);assert.ok(ui.getState().bag.includes('workgloves'));
+  ui.getState().coins=500;await ui.act('nav:bag');await ui.act('bag-tab:shop');await ui.act('vendor:armorer');await ui.act('buy-preview:workgloves');await ui.act('buy-confirm:workgloves');
+  assert.equal(ui.getState().coins,500-G.ITEMS.workgloves.price);assert.ok(ui.getState().bag.includes('workgloves'));
   const firstId=ui.getRoster().activeId;
   await ui.act('nav:character');await ui.act('character-manager');
   contains(ui.getModal().innerHTML,'1 of 6 character slots used');
@@ -329,7 +332,7 @@ test('first-run wizard creates a local character and the roster preserves progre
   await ui.act('character-manager');
   assert.ok(ui.getModal().innerHTML.includes('Ada'));
   await ui.act(`switch-character:${firstId}`);
-  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().coins,4);assert.ok(ui.getState().bag.includes('workgloves'));
+  assert.equal(ui.getState().name,'Ada');assert.equal(ui.getState().coins,500-G.ITEMS.workgloves.price);assert.ok(ui.getState().bag.includes('workgloves'));
   await ui.act('character-manager');await ui.act(`switch-character:${secondId}`);
   assert.equal(ui.getState().name,'Bram');assert.equal(ui.getState().coins,20);assert.deepEqual([...ui.getState().bag],['sword','shield','coat']);
 
@@ -431,12 +434,15 @@ test('combat UI explains zero-mana recovery and reports actual gains without rew
   await ui.act('combat:guard');
   assert.equal(state.mp,2,'rapid rejected taps give no regeneration');
   assert.equal(state.fight.round,round);
+  state.bag.push('signet');state.gear.relic='signet';ui.render();
+  const recover=G.recoverProfile(state);assert.equal(recover.mana+recover.passiveMana,12);
+  contains(ui.getApp().innerHTML,'Shake it off (Recover) restores 12 Sparkle (mana) and 10 Bounce (stamina).');
   ui.setClock(state.nextActionAt);
   await ui.act('combat:recover');
-  assert.equal(state.mp,12);
-  contains(ui.getApp().innerHTML,'+10 Sparkle (mana)','Recover feedback includes both the active and passive recovery');
+  assert.equal(state.mp,14);
+  contains(ui.getApp().innerHTML,'+12 Sparkle (mana)','Recover feedback includes signet and passive recovery');
   ui.advanceClock(60000);ui.render();
-  assert.equal(state.mp,12,'waiting and re-rendering do not restore mana');
+  assert.equal(state.mp,14,'waiting and re-rendering do not restore mana');
 });
 
 test('a pending Special Edition is disclosed on the hunting list before any exchange, beside the regular hunt, and its fight is a separate explicit start',async()=>{

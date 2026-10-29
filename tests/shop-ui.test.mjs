@@ -1,48 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
-import vm from 'node:vm';
 import * as G from '../dist/engine.js';
-import * as C from '../dist/characters.js';
-import * as Creator from '../dist/character-creator.js';
-import * as Races from '../dist/races.js';
-import * as CharacterArt from '../dist/character-art.js';
-import * as RelicUI from '../dist/relic-ui.js';
-import * as StoryUI from '../dist/story-ui.js';
-import * as MarketUI from '../dist/market-ui.js';
-import {MENU_ICONS} from '../dist/menu-icons.js';
-import {UI_ICONS} from '../dist/ui-icons.js';
-import * as EnemyArt from '../dist/enemy-art.js';
-import * as ItemArt from '../dist/item-art.js';
-import * as CharacterSheet from '../dist/character-sheet.js';
-import * as BattleReport from '../dist/battle-report.js';
-import * as WorldUI from '../dist/world-ui.js';
-import * as VariantUI from '../dist/variant-ui.js';
+import {readFile} from 'node:fs/promises';
+import {bootWithSave} from './shop-ui-harness.mjs';
 
-async function bootWithSave(save) {
-  const elements=new Map(),storage=new Map([['crown-calamity-v1',JSON.stringify(save)]]);
-  const element=()=>({innerHTML:'',textContent:'',value:'',files:[],open:false,style:{setProperty(){}},attributes:{},setAttribute(name,value){this.attributes[name]=String(value);},getAttribute(name){return this.attributes[name]??null;},toggleAttribute(name,force){if(force)this.attributes[name]='';else delete this.attributes[name];},classList:{add(){},remove(){},toggle(){}},addEventListener(){},querySelector(){return element();},querySelectorAll(){return [];},showModal(){this.open=true;},close(){this.open=false;},focus(){},click(){},getBoundingClientRect(){return {left:0,right:0,top:0,bottom:0};}});
-  const getElement=selector=>{if(!elements.has(selector))elements.set(selector,element());return elements.get(selector);};
-  const document={querySelector:getElement,createElement:element,addEventListener(){}};
-  const context={__VARIANT_UI__:VariantUI,__GAME_ENGINE__:G,__CHARACTER_MODULE__:C,__CHARACTER_CREATOR__:Creator,__RACES__:Races,__CHARACTER_ART__:CharacterArt,__RELIC_UI__:RelicUI,__STORY_UI__:StoryUI, __MARKET_UI__:MarketUI, __MENU_ICONS__:MENU_ICONS, __UI_ICONS__:UI_ICONS, __ENEMY_ART__:EnemyArt, __ITEM_ART__:ItemArt, __CHARACTER_SHEET__:CharacterSheet, __BATTLE_REPORT__:BattleReport, __WORLD_UI__:WorldUI,document,localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value)},window:{scrollTo(){}},console,Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setTimeout:()=>1,clearTimeout(){},structuredClone};
-  const source=await readFile(new URL('../dist/app.js',import.meta.url),'utf8');
-  const transformed=source.replace("import * as Creator from './character-creator.js';",'const Creator=globalThis.__CHARACTER_CREATOR__;').replace("import {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS} from './races.js';",'const {RACES,resolveRace,normalizeAppearance,APPEARANCE_OPTIONS}=globalThis.__RACES__;').replace("import {renderCharacterArt} from './character-art.js';",'const {renderCharacterArt}=globalThis.__CHARACTER_ART__;').replace("import * as RUI from './relic-ui.js';",'const RUI=globalThis.__RELIC_UI__;').replace("import {renderStory,renderStorySummary,getStoryNudge} from './story-ui.js';",'const {renderStory,renderStorySummary,getStoryNudge}=globalThis.__STORY_UI__;').replace("import * as G from './engine.js';",'const G=globalThis.__GAME_ENGINE__;').replace("import * as C from './characters.js';",'const C=globalThis.__CHARACTER_MODULE__;').replace("import * as M from './market-ui.js';",'const M=globalThis.__MARKET_UI__;').replace("import {MENU_ICONS} from './menu-icons.js';",'const MENU_ICONS=globalThis.__MENU_ICONS__;').replace("import {UI_ICONS} from './ui-icons.js';",'const UI_ICONS=globalThis.__UI_ICONS__;').replace("import {renderEnemyArt} from './enemy-art.js';",'const {renderEnemyArt}=globalThis.__ENEMY_ART__;').replace("import {renderItemArt,renderServiceArt} from './item-art.js';",'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;').replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';",'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;').replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';",'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;').replace("import {renderVariantOffer,renderVariantProgress,renderVariantBanner} from './variant-ui.js';",'const {renderVariantOffer,renderVariantProgress,renderVariantBanner}=globalThis.__VARIANT_UI__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';",'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');
-  vm.runInNewContext(transformed+`\nglobalThis.__uiTest={act,getState:()=>state,getApp:()=>$('#app'),getModal:()=>$('#modal'),getToast:()=>$('#toast')};`,context,{filename:'dist/app.js'});
-  return {ui:context.__uiTest,storage};
-}
 
 const contains=(html,text,where=text)=>assert.equal(html.includes(text),true,where);
 const noMissing=html=>assert.equal(/\b(?:undefined|NaN)\b/.test(html),false,'shop rendering has no missing values');
 
 test('separate vendor menus compare through an overlay and purchased stock disappears without equipping',async()=>{
-  const save=G.createCharacter({name:'Nell',kit:'caster'});
+  const save=G.createCharacter({name:'Nell',kit:'caster'});save.coins=500;
   const {ui}=await bootWithSave(save);
   await ui.act('nav:market');
-  contains(ui.getApp().innerHTML,'Weaponsmith');
+  contains(ui.getApp().innerHTML,'Pins &amp; Needles');
   contains(ui.getApp().innerHTML,'data-action="vendor:armorer"');
   contains(ui.getApp().innerHTML,'data-action="vendor:curio"');
   assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="rod"|Inspector’s Rod|side-column|EQUIPPED BUILD/,'Buy only displays vendor stock');
   contains(ui.getApp().innerHTML,'data-action="market-compare:sword"');
+  assert.match(ui.getApp().innerHTML,/class="vendor-card vendor-row"/,'gear is shown in a compact row');
+  assert.match(ui.getApp().innerHTML,/class="vendor-item-stats"/,'the row includes concise item stats');
+  assert.match(ui.getApp().innerHTML,/class="subtle vendor-compare-action" aria-label="Compare Canal-Iron Sword"/,'Compare remains accessible as an icon action');
   const before=structuredClone(ui.getState());
   await ui.act('market-compare:sword');
   assert.equal(ui.getModal().open,true);
@@ -53,7 +30,7 @@ test('separate vendor menus compare through an overlay and purchased stock disap
   await ui.act('buy-preview:sword');
   assert.deepEqual(ui.getState(),before,'review does not spend');
   await ui.act('buy-confirm:sword');
-  assert.equal(ui.getState().coins,2);
+  assert.equal(ui.getState().coins,500-G.ITEMS.sword.price);
   assert.equal(ui.getState().gear.weapon,'rod');
   assert.ok(ui.getState().bag.includes('sword'));
   assert.doesNotMatch(ui.getApp().innerHTML,/data-stock-id="sword"/,'owned gear disappears from Buy');
@@ -82,7 +59,7 @@ test('mobile has a direct World destination and retains Chronicle, Field Guide a
   await ui.act('nav:journal');
   assert.match(ui.getApp().innerHTML,/<div class="tabs records-tabs"[\s\S]*?data-action="nav:guide"/);
   await ui.act('nav:guide');
-  contains(ui.getApp().innerHTML,'Save format v4');
+  contains(ui.getApp().innerHTML,'Save format v5');
   contains(ui.getApp().innerHTML,'data-action="export"');
   contains(ui.getApp().innerHTML,'data-action="import"');
   contains(ui.getApp().innerHTML,'class="guide-section guide-topic"');
@@ -100,10 +77,10 @@ test('outfitter purchase, workbench upgrades, and resale reviews remove modifica
 
   await ui.act('buy-preview:workgloves');
   contains(ui.getModal().innerHTML,'FULL PRICE');
-  contains(ui.getModal().innerHTML,'16 coins');
+  contains(ui.getModal().innerHTML,`${G.ITEMS.workgloves.price} coins`);
   assert.equal(ui.getState().coins,initialCoins,'opening a purchase review does not spend coins');
   await ui.act('buy-confirm:workgloves');
-  assert.equal(ui.getState().coins,initialCoins-16);
+  assert.equal(ui.getState().coins,initialCoins-G.ITEMS.workgloves.price);
   assert.ok(ui.getState().bag.includes('workgloves'));
   contains(ui.getToast().textContent,'added to your satchel');
 
@@ -111,13 +88,13 @@ test('outfitter purchase, workbench upgrades, and resale reviews remove modifica
   await ui.act('bag-tab:workbench');
   await ui.act('upgrade:workgloves');
   contains(ui.getModal().innerHTML,'BEFORE');contains(ui.getModal().innerHTML,'AFTER');
-  assert.equal(ui.getState().coins,initialCoins-16,'upgrade preview is free');
-  await ui.act('upgrade-confirm:workgloves');
+  assert.equal(ui.getState().coins,initialCoins-G.ITEMS.workgloves.price,'upgrade preview is free');
+  await ui.act(ui.getModal().innerHTML.match(/data-action="(upgrade-confirm:[^"]+)"/)[1]);
   assert.equal(ui.getState().itemMods.workgloves.upgrade,1);
   await ui.act('affix-menu:workgloves:prefix');
   await ui.act('affix-preview:workgloves:prefix:sturdy');
   contains(ui.getModal().innerHTML,'Sturdy');
-  await ui.act('affix-confirm:workgloves:prefix:sturdy');
+  await ui.act(ui.getModal().innerHTML.match(/data-action="(affix-confirm:[^"]+)"/)[1]);
   assert.equal(ui.getState().itemMods.workgloves.prefix,'sturdy');
   const coinsBeforeSale=ui.getState().coins,salePrice=G.sellPreview(ui.getState(),'workgloves').price;
   await ui.act('bag-tab:shop');
@@ -133,7 +110,7 @@ test('outfitter purchase, workbench upgrades, and resale reviews remove modifica
   await ui.act('sell-confirm:workgloves');
   assert.equal(ui.getState().bag.includes('workgloves'),false);
   assert.equal(ui.getState().itemMods.workgloves,undefined);
-  assert.equal(ui.getState().coins,initialCoins-16-35-24+salePrice);
+  assert.equal(ui.getState().coins,coinsBeforeSale+salePrice,'sale coins are applied exactly once');
   assert.ok(ui.getState().coins<initialCoins,'buy then upgrade then sell loses coins');
   assert.ok(storage.has('crown-calamity-v1'));
 
@@ -170,4 +147,32 @@ test('shop controls display encounter locks and do not mutate a fight or delve s
     await ui.act('buy-confirm:cap');
     assert.deepEqual(ui.getState(),before,`${mode} prevents purchases and sales`);
   }
+});
+
+test('buy review offers satchel or equip and requires an explicit accessory slot',async()=>{
+  const save=G.createCharacter({name:'Nell',kit:'caster'});save.coins=500;
+  const {ui}=await bootWithSave(save);
+  await ui.act('nav:market');await ui.act('vendor:curio');await ui.act('buy-preview:penny');
+  contains(ui.getModal().innerHTML,'Buy to Satchel');
+  contains(ui.getModal().innerHTML,'Buy & Equip');
+  assert.match(ui.getModal().innerHTML,/data-action="buy-preview:penny:accessory"/);
+  assert.match(ui.getModal().innerHTML,/data-action="buy-preview:penny:accessory2"/);
+  assert.match(ui.getModal().innerHTML,/data-action="buy-equip-confirm:penny:"[^>]*disabled/,'an accessory slot must be selected first');
+  const coins=ui.getState().coins;
+  await ui.act('buy-preview:penny:accessory2');
+  assert.match(ui.getModal().innerHTML,/aria-pressed="true"/);
+  await ui.act('buy-equip-confirm:penny:accessory2');
+  assert.equal(ui.getState().gear.accessory2,'penny');
+  assert.equal(ui.getState().coins,coins-G.buyPreview(save,'penny').price);
+  assert.ok(ui.getState().bag.includes('penny'));
+});
+
+
+test('mobile market actions retain tap size without full-width button rows',async()=>{
+  const css=await readFile(new URL('../dist/menu.css',import.meta.url),'utf8');
+  const mobile=css.slice(css.indexOf('@media (max-width: 740px)',css.indexOf('.vendor-row')));
+  assert.match(mobile,/vendor-actions button \{[^}]*min-height: 48px/);
+  assert.match(mobile,/vendor-compare-action \{[^}]*width: 48px/);
+  assert.match(mobile,/vendor-actions \{ flex-wrap: nowrap/);
+  assert.doesNotMatch(mobile,/vendor-actions \{ grid-column: 2 \/ -1/,'the action group stays beside the item row');
 });

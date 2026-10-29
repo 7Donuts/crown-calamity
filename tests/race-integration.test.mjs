@@ -58,7 +58,7 @@ test('legacy heritage adoption is one-time, locked during encounters and recover
   const s=makeLegacy(),stats=structuredClone(s.stats),gear=structuredClone(s.gear),coins=s.coins,points=s.points;
   const oldTotals=G.totals(s),oldMax=oldTotals.hp;
   assert.equal(G.adoptRace(s,'Stonekin'),true);
-  assert.equal(s.raceId,'cobblekin');assert.equal(s.race,'Sturdy Stitch Workwear');
+  assert.equal(s.raceId,'wolf');assert.equal(s.race,'Sturdy Stitch Wolves');
   assert.deepEqual(s.stats,stats);assert.equal(s.points,points);assert.deepEqual(s.gear,gear);assert.equal(s.coins,coins);
   assert.deepEqual([s.hp,s.mp,s.sp],[1,2,3],'heritage adoption does not refill current resources');
   assert.ok(G.totals(s).hp>oldMax,'the new passive raises maximum health');
@@ -76,7 +76,7 @@ test('presentation and appearance remain cosmetic to combat totals',()=>{
 
 test('three core-matching relic echoes add fractional attributes while saved resources remain integer and round-trip',()=>{
   const s=G.createCharacter({race:'quayfolk',kit:'bulwark'});
-  s.coins=20_000;s.bag.push('signet');s.gear.relic='signet';
+  s.coins=200_000;s.bag.push('signet');s.gear.relic='signet';
   for(let slot=0;slot<3;slot++){
     assert.equal(G.unlockRelic(s,slot).ok,true);
     assert.equal(G.attuneRelic(s,slot,'signet').ok,true);
@@ -95,9 +95,9 @@ test('three core-matching relic echoes add fractional attributes while saved res
   for(const key of ['hp','mp','sp'])assert.ok(Number.isInteger(loaded[key]));
 });
 
-test('three Seal echoes never duplicate the once-per-fight core barrier',()=>{
-  const s=G.createCharacter({race:'cobblekin',kit:'breaker'});
-  s.coins=20_000;s.bag.push('seal');s.gear.relic='seal';s.itemMods={seal:{upgrade:1}};
+test('Seal echoes scale one barrier proc per fight, with or without the core Seal equipped',()=>{
+  const s=G.createCharacter({race:'wolf',kit:'breaker'});
+  s.coins=1_200_000;s.bag.push('seal');s.gear.relic='seal';s.itemMods={seal:{upgrade:1}};
   for(let slot=0;slot<3;slot++){
     assert.equal(G.unlockRelic(s,slot).ok,true);
     assert.equal(G.attuneRelic(s,slot,'seal').ok,true);
@@ -107,12 +107,14 @@ test('three Seal echoes never duplicate the once-per-fight core barrier',()=>{
   const first=G.exchange(s,'guard',()=>.5,1000);
   assert.equal(first.ok,true);assert.equal(first.absorbed,0,'an unhelpful first guard grants no Seal barrier');
   const second=G.exchange(s,'guard',()=>.5,1000+G.ACTION_DELAY_MS);
-  assert.equal(second.ok,true);assert.equal(second.absorbed,15,'the core Seal contributes one barrier proc');
+  assert.equal(second.ok,true);assert.ok(second.absorbed>0,'the Seal barrier absorbs the second response');
   assert.equal(s.fight.sealUsed,true);
-  assert.equal(s.log.filter(entry=>entry.text.includes('Seal grants 15 barrier')).length,1,'echo sockets never duplicate the core proc');
+  assert.equal(s.log.filter(entry=>entry.text.includes('Seal grants 28 barrier')).length,1,'the core and three echoes scale one proc instead of repeating it');
+  G.exchange(s,'guard',()=>.5,1000+2*G.ACTION_DELAY_MS);
+  assert.equal(s.log.filter(entry=>entry.text.includes('Seal grants')).length,1,'later useful Guards do not trigger another Seal proc');
 
-  const echoOnly=G.createCharacter({race:'cobblekin',kit:'breaker'});
-  echoOnly.coins=20_000;echoOnly.bag.push('seal','signet');echoOnly.gear.relic='signet';echoOnly.itemMods={seal:{upgrade:1}};
+  const echoOnly=G.createCharacter({race:'wolf',kit:'breaker'});
+  echoOnly.coins=1_200_000;echoOnly.bag.push('seal','signet');echoOnly.gear.relic='signet';echoOnly.itemMods={seal:{upgrade:1}};
   for(let slot=0;slot<3;slot++){
     assert.equal(G.unlockRelic(echoOnly,slot).ok,true);
     assert.equal(G.attuneRelic(echoOnly,slot,'seal').ok,true);
@@ -120,6 +122,8 @@ test('three Seal echoes never duplicate the once-per-fight core barrier',()=>{
   assert.equal(G.startFight(echoOnly,'crab','delve',1000),true);
   G.exchange(echoOnly,'guard',()=>.5,1000);
   G.exchange(echoOnly,'guard',()=>.5,1000+G.ACTION_DELAY_MS);
-  assert.equal(echoOnly.fight.sealUsed,false,'Seal echoes with another core relic never attempt the barrier proc');
-  assert.equal(echoOnly.log.filter(entry=>entry.text.includes('Seal grants 15 barrier')).length,0);
+  assert.equal(echoOnly.fight.sealUsed,true,'a licensed Seal echo can use its scaled effect with another core relic');
+  assert.equal(echoOnly.log.filter(entry=>entry.text.includes('Seal grants 26 barrier')).length,1,'three echoes scale the barrier effect without duplicating its trigger');
+  G.exchange(echoOnly,'guard',()=>.5,1000+2*G.ACTION_DELAY_MS);
+  assert.equal(echoOnly.log.filter(entry=>entry.text.includes('Seal grants')).length,1);
 });

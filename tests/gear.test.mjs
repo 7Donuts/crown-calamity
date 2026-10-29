@@ -4,7 +4,7 @@ import {
   ITEMS, SLOTS, EXCHANGES, PREFIXES, SUFFIXES, resolveItem, slotChoices,
   equipItem, unequipItem, unequipReason, buyItem, exchangeMaterials,
   upgradePreview, upgradeItem, affixPreview, applyAffix, normalizeGearState,
-  effectiveItem, buyPreview, sellPreview, sellItem
+  effectiveItem, buyPreview, sellPreview, sellItem, buyAndEquipPreview, buyAndEquipItem
 } from '../dist/gear.js';
 
 const state=(overrides={})=>({level:10,coins:1000,materials:{'Ledger scraps':10,'Canal iron':10,'Runic residue':10,'Chainback shell':10,'Stamped brass':10,'Floodglass':10,'Floodglass Fragment':2,'Salvaged fittings':10,'Repair fittings':10},bag:['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band','cap','boots','rivethelm','waders','signet','pike'],gear:{weapon:'rod',offhand:'shield',body:'coat'},itemMods:{},fight:null,delve:null,...overrides});
@@ -14,6 +14,16 @@ test('catalog preserves every original item id and exposes all nine slots',()=>{
   assert.deepEqual([ITEMS.rod.base,ITEMS.rod.channel,ITEMS.rod.focus,ITEMS.sword.base,ITEMS.sword.channel,ITEMS.blade.channel,ITEMS.shield.armor,ITEMS.focus.spellBase,ITEMS.seal.slot,ITEMS.penny.stats.lck],[14,'spell',true,14,'heavy','precision',10,3,'relic',4]);
   assert.deepEqual(Object.keys(SLOTS),['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic']);
   assert.ok(EXCHANGES.fragment_glass&&PREFIXES.keen&&SUFFIXES.of_vigor);
+});
+
+test('expanded catalog has ten items per gear category and a generated art family for each',async()=>{
+  const {ITEM_ART}=await import('../dist/item-art.js');
+  const counts={};for(const item of Object.values(ITEMS))counts[item.slot]=(counts[item.slot]||0)+1;
+  assert.equal(Object.keys(ITEMS).length,80);
+  for(const slot of ['weapon','offhand','head','body','hands','feet','accessory','relic'])assert.equal(counts[slot],10,slot);
+  for(const id of Object.keys(ITEMS))assert.ok(ITEM_ART[id],`${id} has generated family art`);
+  for(const id of ['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'])assert.ok(ITEMS[id]);
+  assert.ok(ITEMS.signet.relicEffect==='signet');assert.ok(ITEMS.threadSpool.relicEffect==='threadSpool');
 });
 
 test('full nine-slot loadout preserves legacy traits and counts each owned ID once',()=>{
@@ -51,10 +61,10 @@ test('an ID cannot occupy two slots, and two-handed weapons reserve the offhand'
   assert.equal(equipItem(s,'sword','weapon'),true);assert.deepEqual(slotChoices(s,'shield'),['offhand']);
 });
 
-test('ownership, level, fight and delve locks reject gear changes without spending',()=>{
+test('ownership, fight and delve locks reject gear changes without spending; gear tiers never gate use',()=>{
   const s=state({bag:['rod'],level:1,coins:1000});
-  assert.equal(equipItem(s,'shield','offhand'),false);assert.equal(buyItem(s,'oilskin'),false);
-  s.bag.push('oilskin');assert.equal(equipItem(s,'oilskin','body'),false);
+  assert.equal(equipItem(s,'shield','offhand'),false);assert.equal(buyItem(s,'oilskin'),true);
+  s.bag.push('waders');assert.equal(equipItem(s,'waders','feet'),true);
   s.level=10;s.fight={enemy:'rats'};const coins=s.coins;
   assert.equal(equipItem(s,'sword','weapon'),false);assert.equal(unequipItem(s,'offhand'),false);assert.equal(buyItem(s,'cap'),false);
   assert.equal(exchangeMaterials(s,'ledger_fittings'),false);assert.equal(upgradeItem(s,'rod'),false);assert.equal(applyAffix(s,'rod','prefix','keen'),false);assert.equal(s.coins,coins);
@@ -63,43 +73,55 @@ test('ownership, level, fight and delve locks reject gear changes without spendi
 
 test('buy and exchange spend exactly once and cannot grant duplicates',()=>{
   const s=state({bag:['rod'],coins:100,materials:{'Ledger scraps':3}});
-  assert.equal(buyItem(s,'penny'),true);assert.equal(s.coins,75);assert.equal(buyItem(s,'penny'),false);assert.equal(s.coins,75);
+  assert.equal(buyItem(s,'penny'),true);assert.equal(s.coins,100-ITEMS.penny.price);assert.equal(buyItem(s,'penny'),false);assert.equal(s.coins,100-ITEMS.penny.price);
   const receipt=exchangeMaterials(s,'ledger_fittings');assert.deepEqual(receipt.gained,{'Salvaged fittings':1});
-  assert.equal(s.coins,70);assert.equal(s.materials['Ledger scraps'],0);assert.equal(s.materials['Salvaged fittings'],1);
-  assert.equal(exchangeMaterials(s,'ledger_fittings'),false);assert.equal(s.coins,70);
+  assert.equal(s.coins,95-ITEMS.penny.price);assert.equal(s.materials['Ledger scraps'],0);assert.equal(s.materials['Salvaged fittings'],1);
+  assert.equal(exchangeMaterials(s,'ledger_fittings'),false);assert.equal(s.coins,95-ITEMS.penny.price);
 });
 
 test('starter shop stock is affordable after a few hunts and exposes its prices',()=>{
-  const s=state({level:1,coins:25,bag:['rod']});
-  for(const id of ['rod','sword','blade','shield','focus','charm','coat'])assert.ok(ITEMS[id].price>=8&&ITEMS[id].price<=25,`${id} has an early price`);
-  for(const id of ['cap','workgloves','wornboots'])assert.ok(buyPreview(s,id).allowed,`${id} is immediately available`);
-  assert.equal(buyPreview(s,'boots').allowed,false);assert.match(buyPreview(s,'boots').reason,/level 2/);
-  assert.equal(buyPreview(s,'sword').price,18);assert.equal(buyPreview(s,'sword').item.base,14);
+  const s=state({level:1,coins:500,bag:['rod']});
+  for(const id of ['rod','sword','blade','shield','focus','charm','coat'])assert.ok(ITEMS[id].price>=20,`${id} has a meaningful price`);
+  for(const id of ['cap','workgloves','wornboots','boots'])assert.ok(buyPreview(s,id).allowed,`${id} can be bought at any level`);
+  assert.equal(buyPreview(s,'sword').price,30);assert.equal(buyPreview(s,'sword').item.base,14);
 });
 
-test('buy and sell previews enforce ownership, equipment, level and encounter locks atomically',()=>{
+test('buy and sell previews enforce ownership, equipment, coin and encounter locks atomically',()=>{
   const s=state({level:1,coins:18,bag:['rod','shield'],gear:{weapon:'rod',offhand:'shield'}});
   const before=structuredClone(s);
   assert.equal(sellPreview(s,'rod').allowed,false);assert.match(sellPreview(s,'rod').reason,/[Uu]nequip/);
   assert.equal(sellItem(s,'rod'),false);assert.deepEqual(s,before);
   assert.equal(sellItem(s,'cap'),false);assert.deepEqual(s,before);
-  assert.equal(buyPreview(s,'boots').allowed,false);
+  assert.equal(buyPreview(s,'boots').allowed,false); // insufficient coins, not a level lock
   s.fight={enemy:'rats'};assert.equal(sellPreview(s,'shield').allowed,false);assert.equal(sellItem(s,'shield'),false);assert.equal(buyPreview(s,'cap').allowed,false);assert.equal(buyItem(s,'cap'),false);assert.deepEqual(s.bag,before.bag);assert.equal(s.coins,before.coins);
   s.fight=null;s.delve={node:0};assert.equal(sellItem(s,'shield'),false);assert.equal(buyItem(s,'cap'),false);
 });
 
 test('selling removes unequipped item and mods, and every buy/sell cycle loses coins',()=>{
-  const s=state({level:1,coins:32,bag:['rod'],gear:{weapon:'rod'},materials:{'Salvaged fittings':1},itemMods:{workgloves:{upgrade:3,prefix:'sturdy'}}});
-  assert.equal(buyItem(s,'workgloves'),true);assert.equal(s.coins,16);assert.equal(s.itemMods.workgloves,undefined);
+  const s=state({level:1,coins:60,bag:['rod'],gear:{weapon:'rod'},materials:{'Salvaged fittings':1},itemMods:{workgloves:{upgrade:3,prefix:'sturdy'}}});
+  assert.equal(buyItem(s,'workgloves'),true);assert.equal(s.coins,60-ITEMS.workgloves.price);assert.equal(s.itemMods.workgloves,undefined);
   assert.equal(buyPreview(s,'workgloves').allowed,false);
-  const receipt=sellItem(s,'workgloves');assert.equal(receipt.coins,4);assert.equal(s.coins,20);assert.ok(!s.bag.includes('workgloves'));
-  assert.equal(s.itemMods.workgloves,undefined);assert.equal(buyItem(s,'workgloves'),true);assert.equal(s.coins,4);
+  const receipt=sellItem(s,'workgloves');assert.equal(receipt.coins,Math.floor(ITEMS.workgloves.price*.25));assert.ok(!s.bag.includes('workgloves'));
+  assert.equal(s.itemMods.workgloves,undefined);assert.equal(buyItem(s,'workgloves'),true);assert.ok(s.coins<60);
 
-  const upgraded=state({level:1,coins:100,bag:['rod'],gear:{weapon:'rod'},materials:{'Salvaged fittings':1},itemMods:{}});
+  const upgraded=state({level:1,coins:500,bag:['rod'],gear:{weapon:'rod'},materials:{'Salvaged fittings':1},itemMods:{}});
   assert.equal(buyItem(upgraded,'workgloves'),true);assert.equal(upgradeItem(upgraded,'workgloves').upgrade,1);
-  const invested=100-upgraded.coins;const value=sellPreview(upgraded,'workgloves').price;
-  assert.ok(value<16);assert.ok(value<invested);assert.deepEqual(sellItem(upgraded,'workgloves'),{id:'workgloves',coins:value});
-  assert.equal(upgraded.itemMods.workgloves,undefined);assert.ok(upgraded.coins<100);
+  const invested=500-upgraded.coins;const value=sellPreview(upgraded,'workgloves').price;
+  assert.ok(value<ITEMS.workgloves.price);assert.ok(value<invested);assert.deepEqual(sellItem(upgraded,'workgloves'),{id:'workgloves',coins:value});
+  assert.equal(upgraded.itemMods.workgloves,undefined);assert.ok(upgraded.coins<500);
+});
+
+test('buy and equip is atomic, permits any tier, selects empty accessories, and clears offhands for two-handers',()=>{
+  const s=state({level:1,coins:10000,bag:['rod'],gear:{weapon:'rod',offhand:'shield',accessory:'penny',accessory2:null}});
+  let p=buyAndEquipPreview(s,'lantern');assert.equal(p.allowed,true);assert.equal(p.selectedSlot,'accessory2');
+  const before=s.coins;const bought=buyAndEquipItem(s,'lantern');assert.equal(bought.slot,'accessory2');assert.equal(s.coins,before-ITEMS.lantern.price);
+  const poor=state({level:1,coins:0,bag:['rod'],gear:{weapon:'rod',offhand:'shield'}}), snapshot=structuredClone(poor);
+  assert.equal(buyAndEquipItem(poor,'pike'),false);assert.deepEqual(poor,snapshot);
+  const wrongSlot=state({level:1,coins:10000,bag:['rod'],gear:{weapon:'rod',offhand:'shield'}}), wrongSlotBefore=structuredClone(wrongSlot);
+  assert.equal(buyAndEquipItem(wrongSlot,'pillowCap','feet'),false,'an invalid slot choice rejects the whole purchase');
+  assert.deepEqual(wrongSlot,wrongSlotBefore,'failed slot validation leaves coins, bag, loadout, and resources untouched');
+  const rich=state({level:1,coins:100000,bag:['rod'],gear:{weapon:'rod',offhand:'shield'}});
+  const result=buyAndEquipItem(rich,'pike');assert.equal(result.slot,'weapon');assert.equal(result.clearedOffhand,true);assert.equal(rich.gear.offhand,null);assert.equal(rich.gear.weapon,'pike');
 });
 
 test('insufficient coin or material costs fail atomically',()=>{
@@ -139,6 +161,16 @@ test('upgrades preview, spend once, apply modest item stats, and cap at three',(
   assert.match(upgradePreview(s,'rod').after.name,/\+3$/);
   const sealState=state({bag:['seal'],gear:{},itemMods:{},materials:{'Runic residue':3}});
   assert.equal(upgradePreview(sealState,'seal').after.stats.wil,1);
+});
+
+test('upgrades, affixes, and crafts have no character-level gate',()=>{
+  const s=state({level:1,bag:['rod','seal'],gear:{weapon:'rod'},coins:1000,materials:{'Runic residue':10,'Floodglass Fragment':5}});
+  assert.equal(upgradePreview(s,'seal').allowed,true);
+  assert.equal(affixPreview(s,'seal','prefix','warded').allowed,true);
+  assert.ok(upgradeItem(s,'seal'));
+  assert.ok(applyAffix(s,'seal','prefix','warded'));
+  s.bag=['rod'];assert.ok(exchangeMaterials(s,'fragment_seal'));
+  assert.ok(s.bag.includes('seal'));
 });
 
 test('affixes are slot-limited, deterministic, replace per kind and never double-spend',()=>{

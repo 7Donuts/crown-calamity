@@ -1,70 +1,108 @@
 import { APPEARANCE_OPTIONS, normalizeAppearance, getAppearanceOptions, getAppearanceLabels } from './races.js';
 export { APPEARANCE_OPTIONS, normalizeAppearance };
 
-// Generated illustrations use the same references and prompt headers as every
-// other production asset. SVG only crops and recolors their existing pixels.
-export const CHARACTER_ATLASES = Object.freeze(Object.fromEntries([
-  ['quayfolk', 'assets/characters/quayfolk-atlas.png', 414, 0, 36],
-  ['cobblekin', 'assets/characters/cobblekin-atlas.png', 396, 31, 43],
-  ['reedling', 'assets/characters/reedling-atlas.png', 396, 17, 33],
-  ['emberling', 'assets/characters/emberling-atlas.png', 396, 23, 38]
-].map(([id, src, split, topPad, bottomPad]) => [id, Object.freeze({
-  src, width: 1983, height: 793,
-  columns: 5, split, topPad, bottomPad
-})])));
-const NAMES = Object.freeze({quayfolk:'Cuddleworth Classics', cobblekin:'Sturdy Stitch Workwear', reedling:'Floppables by Pellet & Pip', emberling:'Lullabrite Nightlight Pals'});
-const SIZES = Object.freeze({small:64, medium:96, large:128});
-const EYES = Object.freeze({
-  quayfolk: [[[173,195],[247,195]],[[168,195],[241,195]],[[156,195],[229,195]],[[133,195],[205,195]],[[155,191],[231,191]],[[174,169],[246,169]],[[169,169],[241,169]],[[157,169],[229,169]],[[133,169],[205,169]],[[155,167],[228,167]]],
-  cobblekin: [[[201,148],[288,132]],[[193,149],[278,135]],[[187,149],[269,138]],[[192,147],[274,135]],[[191,150],[274,134]],[[208,121],[298,106]],[[201,126],[289,114]],[[196,126],[281,114]],[[206,125],[293,111]],[[203,125],[287,113]]],
-  reedling: [[[241,136],[307,128]],[[244,141],[308,134]],[[246,141],[309,133]],[[248,144],[313,136]],[[238,141],[303,133]],[[241,124],[308,116]],[[244,130],[309,122]],[[249,124],[314,116]],[[252,130],[317,122]],[[245,128],[310,120]]],
-  emberling: [[[249,159],[319,153]],[[216,158],[286,153]],[[200,161],[270,157]],[[217,155],[288,149]],[[202,160],[271,154]],[[249,142],[317,138]],[[218,140],[287,135]],[[202,142],[269,138]],[[212,139],[281,134]],[[200,143],[270,140]]]
+const SOURCE_PATHS = Object.freeze({
+  bear: 'assets/characters/bear-atlas.png', bunny: 'assets/characters/bunny-atlas.png',
+  unicorn: 'assets/characters/unicorn-atlas.png', wolf: 'assets/characters/wolf-atlas.png',
+  cat: 'assets/characters/cat-atlas.png'
 });
-const xml = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'})[c]);
-const rgb = hex => [1,3,5].map(i => parseInt(hex.slice(i,i+2),16)/255);
+
+const FRAME_DATA = Object.freeze({
+  bear: [[98,18,373,384],[472,18,750,384],[855,15,1138,386],[1258,16,1533,385],[1645,15,1923,384],[89,397,372,762],[477,397,756,762],[855,400,1137,763],[1249,401,1533,763],[1639,401,1924,763]],
+  bunny: [[77,100,412,396],[487,19,734,392],[862,14,1107,396],[1193,113,1553,396],[1651,65,1889,396],[77,462,409,762],[481,397,734,761],[855,404,1107,762],[1192,463,1558,762],[1651,426,1896,760]],
+  unicorn: [[80,33,418,386],[488,21,800,386],[857,29,1159,386],[1225,32,1531,388],[1628,33,1927,386],[80,397,418,758],[488,391,800,758],[857,397,1159,758],[1225,403,1531,760],[1628,400,1927,758]],
+  wolf: [[39,12,408,374],[450,11,810,374],[848,13,1159,374],[1213,10,1565,374],[1605,12,1935,374],[38,410,410,766],[452,408,813,766],[839,410,1159,766],[1213,408,1565,766],[1606,408,1932,766]],
+  cat: [[48,24,385,381],[441,25,761,378],[825,25,1153,378],[1218,28,1574,381],[1627,27,1945,381],[48,412,386,766],[438,412,761,767],[830,413,1154,766],[1218,414,1572,766],[1627,415,1943,767]]
+});
+
+const buildFrames = ids => Object.freeze(ids.map(([left, top, right, bottom], index) => Object.freeze({
+  index, presentation: index < 5 ? 'female' : 'male', styleIndex: index % 5, column: index % 5,
+  x: left, y: top, width: right - left + 1, height: bottom - top + 1
+})));
+
+// Bounds are the measured alpha>128 connected-component bounds for each generated pose.
+// Frames are listed left-to-right, female row first, male row second.
+export const CHARACTER_ATLASES = Object.freeze(Object.fromEntries(
+  Object.entries(FRAME_DATA).map(([id, bounds]) => [id, Object.freeze({
+    src: SOURCE_PATHS[id], width: 1983, height: 793,
+    columns: 5, rows: 2, frameWidth: 396.6, frameHeight: 396.5,
+    frames: buildFrames(bounds)
+  })])
+));
+
+const NAMES = Object.freeze({
+  bear: 'Cuddleworth Bears', bunny: 'Pellet & Pip Bunnies',
+  unicorn: 'Lullabrite Unicorns', wolf: 'Sturdy Stitch Wolves', cat: 'Purrfect Patch Cats'
+});
+const SIZES = Object.freeze({ small: 64, medium: 96, large: 128 });
+const NATIVE_SURFACE = Object.freeze({ bear: 'copper', bunny: 'sand', unicorn: 'cream', wolf: 'slate', cat: 'copper' });
+const TINT_KEYS = Object.freeze({
+  bear: Object.freeze({ surface: '20 -22 0 0 -1.4', accent: '-8 -5 20 0 -1.5', eye: '8 -6 -2 0 -0.15' }),
+  bunny: Object.freeze({ surface: '20 -22 0 0 -1.4', accent: '-8 -5 20 0 -1.5', eye: '8 -6 -2 0 -0.15' }),
+  unicorn: Object.freeze({ surface: '5 5 5 0 -8', accent: '-8 -2 18 0 -2', eye: '8 -6 -2 0 -0.15' }),
+  wolf: Object.freeze({ surface: '8 -4 8 0 -3', accent: '15 5 -6 0 -3', eye: '8 -6 -2 0 -0.15' }),
+  cat: Object.freeze({ surface: '20 -22 0 0 -1.4', accent: '12 -10 0 0 -1.8', eye: '8 -6 -2 0 -0.15' })
+});
+const xml = value => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&apos;' })[c]);
+const rgb = hex => [1,3,5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
 
 function tintFilter(id, hex, key, mid = .55) {
-  // The keyed alpha is multiplied by SourceAlpha: color never paints empty
-  // margins. Luminance supplies the generated shading, not flat fill shapes.
   const channels = rgb(hex);
-  return `<filter id="${id}" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  ${key}" result="key"/><feComposite in="key" in2="SourceAlpha" operator="in" result="matte"/><feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray"/><feComponentTransfer in="gray" result="tint">${channels.map((c,i)=>`<feFunc${['R','G','B'][i]} type="linear" slope="${(c*.85/mid).toFixed(4)}" intercept="${(c*.12).toFixed(4)}"/>`).join('')}</feComponentTransfer><feComposite in="tint" in2="matte" operator="in"/></filter>`;
+  return `<filter id="${id}" filterUnits="userSpaceOnUse" x="0" y="0" width="396.6" height="420" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ${key}" result="key"/><feComposite in="key" in2="SourceAlpha" operator="in" result="matte"/><feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gray"/><feComponentTransfer in="gray" result="tint">${channels.map((c,i)=>`<feFunc${['R','G','B'][i]} type="linear" slope="${(c*.85/mid).toFixed(4)}" intercept="${(c*.12).toFixed(4)}"/>`).join('')}</feComponentTransfer><feComposite in="tint" in2="matte" operator="in"/></filter>`;
 }
 
-function regions(race, style, eyePoints) {
-  const eyeHoles = eyePoints.map(([x,y])=>`M${x-21} ${y}a21 22 0 1 0 42 0a21 22 0 1 0 -42 0`).join('');
-  let skin, accent;
-  if (race === 'quayfolk') {
-    skin='M65 55H335V257H65Z M95 309H150V350H95Z M255 309H307V350H255Z';
-    accent='M40 0H370V252H40Z';
-    if(style==='braid') accent+=' M240 240H310V375H240Z';
-    if(style==='ponytail') accent+=' M270 180H365V290H270Z';
-    if(style==='shaved') accent='M100 60H300V115H100Z';
-  } else if (race === 'cobblekin') {
-    skin='M35 15H365V220H35Z M20 240H125V340H20Z M280 240H385V340H280Z M75 335H335V392H75Z';
-    accent=style==='shaved'?'':'M35 0H365V115Q270 90 200 125Q110 95 35 115Z';
-  } else if (race === 'reedling') {
-    skin='M70 45H345V195H70Z M40 285H195V365H40Z M120 322H355V396H120Z M280 235H350V316H280Z M190 203H230V245H190Z';
-    accent='M40 0H370V240H40Z M25 280H190V370H25Z';
-  } else {
-    skin='M80 0H365V221H80Z M0 185H150V371H0Z M155 335H355V392H155Z M160 228H250V282H160Z M296 230H348V285H296Z';
-    accent='M70 0H365V235H70Z M0 180H155V372H0Z M140 210H345V282H140Z M150 330H355V395H150Z';
-  }
-  return {skin:skin+eyeHoles, accent:accent ? accent+eyeHoles : ''};
+function fitFrame(frame) {
+  const scale = Math.min(370 / frame.height, 370 / frame.width);
+  const width = frame.width * scale, height = frame.height * scale;
+  return { scale, x: (396.6 - width) / 2, y: 410 - height, width, height };
 }
 
-export function renderCharacterArt(raceId, appearance, {size='medium'}={}) {
-  const race=Object.hasOwn(CHARACTER_ATLASES,raceId)?raceId:'quayfolk';
-  const a=normalizeAppearance(race,appearance), options=getAppearanceOptions(race), labels=getAppearanceLabels(race);
-  const choice=(key)=>options[key].find(o=>o.id===a[key]);
-  const atlas=CHARACTER_ATLASES[race], col=options.hairStyle.findIndex(o=>o.id===a.hairStyle), male=a.presentation==='male';
-  const fw=atlas.width/atlas.columns, sy=male?atlas.split:0, sh=male?atlas.height-atlas.split:atlas.split, py=male?atlas.bottomPad:atlas.topPad;
-  const id=['portrait',race,...Object.values(a)].join('-');
-  const eyePoints=EYES[race][col+(male?5:0)], paths=regions(race,a.hairStyle,eyePoints);
-  const keySkin=race==='reedling'?'-10 0 14 0 -0.8':race==='emberling'?'-8 8 12 0 -0.5':'20 -24 0 0 -1';
-  const keyAccent=race==='quayfolk'?'-14 20 -2 0 -0.2':race==='cobblekin'?(a.hairStyle==='shaved'?'8 8 8 0 -11':'0 0 0 1 0'):'14 -16 -1 0 -0.5';
-  const accessible=`${a.presentation} ${NAMES[race]} stuffie; ${labels.hairStyle}: ${choice('hairStyle').label}; ${labels.hairColor}: ${choice('hairColor').label}; ${labels.skinTone}: ${choice('skinTone').label}; ${choice('eyeColor').label} eyes`;
-  const px=SIZES[size]||SIZES.medium;
-  const defs=`<g id="${id}-source"><svg x="0" y="0" width="${fw}" height="${sh}" viewBox="${(col*fw).toFixed(2)} ${sy} ${fw} ${sh}" overflow="hidden"><image href="${atlas.src}" x="0" y="0" width="${atlas.width}" height="${atlas.height}"/></svg></g><clipPath id="${id}-skin"><path d="${paths.skin}" clip-rule="evenodd"/></clipPath><clipPath id="${id}-accent"><path d="${paths.accent}" clip-rule="evenodd"/></clipPath><clipPath id="${id}-eyes">${eyePoints.map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="${race==='reedling'&&i===1?8:race==='cobblekin'?12:15}" ry="${race==='cobblekin'?15:17}"/>`).join('')}</clipPath>${tintFilter(id+'-skin-tint',choice('skinTone').color,keySkin,race==='emberling'?.3:.55)}${tintFilter(id+'-accent-tint',choice('hairColor').color,keyAccent,.6)}${tintFilter(id+'-eye-tint',choice('eyeColor').color,'8 -6 -2 0 -0.15',.3)}`;
-  const layer=(mask,filter)=>`<g clip-path="url(#${id}-${mask})"><use href="#${id}-source" filter="url(#${id}-${filter}-tint)"/></g>`;
-  return `<span class="character-art character-art--${Object.hasOwn(SIZES,size)?size:'medium'}"><svg class="character-art__portrait" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${fw} 420" width="${px}" height="${Math.ceil(px*420/fw)}" role="img" aria-label="${xml(accessible)}"><title>${xml(NAMES[race])} stuffie</title><defs>${defs}</defs><g transform="translate(0 ${py})"><use href="#${id}-source"/>${layer('skin','skin')}${layer('accent','accent')}${layer('eyes','eye')}</g></svg></span>`;
+const EYE_POINTS = Object.freeze({
+  bear: [[[248,152],[326,142]],[[620,152],[698,140]],[[1002,153],[1089,140]],[[1407,155],[1486,142]],[[1795,155],[1875,142]],[[242,524],[324,511]],[[622,525],[704,513]],[[1002,527],[1089,514]],[[1407,530],[1486,516]],[[1796,529],[1876,516]]],
+  bunny: [[[251,188]],[[626,200]],[[1000,207]],[[1381,196]],[[1788,207]],[[251,548]],[[626,563]],[[1000,572]],[[1381,548]],[[1793,567]]],
+  unicorn: [[[318,155]],[[689,155]],[[1059,156]],[[1422,157]],[[1832,157]],[[318,523]],[[689,523]],[[1059,523]],[[1422,524]],[[1832,525]]],
+  wolf: [[[300,129]],[[684,126]],[[1055,130]],[[1434,127]],[[1829,127]],[[300,524]],[[682,521]],[[1055,524]],[[1434,523]],[[1829,523]]],
+  cat: [[[263,143],[379,159]],[[641,143],[743,161]],[[1031,143],[1109,136]],[[1449,150],[1527,142]],[[1829,147],[1904,136]],[[265,528],[379,545]],[[641,528],[743,546]],[[1031,527],[1109,527]],[[1449,532],[1525,521]],[[1827,533],[1904,523]]]
+});
+
+function eyeMask(id, race, frame, fitted) {
+  const points = EYE_POINTS[race][frame.index];
+  const eyes = points.map(([x, y]) => {
+    const cx = fitted.x + (x - frame.x) * fitted.scale;
+    const cy = fitted.y + (y - frame.y) * fitted.scale;
+    const rx = 13 * fitted.scale, ry = 15 * fitted.scale;
+    return `<ellipse cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" rx="${rx.toFixed(2)}" ry="${ry.toFixed(2)}"/>`;
+  }).join('');
+  return `<clipPath id="${id}-eye-mask">${eyes}</clipPath>`;
+}
+
+export function renderCharacterArt(raceId, appearance, { size = 'medium' } = {}) {
+  const race = Object.hasOwn(CHARACTER_ATLASES, raceId) ? raceId : 'bear';
+  const a = normalizeAppearance(race, appearance), options = getAppearanceOptions(race), labels = getAppearanceLabels(race);
+  const choice = key => options[key].find(option => option.id === a[key]);
+  const atlas = CHARACTER_ATLASES[race];
+  const styleIndex = options.hairStyle.findIndex(option => option.id === a.hairStyle);
+  const frame = atlas.frames[styleIndex + (a.presentation === 'male' ? 5 : 0)];
+  const fitted = fitFrame(frame);
+  const baseId = `character-${race}-${a.presentation}-${a.hairStyle}-${a.skinTone}-${a.hairColor}-${a.eyeColor}`;
+  const safeId = baseId.replace(/[^a-zA-Z0-9_-]/g, '-');
+  const keys = TINT_KEYS[race];
+  const px = SIZES[size] || SIZES.medium;
+  const accessible = `${a.presentation} ${NAMES[race]} stuffie; ${labels.hairStyle}: ${choice('hairStyle').label}; ${labels.hairColor}: ${choice('hairColor').label}; ${labels.skinTone}: ${choice('skinTone').label}; ${choice('eyeColor').label} eyes`;
+  const crop = `<svg x="${fitted.x.toFixed(2)}" y="${fitted.y.toFixed(2)}" width="${fitted.width.toFixed(2)}" height="${fitted.height.toFixed(2)}" viewBox="${frame.x} ${frame.y} ${frame.width} ${frame.height}" preserveAspectRatio="none"><image href="${atlas.src}" x="0" y="0" width="${atlas.width}" height="${atlas.height}"/></svg>`;
+  const sourceId = `${safeId}-source`;
+  const useSource = filter => `<use href="#${sourceId}"${filter ? ` filter="url(#${safeId}-${filter})"` : ''}/>`;
+  const nativeSurface = a.skinTone === NATIVE_SURFACE[race];
+  const nativeAccent = a.hairColor === 'ink';
+  const nativeEyes = a.eyeColor === 'hazel';
+  const filterDefs = [
+    !nativeSurface && tintFilter(`${safeId}-surface`, choice('skinTone').color, keys.surface, .55),
+    !nativeAccent && tintFilter(`${safeId}-accent`, choice('hairColor').color, keys.accent, .55),
+    !nativeEyes && tintFilter(`${safeId}-eye`, choice('eyeColor').color, keys.eye, .3),
+    eyeMask(safeId, race, frame, fitted)
+  ].filter(Boolean).join('');
+  const surface = nativeSurface ? '' : useSource('surface');
+  const accent = nativeAccent ? '' : useSource('accent');
+  const eyes = nativeEyes ? '' : `<g clip-path="url(#${safeId}-eye-mask)">${useSource('eye')}</g>`;
+  return `<span class="character-art character-art--${Object.hasOwn(SIZES, size) ? size : 'medium'}"><svg class="character-art__portrait" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 396.6 420" width="${px}" height="${Math.ceil(px * 420 / 396.6)}" role="img" aria-label="${xml(accessible)}"><title>${xml(NAMES[race])} stuffie</title><defs><g id="${sourceId}">${crop}</g>${filterDefs}</defs>${useSource('')}${surface}${accent}${eyes}</svg></span>`;
 }

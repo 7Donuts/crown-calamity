@@ -1,6 +1,7 @@
 // Shared telegraph rules (design 37, R1 "Reading the telegraph pays"). One place for the numbers that the engine,
 // the build inspector, the action hints and the lab all read. PvE only: everything here keys off the enemy's declared
 // heavy intent, never off attributes or the shared hit formula. Opening is transient in-fight state (fight.opening).
+import { ITEMS } from './gear.js';
 export const TELEGRAPH=Object.freeze({
  guardNormal:.35,      // Share of a normal hit prevented by any guarding action.
  guardHeavy:.65,       // Share of a declared heavy hit prevented by the same action.
@@ -10,8 +11,8 @@ export const TELEGRAPH=Object.freeze({
 });
 export const GUARD_ACTIONS=Object.freeze(['guard','brace','combo','guardstrike','sidestep']);
 export const DAMAGING_ACTIONS=Object.freeze(['attack','disrupt','driving','guardstrike','sidestep','cast','combo']);
-export const SHIELD_IDS=Object.freeze(['shield','gateShield']);
-export const isShield=id=>SHIELD_IDS.includes(id);
+export const SHIELD_IDS=Object.freeze(Object.keys(ITEMS).filter(id=>ITEMS[id].shield===true));
+export const isShield=id=>ITEMS[id]?.shield===true;
 export const guardRate=heavy=>heavy?TELEGRAPH.guardHeavy:TELEGRAPH.guardNormal;
 export const exposeBonus=rank=>.15+.05*(rank||1);
 const pct=v=>Math.round(v*100)+'%';
