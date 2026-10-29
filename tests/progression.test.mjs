@@ -121,9 +121,10 @@ import * as G from '../dist/engine.js';
   assert.equal(breaker.sp,38,'Guardstrike spends 12 stamina and completed exchanges grant no stamina');
 
   const duelist=G.createCharacter({kit:'duelist'});
-  assert.deepEqual(G.primaryActions(duelist).combined,'guardstrike');
+  assert.deepEqual(G.primaryActions(duelist),{skill:'driving',combined:'sidestep',skillLabel:'Driving Strike',combinedLabel:'Sidestep'},'blade and charm use Sidestep as the combined action');
   assert.equal(G.startFight(duelist,'rats'),true);
   assert.match(G.actionInfo(duelist,'guardstrike').reason,/shield/);
+  assert.equal(G.actionInfo(duelist,'sidestep').reason,null);
 
   assert.equal(G.abilityStatus(G.fresh(),'driving').eligible,true,'Driving is available at level 1 without a quest');
 }

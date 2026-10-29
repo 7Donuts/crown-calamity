@@ -110,7 +110,7 @@ Verification performed: searched `dist/` for network code (none: no fetch, WebSo
 | Additional brands (Prize Grade, Heirloom Mohair Co., Patchwork Collective, Sock Surplus) | `design/35`, "Brands" | Proposed |
 | Seven future districts and the Spring Cleaning climax | `design/35`, "Future districts" | Proposed |
 | Trademark clearance on final brand names | `design/35`, "Implementation notes" | Planned, pre-release gate |
-| R1 to R8 | `design/36_Gameplay_Loop_Review.md`, "Recommendations" | Proposed |
+| R1 to R8 | `design/36_Gameplay_Loop_Review.md`, "Recommendations" | R1 implemented in v0.12.0; R2 to R8 proposed |
 | B1 to B4 defects | `design/36`, "Bugs and defects" | In flight in the working tree |
 
 ### 3.6 Superseded material that should not be revived
@@ -199,6 +199,8 @@ Display-only renames still collide if two meanings share one phrase. These need 
 Each entry keeps the intent of the original. "Client now, server later" states what may ship locally as a prototype and what must be re-owned by the server (`FUTURE-DEVELOPMENT.md`, Phase 2). Local features are labeled prototype rules and never presented as secure.
 
 ### R1 (revised). Reading the telegraph pays
+
+Status: Implemented in v0.12.0. Guarding a declared heavy prevents 65% (normal hits stay at 35%) and grants a one-exchange Opening (+25% damage, no glancing, larger-of with Expose); Sidestep is the blade-and-charm combined action; a stated 85% combined prevention ceiling; rules in `dist/telegraph.js` with the seeded policy regression in `tests/telegraph-balance.test.mjs`. See `design/14`, "Reading the telegraph".
 
 Keeps: a guarded response to a telegraphed heavy should pay better than ignoring the telegraph; Disrupt, Brace and Aegis should matter outside the delve; the Duelist parity gap should close.
 
