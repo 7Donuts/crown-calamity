@@ -117,7 +117,7 @@ import * as G from '../dist/engine.js';
   const used=G.exchange(breaker,'guardstrike',()=>0,0);
   assert.equal(used.ok,true);
   assert.ok(breaker.fight.hp<hp);
-  assert.equal(breaker.mp,0,'Guardstrike spends no mana and completed exchanges grant no mana');
+  assert.equal(breaker.mp,2,'Guardstrike spends no mana and restores the non-mana action regeneration');
   assert.equal(breaker.sp,38,'Guardstrike spends 12 stamina and completed exchanges grant no stamina');
 
   const duelist=G.createCharacter({kit:'duelist'});

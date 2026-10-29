@@ -39,6 +39,7 @@ The original pack in `design/Crown-and-Calamity-Design-v0.1/` is retained histor
 
 ## Recovery and relic constraints
 
+- Each accepted combat action that spends zero mana restores 2 mana once, capped at maximum, including final blows. Spells that spend mana, rejected actions, timers and loading never grant regeneration. Recover restores 8 base mana plus this 2 (10 total) and 10 stamina. Preserve the visible action hint and actual regeneration feedback.
 - Player-facing Rest starts an four-second persistent timer and requires an explicit finish input. Timers only update UI; never auto-heal. Defeat costs 5% of carried coins (floor, cap 50) and a twelve-second wound; rest shares the longer deadline. No XP or gear loss. Free respec/allocation cannot grant current resources.
 - The original nine core slots remain. Three paid relic echo sockets are separate. Same-ID socket licenses escalate ×4 and remain paid when cleared; same-socket reattunement is free. Echoes contribute diminishing flat bonuses and never repeat the Seal barrier proc. Active echoes prevent selling the base relic.
 - HP, mana and stamina totals are floored to integers so valid saves always reload; echoed attribute/defense bonuses can be fractional. Preserve legacy invested stats and all local roster saves.

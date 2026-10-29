@@ -2,17 +2,94 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as G from '../dist/engine.js';
 
-test('starter resource reserves are small and passive regeneration does not refill them', () => {
+test('mana regenerates after accepted non-mana exchanges while stamina remains action-specific', () => {
   const s = G.fresh();
   assert.equal(G.totals(s).mp, 66);
   assert.equal(G.totals(s).sp, 65);
   s.mp = 0; s.sp = 0;
   assert.ok(G.startFight(s, 'rats'));
   assert.equal(s.mp, 3); assert.equal(s.sp, 3);
-  G.exchange(s, 'guard', () => .2, 1000);
-  assert.equal(s.mp, 3); assert.equal(s.sp, 5);
-  assert.equal(G.exchange(s, 'recover', () => .2, 1650).ok, true);
-  assert.equal(s.mp, 11); assert.equal(s.sp, 15);
+  const guard = G.exchange(s, 'guard', () => .2, 1000);
+  assert.equal(guard.manaRegenerated, 2);
+  assert.equal(s.mp, 5); assert.equal(s.sp, 5);
+  const recover = G.exchange(s, 'recover', () => .2, 1650);
+  assert.equal(recover.manaRegenerated, 2);
+  assert.equal(s.mp, 15); assert.equal(s.sp, 15);
+  assert.ok(s.log.some(entry => entry.text === 'Caught your breath · +2 mana.'));
+});
+
+test('free and stamina actions regenerate mana, mana spells do not, and actual gains respect the cap', () => {
+  const attack = G.fresh(); G.startFight(attack, 'rats'); attack.mp = 0;
+  assert.equal(G.exchange(attack, 'attack', () => .2, 1000).manaRegenerated, 2);
+  assert.equal(attack.mp, 2);
+
+  const physical = G.createCharacter({kit:'breaker'}); G.startFight(physical, 'rats');
+  physical.mp = 0; physical.sp = 50;
+  assert.equal(G.exchange(physical, 'guardstrike', () => .2, 1000).manaRegenerated, 2);
+  assert.equal(physical.mp, 2);
+
+  for (const action of ['cast','combo','mend']) {
+    const caster=G.fresh();caster.learnedAbilities.push('mend');caster.equippedAbilities.push('mend');
+    G.startFight(caster,'rats');caster.mp=G.actionInfo(caster,action).mp;
+    const spell=G.exchange(caster,action,()=>.2,1000);
+    assert.equal(spell.ok,true,action);
+    assert.equal(spell.manaRegenerated,0,action);
+    assert.equal(caster.mp,0,action);
+    assert.ok(!caster.log.some(entry=>entry.text.startsWith('Caught your breath')),action);
+  }
+
+  const capped = G.fresh(); G.startFight(capped, 'rats');
+  const max = G.totals(capped).mp; capped.mp = max - 1;
+  const receipt = G.exchange(capped, 'guard', () => .2, 1000);
+  assert.equal(receipt.manaRegenerated, 1);
+  assert.equal(capped.mp, max);
+  const full=G.exchange(capped,'guard',()=>.2,1650);
+  assert.equal(full.manaRegenerated,0,'full mana gains nothing');
+  assert.equal(capped.mp,max);
+  capped.mp=max-1;capped.sp=G.totals(capped).sp;
+  const almostFull=G.exchange(capped,'recover',()=>.2,2300);
+  assert.equal(almostFull.manaRegenerated,0,'explicit recovery reaches the cap first');
+  assert.equal(capped.mp,max);
+  assert.ok(capped.log.some(entry=>entry.text==='Recovered 1 mana and 0 stamina.'));
+});
+
+test('rejected and delay-blocked actions do not regenerate; a finishing exchange does and persists', () => {
+  const s = G.fresh(); G.startFight(s, 'rats'); s.mp = 0;
+  assert.equal(G.exchange(s, 'cast', () => .2, 1000).ok, false);
+  assert.equal(s.mp, 0);
+  assert.equal(G.exchange(s, 'attack', () => .2, 1000).manaRegenerated, 2);
+  assert.equal(G.exchange(s, 'guard', () => .2, 1200).ok, false);
+  assert.equal(s.mp, 2);
+
+  const finisher = G.fresh(); G.startFight(finisher, 'rats'); finisher.mp = 0; finisher.fight.hp = 1;
+  const last = G.exchange(finisher, 'attack', () => .2, 1000);
+  assert.equal(last.victory, true);
+  assert.equal(last.manaRegenerated, 2);
+  assert.equal(finisher.mp, 2);
+  assert.equal(G.loadSave(JSON.stringify(finisher)).mp, 2);
+  assert.equal(G.exchange(finisher, 'attack', () => .2, 1650).ok, false);
+});
+
+test('every accepted zero-mana action regenerates once while clock time alone never does', () => {
+  const actions = ['attack','guard','recover','brace','disrupt','driving','guardstrike','aegis','expose','withdraw','vent'];
+  for (const key of actions) {
+    const s = G.fresh();
+    s.learnedAbilities = ['brace','disrupt','driving','aegis','expose'];
+    s.equippedAbilities = ['arc','brace','disrupt','driving','aegis','expose'];
+    if (key === 'vent') { G.startFight(s, 'boss', 'delve'); s.fight.hp = 400; }
+    else G.startFight(s, 'rats');
+    s.mp = 0;
+    const info = G.actionInfo(s, key);
+    assert.equal(info.reason, null, `${key} is available in this setup`);
+    const receipt = G.exchange(s, key, () => .2, 1000);
+    assert.equal(receipt.ok, true, key);
+    assert.equal(receipt.manaRegenerated, 2, key);
+    assert.equal(s.mp, key === 'recover' ? 10 : 2, key);
+  }
+
+  const idle = G.fresh(); G.startFight(idle, 'rats'); idle.mp = 0;
+  G.restStatus(idle, 1000 + 60 * 60 * 1000);
+  assert.equal(idle.mp, 0, 'elapsed time and status reads do not regenerate mana');
 });
 
 test('rest requires explicit completion after four seconds and does not advance on load or status reads', () => {

@@ -400,3 +400,26 @@ test('the rescue hunt receipt points to the passage interaction rather than requ
  const wins=ui.getState().kills.rats;await ui.act('story-action:rescue_mara');await ui.act('story-next');
  assert.match(ui.getModal().innerHTML,/story-claim:drainage_inspection:coins/);assert.equal(ui.getState().kills.rats,wins,'story progression needs the authored interactions, not extra combat');
 });
+
+
+test('combat UI explains zero-mana recovery and reports actual gains without rewarding rapid taps', async()=>{
+  const {ui}=await bootApp();
+  await ui.act('hunt:rats');
+  const state=ui.getState();
+  state.mp=0;ui.render();
+  contains(ui.getApp().innerHTML,'+2 mana after any action that spends none.');
+  contains(ui.getApp().innerHTML,'Recover restores 10 mana and 10 stamina.');
+  await ui.act('combat:attack');
+  assert.equal(state.mp,2);
+  contains(ui.getApp().innerHTML,'+2 mana');
+  const round=state.fight.round;
+  await ui.act('combat:guard');
+  assert.equal(state.mp,2,'rapid rejected taps give no regeneration');
+  assert.equal(state.fight.round,round);
+  ui.setClock(state.nextActionAt);
+  await ui.act('combat:recover');
+  assert.equal(state.mp,12);
+  contains(ui.getApp().innerHTML,'+10 mana','Recover feedback includes both the active and passive recovery');
+  ui.advanceClock(60000);ui.render();
+  assert.equal(state.mp,12,'waiting and re-rendering do not restore mana');
+});

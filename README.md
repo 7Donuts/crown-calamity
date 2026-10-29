@@ -1,4 +1,4 @@
-# Crown & Calamity — playable solo prototype v0.10.2
+# Crown & Calamity — playable solo prototype v0.10.3
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -28,7 +28,11 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
-## New in v0.10.2 — quicker town rests
+## New in v0.10.3 — combat mana recovery
+
+Actions that spend no mana now restore **2 mana**, capped at maximum, so casters can recover through basic attacks, Defend and physical skills. Spells grant no regeneration. Recover restores **10 mana total** (8 base + 2 regeneration) and 10 stamina. Failed actions, rapid rejected taps and waiting grant nothing.
+
+## v0.10.2 — quicker town rests
 
 Ordinary town rests now take four seconds and still require a final tap to finish.
 
