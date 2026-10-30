@@ -49,3 +49,7 @@ Run `npm test` for regression coverage, `npm run economy` for bounded offline sa
 ## Owner-requested wrap-up: follow-up work preserved
 
 The reviewed B0 resource-carry fix and G1-C regional workshop rules are merged (PRs #10 and #12). G1-A walkthrough refinements and the G1-B CP1 trial are separate work: the G1-B curve has been implemented on its review branch, while G1-A's earned matrix remains provisional and its full balance gate is still open. CP4 remains pending. Owner direction authorizes proceeding with CP2's two-hands choice as built (revisable later) and approves the CP3 direction; neither approval means its implementation or gate is complete. See the [G1-A partial handoff](handoffs/reports/g1a-partial-handoff.md), [G1-B report](handoffs/reports/g1b-price-curve.md), and [progress](handoffs/reports/progress.md) for source snapshots and limits.
+
+## Wrap-up after the CP1 trial
+
+The CP1 trial is merged in PR #15. The remaining G1-A candidate is preserved as clean post-CP1 draft PR #13 (`3c6ae67`); its post-rebase regression suite passes 44/44 files, but final seeded validation, independent review and packaging remain incomplete. CP2/CP3 are pre-approved build paths, CP4 still needs fitted recommendations, and G2/G3 implementation has not started. Resume from [handoff 3](handoffs/ORCHESTRATOR-3-REMAINING.md), which supersedes older status notes.
