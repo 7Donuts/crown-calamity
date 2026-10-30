@@ -107,7 +107,7 @@ test('a previously failing earned Caster C1 route now reaches all receipts with 
 });
 
 test('an earned Caster C1 defeat permits one real-rest retry and preserves the loss ledger', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 9, buyUpgrades: true });
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 4, buyUpgrades: true });
   assert.equal(result.status, 'completed', result.error);
   assert.equal(result.receipts.length, 5);
   assert.equal(result.retryCount, 1);
@@ -116,19 +116,40 @@ test('an earned Caster C1 defeat permits one real-rest retry and preserves the l
   const defeat = result.defeatHistory[0];
   assert.ok(retry.woundWaitMs >= 12_000);
   assert.ok(retry.restsUsed > 0);
+  assert.ok(retry.statPointsAllocatedDuringRecovery > 0, 'the C1 delve earned points allocated during recovery are used before retry');
+  assert.equal(retry.failedResultOverheadMs, 0, 'C1 delve scenes already account for their narrative transitions');
+  assert.equal(retry.elapsedToRetryMs, 19_000, 'delve retry time includes wound, rest, and both rest inputs without hunt overhead');
   assert.equal(retry.coinsAtRetryStart, defeat.coinsAfterDefeat, 'rest restores resources but never refunds the death penalty');
   assert.ok(result.retriesByContract.municipal_works <= 1);
+  assert.equal(result.policy.allocatedStatPoints + result.unspentStatPoints, (result.level - 1) * 4);
+  assert.equal(result.currencyLedger.defeatCoinsLost, result.defeatHistory.reduce((sum, row) => sum + row.coinsLost, 0));
+  assert.equal(result.currencyLedger.residual, 0);
+});
+
+test('ordinary failed-hunt result overhead is added once outside wound and rest timing', () => {
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 39, buyUpgrades: true });
+  assert.equal(result.status, 'completed', result.error);
+  const defeat = result.defeatHistory.find(row => row.enemy === 'fair_carousel' && row.source === 'hunt');
+  const retry = result.retryHistory.find(row => row.contract === 'fair_arrival');
+  assert.ok(defeat);
+  assert.ok(retry);
+  assert.equal(retry.failedResultOverheadMs, 2500);
+  assert.equal(retry.recoveryElapsedMs, 19_000);
+  assert.equal(retry.elapsedToRetryMs, 21_500);
+  assert.equal(result.failedResultOverheadMs, result.retryHistory.reduce((sum, row) => sum + row.failedResultOverheadMs, 0));
   assert.equal(result.currencyLedger.residual, 0);
 });
 
 test('a second C1 delve defeat stops after the single contract retry', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 4, buyUpgrades: true });
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 9, buyUpgrades: true });
   assert.equal(result.status, 'incomplete');
   assert.equal(result.lastEncounter.enemy, 'boss');
   assert.equal(result.defeatHistory.length, 2);
   assert.equal(result.retryCount, 1);
   assert.equal(result.retriesByContract.municipal_works, 1);
   assert.ok(result.defeatHistory.every(row => row.coinsLost > 0));
+  assert.equal(result.currencyLedger.defeatCoinsLost, result.defeatHistory.reduce((sum, row) => sum + row.coinsLost, 0));
+  assert.equal(result.failedResultOverheadMs, 0, 'failed delve scene has no extra hunt result overhead');
   assert.equal(result.currencyLedger.residual, 0);
 });
 

@@ -24,8 +24,16 @@ Status: planning document, 30 October 2026. This is the order in which the new d
 | D9 | Target age rating and legal review outcome | Required before any player data | Open |
 | D10 | Platform stack: hosting, runtime, database, identity provider, real-time channel | None chosen | Open |
 | D11 | Notice Board bounties leaving the lab (pricing v2, rotation, placement) | Parked (FUTURE-DEVELOPMENT.md) | Parked |
+| D12 | Story weapon and armor price curves | Trial: T10 10,000; T15 15,000; T20 30,000; T25 60,000; armor body T6/T8/T10 3,750/7,500/15,000. Post-story entry target 1,100 wins, best remains 2,000. | CP1 approved as trial values; CP4 fit pending |
 
-Decisions D1 to D8 were approved by the owner on 30 October 2026, choosing every recommended option; D9 and D10 remain open and D11 is parked. Also decided on 30 October 2026 and recorded in AGENTS.md: multiplayer is core; races are build identity; progression is open-ended; the story is the introduction; the world has exploration, locations and layers; land ownership needs a gameplay purpose; the stuffie theme and story stay.
+Decisions D1 to D8 were approved by the owner on 30 October 2026, choosing every recommended option; D9 and D10 remain open and D11 is parked. D12's CP1 anchors are owner-authorized trial values, not a claim that G1 or CP4 balance has passed. The owner also authorized proceeding with the CP2 two-hands choice as built, subject to later modification, and approved the CP3 direction; these are build-path approvals, not evidence that either gate has been implemented or passed. Also decided on 30 October 2026 and recorded in AGENTS.md: multiplayer is core; races are build identity; progression is open-ended; the story is the introduction; the world has exploration, locations and layers; land ownership needs a gameplay purpose; the stuffie theme and story stay.
+
+## Current checkpoint authorization
+
+- CP1: the owner delegated selection of a price trial based on measured income, with substantial grinding and long-term play as requirements. D12 records the selected trial; full G1 validation remains pending.
+- CP2: the owner approved bringing the two-hand system into the campaign as built, with later adjustment allowed. The lab prototype and technical acceptance checks still must run; no further owner approval pause is required.
+- CP3: the owner approved the combined combat direction and interim “Echoes of the Underfoot” hunting proposal. Integrated balance testing still must run; this is prospective authorization, not a claim of successful results.
+- CP4: pending measured results and a recommendation on final post-story values. The 1,100-entry/2,000-best win targets remain starting values for that fit.
 
 ## Milestones
 

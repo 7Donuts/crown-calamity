@@ -177,7 +177,7 @@ function exchangeWalkthrough(s, counters, key, rng, clock, enemyId, source) {
     row.defeatCoinsLost = (row.defeatCoinsLost || 0) + (result.coinsLost || 0);
     counters.defeatCoinsLost += result.coinsLost || 0;
     counters.defeatHistory ||= [];
-    counters.defeatHistory.push({ enemy: enemyId, source, coinsLost: result.coinsLost || 0, coinsAfterDefeat: s.coins, woundedUntil: s.woundedUntil || 0, chapter });
+    counters.defeatHistory.push({ enemy: enemyId, source, atMs: clock.now, coinsLost: result.coinsLost || 0, coinsAfterDefeat: s.coins, woundedUntil: s.woundedUntil || 0, chapter });
     counters.lastEncounter = { enemy: enemyId, source, outcome: 'defeat' };
     throw new Error(`Defeated by ${enemyId} during ${source}; stopping immediately`);
   }
@@ -223,28 +223,51 @@ function runFight(s, enemyId, source, clock, rng, counters, { chapterBoss = null
   restIfNeeded(s, clock, counters);
 }
 
-function runWithOneRetry(work, s, clock, counters, retryKey) {
-  try { return work(); }
-  catch (error) {
-    if (counters.lastEncounter?.outcome !== 'defeat') throw error;
-    counters.retriesByContract ||= {};
-    if ((counters.retriesByContract[retryKey] || 0) >= 1) throw error;
-    counters.retriesByContract[retryKey] = (counters.retriesByContract[retryKey] || 0) + 1;
-    counters.retryCount = (counters.retryCount || 0) + 1;
-    const defeatedAt = clock.now;
-    const coinsAfterDefeat = s.coins;
-    const woundedUntil = s.woundedUntil || 0;
-    const restsBeforeRecovery = counters.rests || 0;
-    restIfNeeded(s, clock, counters);
-    counters.retryHistory ||= [];
-    counters.retryHistory.push({ contract: retryKey, afterDefeatAt: defeatedAt, woundWaitMs: Math.max(0, woundedUntil - defeatedAt), coinsAfterDefeat, coinsAtRetryStart: s.coins, restsUsed: (counters.rests || 0) - restsBeforeRecovery });
-    return work();
+function runWithOneRetry(work, s, clock, counters, retryKey, failedResultOverheadMs = 0) {
+  let attempt = 0;
+  while (true) {
+    try { return work(); }
+    catch (error) {
+      if (counters.lastEncounter?.outcome !== 'defeat') throw error;
+      const defeat = counters.defeatHistory?.at(-1);
+      const defeatedAt = defeat?.atMs ?? clock.now;
+      const coinsAfterDefeat = s.coins;
+      const woundedUntil = s.woundedUntil || 0;
+      const retryUsed = (counters.retriesByContract?.[retryKey] || 0) >= 1;
+      if (attempt > 0 || retryUsed) {
+        if (failedResultOverheadMs > 0) {
+          clock.now += failedResultOverheadMs;
+          counters.failedResultOverheadMs = (counters.failedResultOverheadMs || 0) + failedResultOverheadMs;
+        }
+        throw error;
+      }
+      counters.retriesByContract ||= {};
+      counters.retriesByContract[retryKey] = (counters.retriesByContract[retryKey] || 0) + 1;
+      counters.retryCount = (counters.retryCount || 0) + 1;
+      const restsBeforeRecovery = counters.rests || 0;
+      const allocatedBeforeRecovery = counters.allocatedStatPoints || 0;
+      restIfNeeded(s, clock, counters);
+      // Death clears the fight/delve; at this safe rest point the policy can
+      // spend any newly earned level-up points before its one permitted retry.
+      allocateForWalkthrough(s, counters);
+      const recoveryFinishedAt = clock.now;
+      if (failedResultOverheadMs > 0) {
+        // Charge the normal result/navigation allowance after recovery so it
+        // remains visible in elapsed time instead of overlapping the wound.
+        clock.now += failedResultOverheadMs;
+        counters.failedResultOverheadMs = (counters.failedResultOverheadMs || 0) + failedResultOverheadMs;
+      }
+      const retryStartedAt = clock.now;
+      counters.retryHistory ||= [];
+      counters.retryHistory.push({ contract: retryKey, afterDefeatAt: defeatedAt, woundWaitMs: Math.max(0, woundedUntil - defeatedAt), coinsAfterDefeat, coinsAtRetryStart: s.coins, restsUsed: (counters.rests || 0) - restsBeforeRecovery, statPointsAllocatedDuringRecovery: (counters.allocatedStatPoints || 0) - allocatedBeforeRecovery, recoveryElapsedMs: recoveryFinishedAt - defeatedAt, failedResultOverheadMs, elapsedToRetryMs: retryStartedAt - defeatedAt });
+      attempt++;
+    }
   }
 }
 
 function runFightWithOneRetry(s, enemyId, source, clock, rng, counters, options = {}) {
   const retryKey = counters.activeContract || `chapter-${G.currentChapter(s)}-preparation`;
-  return runWithOneRetry(() => runFight(s, enemyId, source, clock, rng, counters, options), s, clock, counters, retryKey);
+  return runWithOneRetry(() => runFight(s, enemyId, source, clock, rng, counters, options), s, clock, counters, retryKey, HUNT_OVERHEAD_MS);
 }
 
 function commandStoryAction(s, clock, counters) {
@@ -466,7 +489,7 @@ export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades 
       actions: counters.actions, rests: counters.rests, storyCommands: counters.storyCommands,
       contractsClaimed: counters.claimed, firstUsefulPurchaseMinute: counters.firstPurchaseAt,
       purchases: counters.purchases, receiptGear: counters.receiptGear, coinsSpent: counters.purchases.reduce((n, row) => n + row.price, 0),
-      activeContracts: [...s.story.accepted], ownedEquips: counters.ownedEquips, retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], defeatHistory: counters.defeatHistory || [], policy: { vitalityAllocated: counters.vitalityAllocated, allocatedStatPoints: counters.allocatedStatPoints, allocationsByStat: counters.allocationsByStat, actions: counters.actionCounts, lastPurchaseCategory: counters.policy?.lastPurchaseCategory },
+      activeContracts: [...s.story.accepted], ownedEquips: counters.ownedEquips, retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], failedResultOverheadMs: counters.failedResultOverheadMs || 0, defeatHistory: counters.defeatHistory || [], policy: { vitalityAllocated: counters.vitalityAllocated, allocatedStatPoints: counters.allocatedStatPoints, allocationsByStat: counters.allocationsByStat, actions: counters.actionCounts, lastPurchaseCategory: counters.policy?.lastPurchaseCategory },
       currencyLedger: { startingCoins: 20, encounterCoins: counters.encounterCoins, contractCoins: counters.contractCoins, achievementCoins: counters.achievementCoins, saleCoins: 0, coinsSpent: counters.coinsSpent, defeatCoinsLost: counters.defeatCoinsLost, expectedCoins: 20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost, actualCoins: s.coins, residual: s.coins - (20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost) },
       lastEncounter: counters.lastEncounter, preparationHunts: counters.preparationHunts, error: error.message
     };
@@ -479,7 +502,7 @@ export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades 
     wins: counters.wins, defeats: counters.defeats, defeatCoinsLost: counters.defeatCoinsLost, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, contractCoins: counters.contractCoins, actions: counters.actions, rests: counters.rests,
     storyCommands: counters.storyCommands, contractsClaimed: counters.claimed,
     firstUsefulPurchaseMinute: counters.firstPurchaseAt, purchases: counters.purchases, receiptGear: counters.receiptGear, coinsSpent: counters.purchases.reduce((n, row) => n + row.price, 0), gear: { ...s.gear },
-    retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], defeatHistory: counters.defeatHistory || [],
+    retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], failedResultOverheadMs: counters.failedResultOverheadMs || 0, defeatHistory: counters.defeatHistory || [],
     policy: { vitalityAllocated: counters.vitalityAllocated, allocatedStatPoints: counters.allocatedStatPoints, allocationsByStat: counters.allocationsByStat, actions: counters.actionCounts, lastPurchaseCategory: counters.policy.lastPurchaseCategory }, ownedEquips: counters.ownedEquips, lastEncounter: counters.lastEncounter, preparationHunts: counters.preparationHunts,
     currencyLedger: { startingCoins: 20, encounterCoins: counters.encounterCoins, contractCoins: counters.contractCoins, achievementCoins: counters.achievementCoins, saleCoins: 0, coinsSpent: counters.coinsSpent, defeatCoinsLost: counters.defeatCoinsLost, expectedCoins: 20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost, actualCoins: s.coins, residual: s.coins - (20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost) },
     ...(stoppedAtCheckpoint ? { state: structuredClone(s) } : {})
@@ -559,7 +582,7 @@ export function runEarnedTier10Preparation({ kit = 'breaker', seed = 1, sellDrop
       status, kit, seed, sellDrops, stage: 'post-receipt-preparation', checkpoint: { receipt: 'arcade_finale', minute: priorReceipt?.minute, minutesAt2_5sInput: priorReceipt?.minutesAt2_5sInput, minutesAt4sInput: priorReceipt?.minutesAt4sInput, level: start.level, coins: start.coins, gear: start.gear, finiteSalePreviewCoins: priorReceipt?.finiteSalePreviewCoins, currencyLedger: checkpoint.currencyLedger },
       targetItem: target.id, targetCoins: target.price, enemy: enemy?.id || null, wins: counters.wins, defeats: counters.defeats, defeatCoinsLost: counters.defeatCoinsLost,
       actions: counters.actions, inputActions: counters.inputActions, rests: counters.rests, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, saleCoins, sales,
-      retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], defeatHistory: counters.defeatHistory || [],
+      retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], failedResultOverheadMs: counters.failedResultOverheadMs || 0, defeatHistory: counters.defeatHistory || [],
       initialCheckpointSaleCoins: saleReceipts.filter(row => row.pass === 'checkpoint-inventory').reduce((sum, row) => sum + row.coins, 0),
       initialCheckpointSales: saleReceipts.filter(row => row.pass === 'checkpoint-inventory').length,
       reacquiredDropSaleCoins: saleReceipts.filter(row => row.pass === 'reacquired-drop').reduce((sum, row) => sum + row.coins, 0),
@@ -680,6 +703,24 @@ export function catalogAudit() {
     return { tier, chapter: rows[0]?.chapter ?? null, count: rows.length, prices: [...new Set(rows.map(item => item.price))] };
   });
   const errors = [];
+  // Independent expected anchors for catalog validation. These intentionally do not
+  // import the generator's interpolation helper from dist/gear.js.
+  const weaponPriceAnchors = [[1, 100], [10, 10000], [15, 15000], [20, 30000], [25, 60000]];
+  const expectedWeaponPrice = tier => {
+    const upper = weaponPriceAnchors.findIndex(([anchorTier]) => anchorTier >= tier);
+    if (upper === 0) return weaponPriceAnchors[0][1];
+    const [lowerTier, lowerPrice] = weaponPriceAnchors[upper - 1];
+    const [upperTier, upperPrice] = weaponPriceAnchors[upper];
+    return Math.round(lowerPrice * Math.pow(upperPrice / lowerPrice, (tier - lowerTier) / (upperTier - lowerTier)));
+  };
+  const armorMultiplierAnchors = [[1, 1], [4, 3.2 ** 3], [6, 3750 / 24], [8, 7500 / 24], [10, 15000 / 24]];
+  const expectedArmorMultiplier = tier => {
+    if (tier <= 4) return 3.2 ** (tier - 1);
+    const upper = armorMultiplierAnchors.findIndex(([anchorTier]) => anchorTier >= tier);
+    const [lowerTier, lowerMultiplier] = armorMultiplierAnchors[upper - 1];
+    const [upperTier, upperMultiplier] = armorMultiplierAnchors[upper];
+    return lowerMultiplier * Math.pow(upperMultiplier / lowerMultiplier, (tier - lowerTier) / (upperTier - lowerTier));
+  };
   for (const item of weapons) {
     if (!item.family || !Object.hasOwn(WEAPON_FAMILIES, item.family)) {
       errors.push(`${item.id} has no known family (${item.family})`);
@@ -692,7 +733,7 @@ export function catalogAudit() {
     for (const item of rows) {
       const expectedChapter = item.tier <= 4 ? 1 : item.tier <= 10 ? 2 : item.tier <= 15 ? 3 : item.tier <= 20 ? 4 : 5;
       if (item.chapter !== expectedChapter) errors.push(`${item.id} chapter ${item.chapter} mismatches tier ${item.tier}`);
-      const expectedPrice = Math.round(100 * Math.pow(100, (item.tier - 1) / 9));
+      const expectedPrice = expectedWeaponPrice(item.tier);
       if (item.price !== expectedPrice) errors.push(`${item.id} price ${item.price} mismatches formula (${expectedPrice})`);
     }
   }
@@ -715,7 +756,7 @@ export function catalogAudit() {
     for (const item of rows) {
       const expectedChapter = Math.ceil(item.tier / 2);
       if (item.chapter !== expectedChapter) errors.push(`${item.id} chapter ${item.chapter} mismatches tier ${item.tier}`);
-      if (item.price !== Math.round(rows[0].price * Math.pow(3.2, item.tier - 1))) errors.push(`${item.id} price mismatches ${slot} scaling formula`);
+      if (item.price !== Math.round(rows[0].price * expectedArmorMultiplier(item.tier))) errors.push(`${item.id} price mismatches ${slot} scaling formula`);
     }
   }
   for (const enemy of G.ENEMIES) {
@@ -757,7 +798,7 @@ export function createReport({ seeds = 1, walkthrough = true, sampleWins = 40, t
     model: {
       type: 'seeded offline fixture; outcomes are simulation estimates, not observed new-player data',
       assumptions: {
-        walkthrough: `Fresh level-1 character, 20 starting coins, actual contracts/XP/rewards/receipts, actual enemy access and combat. Meets Mara and follows the records delve route; allocates ${WALKTHROUGH_VITALITY_POINTS} earned points to Vitality, then points to the kit primary; legally prepares to level 8 before the delve; uses eligible Mend/Disrupt, actionInfo-gated Recover, safe finishes, heavy responses and Spin Cycle Vent. At safe points it equips useful owned drops and buys affordable improving armor/relics/interim same-channel weapons, preserving each kit offhand and excluding chapter-ceiling weapons. After a defeat it records the actual penalty, waits for the wound, uses production rest, and permits one full retry per contract; a second defeat in that contract stops the route. Paired policies save coins or use these purchases; neither sells loot.`,
+        walkthrough: `Fresh level-1 character, 20 starting coins, actual contracts/XP/rewards/receipts, actual enemy access and combat. Meets Mara and follows the records delve route; allocates ${WALKTHROUGH_VITALITY_POINTS} earned points to Vitality, then points to the kit primary; legally prepares to level 8 before the delve; uses eligible Mend/Disrupt, actionInfo-gated Recover, safe finishes, heavy responses and Spin Cycle Vent. At safe points it equips useful owned drops and buys affordable improving armor/relics/interim same-channel weapons, preserving each kit offhand and excluding chapter-ceiling weapons. After a defeat it records the actual penalty, waits for the wound, uses production rest, and permits one full retry per contract; a second defeat in that contract stops the route. For ordinary failed hunts it adds the model's 2.5s result/navigation allowance once after recovery, before retry or stop; delve scene timing remains separate. Paired policies save coins or use these purchases; neither sells loot.`,
         tier10Preparation: 'A second, separately labeled phase reloads the actual earned C2 finale checkpoint (receipt, level, gear, coins, inventory). It repeats the highest accessible C2 ordinary foe through production APIs until it buys the C2 tier-10 weapon. The sale branch sells each production-preview-allowed spare present on each sale pass. New drops may reacquire an already-sold ID and be sold on a later pass; realized sale flow is therefore not limited to the finite checkpoint inventory. It records checkpoint-inventory sales and reacquired-drop sales separately, along with each production sale receipt. This is post-receipt preparation, not campaign-route time.',
         farm: 'Synthetic mature build per region with a manually prepared chapter receipt and chapter-cap level. It uses the previous chapter’s top same-channel weapon (starter weapon in C1), current-region best defensive equipment, and repeats the highest nonboss enemy to save for that chapter’s highest-tier weapon. The target weapon is not pre-owned. This is repeatable-region throughput, not campaign walkthrough time.',
         timing: `${ACTION_MS / 1000}s/action base; ${HUNT_OVERHEAD_MS / 1000}s per fight for opening/result/navigation; ${REST_MS / 1000}s explicit rest when injured; ${SALE_OVERHEAD_MS / 1000}s per sale. Alternative input intervals report 2.5s and 4s actions. Sales use production resale receipts; only unequipped drops are sold.`,

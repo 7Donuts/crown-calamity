@@ -1,5 +1,7 @@
 # G1-B price analysis preflight (before B0/G1-A)
 
+**Historical preparation only.** This pre-measurement document is superseded by the owner-authorized CP1 trial in [the G1-B report](g1b-price-curve.md).
+
 Status: preparation only. No curve is selected, no gameplay source is changed, and none of the figures below are CP1 recommendations. This document preserves the read-only preparation notes in the repository. The B0 corrected harness is not approved yet, and G1-A's measured earned-income results have not arrived. Do not replace those measurements with synthetic farm throughput or the authored payout values.
 
 ## Contract and fixed constraints
