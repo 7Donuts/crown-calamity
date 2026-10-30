@@ -21,7 +21,25 @@ async function bootLab(){
   return {ui:context.__test,get,downloads,copied};
 }
 
-test('the disposable UI opens all seven scenarios, shows the correct goals, and never accesses campaign storage',async()=>{
+test('the Notice Board panel accepts, hunts, counts and refuses early claims through the real handlers',async()=>{
+  const {ui,get}=await bootLab();
+  get('#scenario-select').value='bounty_board';get('#kit-select').value='duelist';get('#seed-input').value='board';
+  ui.handleAction('start-session');
+  const s=ui.getSession(),html=()=>get('#lab-app').innerHTML;
+  assert.match(html(),/NOTICE BOARD/);assert.match(html(),/data-action="bounty-accept:xp"/);assert.match(html(),/data-action="bounty-accept:materials"/);
+  ui.handleAction('bounty-accept:coins');
+  const bounty=s.bountyBoard.active;assert.equal(bounty.profile,'coins');
+  assert.match(html(),new RegExp(`data-action="lab-hunt:${bounty.enemy}"`));
+  ui.handleAction('bounty-claim');assert.equal(s.bountyBoard.active,bounty,'an early claim is refused');
+  ui.handleAction(`lab-hunt:${bounty.enemy}`);assert.equal(s.character.fight.enemy,bounty.enemy);
+  assert.match(html(),/wait until this fight ends/);
+  s.character.fight.hp=1;ui.handleAction('lab-action:attack');
+  assert.equal(s.character.fight,null);assert.equal(bounty.progress,1);
+  ui.handleAction('bounty-abandon');assert.equal(s.bountyBoard.active,null);
+  assert.equal(/\b(?:undefined|NaN)\b/.test(html()),false);
+});
+
+test('the disposable UI opens every scenario, shows the correct goals, and never accesses campaign storage',async()=>{
   const {ui,get}=await bootLab();
   assert.match(get('#lab-app').innerHTML,/provisional balance/);
   for(const scenario of L.LAB_SCENARIOS){

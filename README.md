@@ -28,6 +28,14 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
+## Unreleased: Shimlar comparison and three prototypes
+
+- **Overkill shown honestly.** When a blow ends a fight, the combat log and feedback now say how much was actually needed, for example `40 physical damage · only 6 needed`. The same applies to an enemy blow that defeats you. Attempted damage is still reported, and Playtest Lab telemetry is unchanged.
+- **Notice Board bounty prototype (Playtest Lab only).** Three bounties, one experience-led, one coin-led and one material-led, drawn from an authored rotation. Only wins after you accept count; each bounty pays a one-time bonus of 35% of what its wins already pay, split 60/30/10. Bounties never expire, abandoning never rerolls the board, and the lab never touches campaign saves.
+- **Reference server request gate.** `server/authority.js` runs the Phase 2 checks in `FUTURE-DEVELOPMENT.md` around the real engine: strict request shape, ownership, action-ID replay, version checks, moderator holds, server-time pacing, draft-then-commit, and once-only reward keys. It is not deployed and is not part of the game.
+
+See [the Shimlar comparison](design/40_Shimlar_Comparison.md).
+
 ## New in v0.13.1: ten weapons per fighting style
 
 The catalog now has 100 base items, including ten Might, ten magic, and ten Finesse weapons. Each channel has tiers 1–10, priced from 100 to 10,000 coins using the same geometric curve. Other equipment prices are unchanged. Gear tiers do not require a character level.
@@ -222,6 +230,7 @@ The original modular pack remains under `design/Crown-and-Calamity-Design-v0.1/`
 - [Menu and navigation review](design/25_Menu_Review.md)
 - [Art direction proposals](design/26_Art_Directions.md)
 - [RWK relic and itemization research](design/27_RWK_Relics_and_Itemization.md)
+- [Shimlar comparison and prototypes](design/40_Shimlar_Comparison.md)
 - [Online development roadmap](FUTURE-DEVELOPMENT.md)
 
 This is still a local solo prototype. Login, server-authoritative actions/randomness/rewards, account persistence, guilds, and multiplayer are future work. Local saves, clocks, and code remain editable. The shared delay limits rapid input; it is not production anti-cheat.
