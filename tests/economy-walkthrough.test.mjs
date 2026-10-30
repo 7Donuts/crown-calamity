@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as G from '../dist/engine.js';
-import { runCampaignWalkthrough, chooseWalkthroughAction } from '../scripts/weapon-economy.mjs';
+import { runCampaignWalkthrough, runEarnedTier10Preparation, chooseWalkthroughAction } from '../scripts/weapon-economy.mjs';
 
 test('walkthrough policy guards a heavy instead of spending its response on Mend', () => {
   const s = G.createCharacter({ name: 'Policy test', race: 'wolf', kit: 'breaker' });
@@ -86,4 +86,29 @@ test('earned walkthrough buys legal defensive/relic upgrades and records actual 
     if (result.lastEncounter.outcome === 'defeat') assert.match(result.error, new RegExp(result.lastEncounter.enemy));
   }
   else assert.equal(result.receipts.length, 5);
+  if (result.currencyLedger) assert.equal(result.currencyLedger.residual, 0);
+});
+
+test('earned C2 T10 preparation reloads the real receipt state and sells finite drops once', () => {
+  const saved = runEarnedTier10Preparation({ kit: 'breaker', seed: 1, sellDrops: false });
+  const sold = runEarnedTier10Preparation({ kit: 'breaker', seed: 1, sellDrops: true });
+  for (const row of [saved, sold]) {
+    assert.equal(row.status, 'completed');
+    assert.equal(row.checkpoint.receipt, 'arcade_finale');
+    assert.equal(row.targetPurchase.id, 'pike');
+    assert.equal(row.targetPurchase.price, row.targetCoins);
+    assert.equal(row.currencyLedger.residual, 0);
+    assert.ok(row.encounterCoins > 0);
+    assert.ok(row.totalMinutesAt2_5sInput > row.totalMinutesFromNewCharacter);
+  }
+  assert.equal(saved.startingCoins, sold.startingCoins, 'both branches start from the same earned C2 save');
+  assert.equal(saved.saleCoins, 0);
+  assert.ok(sold.saleCoins > 0);
+  assert.ok(sold.sales > 0);
+  assert.equal(sold.currencyLedger.saleCoins, sold.saleCoins);
+  assert.equal(sold.saleReceipts.length, sold.sales);
+  assert.equal(sold.saleReceipts.reduce((sum, row) => sum + row.coins, 0), sold.saleCoins);
+  assert.equal(sold.initialCheckpointSaleCoins, sold.checkpoint.finiteSalePreviewCoins);
+  assert.ok(sold.reacquiredDropSaleCoins > 0, 'later eligible drops may be sold after the same item ID is reacquired');
+  assert.equal(sold.initialCheckpointSaleCoins + sold.reacquiredDropSaleCoins, sold.saleCoins);
 });

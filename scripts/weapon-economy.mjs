@@ -150,8 +150,11 @@ function countAction(counters, key) {
 function exchangeWalkthrough(s, counters, key, rng, clock, enemyId, source) {
   clock.now += ACTION_MS;
   countAction(counters, key);
+  const coinsBefore = s.coins;
   const result = G.exchange(s, key, rng, clock.now);
   if (!result.ok) throw new Error(`Rejected fixture action ${key}: ${result.reason}`);
+  const actionCashDelta = s.coins - coinsBefore;
+  counters.achievementCoins += result.victory ? actionCashDelta - (s.last?.coins || 0) : result.defeat ? actionCashDelta + (result.coinsLost || 0) : actionCashDelta;
   const chapter = G.currentChapter(s);
   const row = counters.chapterEconomy[chapter] ||= { wins: 0, actions: 0, encounterCoins: 0, drops: [], defeatCoinsLost: 0, ordinaryWins: 0, ordinaryEncounterCoins: 0, scriptedBossWins: 0, scriptedBossCoins: 0, delveWins: 0, delveCoins: 0 };
   row.actions++;
@@ -356,11 +359,14 @@ function progressContract(s, id, clock, rng, counters, prepareSafePoint = () => 
 }
 
 /** Run one earned five-chapter walkthrough from a genuine new character. */
-export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades = true } = {}) {
+export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades = true, stopAfterReceipt = null } = {}) {
+  const stopIndex = stopAfterReceipt === null ? -1 : FINAL_RECEIPTS.indexOf(stopAfterReceipt);
+  if (stopAfterReceipt !== null && stopIndex < 0) throw new Error(`Unknown earned walkthrough checkpoint: ${stopAfterReceipt}`);
+  const requiredReceipts = stopIndex < 0 ? FINAL_RECEIPTS.length : stopIndex + 1;
   const build = BUILDS[kit];
   const s = G.createCharacter({ name: `Economy ${kit}`, race: build.race, kit });
   const clock = { now: 1_000_000 };
-  const counters = { stat: build.stat, vitalityAllocated: 0, preparationHunts: 0, actions: 0, inputActions: 0, actionCounts: {}, wins: 0, defeats: 0, defeatCoinsLost: 0, encounterCoins: 0, contractCoins: 0, contractCoinsByChapter: {}, chapterEconomy: {}, rests: 0, storyCommands: 0, accepted: 0, claimed: 0, purchases: [], ownedEquips: [], coinsSpent: 0, receiptGear: [], receiptBaseline: { minute: 0, minutesAt2_5sInput: 0, minutesAt4sInput: 0, actions: 0, inputActions: 0, wins: 0, encounterCoins: 0, coinsSpent: 0, finiteSaleCoins: 0, contractCoins: 0 }, firstPurchaseAt: null, lastEncounter: null, policy: {} };
+  const counters = { stat: build.stat, vitalityAllocated: 0, preparationHunts: 0, actions: 0, inputActions: 0, actionCounts: {}, wins: 0, defeats: 0, defeatCoinsLost: 0, encounterCoins: 0, achievementCoins: 0, contractCoins: 0, contractCoinsByChapter: {}, chapterEconomy: {}, rests: 0, storyCommands: 0, accepted: 0, claimed: 0, purchases: [], ownedEquips: [], coinsSpent: 0, receiptGear: [], receiptBaseline: { minute: 0, minutesAt2_5sInput: 0, minutesAt4sInput: 0, actions: 0, inputActions: 0, wins: 0, encounterCoins: 0, coinsSpent: 0, finiteSaleCoins: 0, contractCoins: 0 }, firstPurchaseAt: null, lastEncounter: null, policy: {} };
   const rng = seededRng(`walkthrough-${kit}-${seed}`);
   const prepareSafePoint = () => {
     prepareMend(s);
@@ -380,7 +386,7 @@ export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades 
   const contracts = Object.keys(G.STORY_CONTRACTS);
   let turns = 0;
   try {
-   while (s.story.completed.filter(id => FINAL_RECEIPTS.includes(id)).length < 5 && turns++ < 1000) {
+   while (s.story.completed.filter(id => FINAL_RECEIPTS.includes(id)).length < requiredReceipts && turns++ < 1000) {
     if (process.env.ECONOMY_TRACE) console.error(`walk ${kit} turn=${turns} level=${s.level} chapter=${G.currentChapter(s)} active=${s.story.accepted.join(',')} done=${s.story.completed.join(',')}`);
     prepareSafePoint();
     if (!s.story.events.actions.mara_met) {
@@ -415,24 +421,117 @@ export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades 
   } catch (error) {
     return {
       status: 'incomplete', kit, seed, buyUpgrades, minutes: round((clock.now - 1_000_000) / 60_000),
-      level: s.level, coins: s.coins, gear: { ...s.gear }, inventory: [...s.bag], receipts: FINAL_RECEIPTS.filter(id => s.story.completed.includes(id)), defeatCoinsLost: counters.defeatCoinsLost, encounterCoins: counters.encounterCoins,
+      level: s.level, coins: s.coins, gear: { ...s.gear }, inventory: [...s.bag], receipts: FINAL_RECEIPTS.filter(id => s.story.completed.includes(id)), defeatCoinsLost: counters.defeatCoinsLost, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, contractCoins: counters.contractCoins,
       currentChapter: G.currentChapter(s), wins: counters.wins, defeats: counters.defeats,
       actions: counters.actions, rests: counters.rests, storyCommands: counters.storyCommands,
       contractsClaimed: counters.claimed, firstUsefulPurchaseMinute: counters.firstPurchaseAt,
       purchases: counters.purchases, receiptGear: counters.receiptGear, coinsSpent: counters.purchases.reduce((n, row) => n + row.price, 0),
       activeContracts: [...s.story.accepted], ownedEquips: counters.ownedEquips, policy: { vitalityAllocated: counters.vitalityAllocated, actions: counters.actionCounts, lastPurchaseCategory: counters.policy?.lastPurchaseCategory },
+      currencyLedger: { startingCoins: 20, encounterCoins: counters.encounterCoins, contractCoins: counters.contractCoins, achievementCoins: counters.achievementCoins, saleCoins: 0, coinsSpent: counters.coinsSpent, defeatCoinsLost: counters.defeatCoinsLost, expectedCoins: 20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost, actualCoins: s.coins, residual: s.coins - (20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost) },
       lastEncounter: counters.lastEncounter, preparationHunts: counters.preparationHunts, error: error.message
     };
   }
-  if (turns >= 1000 || s.story.completed.filter(id => FINAL_RECEIPTS.includes(id)).length < 5) throw new Error('Campaign walkthrough exceeded command limit');
+  if (turns >= 1000 || s.story.completed.filter(id => FINAL_RECEIPTS.includes(id)).length < requiredReceipts) throw new Error('Campaign walkthrough exceeded command limit');
+  const stoppedAtCheckpoint = stopIndex >= 0;
   return {
-    status: 'completed', kit, seed, buyUpgrades, minutes: round((clock.now - 1_000_000) / 60_000), level: s.level, coins: s.coins,
+    status: stoppedAtCheckpoint ? 'checkpoint' : 'completed', kit, seed, buyUpgrades, minutes: round((clock.now - 1_000_000) / 60_000), clockNow: stoppedAtCheckpoint ? clock.now : undefined, level: s.level, coins: s.coins,
     receipts: FINAL_RECEIPTS.filter(id => s.story.completed.includes(id)), currentChapter: G.currentChapter(s),
-    wins: counters.wins, defeats: counters.defeats, defeatCoinsLost: counters.defeatCoinsLost, encounterCoins: counters.encounterCoins, actions: counters.actions, rests: counters.rests,
+    wins: counters.wins, defeats: counters.defeats, defeatCoinsLost: counters.defeatCoinsLost, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, contractCoins: counters.contractCoins, actions: counters.actions, rests: counters.rests,
     storyCommands: counters.storyCommands, contractsClaimed: counters.claimed,
     firstUsefulPurchaseMinute: counters.firstPurchaseAt, purchases: counters.purchases, receiptGear: counters.receiptGear, coinsSpent: counters.purchases.reduce((n, row) => n + row.price, 0), gear: { ...s.gear },
-    policy: { vitalityAllocated: counters.vitalityAllocated, actions: counters.actionCounts, lastPurchaseCategory: counters.policy.lastPurchaseCategory }, ownedEquips: counters.ownedEquips, lastEncounter: counters.lastEncounter, preparationHunts: counters.preparationHunts
+    policy: { vitalityAllocated: counters.vitalityAllocated, actions: counters.actionCounts, lastPurchaseCategory: counters.policy.lastPurchaseCategory }, ownedEquips: counters.ownedEquips, lastEncounter: counters.lastEncounter, preparationHunts: counters.preparationHunts,
+    currencyLedger: { startingCoins: 20, encounterCoins: counters.encounterCoins, contractCoins: counters.contractCoins, achievementCoins: counters.achievementCoins, saleCoins: 0, coinsSpent: counters.coinsSpent, defeatCoinsLost: counters.defeatCoinsLost, expectedCoins: 20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost, actualCoins: s.coins, residual: s.coins - (20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost) },
+    ...(stoppedAtCheckpoint ? { state: structuredClone(s) } : {})
   };
+}
+
+/** Continue from a real earned Chapter 2 finale state and buy its tier-10 weapon. */
+export function runEarnedTier10Preparation({ kit = 'breaker', seed = 1, sellDrops = false, maxFights = 10_000 } = {}) {
+  if (!BUILDS[kit]) throw new Error(`Unknown earned build: ${kit}`);
+  if (!Number.isInteger(maxFights) || maxFights < 1 || maxFights > 10_000) throw new Error('maxFights must be an integer from 1 to 10,000');
+  const checkpoint = runCampaignWalkthrough({ kit, seed, buyUpgrades: true, stopAfterReceipt: 'arcade_finale' });
+  if (checkpoint.status !== 'checkpoint' || !checkpoint.state) return { status: 'incomplete', kit, seed, sellDrops, stage: 'earned-campaign', checkpoint, error: checkpoint.error || 'Did not reach the earned Chapter 2 receipt' };
+  const s = G.loadSave(JSON.stringify(checkpoint.state));
+  if (!s) throw new Error('Earned Chapter 2 checkpoint could not reload through the production save API');
+  const build = BUILDS[kit];
+  const clock = { now: checkpoint.clockNow };
+  const rng = seededRng(`earned-tier10-${kit}-${seed}`);
+  const counters = { stat: build.stat, vitalityAllocated: checkpoint.policy.vitalityAllocated, preparationHunts: 0, actions: 0, inputActions: 0, actionCounts: {}, wins: 0, defeats: 0, defeatCoinsLost: 0, encounterCoins: 0, achievementCoins: 0, contractCoins: 0, contractCoinsByChapter: {}, chapterEconomy: {}, rests: 0, storyCommands: 0, accepted: 0, claimed: 0, purchases: [], ownedEquips: [], coinsSpent: 0, firstPurchaseAt: null, lastEncounter: null, policy: {} };
+  const target = Object.values(ITEMS).find(item => item.slot === 'weapon' && item.channel === build.channel && item.tier === 10);
+  if (!target) throw new Error(`Missing tier-10 weapon for ${kit}`);
+  const start = { coins: s.coins, level: s.level, wins: checkpoint.wins, actions: checkpoint.actions, minute: checkpoint.minutes, minuteExact: (checkpoint.clockNow - 1_000_000) / 60_000, receipt: 'arcade_finale', gear: { ...s.gear } };
+  const startTime = clock.now;
+  let saleCoins = 0, sales = 0, targetPurchase = null, enemy = null;
+  const saleReceipts = [];
+  let firstSalePass = true;
+  const chapterTwo = G.CHAPTERS.find(row => row.id === 2);
+  const chooseEnemy = () => chapterTwo.enemyIds.map(id => G.ENEMIES.find(row => row.id === id)).filter(row => row && G.enemyAccess(s, row.id).allowed && row.level <= s.level + 2).sort((a, b) => b.level - a.level)[0];
+  const sellSpareItems = () => {
+    if (!sellDrops) return;
+    for (const id of [...new Set(s.bag)]) {
+      if (Object.values(s.gear).includes(id)) continue;
+      const preview = G.sellPreview(s, id);
+      if (!preview.allowed) continue;
+      const receipt = G.sell(s, id);
+      if (receipt) {
+        saleCoins += receipt.coins;
+        sales++;
+        saleReceipts.push({ id: receipt.id, coins: receipt.coins, pass: firstSalePass ? 'checkpoint-inventory' : 'reacquired-drop' });
+        clock.now += SALE_OVERHEAD_MS;
+      }
+    }
+    firstSalePass = false;
+  };
+  const purchaseTier10 = () => {
+    if (s.coins < target.price) return false;
+    const preview = G.buyAndEquipPreview(s, target.id, 'weapon');
+    if (!preview.allowed) return false;
+    const receipt = G.buyAndEquip(s, target.id, 'weapon');
+    if (!receipt) return false;
+    counters.coinsSpent += receipt.price;
+    targetPurchase = { id: receipt.id, price: receipt.price, minuteAfterC2Receipt: round((clock.now - startTime) / 60_000), coins: s.coins, gear: { ...s.gear } };
+    return true;
+  };
+  try {
+    allocateForWalkthrough(s, counters);
+    sellSpareItems();
+    if (purchaseTier10()) return tier10PrepResult();
+    for (let fight = 0; fight < maxFights; fight++) {
+      enemy = chooseEnemy();
+      if (!enemy) throw new Error(`No accessible Chapter 2 ordinary foe at level ${s.level}`);
+      runFight(s, enemy.id, 'hunt', clock, rng, counters);
+      equipOwnedUseful(s, build.channel, counters, clock);
+      sellSpareItems();
+      if (purchaseTier10()) return tier10PrepResult();
+    }
+    throw new Error(`Reached maxFights=${maxFights} without affording ${target.id}`);
+  } catch (error) {
+    return tier10PrepResult('incomplete', error.message);
+  }
+
+  function tier10PrepResult(status = 'completed', error = null) {
+    const elapsed = (clock.now - startTime) / 60_000;
+    const elapsedRounded = round(elapsed);
+    const priorReceipt = checkpoint.receiptGear.find(row => row.receipt === 'arcade_finale');
+    const expectedCoins = start.coins + counters.encounterCoins + counters.achievementCoins + saleCoins - counters.coinsSpent - counters.defeatCoinsLost;
+    return {
+      status, kit, seed, sellDrops, stage: 'post-receipt-preparation', checkpoint: { receipt: 'arcade_finale', minute: priorReceipt?.minute, minutesAt2_5sInput: priorReceipt?.minutesAt2_5sInput, minutesAt4sInput: priorReceipt?.minutesAt4sInput, level: start.level, coins: start.coins, gear: start.gear, finiteSalePreviewCoins: priorReceipt?.finiteSalePreviewCoins, currencyLedger: checkpoint.currencyLedger },
+      targetItem: target.id, targetCoins: target.price, enemy: enemy?.id || null, wins: counters.wins, defeats: counters.defeats, defeatCoinsLost: counters.defeatCoinsLost,
+      actions: counters.actions, inputActions: counters.inputActions, rests: counters.rests, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, saleCoins, sales,
+      initialCheckpointSaleCoins: saleReceipts.filter(row => row.pass === 'checkpoint-inventory').reduce((sum, row) => sum + row.coins, 0),
+      initialCheckpointSales: saleReceipts.filter(row => row.pass === 'checkpoint-inventory').length,
+      reacquiredDropSaleCoins: saleReceipts.filter(row => row.pass === 'reacquired-drop').reduce((sum, row) => sum + row.coins, 0),
+      reacquiredDropSales: saleReceipts.filter(row => row.pass === 'reacquired-drop').length,
+      saleReceipts,
+      startingCoins: start.coins, endingCoins: s.coins, coinsSpentAfterReceipt: counters.coinsSpent, level: s.level,
+      minutesAfterC2Receipt: elapsedRounded, minutesAfterC2ReceiptAt2_5sInput: round(elapsed + counters.inputActions * 1000 / 60_000), minutesAfterC2ReceiptAt4sInput: round(elapsed + counters.inputActions * 2500 / 60_000),
+      totalMinutesFromNewCharacter: round(start.minuteExact + elapsed),
+      totalMinutesAt2_5sInput: targetPurchase ? round(priorReceipt.minutesAt2_5sInput + elapsed + counters.inputActions * 1000 / 60_000) : null,
+      totalMinutesAt4sInput: targetPurchase ? round(priorReceipt.minutesAt4sInput + elapsed + counters.inputActions * 2500 / 60_000) : null,
+      targetPurchase, purchases: checkpoint.purchases, ownedEquipsPostReceipt: counters.ownedEquips, gearAtPurchase: { ...s.gear }, policyActions: counters.actionCounts, preparationHunts: checkpoint.preparationHunts,
+      currencyLedger: { startingCoins: start.coins, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, saleCoins, coinsSpent: counters.coinsSpent, defeatCoinsLost: counters.defeatCoinsLost, expectedCoins, actualCoins: s.coins, residual: s.coins - expectedCoins }, error
+    };
+  }
 }
 
 function syntheticRegionSave(chapter, build) {
@@ -600,7 +699,7 @@ function summarizeRows(rows, groupKeys) {
   }));
 }
 
-export function createReport({ seeds = 1, walkthrough = true, sampleWins = 40 } = {}) {
+export function createReport({ seeds = 1, walkthrough = true, sampleWins = 40, tier10 = true } = {}) {
   const audit = catalogAudit();
   const campaign = walkthrough ? Object.keys(BUILDS).flatMap(kit => Array.from({ length: seeds }, (_, index) => index + 1).flatMap(seed => [false, true].map(buyUpgrades => {
     try { return { status: 'completed', ...runCampaignWalkthrough({ kit, seed, buyUpgrades }) }; }
@@ -610,12 +709,14 @@ export function createReport({ seeds = 1, walkthrough = true, sampleWins = 40 } 
   for (let chapter = 1; chapter <= 5; chapter++) for (const kit of Object.keys(BUILDS)) for (const sell of [false, true]) for (let seed = 1; seed <= seeds; seed++) {
     farms.push(runRegionFarm({ chapter, kit, sell, seed, sampleWins }));
   }
+  const tier10Preparation = walkthrough && tier10 ? Object.keys(BUILDS).flatMap(kit => Array.from({ length: seeds }, (_, index) => index + 1).flatMap(seed => [false, true].map(sellDrops => runEarnedTier10Preparation({ kit, seed, sellDrops })))) : [];
   return {
     title: 'Five-chapter campaign economy model',
     model: {
       type: 'seeded offline fixture; outcomes are simulation estimates, not observed new-player data',
       assumptions: {
-        walkthrough: 'Fresh level-1 character, 20 starting coins, actual contracts/XP/rewards/receipts, actual enemy access and combat. Meets Mara, accepts and claims contracts, follows the records delve route, allocates all earned points to the build primary stat, uses an equipped primary action and responds to declared heavies. Paired policies either save all coins or buy the least expensive available same-channel weapon that improves damage; neither sells loot.',
+        walkthrough: 'Fresh level-1 character, 20 starting coins, actual contracts/XP/rewards/receipts, actual enemy access and combat. Meets Mara and follows the records delve route; puts five earned points into Vitality, remaining points into the kit primary; legally prepares to level 8 before the delve; uses eligible Mend/Disrupt, actionInfo-gated Recover, safe finishes, heavy responses and Spin Cycle Vent. At safe points it equips useful owned drops and buys affordable improving armor/relics/interim same-channel weapons, preserving each kit offhand and excluding chapter-ceiling weapons. Paired policies save coins or use these purchases; neither sells loot.',
+        tier10Preparation: 'A second, separately labeled phase reloads the actual earned C2 finale checkpoint (receipt, level, gear, coins, inventory). It repeats the highest accessible C2 ordinary foe through production APIs until it buys the C2 tier-10 weapon. The sale branch sells each production-preview-allowed spare present on each sale pass. New drops may reacquire an already-sold ID and be sold on a later pass; realized sale flow is therefore not limited to the finite checkpoint inventory. It records checkpoint-inventory sales and reacquired-drop sales separately, along with each production sale receipt. This is post-receipt preparation, not campaign-route time.',
         farm: 'Synthetic mature build per region with a manually prepared chapter receipt and chapter-cap level. It uses the previous chapter’s top same-channel weapon (starter weapon in C1), current-region best defensive equipment, and repeats the highest nonboss enemy to save for that chapter’s highest-tier weapon. The target weapon is not pre-owned. This is repeatable-region throughput, not campaign walkthrough time.',
         timing: `${ACTION_MS / 1000}s/action base; ${HUNT_OVERHEAD_MS / 1000}s per fight for opening/result/navigation; ${REST_MS / 1000}s explicit rest when injured; ${SALE_OVERHEAD_MS / 1000}s per sale. Alternative input intervals report 2.5s and 4s actions. Sales use production resale receipts; only unequipped drops are sold.`,
         excluded: 'Reading, breaks, menus beyond stated overhead, extra farming for level requirements, build experimentation, purchases before the target item, materials, crafting, upgrades, relic sockets and Special Edition variants.'
@@ -623,6 +724,7 @@ export function createReport({ seeds = 1, walkthrough = true, sampleWins = 40 } 
     },
     priceAudit: audit,
     campaignWalkthroughs: campaign,
+    tier10Preparation,
     regionFarms: summarizeRows(farms.filter(row => row.status === 'completed'), ['chapter', 'kit', 'sell']),
     incompleteFarmRuns: farms.filter(row => row.status === 'incomplete'),
     farmRuns: farms
@@ -630,6 +732,6 @@ export function createReport({ seeds = 1, walkthrough = true, sampleWins = 40 } 
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const report = createReport({ seeds: Number(process.env.ECONOMY_SEEDS) || 1, walkthrough: true, sampleWins: Number(process.env.ECONOMY_SAMPLE_WINS) || 40 });
+  const report = createReport({ seeds: Number(process.env.ECONOMY_SEEDS) || 1, walkthrough: true, sampleWins: Number(process.env.ECONOMY_SAMPLE_WINS) || 40, tier10: process.env.ECONOMY_TIER10 !== '0' });
   console.log(JSON.stringify(report, null, 2));
 }
