@@ -247,6 +247,22 @@ export const RELIC_CATALOG=Object.freeze({
   lintLocket:{chapter:1,echoPrice:200},lastToken:{chapter:2,echoPrice:600},seedHeart:{chapter:3,echoPrice:1500},musicBox:{chapter:4,echoPrice:3500},encoreRibbon:{chapter:5,echoPrice:7000}
 });
 const weaponChapter=tier=>tier<=4?1:tier<=10?2:Math.ceil((tier-10)/5)+2;
+const WEAPON_PRICE_ANCHORS=Object.freeze([[1,100],[10,10000],[15,15000],[20,30000],[25,60000]]);
+function weaponPrice(tier){
+  if(tier<=WEAPON_PRICE_ANCHORS[0][0])return WEAPON_PRICE_ANCHORS[0][1];
+  const upperIndex=WEAPON_PRICE_ANCHORS.findIndex(([anchorTier])=>anchorTier>=tier);
+  const [lowerTier,lowerPrice]=WEAPON_PRICE_ANCHORS[Math.max(0,upperIndex-1)];
+  const [upperTier,upperPrice]=WEAPON_PRICE_ANCHORS[Math.max(0,upperIndex)];
+  return Math.round(lowerPrice*Math.pow(upperPrice/lowerPrice,(tier-lowerTier)/(upperTier-lowerTier)));
+}
+const ARMOR_PRICE_ANCHORS=Object.freeze([[1,1],[4,3.2**3],[6,3750/24],[8,7500/24],[10,15000/24]]);
+function armorTierMultiplier(tier){
+  if(tier<=4)return 3.2**(tier-1);
+  const upperIndex=ARMOR_PRICE_ANCHORS.findIndex(([anchorTier])=>anchorTier>=tier);
+  const [lowerTier,lowerMultiplier]=ARMOR_PRICE_ANCHORS[upperIndex-1];
+  const [upperTier,upperMultiplier]=ARMOR_PRICE_ANCHORS[upperIndex];
+  return lowerMultiplier*Math.pow(upperMultiplier/lowerMultiplier,(tier-lowerTier)/(upperTier-lowerTier));
+}
 for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) {
   if (ids.length !== 10) throw new Error(`Expected ten ${slot} catalog tiers`);
   ids.forEach((id,index)=>{ const item=ITEMS[id]; item.tier=index+1; item.chapter=Math.ceil((index+1)/2); });
@@ -254,7 +270,7 @@ for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) {
 for (const [id,tier] of Object.entries(WEAPON_TIERS)) {
   const item=ITEMS[id]; if(!item) throw new Error(`Missing weapon catalog item ${id}`);
   item.tier=tier; item.chapter=weaponChapter(tier);
-  item.price=Math.round(100*Math.pow(100,(tier-1)/9));
+  item.price=weaponPrice(tier);
 }
 const seenFamilyWeaponIds = new Set();
 for (const [familyId, family] of Object.entries(WEAPON_FAMILIES)) {
@@ -275,7 +291,7 @@ for (const [id,row] of Object.entries(RELIC_CATALOG)) {
 }
 if (Object.values(ITEMS).some(item=>item.slot==='relic'&&!Object.hasOwn(RELIC_CATALOG,item.id))) throw new Error('Every relic needs a RELIC_CATALOG row');
 for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) for (const id of ids) {
-  const item=ITEMS[id]; item.price=Math.round(CATEGORY_BASE[slot]*Math.pow(3.2,item.tier-1));
+  const item=ITEMS[id]; item.price=Math.round(CATEGORY_BASE[slot]*armorTierMultiplier(item.tier));
 }
 for (const item of Object.values(ITEMS)) {
   delete item.level;

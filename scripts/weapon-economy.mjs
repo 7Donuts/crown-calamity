@@ -364,6 +364,24 @@ export function catalogAudit() {
     return { tier, chapter: rows[0]?.chapter ?? null, count: rows.length, prices: [...new Set(rows.map(item => item.price))] };
   });
   const errors = [];
+  // Independent expected anchors for catalog validation. These intentionally do not
+  // import the generator's interpolation helper from dist/gear.js.
+  const weaponPriceAnchors = [[1, 100], [10, 10000], [15, 15000], [20, 30000], [25, 60000]];
+  const expectedWeaponPrice = tier => {
+    const upper = weaponPriceAnchors.findIndex(([anchorTier]) => anchorTier >= tier);
+    if (upper === 0) return weaponPriceAnchors[0][1];
+    const [lowerTier, lowerPrice] = weaponPriceAnchors[upper - 1];
+    const [upperTier, upperPrice] = weaponPriceAnchors[upper];
+    return Math.round(lowerPrice * Math.pow(upperPrice / lowerPrice, (tier - lowerTier) / (upperTier - lowerTier)));
+  };
+  const armorMultiplierAnchors = [[1, 1], [4, 3.2 ** 3], [6, 3750 / 24], [8, 7500 / 24], [10, 15000 / 24]];
+  const expectedArmorMultiplier = tier => {
+    if (tier <= 4) return 3.2 ** (tier - 1);
+    const upper = armorMultiplierAnchors.findIndex(([anchorTier]) => anchorTier >= tier);
+    const [lowerTier, lowerMultiplier] = armorMultiplierAnchors[upper - 1];
+    const [upperTier, upperMultiplier] = armorMultiplierAnchors[upper];
+    return lowerMultiplier * Math.pow(upperMultiplier / lowerMultiplier, (tier - lowerTier) / (upperTier - lowerTier));
+  };
   for (const item of weapons) {
     if (!item.family || !Object.hasOwn(WEAPON_FAMILIES, item.family)) {
       errors.push(`${item.id} has no known family (${item.family})`);
@@ -376,7 +394,7 @@ export function catalogAudit() {
     for (const item of rows) {
       const expectedChapter = item.tier <= 4 ? 1 : item.tier <= 10 ? 2 : item.tier <= 15 ? 3 : item.tier <= 20 ? 4 : 5;
       if (item.chapter !== expectedChapter) errors.push(`${item.id} chapter ${item.chapter} mismatches tier ${item.tier}`);
-      const expectedPrice = Math.round(100 * Math.pow(100, (item.tier - 1) / 9));
+      const expectedPrice = expectedWeaponPrice(item.tier);
       if (item.price !== expectedPrice) errors.push(`${item.id} price ${item.price} mismatches formula (${expectedPrice})`);
     }
   }
@@ -399,7 +417,7 @@ export function catalogAudit() {
     for (const item of rows) {
       const expectedChapter = Math.ceil(item.tier / 2);
       if (item.chapter !== expectedChapter) errors.push(`${item.id} chapter ${item.chapter} mismatches tier ${item.tier}`);
-      if (item.price !== Math.round(rows[0].price * Math.pow(3.2, item.tier - 1))) errors.push(`${item.id} price mismatches ${slot} scaling formula`);
+      if (item.price !== Math.round(rows[0].price * expectedArmorMultiplier(item.tier))) errors.push(`${item.id} price mismatches ${slot} scaling formula`);
     }
   }
   for (const enemy of G.ENEMIES) {

@@ -95,6 +95,8 @@ These tasks change combat, balance and saves. A wrong number or a weak test here
 
 ## Owner checkpoints
 
+**Owner update (30 October 2026):** CP1 trial selection is delegated to the assistant and recorded as D12; CP2 campaign release as built and CP3 integrated direction/interim hunting are pre-approved. Continue their technical checks and evidence work, but do not ask the owner to approve those build paths again. CP4 awaits measured fitting and recommendations.
+
 Each package is a short Markdown file in `handoffs/reports/` plus a summary in your message to the owner.
 
 | Checkpoint | When | The owner decides | Package contents |
@@ -150,13 +152,13 @@ Fixtures must be configurable by kit, level, race, gear (including both hands), 
 
 ### G1-B: Chapter 3 to 5 prices (analysis, CP1, then implementation)
 
-**Goal.** IMPLEMENTATION-STATUS.md item 4, and the prerequisite in spec 50: weapon prices reach 129,155 at tier 15, 1.67 million at tier 20 and 21.5 million at tier 25, and armor follows `CATEGORY_BASE × 3.2^(tier − 1)`. Chapter income cannot support this, and spec 50 needs story tier 25 to meet the post-story rule (a layer's best gear costs about 2,000 on-level wins) without a cliff.
+**Goal.** Replace the old unsustainable story-price continuation with a price schedule informed by earned chapter income, preserve the T1=100/T10=10,000 anchors and retain the post-story relationship.
 
 **Analysis (before CP1).** Propose two or three curves for weapon tiers 11 to 25 and armor tiers 5 to 10 that keep the tier-1 (100) and tier-10 (10,000) weapon endpoints, price each chapter's best gear at about the Chapter 2 tier-10 aspiration in hours of on-level play, and meet the spec 50 post-story rule at tier 25. Use measured income from G1-A. Show tier tables and hours per purchase.
 
-**CP1.** The owner picks a curve; record it as D12 in `ROADMAP.md`.
+**CP1.** Owner-authorized trial recorded as D12: geometric weapon interpolation through T10=10,000, T15=15,000, T20=30,000, T25=60,000; armor body T6/T8/T10=3,750/7,500/15,000, preserving T1–4 and category bases. Spec 50 entry gear starts at 1,100 wins and best gear remains 2,000. CP4 post-story fit remains pending.
 
-**Implementation.** Change the price formulas in `dist/gear.js`, update the `catalogAudit` checks in `scripts/weapon-economy.mjs` that assert the old formula, update `tests/economy-scaling.test.mjs` (`audit.tiers[0].prices` and `audit.tiers[9].prices` stay 100 and 10,000) and rewrite the weapon price rule in AGENTS.md. Resale stays capped (`CHAPTER_SALVAGE`), so no profit loop appears.
+**Implementation status.** Implemented on the G1-B review branch. The report in `handoffs/reports/g1b-price-curve.md` records tier tables, modeled hours, historical-data caveats, and checks. Resale remains capped (`CHAPTER_SALVAGE`).
 
 ### G1-C: Regional workshop economy
 
