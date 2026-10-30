@@ -1,5 +1,7 @@
 # Relic Resonance
 
+> Update (design 43): every character now has two core relic slots (`relic` and `relic2`), relic prices follow chapter income, and nine relic engine pieces and finale keepsakes were added. The prices and single core slot below are historical; the echo socket rules still apply, with echoes matching either core relic.
+
 The original Relic equipment slot remains the core relic slot. Three optional echo sockets let a character build around several authored relic effects while retaining the existing nine equipment slots, one-ID bag rule, and save IDs. The ten relic IDs are `signet`, `seal`, `threadSpool`, `patchworkHeart`, `luckyButton`, `dreamBell`, `thimbleGuard`, `amberMarble`, `ribbonKnot`, and `stuffingSatchel`.
 
 ## Attunement and cost

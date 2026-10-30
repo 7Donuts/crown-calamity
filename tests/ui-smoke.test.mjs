@@ -256,10 +256,10 @@ test('the character gear page retains every slot while Satchel keeps spare equip
   noBrokenText(ui.getApp().innerHTML,'interactive equipment diagram');
   matches(ui.getApp().innerHTML,/generic body outline/);
   const slotButtons=[...ui.getApp().innerHTML.matchAll(/data-action="slot:([a-z0-9]+)"/g)].map(match=>match[1]);
-  const expectedSlots=['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic'];
-  assert.equal(slotButtons.length,18,'each slot is clickable in the diagram and keyboard-friendly equipment list');
-  assert.deepEqual(slotButtons.slice(0,9),expectedSlots);
-  assert.deepEqual(slotButtons.slice(9),expectedSlots);
+  const expectedSlots=['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic','relic2'];
+  assert.equal(slotButtons.length,20,'each slot is clickable in the diagram and keyboard-friendly equipment list');
+  assert.deepEqual(slotButtons.slice(0,10),expectedSlots);
+  assert.deepEqual(slotButtons.slice(10),expectedSlots);
   await ui.act('slot:offhand');
   matches(ui.getModal().innerHTML,new RegExp(`Occupied by your two-handed ${G.resolveItem(s,'pike').name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}`));
 });
@@ -268,8 +268,8 @@ test('relic resonance UI reviews each unlock and copy license without replacing 
   const s=G.fresh();s.level=11;s.story.completed.push('municipal_works','arcade_finale','garden_finale');s.coins=2_000_000;s.bag.push('signet','seal');s.gear.relic='signet';
   const {ui}=await bootApp(s);
   await ui.act('nav:character');await ui.act('char-tab:gear');
-  assert.equal(Object.keys(G.SLOTS).length,9,'echoes do not add ordinary gear slots');
-  assert.match(ui.getApp().innerHTML,/CORE RELIC · FULL EFFECT/);
+  assert.equal(Object.keys(G.SLOTS).length,10,'echoes do not add ordinary gear slots');
+  assert.match(ui.getApp().innerHTML,/FIRST RELIC SLOT · FULL EFFECT/);assert.match(ui.getApp().innerHTML,/SECOND RELIC SLOT · FULL EFFECT/);
   for(const index of [1,2,3])assert.match(ui.getApp().innerHTML,new RegExp(`LOOP ${index} · LOCKED`));
 
   const unlockCosts=[0,1,2].map(index=>G.unlockRelicPreview(s,index).coinCost);

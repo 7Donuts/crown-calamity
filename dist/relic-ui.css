@@ -19,6 +19,7 @@
 #app .relic-overline { color:var(--relic-amber); font-size:12px; font-weight:800; letter-spacing:.14em; }
 #app .relic-atelier-mark { flex:0 0 40px; width:40px; height:40px; color:var(--relic-teal); opacity:.95; }
 #app .relic-socket-flow { display:grid; grid-template-columns:minmax(0,.78fr) 26px minmax(0,1.55fr); align-items:stretch; gap:7px; }
+#app .relic-core-pair { display:flex; min-width:0; flex-direction:column; gap:10px; align-self:start; }
 #app .relic-core-node { position:relative; display:flex; align-items:center; align-self:start; min-width:0; gap:12px; padding:14px 12px; border:1px solid #78878d; border-radius:48px 12px 12px 48px; background:#2d3b44; }
 #app .relic-core-node::after { content:""; position:absolute; width:24px; height:1px; right:-25px; top:50%; background:linear-gradient(90deg,var(--relic-amber),var(--relic-teal)); }
 #app .relic-core-art,#app .relic-node-art { display:grid; flex:0 0 64px; width:64px; height:64px; place-items:center; border:1px solid #9a8c67; border-radius:50%; background:#303e46; box-shadow:inset 0 0 0 4px rgba(217,182,110,.1),0 0 15px rgba(117,185,184,.1); }

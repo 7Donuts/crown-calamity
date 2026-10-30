@@ -4,6 +4,8 @@ Prepared 30 October 2026. The source is the public `KoenVingerhoets/Shimlar` rep
 
 Shimlar is licensed under GPLv3. Nothing here copies its code, names or values: copying code into `dist/` would bring Crown & Calamity under the GPL. Every mechanic below is restated and re-implemented from scratch. Shimlar file references are to that repository, not this one.
 
+Status (30 October 2026): only item 3 (overkill display) is part of the live campaign. Everything else in this document, including the bounty open questions, the request gate decisions and items 4 to 6, is parked as future systems in [FUTURE-DEVELOPMENT.md](../FUTURE-DEVELOPMENT.md#parked-systems-from-the-shimlar-comparison) while work focuses on the core game. The bounty prototype stays in the Playtest Lab and the request gate stays a reference; neither is wired into campaign saves.
+
 ## How Shimlar is built
 
 The server is PHP 4 era code. `httpdocs/` holds the frame-based client; `incz/` holds the logic. A button press sends a request to `main2.php` or `battle4.php`, the server runs one action against MySQL and prints JavaScript calls (`x1(...)`, `mX(...)`) that the client frames execute to redraw. `incz/!!!actioncodez.txt` lists the action codes; `incz/mainx2.inc` dispatches the town actions and `incz/battle/` the combat ones. `incz/questgen.php` runs from cron to refresh quests and hand out premium turns.
