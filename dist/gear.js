@@ -427,6 +427,7 @@ export function exchangeMaterials(s,recipeId){
 const UPGRADE_COINS=[0,35,70,120];
 const UPGRADE_CHAPTER_MULTIPLIERS=[1,1,4,16,64,256];
 function upgradeCost(item,level){const mat=item.base?(item.channel==='spell'?'Runic residue':'Canal iron'):item.armor?'Salvaged fittings':item.ward?'Repair fittings':'Runic residue';const coins=UPGRADE_COINS[level+1]*(UPGRADE_CHAPTER_MULTIPLIERS[item.chapter]||1);return makeCost(coins,{[mat]:level===2?2:1});}
+export function affixCost(item,affix){if(!affix)return noCost();return makeCost(affix.cost.coins*(UPGRADE_CHAPTER_MULTIPLIERS[item?.chapter]||1),affix.cost.materials);}
 function statPreview(s,id,nextMods){const before=effectiveItem(s,id),after=effectiveItem({...s,itemMods:{...s.itemMods,[id]:nextMods}},id);return {before,after};}
 export function upgradePreview(s,id){
  const item=ITEMS[id],mod=s?.itemMods?.[id]||{},level=mod.upgrade||0,cost=item&&level<3?upgradeCost(item,level):noCost();
@@ -437,7 +438,7 @@ export function upgradePreview(s,id){
 export function upgradeItem(s,id){const p=upgradePreview(s,id);if(!p.allowed)return false;spend(s,p.cost);s.itemMods??={};s.itemMods[id]={...(s.itemMods[id]||{}),upgrade:p.level+1};return {id,upgrade:p.level+1};}
 function affixPreviewBase(s,id,kind,affixId){
  const item=ITEMS[id],list=kind==='prefix'?PREFIXES:kind==='suffix'?SUFFIXES:null,affix=list?.[affixId],mod=s?.itemMods?.[id]||{},slot=item?.slot;
- const cost=affix?makeCost(affix.cost.coins,affix.cost.materials):noCost();
+ const cost=affixCost(item,affix);
  let reason=!item?'Unknown item.':LOCKED(s)?'Equipment cannot be changed during a fight or delve.':!owned(s,id)?'You do not own this item.':!affix?'Unknown affix.':!affix.slots.includes(slot)?'That affix does not fit this item slot.':mod[kind]===affixId?'That affix is already applied.':!costAffordable(s,cost)?'You cannot afford this affix.':null;
  const next={...mod,[kind]:affixId};const pair=item?statPreview(s,id,next):{before:null,after:null};
  return {allowed:!reason,reason,cost,before:pair.before,after:pair.after,kind,affixId,replacing:mod[kind]||null};

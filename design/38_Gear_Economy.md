@@ -12,7 +12,7 @@ Update: relic prices, slots and the relic engine now follow [design 43](43_Relic
 
 Normal drops use `lootEligible` alongside chapter and tier. Starter kit gear, the highest weapon tier in each chapter and channel, and all unique relics are excluded. Common regional gear remains eligible. Resale uses bounded regional salvage receipts of 3, 6, 11, 20, or 38 coins in Chapters 1–5, with at most three additional coins for upgrades. Those values do not follow the exponential purchase curve. Crafted outputs keep recipe sale caps, including one coin for fragment-forged relics, so buying, upgrading, crafting, and selling cannot create a coin profit loop.
 
-Equipment upgrades still cap at three ranks and use the existing materials. Coin costs for the three ranks begin at 35, 70, and 120 in Chapter 1, then scale by 4× per chapter. This keeps late-game refinement as a meaningful gold sink without changing the upgrade benefit or invalidating completed upgrades. Affix costs and all material save keys remain stable.
+Equipment upgrades still cap at three ranks and use the existing materials. Coin costs for the three ranks begin at 35, 70, and 120 in Chapter 1, then scale by 4× per chapter. This keeps late-game refinement as a meaningful gold sink without changing the upgrade benefit or invalidating completed upgrades. Affix coin costs use the upgrade chapter multipliers (1×, 4×, 16×, 64×, and 256× across Chapters 1–5), while material costs and all material save keys remain stable.
 
 The twenty Chapter 2–5 encounter materials now have stable display labels. Their regional workshop exchanges and their use as local upgrade/reforge inputs remain pending balance work; the campaign preview does not imply that these drops already refine equipment.
 
