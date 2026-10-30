@@ -6,6 +6,7 @@ import {
   upgradePreview, upgradeItem, affixPreview, applyAffix, normalizeGearState,
   effectiveItem, weaponRankScore, isStrictWeaponDowngrade, buyPreview, sellPreview, sellItem, buyAndEquipPreview, buyAndEquipItem
 } from '../dist/gear.js';
+import { fresh, loadSave } from '../dist/engine.js';
 
 const state=(overrides={})=>({level:10,coins:1000,story:{completed:['municipal_works']},materials:{'Ledger scraps':10,'Canal iron':10,'Runic residue':10,'Chainback shell':10,'Stamped brass':10,'Floodglass':10,'Floodglass Fragment':2,'Salvaged fittings':10,'Repair fittings':10},bag:['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band','cap','boots','rivethelm','waders','signet','pike'],gear:{weapon:'rod',offhand:'shield',body:'coat'},itemMods:{},fight:null,delve:null,...overrides});
 
@@ -242,4 +243,65 @@ test('universal Attack safeguard explains why the only weapon stays equipped',()
   const s=state({bag:['rod'],gear:{weapon:'rod'}});
   assert.match(unequipReason(s,'weapon'),/universal Attack/);assert.equal(unequipItem(s,'weapon'),false);
   s.bag.push('sword');assert.equal(equipItem(s,'sword','weapon'),true);assert.equal(unequipItem(s,'weapon'),false);
+});
+
+test('affix coin costs scale with equipment chapter using upgrade chapter multipliers', () => {
+  const s = state({
+    bag: ['rod', 'thimblePike'],
+    coins: 10000,
+    materials: { 'Canal iron': 10 }
+  });
+  assert.equal(ITEMS.rod.chapter, 1);
+  assert.equal(ITEMS.thimblePike.chapter, 3);
+  const c1Preview = affixPreview(s, 'rod', 'prefix', 'keen');
+  const c3Preview = affixPreview(s, 'thimblePike', 'prefix', 'keen');
+  assert.equal(c1Preview.allowed, true);
+  assert.equal(c3Preview.allowed, true);
+  assert.equal(c1Preview.cost.coins, PREFIXES.keen.cost.coins);
+  assert.equal(c3Preview.cost.coins, PREFIXES.keen.cost.coins * 16);
+  assert.deepEqual(c1Preview.cost.materials, PREFIXES.keen.cost.materials);
+  assert.deepEqual(c3Preview.cost.materials, PREFIXES.keen.cost.materials);
+});
+
+test('affixPreview cost equals what applyAffix actually deducts', () => {
+  const s = state({
+    bag: ['thimblePike'],
+    coins: 5000,
+    materials: { 'Canal iron': 5 }
+  });
+  const preview = affixPreview(s, 'thimblePike', 'prefix', 'keen');
+  assert.equal(preview.allowed, true);
+  const coinsBefore = s.coins;
+  const matsBefore = { ...s.materials };
+  const res = applyAffix(s, 'thimblePike', 'prefix', 'keen');
+  assert.ok(res);
+  assert.equal(coinsBefore - s.coins, preview.cost.coins);
+  for (const [mat, count] of Object.entries(preview.cost.materials)) {
+    assert.equal(matsBefore[mat] - s.materials[mat], count);
+  }
+});
+
+test('a save with an affix keeps it after loadSave with no coins deducted', () => {
+  const s = fresh();
+  s.coins = 500;
+  s.itemMods = { rod: { prefix: 'keen' } };
+  const loaded = loadSave(JSON.stringify(s));
+  assert.ok(loaded);
+  assert.equal(loaded.itemMods.rod.prefix, 'keen');
+  assert.equal(loaded.coins, 500);
+});
+
+test('selling an item with an affix returns the same coins as selling it without one (no profit)', () => {
+  const sWithout = state({ bag: ['sword'], gear: { weapon: 'rod' }, itemMods: {}, coins: 100 });
+  const previewWithout = sellPreview(sWithout, 'sword');
+  const sWith = state({ bag: ['sword'], gear: { weapon: 'rod' }, itemMods: { sword: { prefix: 'keen', suffix: 'of_might' } }, coins: 100 });
+  const previewWith = sellPreview(sWith, 'sword');
+  assert.equal(previewWith.allowed, true);
+  assert.equal(previewWithout.allowed, true);
+  assert.equal(previewWith.price, previewWithout.price);
+
+  const receiptWithout = sellItem(sWithout, 'sword');
+  const receiptWith = sellItem(sWith, 'sword');
+  assert.equal(receiptWith.coins, receiptWithout.coins);
+  assert.equal(sWith.coins, sWithout.coins);
 });
