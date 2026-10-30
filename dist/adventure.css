@@ -398,7 +398,7 @@
 }
 #app .character-art svg, #modal .character-art svg { image-rendering: pixelated; max-width: 100%; }
 #app .resource-recovery { position: relative; }
-#app .resource-recovery > .text-button { min-height: 32px; padding: 3px 0; }
+#app .resource-recovery > .text-button { min-height: 48px; padding: 6px 0; }
 #modal .heritage-adoption { margin-top: 14px; padding-top: 14px; border-top: 1px solid #536a73; }
 #modal .heritage-adoption p { font-size: 14px; }
 #app .recovery-receipt { margin: 16px 0 0; padding-block: 10px; border-block: 1px solid #796b49; color: #e3d1ab; font-size: 14px; }

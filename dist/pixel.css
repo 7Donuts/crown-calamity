@@ -17,12 +17,13 @@
 }
 body, #app { background: var(--bg); color: var(--text); font-size: 16px; }
 #app { --hud-brass: var(--gold); --hud-brass-dim: #a87d36; --hud-teal: var(--teal); --hud-ink: var(--bg); }
-#app .icon, #app .menu-icon, #modal .menu-icon {
+#app .icon, #app .menu-icon, #modal .menu-icon, #modal .icon {
   fill: currentColor;
   stroke: none;
   shape-rendering: crispEdges;
   image-rendering: pixelated;
   filter: none;
+  overflow: hidden;
 }
 #app :is(.content,.main-column,.side-column,.panel,.item-card,.ability-card,.journal-entry,.guide-section,.vendor-card),
 #modal :is(.modal-body,.compare>div,.vendor-compare>div) { min-width: 0; }

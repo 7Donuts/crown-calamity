@@ -22,7 +22,7 @@
 #app .relic-core-pair { display:flex; min-width:0; flex-direction:column; gap:10px; align-self:start; }
 #app .relic-core-node { position:relative; display:flex; align-items:center; align-self:start; min-width:0; gap:12px; padding:14px 12px; border:1px solid #78878d; border-radius:48px 12px 12px 48px; background:#2d3b44; }
 #app .relic-core-node::after { content:""; position:absolute; width:24px; height:1px; right:-25px; top:50%; background:linear-gradient(90deg,var(--relic-amber),var(--relic-teal)); }
-#app .relic-core-art,#app .relic-node-art { display:grid; flex:0 0 64px; width:64px; height:64px; place-items:center; border:1px solid #9a8c67; border-radius:50%; background:#303e46; box-shadow:inset 0 0 0 4px rgba(217,182,110,.1),0 0 15px rgba(117,185,184,.1); }
+#app .relic-core-art,#app .relic-node-art { display:grid; flex:0 0 64px; width:64px; height:64px; place-items:center; border:1px solid #9a8c67; border-radius:50%; background:#303e46; box-shadow:inset 0 0 0 4px rgba(217,182,110,.1),0 0 15px rgba(117,185,184,.1); overflow:hidden; }
 #app .relic-core-art .item-art--large,#app .relic-node-art .item-art--large { width:64px; height:64px; }
 #app .relic-node-copy { display:flex; min-width:0; flex-direction:column; gap:4px; }
 #app .relic-atelier .relic-node-copy small,#app .relic-atelier .relic-bonus-summary small { color:var(--relic-amber); font-size:12px; font-weight:800; letter-spacing:.08em; }
@@ -84,7 +84,7 @@
   #app .relic-atelier { padding:12px 9px; }
   #app .relic-core-node { gap:9px; padding:11px 9px; }
   #app .relic-core-art { flex-basis:60px; width:60px; height:60px; }
-  #app .relic-core-art .item-art--large { width:64px; height:64px; }
+  #app .relic-core-art .item-art--large { width:60px; height:60px; }
   #app .relic-node-copy strong { font-size:14px; }
   #app .relic-node-copy span { font-size:14px; }
   #app .relic-socket-node > button { font-size:13px; }
