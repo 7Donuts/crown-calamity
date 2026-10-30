@@ -1,6 +1,6 @@
 # Spec: growth past level 50 and Becoming Real
 
-Status: draft spec, 30 October 2026. Needs decision **D6** (progression model, baseline Becoming Real) and **D7** (the curves, baseline below) ([ROADMAP.md](../ROADMAP.md)). Depends on milestone G1 (story balance). Theme source: design 35 (Realness). Prestige groundwork: v0.1 pack, `systems/05_Leveling_and_Prestige.md`, "Future prestige: licensed ascension".
+Status: approved spec, 30 October 2026. Decision **D6** approved: Becoming Real. **D7** approved as starting values; the balance gates set the final numbers ([ROADMAP.md](../ROADMAP.md)). Depends on milestone G1 (story balance). Theme source: design 35 (Realness). Prestige groundwork: v0.1 pack, `systems/05_Leveling_and_Prestige.md`, "Future prestige: licensed ascension".
 
 ## Goal
 
@@ -52,9 +52,9 @@ The enemy formulas continue the Chapter 5 values (at E 45: about 1,990 Stuffing 
 
 **Prices past the story.** The story weapon curve cannot continue: `round(100 × 100^((tier − 1) / 9))` reaches 36 million coins at tier 26 and 278 million at tier 30, while linear income at E 60 is about 66 coins a win. Past tier 25, price is set from play time instead: a layer's entry gear costs about 300 wins of on-level income, and its best gear about 2,000 wins, matching the Chapter 2 tier-10 aspiration of 8 to 12 active hours. The agreed tier-1 (100) and tier-10 (10,000) endpoints are untouched. Milestone G1 must also resolve the known Chapter 3 to 5 price problem (IMPLEMENTATION-STATUS.md), so that story tier 25 and the first post-story tier meet without a cliff.
 
-## The alternative: Restuffing (D6 option B)
+## The alternative: Restuffing (not chosen)
 
-If the owner prefers RWK-style reincarnation: at level 50, reset to level 1, keep "free levels" equal to level minus 5 (they level instantly without XP), keep part of each mastery, and choose any race. This conflicts with the AGENTS.md rule never to reset invested stats or progress, so that rule would have to change first. This spec is written for Becoming Real.
+The owner chose Becoming Real; this is kept for reference only. If the owner had preferred RWK-style reincarnation: at level 50, reset to level 1, keep "free levels" equal to level minus 5 (they level instantly without XP), keep part of each mastery, and choose any race. This conflicts with the AGENTS.md rule never to reset invested stats or progress, so that rule would have to change first. This spec is written for Becoming Real.
 
 ## Data and saves
 

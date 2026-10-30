@@ -1,6 +1,6 @@
 # Spec: race identity
 
-Status: draft spec, 30 October 2026. Needs decision **D2** ([ROADMAP.md](../ROADMAP.md)); the racial growth section is a separate option within D2. Affinities depend on **D3** (design 47). Current rules: design 30. Proposal background: [design 45](45_Races_and_Weapons.md).
+Status: approved spec, 30 October 2026. Decision **D2** approved without racial growth points; **D3** approved ([ROADMAP.md](../ROADMAP.md)). Current rules: design 30. Proposal background: [design 45](45_Races_and_Weapons.md).
 
 ## Goal
 
@@ -39,7 +39,9 @@ Each race has five parts, shown together in the character creator and on the cha
 
 Rules shared by all traits: every effect resolves inside the exchange the player chose; no extra exchanges; no random rolls beyond the existing glance and critical rolls; overkill never heals. Race Pluck hooks count as a Pluck source named for the race in the combat log ("+1 Pluck (Well Loved)") and obey the Pluck cap (design 43).
 
-## Racial growth (option inside D2; off in the baseline)
+## Racial growth (not adopted)
+
+The owner approved the race rework without this option. It is kept here for reference only; do not build it.
 
 Every fifth level grants one extra point to the race's lead attribute, in addition to the four free points per level: Bears alternate Vitality and Will, Wolves Might, Bunnies Finesse, Unicorns Intellect, Cats Luck. Every race receives the same number of points, so budgets stay equal. This changes the AGENTS.md "four points per level" rule and needs explicit approval.
 

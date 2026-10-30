@@ -156,16 +156,16 @@ Track which side of the stuffie world a character fights: things that dislike st
 
 | Decision | Needed before |
 | --- | --- |
-| Two-hand option (design 44: A, B or C) | Weapon families and race rework |
-| Approve the race rework and weapon families (design 45) | Implementing them |
-| Relic echo rule and older relics in the engine (design 44) | Next relic change |
-| Progression model: Becoming Real or Restuffing (design 44) | Post-story content |
-| Post-story gear growth model (price and power per layer) | Any content past level 50 |
+| Two-hand option: decided, B (two hands, one verb) | Done |
+| Race rework and weapon families: approved (designs 47, 48) | Done |
+| Relic echo rule A and older-relic option C: approved (design 49) | Done |
+| Progression model: Becoming Real, approved (design 50) | Done |
+| Post-story curves: starting values approved; final numbers from simulation (design 50) | Any content past level 50 |
 | Hosting, runtime, database, identity provider, real-time channel | Phase 1 |
 | Target age rating and legal review outcome | Collecting any player data |
 | Prototype-to-live progression policy | Phase 3 |
 | Chat scope and safety settings; guild rules; tradable items | Phase 4 |
-| Whether land can ever be traded (recommended: no) | Phase 5 |
+| Land trading: never (design 52) | Done |
 | Co-op and event reward rules | Phase 6 |
 | Bounty pricing, rotation and placement | Moving bounties out of the Playtest Lab |
 | Moderator hold scope, anomaly thresholds, rate limits | Phase 2 request handling |

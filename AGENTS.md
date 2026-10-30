@@ -41,7 +41,7 @@ Read `design/44_Direction_and_Roadmap.md` before planning new systems. `ROADMAP.
 - Progression is open-ended; the five-chapter story is the introduction that opens the wider world.
 - The world will have map exploration and locations, possibly across several layers or planes.
 - Players may own land and build, but only with a real gameplay purpose; land never produces anything passively.
-- The two-hand system, the race rework, weapon families, relic engine v2, growth past level 50, the world, Hideaways and shared play are specified (designs 46 to 53) but await the owner decisions listed in `ROADMAP.md`. Do not implement them without approval.
+- Approved on 30 October 2026 (decisions D1 to D8 in `ROADMAP.md`): two hands, one verb; the race rework without racial growth points; weapon families; echoes only amplify; older relics keep their effects and gain Pluck hooks; Becoming Real as the progression model; land is never traded; the post-story curves as starting values. Build them from designs 46 to 53, in the `ROADMAP.md` milestone order. D9 (age rating and legal review) and D10 (platform stack) remain open and block any online work that collects player data.
 
 ## Current story and character rules
 

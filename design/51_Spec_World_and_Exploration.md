@@ -1,6 +1,6 @@
 # Spec: layers, maps and exploration
 
-Status: draft spec, 30 October 2026. Depends on milestone G3 (growth past the story, design 50) for level ranges. Shared discovery needs FUTURE-DEVELOPMENT.md Phase 4 and 5. Direction: [design 44](44_Direction_and_Roadmap.md); theme and districts: design 35.
+Status: approved spec (owner approved the plan, 30 October 2026). Depends on milestone G3 (growth past the story, design 50) for level ranges. Shared discovery needs FUTURE-DEVELOPMENT.md Phase 4 and 5. Direction: [design 44](44_Direction_and_Roadmap.md); theme and districts: design 35.
 
 ## Goal
 

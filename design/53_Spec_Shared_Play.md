@@ -1,6 +1,6 @@
 # Spec: Spring Cleaning and shared play
 
-Status: draft spec, 30 October 2026. Online only: ships at FUTURE-DEVELOPMENT.md Phase 6, after Phase 4 (social core) and milestone G5 (Hideaways, design 52). Theme source: design 35 (Spring Cleaning, the Great Declutter). Direction: [design 44](44_Direction_and_Roadmap.md).
+Status: approved spec (owner approved the plan, 30 October 2026). Online only: ships at FUTURE-DEVELOPMENT.md Phase 6, after Phase 4 (social core) and milestone G5 (Hideaways, design 52). Theme source: design 35 (Spring Cleaning, the Great Declutter). Direction: [design 44](44_Direction_and_Roadmap.md).
 
 ## Goal
 

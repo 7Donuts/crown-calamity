@@ -1,6 +1,6 @@
 # Spec: weapon families and weapon-type mastery
 
-Status: draft spec, 30 October 2026. Needs decision **D3** ([ROADMAP.md](../ROADMAP.md)). The second-hand behavior section also depends on **D1**. Proposal background: [design 45](45_Races_and_Weapons.md).
+Status: approved spec, 30 October 2026. Decisions **D3** and **D1** (option B) approved ([ROADMAP.md](../ROADMAP.md)). Proposal background: [design 45](45_Races_and_Weapons.md).
 
 ## Goal
 

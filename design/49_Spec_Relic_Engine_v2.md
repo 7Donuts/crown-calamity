@@ -1,6 +1,6 @@
 # Spec: relic engine v2
 
-Status: draft spec, 30 October 2026. Needs decisions **D4** (echo rule, baseline A) and **D5** (older relics, baseline C) ([ROADMAP.md](../ROADMAP.md)). The third core slot depends on **D6** (design 50). Builds on the shipped relic engine in [design 43](43_Relic_Engine.md).
+Status: approved spec, 30 October 2026. Decisions **D4** (option A, echoes only amplify), **D5** (option C, keep effects and add Pluck hooks) and **D6** (Becoming Real, for the third core slot) approved ([ROADMAP.md](../ROADMAP.md)). Builds on the shipped relic engine in [design 43](43_Relic_Engine.md).
 
 ## Goal
 

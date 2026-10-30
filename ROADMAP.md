@@ -5,27 +5,27 @@ Status: planning document, 30 October 2026. This is the order in which the new d
 ## How to use this roadmap and the specs
 
 - **Specs are the build contract.** Each system has a spec (designs 46 to 53). Build what the spec says; if something is missing or wrong, update the spec first, in the same change.
-- **Baselines and decisions.** Where the owner has not yet chosen between options, a spec is written to the recommended option (the baseline) and names the decision by its ID below. Do not implement a section marked with an open decision until the register shows it approved. If the owner picks another option, revise the spec before building.
+- **Baselines and decisions.** Each spec names the decisions it depends on by ID. A spec section may be built once the register shows its decisions approved. If a decision changes later, revise the spec before building.
 - **No code in planning changes.** Roadmap and spec updates are documentation-only commits.
 - **Every spec uses the same sections:** status and decisions, goal, player rules, numbers, data and saves, modules and integration, interface, constraint check, acceptance tests, balance gates, and documents to update.
 
 ## Decision register
 
-| ID | Decision | Baseline in the specs | Status |
+| ID | Decision | Outcome or baseline | Status |
 | --- | --- | --- | --- |
-| D1 | Two-hand system: A full RWK, B two hands one verb, C weapon plus offhand with menders | B (design 46) | Open |
-| D2 | Race rework (design 48), and whether racial growth points are added | Rework yes; racial growth off | Open |
-| D3 | Weapon families and weapon-type mastery (design 47) | Yes | Open |
-| D4 | Relic echo rule: A echoes only amplify, B echo loops need a progression rank, C relic budget | A (design 49) | Open |
-| D5 | Older ten relics: A standalone, B rework, C keep effect and add a Pluck hook | C (design 49) | Open |
-| D6 | Progression model: Becoming Real (non-destructive) or Restuffing (RWK reincarnation) | Becoming Real (design 50) | Open |
-| D7 | Post-story growth numbers (XP, enemy, gear and coin curves) | Design 50 starting values | Open |
-| D8 | Whether land can ever be traded | Never (design 52) | Open |
+| D1 | Two-hand system: A full RWK, B two hands one verb, C weapon plus offhand with menders | B (design 46) | Approved 30 Oct 2026 |
+| D2 | Race rework (design 48), and whether racial growth points are added | Rework yes; racial growth off | Approved 30 Oct 2026 (racial growth not adopted) |
+| D3 | Weapon families and weapon-type mastery (design 47) | Yes | Approved 30 Oct 2026 |
+| D4 | Relic echo rule: A echoes only amplify, B echo loops need a progression rank, C relic budget | A (design 49) | Approved 30 Oct 2026 |
+| D5 | Older ten relics: A standalone, B rework, C keep effect and add a Pluck hook | C (design 49) | Approved 30 Oct 2026 |
+| D6 | Progression model: Becoming Real (non-destructive) or Restuffing (RWK reincarnation) | Becoming Real (design 50) | Approved 30 Oct 2026 |
+| D7 | Post-story growth numbers (XP, enemy, gear and coin curves) | Design 50 starting values | Approved as starting values; final numbers come from the design 50 balance gates |
+| D8 | Whether land can ever be traded | Never (design 52) | Approved 30 Oct 2026 |
 | D9 | Target age rating and legal review outcome | Required before any player data | Open |
 | D10 | Platform stack: hosting, runtime, database, identity provider, real-time channel | None chosen | Open |
 | D11 | Notice Board bounties leaving the lab (pricing v2, rotation, placement) | Parked (FUTURE-DEVELOPMENT.md) | Parked |
 
-Decided on 30 October 2026 and recorded in AGENTS.md: multiplayer is core; races are build identity; progression is open-ended; the story is the introduction; the world has exploration, locations and layers; land ownership needs a gameplay purpose; the stuffie theme and story stay.
+Decisions D1 to D8 were approved by the owner on 30 October 2026, choosing every recommended option; D9 and D10 remain open and D11 is parked. Also decided on 30 October 2026 and recorded in AGENTS.md: multiplayer is core; races are build identity; progression is open-ended; the story is the introduction; the world has exploration, locations and layers; land ownership needs a gameplay purpose; the stuffie theme and story stay.
 
 ## Milestones
 
@@ -33,7 +33,7 @@ Two tracks run side by side. The **game-systems track** (G) builds locally as pu
 
 | Milestone | Builds | Specs | Needs | Ships online after |
 | --- | --- | --- | --- | --- |
-| G0 Decisions | Owner answers D1 to D7 | This register | | |
+| G0 Decisions | Done for D1 to D8 (30 Oct 2026) | This register | | |
 | G1 Finish the story balance | IMPLEMENTATION-STATUS.md items: earned walkthroughs, survivability, Chapter 3 to 5 prices, regional workshop uses | IMPLEMENTATION-STATUS.md, design 42 | | P2 |
 | G2 Combat identity | Two hands (lab prototype, then campaign), weapon families and mastery, race rework, relic engine v2 | 46, 47, 48, 49 | D1 to D5 | P2 |
 | G3 Growth past the story | Post-story XP, enemy, gear and coin curves; Becoming Real and Realness trials | 50 | D6, D7, G1 | P2 |

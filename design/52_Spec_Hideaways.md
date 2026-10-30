@@ -1,6 +1,6 @@
 # Spec: Hideaways (land and building)
 
-Status: draft spec, 30 October 2026. Needs decision **D8** (land never traded, baseline) ([ROADMAP.md](../ROADMAP.md)). Depends on milestone G4 (design 51) for plot sites. Ships online at FUTURE-DEVELOPMENT.md Phase 5, because land must be server-owned. Direction and the reason for land: [design 44](44_Direction_and_Roadmap.md).
+Status: approved spec, 30 October 2026. Decision **D8** approved: land is never traded ([ROADMAP.md](../ROADMAP.md)). Depends on milestone G4 (design 51) for plot sites. Ships online at FUTURE-DEVELOPMENT.md Phase 5, because land must be server-owned. Direction and the reason for land: [design 44](44_Direction_and_Roadmap.md).
 
 ## Goal
 

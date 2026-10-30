@@ -1,6 +1,6 @@
 # Spec: two hands, one verb
 
-Status: draft spec, 30 October 2026. Baseline is option B of decision **D1** ([ROADMAP.md](../ROADMAP.md)); do not build until D1 is approved. Background and the options considered: [design 44](44_Direction_and_Roadmap.md), "Two hands: discussion". Families that define what each hand does: [design 47](47_Spec_Weapon_Families.md).
+Status: approved spec, 30 October 2026. The owner approved option B of decision **D1** ([ROADMAP.md](../ROADMAP.md)): two hands, one verb, prototyped in the Playtest Lab first. Background and the options considered: [design 44](44_Direction_and_Roadmap.md), "Two hands: discussion". Families that define what each hand does: [design 47](47_Spec_Weapon_Families.md).
 
 ## Goal
 

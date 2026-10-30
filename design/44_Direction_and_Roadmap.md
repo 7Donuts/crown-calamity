@@ -16,7 +16,8 @@ An improved take on Race War Kingdoms: a fast, repeatable fight loop; builds tha
 6. Players can own land and build things, but only with a real gameplay reason.
 7. The weapon range should be improved to tie races, gear, relics and mastery together.
 8. The stuffie theme and story remain.
-9. The two-hand system is open for discussion (options below).
+9. Two hands, one verb (option B below), prototyped in the Playtest Lab first.
+10. Every recommendation below was approved on 30 October 2026: relic echo rule A, older relics option C, Becoming Real, land never traded, and the race rework and weapon families without racial growth points.
 
 ## Pillars
 
@@ -141,12 +142,12 @@ The owner's current focus is the core game, so the order is core first, then the
 4. **Land.** Hideaways with preparation, workshop and anchor functions, once exploration exists and land can be server-owned.
 5. **Shared world.** Guilds, trading, Spring Cleaning events and shared bosses, then competitive ladders.
 
-## Open questions for the owner
+## Decisions
 
-These are tracked as D1 to D8 in the [ROADMAP.md](../ROADMAP.md) decision register.
+All approved by the owner on 30 October 2026 and tracked as D1 to D8 in the [ROADMAP.md](../ROADMAP.md) decision register.
 
-1. Two-hand option: A, B or C (B recommended, lab first).
-2. Approve the race rework and weapon families in design 45 for implementation.
-3. Relic decisions: echo rule A, and the hybrid for older relics.
-4. Becoming Real (non-destructive) as the progression model, or RWK-style Restuffing.
-5. Whether land can ever be traded between players (recommended: no).
+1. Two hands, one verb (option B), lab first.
+2. Race rework and weapon families approved; racial growth points not adopted.
+3. Relics: echo rule A (echoes only amplify) and option C for the older relics.
+4. Becoming Real as the progression model.
+5. Land is never traded between players.
