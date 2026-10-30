@@ -269,6 +269,57 @@ export function materialLabel(key) {
   return typeof key === 'string' && Object.hasOwn(MATERIAL_LABELS, key) ? MATERIAL_LABELS[key] : String(key ?? '');
 }
 
+export const MATERIAL_CHAPTER = Object.freeze({
+  'Ledger scraps': 1,
+  'Canal iron': 1,
+  'Runic residue': 1,
+  'Chainback shell': 1,
+  'Stamped brass': 1,
+  'Floodglass': 1,
+  'Floodglass Fragment': 1,
+  'Arcade lint': 2,
+  'Prize gears': 2,
+  'Glass marbles': 2,
+  'Tin wheels': 2,
+  'Golden token': 2,
+  'Arcade tokens': 2,
+  'Garden seeds': 3,
+  'Silvershell': 3,
+  'Sprinkler brass': 3,
+  'Bright feathers': 3,
+  'Garden medallion': 3,
+  'Garden twine': 3,
+  'Moth velvet': 4,
+  'Packing twine': 4,
+  'Clock springs': 4,
+  'Soft buttons': 4,
+  'Keepsake key': 4,
+  'Attic ribbon': 4,
+  'Painted papier-mâché': 5,
+  'Carousel brass': 5,
+  'Velvet tickets': 5,
+  'Ringmaster ribbon': 5,
+  'Velvet star': 5,
+  'Salvaged fittings': 'general',
+  'Repair fittings': 'general'
+});
+
+export function recipeRegion(recipe) {
+  let highest = null;
+  const cost = recipe?.cost || {};
+  for (const mat of Object.keys(cost)) {
+    const ch = MATERIAL_CHAPTER[mat];
+    if (typeof ch === 'number') {
+      if (highest === null || ch > highest) highest = ch;
+    }
+  }
+  return highest !== null ? highest : 'general';
+}
+
+materialLabel.MATERIAL_CHAPTER = MATERIAL_CHAPTER;
+materialLabel.recipeRegion = recipeRegion;
+
+
 // Exchanges use guaranteed drops and quest materials; boss fragments always have a sink.
 export const EXCHANGES = Object.freeze({
   ledger_fittings:{id:'ledger_fittings',name:'Sort lint',cost:{'Ledger scraps':3},gain:{'Salvaged fittings':1},coins:5},

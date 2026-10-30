@@ -305,3 +305,37 @@ test('selling an item with an affix returns the same coins as selling it without
   assert.equal(receiptWith.coins, receiptWithout.coins);
   assert.equal(sWith.coins, sWithout.coins);
 });
+
+test('MATERIAL_CHAPTER has an entry for every MATERIAL_LABELS key, and every enemy material maps to that enemy chapter', async () => {
+  const { MATERIAL_LABELS, MATERIAL_CHAPTER } = await import('../dist/gear.js');
+  const { ENEMIES } = await import('../dist/engine.js');
+  const { enemyChapter } = await import('../dist/campaign.js');
+
+  assert.ok(MATERIAL_CHAPTER, 'MATERIAL_CHAPTER must be exported');
+  for (const key of Object.keys(MATERIAL_LABELS)) {
+    assert.ok(Object.hasOwn(MATERIAL_CHAPTER, key), `Missing MATERIAL_CHAPTER entry for: ${key}`);
+    const ch = MATERIAL_CHAPTER[key];
+    assert.ok(typeof ch === 'number' || ch === 'general', `Chapter for ${key} must be a number or 'general', got ${ch}`);
+  }
+
+  for (const enemy of ENEMIES) {
+    const expectedChapter = enemyChapter(enemy.id);
+    assert.ok(expectedChapter !== null, `Enemy ${enemy.id} must belong to a chapter`);
+    assert.equal(
+      MATERIAL_CHAPTER[enemy.material],
+      expectedChapter,
+      `Enemy ${enemy.id} material '${enemy.material}' should map to chapter ${expectedChapter}`
+    );
+  }
+});
+
+test('recipeRegion returns correct region for recipes', async () => {
+  const { EXCHANGES, recipeRegion } = await import('../dist/gear.js');
+
+  assert.equal(recipeRegion(EXCHANGES.ledger_fittings), 1);
+  assert.equal(recipeRegion(EXCHANGES.fittings_repair), 'general');
+  assert.equal(recipeRegion({ cost: { 'Prize gears': 1 } }), 2);
+  assert.equal(recipeRegion({ cost: { 'Salvaged fittings': 2, 'Prize gears': 1 } }), 2);
+  assert.equal(recipeRegion({ cost: { 'Ledger scraps': 2, 'Prize gears': 1 } }), 2);
+});
+

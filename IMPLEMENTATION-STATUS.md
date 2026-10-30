@@ -10,7 +10,7 @@ This snapshot was wrapped up at the owner's request. Feature wiring and regressi
 | Combat and progression | Twenty additional regional foes, level cap 50, unchanged level 1–9 XP requirements, four points per full level, region-bound loot, protected equipment droughts, and save v6 importing v1–v5. |
 | Equipment economy | 75 weapons across three stat channels, ten items per other category, story-based shop collections, distinct armor/relic cost rules, regional resale limits, and chapter-scaled upgrade and affix coin costs. |
 | Equipment theme | Stuffie-sized found-object names and descriptions; stable item IDs, ownership and existing modifications preserved. |
-| Interface | Chapter travel, regional hunting lists and finale actions, focused compact shop filters, preserved sidegrades, and existing workshop selection memory. |
+| Interface | Chapter travel, regional hunting lists and finale actions, focused compact shop filters, preserved sidegrades, regional Sewing Kit recipe grouping, and existing workshop selection memory. |
 | Art and records | Twenty generated regional enemy sprites, measured crops and provenance; new field-note pages. Existing generated equipment families are reused. |
 
 ## Partially complete: campaign balance and pacing
@@ -33,7 +33,6 @@ Needed next:
 
 - Map later upgrades and reforges to appropriate local materials so players need not farm the first region for everything.
 - Add a small, useful set of regional exchanges and uses for boss keepsakes.
-- Filter or group those recipes by unlocked region in the Sewing Kit.
 - Test every exchange/crafting/resale loop for profit exploits and verify the selected workshop item stays open.
 
 ## Deferred content and verification
