@@ -42,3 +42,13 @@ Verification evidence: `npm test` log at `/tmp/crown-b0-final-npm-test.log` repo
 The captured-save concern is **resolved / nonblocking**. The fixture names `cbc14b9`, which was the current main when B0 branched. I independently verified `git diff cbc14b9..abfa97e -- dist/engine.js dist/gear.js dist/characters.js`: the only differences are C0 engine export wiring and removal of `materialLabel` property assignments; there are no save, state, or runtime-rule changes. The focused test passes against the rebased engine and imports the captured character and roster, checks retained fields, runs the fixture, and asserts both inputs remain unchanged. This is valid legacy captured-save coverage for the reviewed baseline despite the current branch label advancing to `abfa97e`.
 
 This reassessment changes only the P2 disposition. **Gate 2 remains FAIL solely because the P1 Dream Bell victory mana carry is omitted**, as documented above.
+
+## Orchestrator final gate
+
+FAIL / STOP. Independently reviewed the source and reproduced the Dream Bell carry error: two caster level-9 Unicorn fights against rats with seed 41 and strike policy report encounter-start mana average 103.5; the equivalent production chain starts at [110, 99], average 104.5. `postVictoryResources` omits the actual victory mana restoration. Final-blow Ribbon Knot restoration also needs coverage in the next attempt. No approval is given to this harness or to its use as balance evidence.
+
+Full suite: 43/43 test files pass; changed-file syntax, diff checks and a temporary standalone package pass. These regression checks do not invalidate the reproduced measurement bug. No gameplay numbers or save format changed. The task has failed review twice and is stopped under the handoff rule.
+
+## Owner-authorized resumption — resolved
+
+After the stop, the owner asked root to handle the fix personally. The corrected harness retains actual engine resources rather than reconstructing them after victory. Fresh independent review passed; see `b0-resource-review.md` for evidence and direct-engine regression coverage. The failed gates above are preserved as historical findings, not the disposition of the corrected code.

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "python -m http.server 4173 --directory dist",
     "test": "node --test tests/*.test.mjs",
-    "economy": "node scripts/weapon-economy.mjs"
+    "economy": "node scripts/weapon-economy.mjs",
+    "balance": "node scripts/balance-sim.mjs"
   },
   "engines": {
     "node": ">=22.8.0"
