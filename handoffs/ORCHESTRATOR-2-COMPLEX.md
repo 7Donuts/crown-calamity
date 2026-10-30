@@ -158,7 +158,7 @@ Fixtures must be configurable by kit, level, race, gear (including both hands), 
 
 **CP1.** Owner-authorized trial recorded as D12: geometric weapon interpolation through T10=10,000, T15=15,000, T20=30,000, T25=60,000; armor body T6/T8/T10=3,750/7,500/15,000, preserving T1–4 and category bases. Spec 50 entry gear starts at 1,100 wins and best gear remains 2,000. CP4 post-story fit remains pending.
 
-**Implementation status.** Implemented on the G1-B review branch. The report in `handoffs/reports/g1b-price-curve.md` records tier tables, modeled hours, historical-data caveats, and checks. Resale remains capped (`CHAPTER_SALVAGE`).
+**Implementation status.** Delivered by G1-B PR #15 after independent and orchestrator review. The report in `handoffs/reports/g1b-price-curve.md` records tier tables, modeled hours, historical-data caveats, and checks. Resale remains capped (`CHAPTER_SALVAGE`).
 
 ### G1-C: Regional workshop economy
 

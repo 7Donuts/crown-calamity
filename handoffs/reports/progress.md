@@ -7,7 +7,7 @@ Updated 30 October 2026. Work resumed: the owner delegated a grind-focused CP1 p
 | C0 export cleanup | Merged after independent Luna review and orchestrator checks | [PR #9](https://github.com/7Donuts/crown-calamity/pull/9); `c0-review.md` |
 | B0 balance harness | Complete; root resource fix and fresh independent review PASS | [PR #10](https://github.com/7Donuts/crown-calamity/pull/10); `b0-resource-review.md` |
 | G1-A walkthrough and survivability | Resumed; final post-CP1 seeded validation and independent review pending | [Draft PR #13](https://github.com/7Donuts/crown-calamity/pull/13); `g1a-partial-handoff.md` |
-| G1-B prices | CP1 trial implemented; independent and root review PASS | `g1b-price-curve.md`, `g1b-review.md`; publishing |
+| G1-B prices | CP1 trial delivered; independent and root review PASS | [PR #15](https://github.com/7Donuts/crown-calamity/pull/15); `g1b-price-curve.md`, `g1b-review.md` |
 | G1-C workshop economy | Complete; regional supply/no-profit gate PASS | [PR #12](https://github.com/7Donuts/crown-calamity/pull/12); `g1c-regional-workshop.md`, `g1c-review.md` |
 | G2-1 two-hands lab | Not started | Awaiting wave 1 |
 | G2-5 relic engine v2 | Not started | Awaiting lab checkpoint |
