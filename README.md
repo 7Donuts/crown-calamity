@@ -28,6 +28,14 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
+## Unreleased: Shimlar comparison and three prototypes
+
+- **Overkill shown honestly.** When a blow ends a fight, the combat log and feedback now say how much was actually needed, for example `40 physical damage · only 6 needed`. The same applies to an enemy blow that defeats you. Attempted damage is still reported, and Playtest Lab telemetry is unchanged.
+- **Notice Board bounty prototype (Playtest Lab only).** Three bounties, one experience-led, one coin-led and one material-led, drawn from an authored rotation. Only wins after you accept count; each bounty pays a one-time bonus of 35% of what its wins already pay, split 60/30/10. Bounties never expire, abandoning never rerolls the board, and the lab never touches campaign saves.
+- **Reference server request gate.** `server/authority.js` runs the Phase 2 checks in `FUTURE-DEVELOPMENT.md` around the real engine: strict request shape, ownership, action-ID replay, version checks, moderator holds, server-time pacing, draft-then-commit, and once-only reward keys. It is not deployed and is not part of the game.
+
+See [the Shimlar comparison](design/40_Shimlar_Comparison.md).
+
 ## v0.14.0 campaign preview — implementation complete, balance unfinished
 
 This preview adds five authored chapters, receipt-based travel/shop access, twenty generated enemy illustrations, level-50 progression, and a 145-item catalog (25 Might, 25 magic, 25 Finesse weapons; ten items per other category). All equipment has stuffie-themed display names while existing save IDs and ownership remain intact. Weapons retain 100 coins at tier 1 and 10,000 at tier 10; armor and relics use separate economic rules. Shop filters hide obsolete same-style weapons while preserving sidegrades. Save v6 imports v1–v5 and current saves.
@@ -228,6 +236,7 @@ The original modular pack remains under `design/Crown-and-Calamity-Design-v0.1/`
 - [Menu and navigation review](design/25_Menu_Review.md)
 - [Art direction proposals](design/26_Art_Directions.md)
 - [RWK relic and itemization research](design/27_RWK_Relics_and_Itemization.md)
+- [Shimlar comparison and prototypes](design/40_Shimlar_Comparison.md)
 - [Online development roadmap](FUTURE-DEVELOPMENT.md)
 
 This is still a local solo prototype. Login, server-authoritative actions/randomness/rewards, account persistence, guilds, and multiplayer are future work. Local saves, clocks, and code remain editable. The shared delay limits rapid input; it is not production anti-cheat.

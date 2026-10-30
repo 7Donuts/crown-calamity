@@ -37,6 +37,8 @@ Acceptance: sign in on a second device and resume the same character; another ac
 - Enforce a shared 650 ms minimum between accepted combat actions using server time and a persisted character-level next-action timestamp. Switching buttons, opening another tab, starting another encounter, reconnecting, or submitting a client timestamp must not bypass it. Check action-ID deduplication first: retrying an already accepted action returns its original receipt. Reject new actions received too early with a remaining-delay value; never queue them for later execution. Waiting must not itself grant progress. The prototype implements local pacing only.
 - Add reasonable request limits and abuse monitoring. Repeating the same familiar action is normal play; repeated clicking alone is not evidence of cheating. Server authority reduces editing and duplication exploits but does not eliminate bots or every form of abuse.
 
+A tested reference for the order of these checks, written against the current engine with an in-memory store, lives in `server/authority.js` (see [design 40](design/40_Shimlar_Comparison.md), item 1). It is a specification aid, not a server.
+
 Acceptance: forged damage and loot are ignored or rejected; simultaneous requests cannot duplicate a turn or purchase; a lost response can be retried without a second charge or reward; a disconnect cannot refill a camp or reissue first-clear loot.
 
 ## Phase 3 — online solo alpha

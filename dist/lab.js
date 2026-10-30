@@ -1,6 +1,8 @@
 import * as G from './engine.js';
 import {recordStoryEvent} from './story.js';
 import * as Shifts from './shifts.js';
+import * as Bounties from './bounties.js';
+export {Bounties};
 
 export const LAB_SCENARIOS=Object.freeze([
   Object.freeze({id:'fresh_intro_goal',title:'First hunt · find the next goal',question:'Can you tell what to do next without someone explaining it?',task:'Read the goal, start one hunt, and say what action you expect to take afterward.',kit:'bulwark',level:1,enemy:'rats',description:'A synthetic level 1 character with the Bulwark kit and its selected starter gear.'}),
@@ -10,7 +12,8 @@ export const LAB_SCENARIOS=Object.freeze([
   Object.freeze({id:'return_orientation',title:'Return after a break · recover your bearings',question:'Can you identify the current contract, build, and next useful action after returning?',task:'Review the active contract and objective, then start or decline the suggested hunt. Add a note about missing context.',kit:'duelist',level:2,enemy:'rats',description:'Synthetic handoff after the first minor contract: Lint Trap Rescue is active with one of three rat clears recorded.'}),
   Object.freeze({id:'longer_level_pacing',title:'Level progress · does the next reward feel clear?',question:'Does continuous progress toward the next level reward feel clear?',task:'Start midway through level 1, complete exchanges, and check whether the XP and next level reward are understandable.',kit:'bulwark',level:1,xp:150,enemy:'rats',description:'A level 1 fixture halfway to its next level, created through the production progression rules.'}),
   Object.freeze({id:'night_shift',title:'Night Shift · push your luck, then clock out',question:'Is the choice between one more hunt and clocking out clear, and does the unfiled Overtime bonus feel fair to risk?',task:'Clock in, choose each hunt yourself, watch the unfiled receipts, pick a boon at a Midnight snack check-in, then clock out or keep going.',kit:'bulwark',level:3,enemy:'scavenger',shifts:true,description:'A level 3 fixture for the opt-in Night Shift prototype (Shifts). Base rewards stay immediate; Overtime adds an unfiled bonus that a defeat forfeits. Nothing is timed and nothing accrues while you are away. Every hunt and every action is your own tap.'}),
-  Object.freeze({id:'level_cap_progress',title:'Level cap · understand the final reward',question:'Is it clear that level 50 has no further XP bar or attribute-point reward?',task:'Review the capped level display, start one Chapter 5 hunt, and confirm there are no partial-level counters.',kit:'bulwark',level:50,enemy:'fair_mask',earnedChapterReceipts:['municipal_works','arcade_finale','garden_finale','attic_finale'],description:'A fresh level 50 fixture in a synthetic Chapter 5 region. Its four claimed prior finale receipts are isolated lab setup; no campaign save or campaign reward is changed.'})
+  Object.freeze({id:'level_cap_progress',title:'Level cap · understand the final reward',question:'Is it clear that level 50 has no further XP bar or attribute-point reward?',task:'Review the capped level display, start one Chapter 5 hunt, and confirm there are no partial-level counters.',kit:'bulwark',level:50,enemy:'fair_mask',earnedChapterReceipts:['municipal_works','arcade_finale','garden_finale','attic_finale'],description:'A fresh level 50 fixture in a synthetic Chapter 5 region. Its four claimed prior finale receipts are isolated lab setup; no campaign save or campaign reward is changed.'}),
+  Object.freeze({id:'bounty_board',title:'Notice Board · pick what a bounty pays',question:'Does choosing between an experience-, coin- or material-led bounty feel like a real choice, and is the rotation clear?',task:'Read the three offers, accept one, win the hunts it names, then claim it. Try abandoning one to see that the board does not change.',kit:'duelist',level:3,enemy:'scavenger',bounties:true,description:'A level 3 fixture for the Notice Board bounty prototype. Bounties never expire and nothing accrues while you are away; only wins after you accept count, and each bounty pays its bonus once on top of normal rewards.'})
 ]);
 
 const SCENARIO_BY_ID=new Map(LAB_SCENARIOS.map(s=>[s.id,s]));
@@ -69,7 +72,7 @@ export function createLabSession({scenarioId,kit,seed=1}={}){
   const scenario=SCENARIO_BY_ID.get(scenarioId);if(!scenario)return null;
   const selectedKit=kit||scenario.kit,selectedSeed=(typeof seed==='string'&&seed.length<=128)||(typeof seed==='number'&&Number.isFinite(seed))?seed:1,character=makeFixture(scenario,selectedKit);if(!character)return null;
   const session={scenarioId,scenario:clone(scenario),seed:selectedSeed,kit:selectedKit,character,events:[],rounds:0,playerInputs:0,deniedInputs:0,
-    encountersStarted:0,victories:0,defeats:0,withdrawals:0,damageAttempted:0,damageUnreportedActions:0,hpLost:0,hpRestored:0,manaSpent:0,staminaSpent:0,shopActions:{attempted:0,completed:0},notes:'',starting:baseMetrics(character),shift:null,shiftsStarted:0,shiftHistory:[],shiftLedger:[]};
+    encountersStarted:0,victories:0,defeats:0,withdrawals:0,damageAttempted:0,damageUnreportedActions:0,hpLost:0,hpRestored:0,manaSpent:0,staminaSpent:0,shopActions:{attempted:0,completed:0},notes:'',starting:baseMetrics(character),shift:null,shiftsStarted:0,shiftHistory:[],shiftLedger:[],bountyBoard:scenario.bounties?Bounties.freshBoard():null};
   Object.defineProperty(session,'rng',{value:seededRng(selectedSeed),writable:true,enumerable:false});
   return session;
 }
@@ -98,8 +101,22 @@ export function labAction(session,key,now){
   const damageKeys=new Set(G.DAMAGING_ACTIONS),damageUnknown=!!result.ok&&damageKeys.has(key)&&!Number.isFinite(result.damage);
   event(session,{type:'combat-input',key,enemy:before.enemy,roundBefore:before.round,accepted:!!result.ok,...(at!==undefined?{at}:{}),result:safeResult(result),damageAttempted:Number.isFinite(result.damage)?Math.max(0,result.damage):null,damageUnreported:damageUnknown,hpLost:Math.max(0,before.hp-character.hp),hpRestored:Math.max(0,character.hp-before.hp),cost:{mana:result.ok?Math.max(0,Number(info?.mp)||0):0,stamina:result.ok?Math.max(0,Number(info?.sp)||0):0},resources:{hpBefore:before.hp,hpAfter:character.hp,mpBefore:before.mp,mpAfter:character.mp,spBefore:before.sp,spAfter:character.sp}});
   if(shift)settleShiftExchange(session,shift,result,resolved.effects,before.enemy,at);
+  if(result.victory&&session.bountyBoard&&Bounties.recordVictory(session.bountyBoard,before.enemy)){const a=session.bountyBoard.active;event(session,{type:'bounty-progress',bountyId:a.id,enemy:a.enemy,progress:a.progress,count:a.count,...(at!==undefined?{at}:{})});}
   return result;
 }
+
+// Notice Board bounty prototype: each call below is one explicit input. Nothing expires, rerolls or accrues while away.
+function bountyCall(session,now,type,run){
+  if(!session?.character)return {ok:false,reason:'No lab session'};
+  if(!session.bountyBoard){input(session);session.deniedInputs++;return {ok:false,reason:'This scenario has no Notice Board.'};}
+  input(session);const at=timestamp(session,now),result=run(session.bountyBoard,session.character);
+  if(!result.ok)session.deniedInputs++;
+  event(session,{type,accepted:!!result.ok,...(result.ok?{}:{reason:result.reason}),...(result.bounty?{bountyId:result.bounty.id,profile:result.bounty.profile,enemy:result.bounty.enemy,count:result.bounty.count,progress:result.bounty.progress}:{}),...(result.reward?{bountyId:result.id,reward:clone(result.reward),leveled:result.leveled}:{}),...(at!==undefined?{at}:{})});
+  return result;
+}
+export function labBountyAccept(session,profileId,now){return bountyCall(session,now,'bounty-accept',(board,c)=>Bounties.acceptBounty(board,c,profileId));}
+export function labBountyAbandon(session,now){return bountyCall(session,now,'bounty-abandon',Bounties.abandonBounty);}
+export function labBountyClaim(session,now){return bountyCall(session,now,'bounty-claim',Bounties.claimBounty);}
 
 // Night Shift (Shifts) prototype: every call below is one explicit input. Nothing is timed, queued or accrued while away.
 const shiftStamp=at=>at!==undefined?{at}:{};
@@ -196,6 +213,7 @@ export function labSummary(session){
     counters:{playerInputs:session.playerInputs,deniedInputs:session.deniedInputs,rounds:session.rounds,encountersStarted:session.encountersStarted,victories:session.victories,defeats:session.defeats,withdrawals:session.withdrawals,damageAttempted:session.damageAttempted,damageUnreportedActions:session.damageUnreportedActions,hpLost:session.hpLost,hpRestored:session.hpRestored,manaSpent:session.manaSpent,staminaSpent:session.staminaSpent,earnedAttributePoints:Math.max(0,p.totalEarned-session.starting.totalEarned),shopActions:{...session.shopActions}},
     telemetryNotes:{damageAttempted:'Sum of damage values returned by the engine; the engine omits damage on defeat and withdrawal responses, counted as damageUnreportedActions.',hpLost:'Net HP lost between accepted exchanges after any healing in that exchange; it is not incoming enemy damage.',hpRestored:'Net HP increase between accepted exchanges; it is not the exact amount healed before the enemy response.'},
     ...(session.scenario.shifts?{shifts:shiftReport(session)}:{}),
+    ...(session.bountyBoard?{bounties:Bounties.bountySummary(session.bountyBoard)}:{}),
     events:clone(session.events),comments:session.notes,...(Number.isFinite(session.startTimestamp)?{startTimestamp:session.startTimestamp}:{})};
 }
 
