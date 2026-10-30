@@ -373,6 +373,8 @@ export function recipeRegion(recipe) {
 
 materialLabel.MATERIAL_CHAPTER = MATERIAL_CHAPTER;
 materialLabel.recipeRegion = recipeRegion;
+materialLabel.familyLabel = familyLabel;
+materialLabel.WEAPON_FAMILIES = WEAPON_FAMILIES;
 
 
 // Exchanges use guaranteed drops and quest materials; boss fragments always have a sink.

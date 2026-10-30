@@ -14,8 +14,8 @@ import {MENU_ICONS} from './menu-icons.js';
 import {UI_ICONS} from './ui-icons.js';
 import {renderEnemyArt} from './enemy-art.js';
 import {renderItemArt,renderServiceArt} from './item-art.js';
-import {familyLabel} from './gear.js';
 const $=s=>document.querySelector(s), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const familyLabel=item=>(G.familyLabel||G.materialLabel?.familyLabel)?.(item)||'';
 const RL=G.RESOURCE_LABELS,mat=G.materialLabel,raceName=s=>(s?.raceId&&Object.hasOwn(RACES,s.raceId)&&RACES[s.raceId].name)||s?.race||'';
 const KEY='crown-calamity-v1',ROSTER_KEY='crown-calamity-roster-v1';let saveOK=true,saveRaw=null,rosterRaw=null;try{saveRaw=localStorage.getItem(KEY);rosterRaw=localStorage.getItem(ROSTER_KEY);}catch{saveOK=false;}
 let workshopItem=null,workshopScroll=0,selectedChapterId=null,shopFilters={weaponChannel:null,showOtherStyles:false,showLowerTiers:false,showOwned:false};
