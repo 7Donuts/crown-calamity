@@ -12,6 +12,9 @@ import * as G from '../dist/engine.js';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const requiredGear = ['SLOTS','EXCHANGES','PREFIXES','SUFFIXES','resolveItem','slotChoices','exchangeMaterials','upgradePreview','upgradeItem','affixPreview','applyAffix','effectiveItem'];
 const exchange = (s, action, now) => G.exchange(s, action, () => .5, now);
+const hasMissingNumericToken = html => /\b(?:undefined|NaN)\b/.test(
+  html.replace(/data:image\/png;base64,[A-Za-z0-9+/=]+/g, '')
+);
 
 function bootPackagedScript(script) {
   const elements=new Map(), errors=[],listeners={},storageOps={reads:0,writes:0};
@@ -233,11 +236,11 @@ test('the package generator produces standalone code with all module exports and
     assert.equal(syntax.status,0,syntax.stderr);
     const packaged=bootPackagedScript(embedded);
     const app=()=>packaged.elements.get('#app').innerHTML;
-    assert.equal(/\b(?:undefined|NaN)\b/.test(app()),false,'packaged landing view renders without missing data');
+    assert.equal(hasMissingNumericToken(app()),false,'packaged landing view renders without missing data');
     for (const [action,label] of [['nav:character','Character record'],['char-tab:attributes','YOUR ATTRIBUTES'],['char-tab:abilities','Active abilities'],['nav:bag','Personal effects'],['nav:market','Quay market'],['vendor:armorer','Armorer'],['vendor:curio','Curio dealer'],['bag-tab:materials','Materials on hand'],['bag-tab:workbench','SEWING KIT'],['nav:story','The work beneath the Quay'],['nav:journal','Adventure chronicle'],['nav:guide','FIELD GUIDE · RULES & SAVES']]) {
       packaged.click(action);
       assert.equal(app().includes(label),true,`packaged UI renders ${label}`);
-      assert.equal(/\b(?:undefined|NaN)\b/.test(app()),false,`packaged ${label} has no missing values`);
+      assert.equal(hasMissingNumericToken(app()),false,`packaged ${label} has no missing values`);
     }
     assert.deepEqual(packaged.errors,[],'packaged screens run without caught application errors');
     const lab=await readFile(path.join(copy,'Crown-and-Calamity-Playtest-Lab.html'),'utf8');

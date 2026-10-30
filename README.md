@@ -1,4 +1,4 @@
-# Crown & Calamity: campaign preview v0.14.0
+# Crown & Calamity: campaign preview v0.14.1
 
 Canonical source: [7Donuts/crown-calamity](https://github.com/7Donuts/crown-calamity).
 
@@ -45,6 +45,12 @@ See [the relic engine](design/43_Relic_Engine.md).
 - **Reference server request gate.** `server/authority.js` runs the Phase 2 checks in `FUTURE-DEVELOPMENT.md` around the real engine: strict request shape, ownership, action-ID replay, version checks, moderator holds, server-time pacing, draft-then-commit, and once-only reward keys. It is not deployed and is not part of the game.
 
 See [the Shimlar comparison](design/40_Shimlar_Comparison.md).
+
+## v0.14.1: an illustration for every item
+
+All 154 equipment items and 32 materials now have their own generated artwork. Nine soft-pixel sheets replace reused family images for weapons, armor, accessories, all nineteen relics, chapter keepsakes and regional supplies. Shops, gear slots, comparisons and rewards use the matching item; Satchel and Sewing Kit material readouts retain readable amounts and names beside their icons. Gameplay values and save IDs are unchanged.
+
+Browse [the illustrated catalog](dist/art-catalog.html) to inspect every icon at 24 and 48 pixels. [The production record](design/54_Unique_Item_Art.md) and asset manifest document the approved style references, original generated PNGs, measured crops and hashes. The renderer clips each source region without drawing or recoloring replacement icons. Tests verify exact coverage, crop separation, source integrity and standalone embedding.
 
 ## v0.14.0 campaign preview — implementation complete, balance unfinished
 
@@ -260,4 +266,4 @@ This is still a local solo prototype. Login, server-authoritative actions/random
 
 The automated suite covers combat, mastery/loadout rules, multipart XP and migration, all nine gear slots, shop prices and atomic spending, upgrade/affix removal on sale, roster creation/switch/import isolation, authored contract objectives/reward idempotency, physical skills without a focus, and live save round-trips. It also packages the complete offline HTML, syntax-checks it, and boots/navigates its UI using a minimal DOM test harness.
 
-The DOM test harness has no layout engine, so layout is guarded only by a stylesheet-cascade test for the phone combat panel (it resolves the real CSS at fixed viewports); it does not render pixels. v0.11.0 and v0.12.0 were also checked by hand in Chromium at 360×740, 390×844, and 1280×900. Real-device visual and accessibility testing remains outstanding. The current release passes 361 test cases (30 October 2026) (`npm test`), including lab storage isolation, seeded replay, timing, telemetry limits, vendor comparisons, complete art coverage/crops, metadata integrity, and both standalone game pages. Gallery and art-preview embedding are checked separately.
+The DOM test harness has no layout engine, so layout is guarded only by a stylesheet-cascade test for the phone combat panel (it resolves the real CSS at fixed viewports); it does not render pixels. v0.11.0 and v0.12.0 were also checked by hand in Chromium at 360×740, 390×844, and 1280×900. Real-device visual and accessibility testing remains outstanding. The current release passes all 42 test files (`npm test`), including lab storage isolation, seeded replay, timing, telemetry limits, vendor comparisons, complete art coverage/crops, metadata integrity, and both standalone game pages. Gallery and art-preview embedding are checked separately.

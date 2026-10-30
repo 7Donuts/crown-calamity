@@ -14,6 +14,7 @@ import { MENU_ICONS } from '../dist/menu-icons.js';
 import { UI_ICONS } from '../dist/ui-icons.js';
 import * as EnemyArt from '../dist/enemy-art.js';
 import * as ItemArt from '../dist/item-art.js';
+import { MATERIAL_ART } from '../dist/item-art.js';
 import * as CharacterSheet from '../dist/character-sheet.js';
 import * as BattleReport from '../dist/battle-report.js';
 import * as WorldUI from '../dist/world-ui.js';
@@ -46,7 +47,7 @@ async function bootWithCustomExchanges(save, extraExchanges = {}) {
     .replace("import {MENU_ICONS} from './menu-icons.js';", 'const MENU_ICONS=globalThis.__MENU_ICONS__;')
     .replace("import {UI_ICONS} from './ui-icons.js';", 'const UI_ICONS=globalThis.__UI_ICONS__;')
     .replace("import {renderEnemyArt} from './enemy-art.js';", 'const {renderEnemyArt}=globalThis.__ENEMY_ART__;')
-    .replace("import {renderItemArt,renderServiceArt} from './item-art.js';", 'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;')
+    .replace("import {renderItemArt,renderMaterialArt,renderServiceArt} from './item-art.js';", 'const {renderItemArt,renderMaterialArt,renderServiceArt}=globalThis.__ITEM_ART__;')
     .replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';", 'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;')
     .replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';", 'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;')
     .replace("import {renderVariantOffer,renderVariantProgress,renderVariantBanner} from './variant-ui.js';", 'const {renderVariantOffer,renderVariantProgress,renderVariantBanner}=globalThis.__VARIANT_UI__;')
@@ -58,9 +59,13 @@ async function bootWithCustomExchanges(save, extraExchanges = {}) {
 test('upgrade and reforge keep the chosen Sewing Kit item open with a fresh preview',async()=>{
   const save=G.createCharacter({name:'Mender',kit:'bulwark'});save.coins=1500;save.materials['Salvaged fittings']=12;save.materials['Runic residue']=12;save.materials['Canal iron']=12;save.materials['Ledger scraps']=2;
   const {ui}=await bootWithSave(save);
-  await ui.act('nav:bag');await ui.act('bag-tab:workbench');
+  await ui.act('nav:bag');await ui.act('bag-tab:materials');
+  assert.ok(ui.getApp().innerHTML.includes(MATERIAL_ART['Runic residue'].src), 'Satchel material rows show their matching generated art');
+  assert.match(ui.getApp().innerHTML,/Static charge/, 'Satchel keeps the readable material label');
+  await ui.act('bag-tab:workbench');
   assert.match(ui.getApp().innerHTML,/General/);
   assert.match(ui.getApp().innerHTML,/Chapter 1/);
+  assert.ok(ui.getApp().innerHTML.includes(MATERIAL_ART['Ledger scraps'].src), 'recipe input and output lines use exact material keys');
   await ui.act('upgrade:rod');
   const first=confirmAction(ui.getModal().innerHTML);assert.ok(first,'upgrade preview offers a confirmation');
   await ui.act(first);

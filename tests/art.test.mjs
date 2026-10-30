@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import * as G from '../dist/engine.js';
 import { ITEMS } from '../dist/gear.js';
-import { ITEM_ART, ITEM_ART_ATLAS, renderItemArt } from '../dist/item-art.js';
+import { ITEM_ART, ITEM_ART_ATLAS, ITEM_ART_ATLASES, renderItemArt } from '../dist/item-art.js';
 import { UI_ICONS } from '../dist/ui-icons.js';
 import { MENU_ICONS, menuIcon } from '../dist/menu-icons.js';
 import { CHAPTER_ENEMY_ATLAS, ENEMY_ART, ENEMY_ATLAS, renderEnemyArt } from '../dist/enemy-art.js';
@@ -40,7 +40,7 @@ function parsePercentStyles(html) {
   return values;
 }
 
-test('every gear item has a percentage-cropped item sprite, with unknown IDs omitted', async () => {
+test('every gear item has its own generated crop renderer entry, with unknown IDs omitted', () => {
   const itemIds = Object.keys(ITEMS);
   assert.equal(itemIds.length, 154, 'item art covers seventy-five weapons, ten items per other nonweapon category and nineteen relics');
   assert.deepEqual(Object.keys(ITEM_ART).sort(), [...itemIds].sort());
@@ -49,25 +49,16 @@ test('every gear item has a percentage-cropped item sprite, with unknown IDs omi
     for (const size of ['small', 'medium', 'large']) {
       const html = renderItemArt(id, { size });
       assert.match(html, new RegExp(`item-art--${size}\\b`), `${id} supports ${size}`);
-      assert.ok(html.includes(ITEM_ART_ATLAS.src), `${id} points to the item atlas`);
-      const styles = parsePercentStyles(html);
-      for (const property of ['width', 'height', 'left', 'top']) {
-        assert.ok(Number.isFinite(styles[property]), `${id} has a finite ${property} crop`);
-      }
-      assert.equal(styles.width, ITEM_ART_ATLAS.columns * 100, `${id} scales the atlas to the column grid`);
-      assert.equal(styles.height, ITEM_ART_ATLAS.rows * 100, `${id} scales the atlas to the row grid`);
-      assert.equal(styles.left, -(ITEM_ART[id].col * 100) || 0, `${id} crop uses its mapped column`);
-      assert.equal(styles.top, -(ITEM_ART[id].row * 100) || 0, `${id} crop uses its mapped row`);
-      assert.ok(ITEM_ART[id].col >= 0 && ITEM_ART[id].col < ITEM_ART_ATLAS.columns, `${id} column is in bounds`);
-      assert.ok(ITEM_ART[id].row >= 0 && ITEM_ART[id].row < ITEM_ART_ATLAS.rows, `${id} row is in bounds`);
+      assert.ok(html.includes(ITEM_ART[id].src), `${id} references its generated pack`);
+      assert.match(html, /^<svg\b[^>]*viewBox="0 0 100 100"[\s\S]*?<svg\b[^>]*viewBox="\d+ \d+ \d+ \d+"[\s\S]*?<image\b/,
+        `${id} uses a bounded nested SVG crop over generated pixels`);
+      assert.equal((html.match(/<image\b/g) || []).length, 1, `${id} contains only its generated PNG image`);
+      assert.doesNotMatch(html, /<(?:path|rect|circle|polygon|line|polyline)\b/i, `${id} has no authored SVG shapes`);
     }
   }
   assert.equal(renderItemArt('missing-item'), '');
   assert.equal(renderItemArt('__proto__'), '', 'prototype keys are not item art IDs');
-
-  const image = pngInfo(await readFile(resolve(root, 'dist', ITEM_ART_ATLAS.src)));
-  assert.equal(image.width, ITEM_ART_ATLAS.width);
-  assert.equal(image.height, ITEM_ART_ATLAS.height);
+  assert.ok(ITEM_ART_ATLASES.length > 1, 'equipment uses several generated pack sources');
 });
 
 test('all engine enemies resolve to bounded frames in their shipped PNG atlas', async () => {
@@ -147,7 +138,7 @@ test('generated UI and menu icons cover their public keys and render as accessib
 });
 
 test('art rendering modules stay outside combat state and the app no longer crops the old enemy atlas', async () => {
-  const artModules = await Promise.all(['item-art.js', 'ui-icons.js', 'menu-icons.js', 'enemy-art.js'].map(readDist));
+  const artModules = await Promise.all(['item-art.js', 'item-art-data.js', 'ui-icons.js', 'menu-icons.js', 'enemy-art.js'].map(readDist));
   for (const source of artModules) {
     assert.doesNotMatch(source, /from\s+['"].*(?:engine|characters|story|progression)\.js['"]/, 'art modules do not import game state');
     assert.doesNotMatch(source, /\b(?:localStorage|sessionStorage|Date\.now|setTimeout|setInterval|Math\.random|nextActionAt|startFight)\b/, 'art modules have no stateful or time-based gameplay effects');
@@ -168,6 +159,7 @@ test('art manifest records exact PNG dimensions and alpha support for its shippe
   const pngRecords = records.filter(asset => asset.src?.toLowerCase().endsWith('.png'));
   assert.ok(pngRecords.some(asset => asset.src === ITEM_ART_ATLAS.src), 'item atlas is documented');
   assert.ok(pngRecords.some(asset => asset.src === ENEMY_ATLAS.src), 'enemy atlas is documented');
+  for (const src of ITEM_ART_ATLASES) assert.ok(pngRecords.some(asset => asset.src === src), `${src} is documented`);
 
   for (const record of pngRecords) {
     const file = record.src;

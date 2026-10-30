@@ -1,4 +1,6 @@
-// Shared 4×4 item atlas. Crops use percentages so they work at any rendered size.
+import { ITEM_ART_DATA, MATERIAL_ART_DATA } from './item-art-data.js';
+
+// Legacy service art remains available for the Sewing Kit and its generic materials button.
 export const ITEM_ART_ATLAS = Object.freeze({
   src: 'assets/items/item-atlas.png',
   width: 1254,
@@ -9,99 +11,66 @@ export const ITEM_ART_ATLAS = Object.freeze({
   cellHeight: 313.5
 });
 
-const frame = (col, row, category) => Object.freeze({ col, row, category });
-const frames = Object.freeze({
-  sword: frame(0, 0, 'sword'),
-  blade: frame(1, 0, 'blade'),
-  focusRod: frame(2, 0, 'focusRod'),
-  buckler: frame(3, 0, 'buckler'),
-  crystalFocus: frame(0, 1, 'crystalFocus'),
-  canalstone: frame(1, 1, 'canalstone'),
-  cap: frame(2, 1, 'cap'),
-  coat: frame(3, 1, 'coat'),
-  gloves: frame(0, 2, 'gloves'),
-  boots: frame(1, 2, 'boots'),
-  pendant: frame(2, 2, 'pendant'),
-  ring: frame(3, 2, 'ring'),
-  signet: frame(0, 3, 'signet'),
-  pike: frame(1, 3, 'pike'),
-  materials: frame(2, 3, 'materials'),
-  toolkit: frame(3, 3, 'toolkit')
+const legacyFrames = Object.freeze({
+  materials: Object.freeze({ col: 2, row: 3 }),
+  toolkit: Object.freeze({ col: 3, row: 3 })
 });
+const sizeNames = new Set(['small', 'medium', 'large']);
 
-export const ITEM_ART = Object.freeze({
-  rod: frames.focusRod,
-  floodrod: frames.focusRod,
-  sword: frames.sword,
-  ironsword: frames.sword,
-  blade: frames.blade,
-  glassblade: frames.blade,
-  shield: frames.buckler,
-  gateShield: frames.buckler,
-  focus: frames.crystalFocus,
-  charm: frames.canalstone,
-  cap: frames.cap,
-  rivethelm: frames.cap,
-  coat: frames.coat,
-  oilskin: frames.coat,
-  grips: frames.gloves,
-  workgloves: frames.gloves,
-  boots: frames.boots,
-  wornboots: frames.boots,
-  waders: frames.boots,
-  penny: frames.pendant,
-  lantern: frames.pendant,
-  band: frames.ring,
-  seal: frames.signet,
-  signet: frames.signet,
-  pike: frames.pike,
-  spoolblade:frames.blade,teacupMace:frames.sword,lullabyRod:frames.focusRod,
-  buttonBaton:frames.sword,pillowMallet:frames.sword,spoonSledge:frames.sword,kettleHammer:frames.sword,
-  blanketClub:frames.sword,plushMaul:frames.sword,ribbonRapier:frames.blade,pinFoil:frames.blade,
-  thimbleSabre:frames.blade,satinNeedle:frames.blade,starlingEdge:frames.blade,spoolfoil:frames.blade,
-  moonlitStiletto:frames.blade,singalongScepter:frames.focusRod,starWand:frames.focusRod,cloudFlute:frames.focusRod,
-  lullabyScepter:frames.focusRod,lanternWand:frames.focusRod,velvetConductor:frames.focusRod,bedtimeStar:frames.focusRod,
-  quiltBuckler:frames.buckler,thimbleFocus:frames.crystalFocus,wardingBlanket:frames.canalstone,
-  buttonShield:frames.buckler,tinnyFocus:frames.crystalFocus,stitchedWard:frames.canalstone,
-  pillowCap:frames.cap,earmuffCrown:frames.cap,thimbleHelm:frames.cap,teaCosyHood:frames.cap,
-  ribbonVisor:frames.cap,kettleHelmet:frames.cap,starryHood:frames.cap,paradeBonnet:frames.cap,
-  quiltedVest:frames.coat,kettleApron:frames.coat,velvetWaistcoat:frames.coat,rainCape:frames.coat,
-  storybookTunic:frames.coat,festivalCoat:frames.coat,cloudPajamas:frames.coat,captainJacket:frames.coat,
-  ribbonMitts:frames.gloves,thimbleGauntlets:frames.gloves,pastryMitts:frames.gloves,spoolBracers:frames.gloves,
-  starGloves:frames.gloves,mittenMitts:frames.gloves,captainsGloves:frames.gloves,woollyWristguards:frames.gloves,
-  slipperBoots:frames.boots,rainGaloshes:frames.boots,sockSkates:frames.boots,buttonClogs:frames.boots,
-  cloudSlippers:frames.boots,paradeBoots:frames.boots,stargazerShoes:frames.boots,
-  thimblePendant:frames.pendant,spoolBracelet:frames.pendant,teaCharm:frames.canalstone,
-  toyCompass:frames.ring,buttonLocket:frames.ring,bellPendant:frames.pendant,ribbonBrooch:frames.pendant,
-  threadSpool:frames.materials,patchworkHeart:frames.signet,luckyButton:frames.canalstone,dreamBell:frames.signet,
-  thimbleGuard:frames.signet,amberMarble:frames.canalstone,ribbonKnot:frames.pendant,stuffingSatchel:frames.toolkit,
-  // Relic engine pieces reuse generated atlas families until distinct art is produced (design 43).
-  feltFang:frames.pendant,darnedPatch:frames.materials,cocoaThimble:frames.signet,picnicTin:frames.toolkit,
-  lintLocket:frames.pendant,lastToken:frames.canalstone,seedHeart:frames.signet,musicBox:frames.toolkit,encoreRibbon:frames.ring,
-  thimblePike:frames.pike,spoolSpear:frames.sword,buttonBashers:frames.sword,thimbleMaul:frames.sword,pincushionPounder:frames.sword,
-  bobbinClub:frames.sword,kettleDrumHammer:frames.sword,patchworkRam:frames.sword,thimbleKnocker:frames.sword,quiltedSledge:frames.sword,
-  pinwheelRapier:frames.blade,needleFoil:frames.blade,ribbonStiletto:frames.blade,safetyPinLance:frames.blade,glassBeadDart:frames.blade,
-  embroideryStiletto:frames.blade,satinSeamRipper:frames.blade,clockworkBodkin:frames.blade,starButtonStiletto:frames.blade,moonThreadNeedle:frames.blade,
-  thimbleChime:frames.focusRod,buttonStarWand:frames.focusRod,ribbonLoomRod:frames.focusRod,bedtimeBobbin:frames.focusRod,starryPincushion:frames.focusRod,
-  moonKiteWand:frames.focusRod,plushCometScepter:frames.focusRod,thimbleOrchestraRod:frames.focusRod,lanternThreadStaff:frames.focusRod,velvetNightWand:frames.focusRod,
-  fairgroundMaul:frames.sword,carouselClub:frames.sword,ticketPuncher:frames.sword,ringmasterDrum:frames.sword,velvetBumper:frames.sword,
-  cometPin:frames.blade,carouselLance:frames.blade,ticketNeedle:frames.blade,velvetSeamRipper:frames.blade,ringmasterPin:frames.blade,
-  fairgroundFirefly:frames.focusRod,carouselMoon:frames.focusRod,velvetCometRod:frames.focusRod,ticketStarWand:frames.focusRod,midnightCarousel:frames.focusRod
-});
+// Keep only intrinsic, generated-raster metadata in the public mapping. The input data
+// module is generated from the measured pack records; it contains no drawing code.
+export const ITEM_ART = Object.freeze(Object.fromEntries(
+  Object.entries(ITEM_ART_DATA).map(([id, art]) => [id, Object.freeze(art)])
+));
+export const ITEM_ART_ATLASES = Object.freeze([...new Set(
+  Object.values(ITEM_ART).map(art => art.src)
+)]);
+export const MATERIAL_ART = Object.freeze(Object.fromEntries(
+  Object.entries(MATERIAL_ART_DATA).map(([key, art]) => [key, Object.freeze(art)])
+));
 
-const sizes = new Set(['small', 'medium', 'large']);
+const escapeAttribute = value => String(value).replace(/[&<>"']/g, ch => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+})[ch]);
+const number = value => Number.isInteger(value) ? String(value) : String(Number(value.toFixed(4)));
 
-function renderFrame(art,size) {
-  if (!art) return '';
-  const safeSize = sizes.has(size) ? size : 'small';
-  const left = -(art.col * 100), top = -(art.row * 100);
+function renderUniqueCrop(art, size) {
+  if (!art || !art.frame) return '';
+  const safeSize = sizeNames.has(size) ? size : 'small';
+  const { x, y, width, height } = art.frame;
+  if (!(width > 0 && height > 0 && art.width > 0 && art.height > 0)) return '';
+
+  // Fit the measured crop proportionally into a square, then let the nested SVG's
+  // own viewport clip the full source image at the frame boundary.
+  const aspect = width / height;
+  const viewportWidth = aspect >= 1 ? 100 : 100 * aspect;
+  const viewportHeight = aspect >= 1 ? 100 / aspect : 100;
+  const viewportX = (100 - viewportWidth) / 2;
+  const viewportY = (100 - viewportHeight) / 2;
+  const src = escapeAttribute(art.src);
+  return `<svg class="item-art item-art--${safeSize}" aria-hidden="true" focusable="false" viewBox="0 0 100 100" preserveAspectRatio="none"><svg x="${number(viewportX)}" y="${number(viewportY)}" width="${number(viewportWidth)}" height="${number(viewportHeight)}" viewBox="${x} ${y} ${width} ${height}" preserveAspectRatio="none" overflow="hidden"><image href="${src}" x="0" y="0" width="${art.width}" height="${art.height}" preserveAspectRatio="none" image-rendering="pixelated"/></svg></svg>`;
+}
+
+function renderLegacyFrame(frame, size) {
+  const safeSize = sizeNames.has(size) ? size : 'small';
+  const left = -(frame.col * 100), top = -(frame.row * 100);
   return `<span class="item-art item-art--${safeSize}" aria-hidden="true"><img alt="" src="${ITEM_ART_ATLAS.src}" style="position:absolute;width:400%;height:400%;max-width:none;left:${left}%;top:${top}%"></span>`;
 }
 
 export function renderItemArt(id, { size = 'small' } = {}) {
-  return renderFrame(Object.hasOwn(ITEM_ART,id) ? ITEM_ART[id] : null,size);
+  return typeof id === 'string' && Object.hasOwn(ITEM_ART, id)
+    ? renderUniqueCrop(ITEM_ART[id], size)
+    : '';
 }
 
-export function renderServiceArt(kind, {size='small'}={}) {
-  return renderFrame(['materials','toolkit'].includes(kind)?frames[kind]:null,size);
+export function renderMaterialArt(key, { size = 'small' } = {}) {
+  return typeof key === 'string' && Object.hasOwn(MATERIAL_ART, key)
+    ? renderUniqueCrop(MATERIAL_ART[key], size)
+    : '';
+}
+
+export function renderServiceArt(kind, { size = 'small' } = {}) {
+  return Object.hasOwn(legacyFrames, kind)
+    ? renderLegacyFrame(legacyFrames[kind], size)
+    : '';
 }

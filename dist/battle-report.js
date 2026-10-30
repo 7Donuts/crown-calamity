@@ -3,7 +3,7 @@ import {renderVariantReceipt} from './variant-ui.js';
 import * as G from './engine.js';
 import { MENU_ICONS } from './menu-icons.js';
 import { UI_ICONS } from './ui-icons.js';
-import { renderItemArt } from './item-art.js';
+import { renderItemArt, renderMaterialArt } from './item-art.js';
 import { renderJournalArt } from './journal-art.js';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -92,7 +92,7 @@ function rewardRows(state, receipt, enemy) {
   const rows = [
     `<li class="encounter-result__reward">${glyph('experience')}<span><small>EXPERIENCE</small><strong>+${Number(receipt.xp || 0).toLocaleString()} XP</strong></span></li>`,
     `<li class="encounter-result__reward">${glyph('gold')}<span><small>COINS</small><strong>+${Number(receipt.coins || 0).toLocaleString()} coins</strong></span></li>`,
-    `<li class="encounter-result__reward">${glyph('supplies')}<span><small>MATERIAL</small><strong>+${Number(receipt.materials || 1)} ${esc(G.materialLabel(receipt.material || enemy?.material || 'Material'))}</strong></span></li>`
+    `<li class="encounter-result__reward">${renderMaterialArt(receipt.material || enemy?.material || '', { size: 'small' }) || glyph('supplies')}<span><small>MATERIAL</small><strong>+${Number(receipt.materials || 1)} ${esc(G.materialLabel(receipt.material || enemy?.material || 'Material'))}</strong></span></li>`
   ];
   if (receipt.loot) {
     const item = G.resolveItem(state, receipt.loot) || G.ITEMS[receipt.loot];

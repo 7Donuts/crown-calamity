@@ -101,7 +101,7 @@ test('encounter outcome reports engine receipts and separates reward, salvage, d
   winner.last = { ...receipt, material: '<svg onload=attack()>', loot: 'penny', salvaged: false, dropChance: 0.25 };
   const itemMarkup = renderEncounterOutcome(winner);
   assert.ok(itemMarkup.includes(G.ITEMS.penny.name));
-  assert.ok(itemMarkup.includes('assets/items/item-atlas.png'));
+  assert.ok(itemMarkup.includes(ItemArt.ITEM_ART.penny.src));
   assert.match(itemMarkup, /&lt;svg onload=attack\(\)&gt;/);
   assert.doesNotMatch(itemMarkup, /<svg onload=/i);
   assert.match(itemMarkup, /class="encounter-loot"/);
@@ -201,7 +201,7 @@ function createApp(initialSave, { clock = { now: 0 }, timers = [], metrics = { e
       .replace("import {MENU_ICONS} from './menu-icons.js';", 'const MENU_ICONS=globalThis.__MENU_ICONS__;')
       .replace("import {UI_ICONS} from './ui-icons.js';", 'const UI_ICONS=globalThis.__UI_ICONS__;')
       .replace("import {renderEnemyArt} from './enemy-art.js';", 'const {renderEnemyArt}=globalThis.__ENEMY_ART__;')
-      .replace("import {renderItemArt,renderServiceArt} from './item-art.js';", 'const {renderItemArt,renderServiceArt}=globalThis.__ITEM_ART__;')
+      .replace("import {renderItemArt,renderMaterialArt,renderServiceArt} from './item-art.js';", 'const {renderItemArt,renderMaterialArt,renderServiceArt}=globalThis.__ITEM_ART__;')
       .replace("import {renderCharacterOverview,renderBuildSummary} from './character-sheet.js';", 'const {renderCharacterOverview,renderBuildSummary}=globalThis.__CHARACTER_SHEET__;')
       .replace("import {renderEncounterRecord,renderEncounterOutcome} from './battle-report.js';", 'const {renderEncounterRecord,renderEncounterOutcome}=globalThis.__BATTLE_REPORT__;')
       .replace("import {renderVariantOffer,renderVariantProgress,renderVariantBanner} from './variant-ui.js';",'const {renderVariantOffer,renderVariantProgress,renderVariantBanner}=globalThis.__VARIANT_UI__;').replace("import {renderWorldHub,renderSocialDrawer} from './world-ui.js';", 'const {renderWorldHub,renderSocialDrawer}=globalThis.__WORLD_UI__;');

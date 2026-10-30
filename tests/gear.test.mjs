@@ -40,7 +40,7 @@ test('expanded catalog has chapter stock, a generated art family for each item, 
     assert.deepEqual(rows.map(item=>item.tier),Array.from({length:10},(_,i)=>i+1));
     assert.deepEqual(rows.map(item=>item.chapter),[1,1,2,2,3,3,4,4,5,5]);
   }
-  for(const id of Object.keys(ITEMS))assert.ok(ITEM_ART[id],`${id} has generated family art`);
+  for(const id of Object.keys(ITEMS))assert.ok(ITEM_ART[id]?.frame,`${id} has its own generated art crop`);
   for(const id of ['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'])assert.ok(ITEMS[id]);
   assert.ok(ITEMS.signet.relicEffect==='signet');assert.ok(ITEMS.threadSpool.relicEffect==='threadSpool');
   // Relics are priced from chapter income (design 43), and finale keepsakes are never stocked.

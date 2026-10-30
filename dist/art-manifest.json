@@ -778,7 +778,7 @@
     {
       "id": "item-atlas",
       "src": "assets/items/item-atlas.png",
-      "purpose": "Fourteen equipment families for twenty-five item IDs, plus materials and toolkit art",
+      "purpose": "Legacy generated service props (materials bag and toolkit); equipment now uses unique per-item atlases.",
       "sha256": "4889ca48a0966ef99d950120a9c0e803bfb0b3a676b04ba6c99fa52750871e0b",
       "displaySizes": [
         32,
@@ -3972,6 +3972,3555 @@
       ],
       "provenance": "Original image-generation PNG copied unchanged. Mandatory ART-DIRECTION.md positive/negative headers and approved Ledger Rat / Bracken Quay references; bunny short-ear form refined through image generation. Original fabric/trim/eyes shown by default; alternate appearance colors composite original cropped raster pixels with source-alpha/luminance filters.",
       "approvalStatus": "Root reviewed actual runtime art at 64px and128px. Browser layout verification unavailable in this sandbox."
+    },
+    {
+      "id": "unique-item-art-heavy",
+      "src": "assets/items/might-weapons.png",
+      "purpose": "25 unique equipment illustrations",
+      "sha256": "90fa3a9e96eab2e0756c9116044414a02f3cb36e1bf0b7c1925b389dc86ec43a",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        0,
+        25,
+        1238,
+        1238
+      ],
+      "highAlphaBounds": [
+        40,
+        32,
+        1231,
+        1208
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "sword",
+          "sourceBounds": {
+            "x": 55,
+            "y": 44,
+            "width": 193,
+            "height": 203
+          },
+          "highAlphaContentBounds": [
+            57,
+            46,
+            246,
+            245
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "teacupMace",
+          "sourceBounds": {
+            "x": 312,
+            "y": 44,
+            "width": 179,
+            "height": 205
+          },
+          "highAlphaContentBounds": [
+            314,
+            46,
+            489,
+            247
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "buttonBaton",
+          "sourceBounds": {
+            "x": 543,
+            "y": 30,
+            "width": 170,
+            "height": 219
+          },
+          "highAlphaContentBounds": [
+            545,
+            32,
+            711,
+            247
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "pillowMallet",
+          "sourceBounds": {
+            "x": 779,
+            "y": 61,
+            "width": 212,
+            "height": 190
+          },
+          "highAlphaContentBounds": [
+            781,
+            63,
+            989,
+            249
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "spoonSledge",
+          "sourceBounds": {
+            "x": 1044,
+            "y": 41,
+            "width": 175,
+            "height": 210
+          },
+          "highAlphaContentBounds": [
+            1046,
+            43,
+            1217,
+            249
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ironsword",
+          "sourceBounds": {
+            "x": 53,
+            "y": 269,
+            "width": 180,
+            "height": 216
+          },
+          "highAlphaContentBounds": [
+            55,
+            271,
+            231,
+            483
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "kettleHammer",
+          "sourceBounds": {
+            "x": 307,
+            "y": 271,
+            "width": 209,
+            "height": 216
+          },
+          "highAlphaContentBounds": [
+            309,
+            273,
+            514,
+            485
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "blanketClub",
+          "sourceBounds": {
+            "x": 564,
+            "y": 289,
+            "width": 200,
+            "height": 197
+          },
+          "highAlphaContentBounds": [
+            566,
+            291,
+            762,
+            484
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "plushMaul",
+          "sourceBounds": {
+            "x": 813,
+            "y": 271,
+            "width": 186,
+            "height": 215
+          },
+          "highAlphaContentBounds": [
+            815,
+            273,
+            997,
+            484
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "pike",
+          "sourceBounds": {
+            "x": 1022,
+            "y": 264,
+            "width": 208,
+            "height": 222
+          },
+          "highAlphaContentBounds": [
+            1024,
+            266,
+            1228,
+            484
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimblePike",
+          "sourceBounds": {
+            "x": 39,
+            "y": 505,
+            "width": 210,
+            "height": 226
+          },
+          "highAlphaContentBounds": [
+            41,
+            507,
+            247,
+            729
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "spoolSpear",
+          "sourceBounds": {
+            "x": 285,
+            "y": 497,
+            "width": 213,
+            "height": 236
+          },
+          "highAlphaContentBounds": [
+            287,
+            499,
+            496,
+            731
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "buttonBashers",
+          "sourceBounds": {
+            "x": 537,
+            "y": 514,
+            "width": 218,
+            "height": 215
+          },
+          "highAlphaContentBounds": [
+            539,
+            516,
+            753,
+            727
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleMaul",
+          "sourceBounds": {
+            "x": 815,
+            "y": 505,
+            "width": 143,
+            "height": 226
+          },
+          "highAlphaContentBounds": [
+            817,
+            507,
+            956,
+            729
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "pincushionPounder",
+          "sourceBounds": {
+            "x": 1035,
+            "y": 495,
+            "width": 198,
+            "height": 238
+          },
+          "highAlphaContentBounds": [
+            1037,
+            497,
+            1231,
+            731
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "bobbinClub",
+          "sourceBounds": {
+            "x": 38,
+            "y": 739,
+            "width": 209,
+            "height": 224
+          },
+          "highAlphaContentBounds": [
+            40,
+            741,
+            245,
+            961
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "kettleDrumHammer",
+          "sourceBounds": {
+            "x": 302,
+            "y": 739,
+            "width": 184,
+            "height": 224
+          },
+          "highAlphaContentBounds": [
+            304,
+            741,
+            484,
+            961
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "patchworkRam",
+          "sourceBounds": {
+            "x": 520,
+            "y": 768,
+            "width": 234,
+            "height": 195
+          },
+          "highAlphaContentBounds": [
+            522,
+            770,
+            752,
+            961
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleKnocker",
+          "sourceBounds": {
+            "x": 809,
+            "y": 766,
+            "width": 154,
+            "height": 192
+          },
+          "highAlphaContentBounds": [
+            811,
+            768,
+            961,
+            956
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "quiltedSledge",
+          "sourceBounds": {
+            "x": 1013,
+            "y": 763,
+            "width": 219,
+            "height": 195
+          },
+          "highAlphaContentBounds": [
+            1015,
+            765,
+            1230,
+            956
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "fairgroundMaul",
+          "sourceBounds": {
+            "x": 48,
+            "y": 972,
+            "width": 203,
+            "height": 236
+          },
+          "highAlphaContentBounds": [
+            50,
+            974,
+            249,
+            1206
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "carouselClub",
+          "sourceBounds": {
+            "x": 291,
+            "y": 970,
+            "width": 204,
+            "height": 240
+          },
+          "highAlphaContentBounds": [
+            293,
+            972,
+            493,
+            1208
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ticketPuncher",
+          "sourceBounds": {
+            "x": 520,
+            "y": 1007,
+            "width": 223,
+            "height": 175
+          },
+          "highAlphaContentBounds": [
+            522,
+            1009,
+            741,
+            1180
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ringmasterDrum",
+          "sourceBounds": {
+            "x": 794,
+            "y": 975,
+            "width": 197,
+            "height": 229
+          },
+          "highAlphaContentBounds": [
+            796,
+            977,
+            989,
+            1202
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "velvetBumper",
+          "sourceBounds": {
+            "x": 1039,
+            "y": 973,
+            "width": 184,
+            "height": 229
+          },
+          "highAlphaContentBounds": [
+            1041,
+            975,
+            1221,
+            1200
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Per-item bounds measured from alpha >128 connected silhouettes, assigned by each component center to its row-major atlas cell. Disconnected components in one cell are combined (e.g. the button pair and detached magic glow); each crop has 2 px measured-bound padding, checked against every other item silhouette. Generated source PNG copied byte-for-byte."
+    },
+    {
+      "id": "unique-item-art-precision",
+      "src": "assets/items/finesse-weapons.png",
+      "purpose": "25 unique equipment illustrations",
+      "sha256": "2ff02ba28c3458153d54c4c5b22d5ee2df71355e1eb91864b098414d3d4bc384",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        0,
+        23,
+        1244,
+        1254
+      ],
+      "highAlphaBounds": [
+        31,
+        34,
+        1226,
+        1219
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "blade",
+          "sourceBounds": {
+            "x": 38,
+            "y": 39,
+            "width": 207,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            40,
+            41,
+            243,
+            250
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "spoolblade",
+          "sourceBounds": {
+            "x": 293,
+            "y": 39,
+            "width": 198,
+            "height": 215
+          },
+          "highAlphaContentBounds": [
+            295,
+            41,
+            489,
+            252
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ribbonRapier",
+          "sourceBounds": {
+            "x": 520,
+            "y": 32,
+            "width": 216,
+            "height": 249
+          },
+          "highAlphaContentBounds": [
+            522,
+            34,
+            734,
+            279
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "pinFoil",
+          "sourceBounds": {
+            "x": 777,
+            "y": 44,
+            "width": 226,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            779,
+            46,
+            1001,
+            255
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleSabre",
+          "sourceBounds": {
+            "x": 1027,
+            "y": 45,
+            "width": 198,
+            "height": 207
+          },
+          "highAlphaContentBounds": [
+            1029,
+            47,
+            1223,
+            250
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "glassblade",
+          "sourceBounds": {
+            "x": 42,
+            "y": 279,
+            "width": 203,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            44,
+            281,
+            243,
+            490
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "satinNeedle",
+          "sourceBounds": {
+            "x": 288,
+            "y": 285,
+            "width": 212,
+            "height": 218
+          },
+          "highAlphaContentBounds": [
+            290,
+            287,
+            498,
+            501
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "starlingEdge",
+          "sourceBounds": {
+            "x": 534,
+            "y": 285,
+            "width": 202,
+            "height": 218
+          },
+          "highAlphaContentBounds": [
+            536,
+            287,
+            734,
+            501
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "spoolfoil",
+          "sourceBounds": {
+            "x": 773,
+            "y": 280,
+            "width": 217,
+            "height": 217
+          },
+          "highAlphaContentBounds": [
+            775,
+            282,
+            988,
+            495
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "moonlitStiletto",
+          "sourceBounds": {
+            "x": 1043,
+            "y": 280,
+            "width": 182,
+            "height": 224
+          },
+          "highAlphaContentBounds": [
+            1045,
+            282,
+            1223,
+            502
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "pinwheelRapier",
+          "sourceBounds": {
+            "x": 29,
+            "y": 512,
+            "width": 228,
+            "height": 234
+          },
+          "highAlphaContentBounds": [
+            31,
+            514,
+            255,
+            744
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "needleFoil",
+          "sourceBounds": {
+            "x": 272,
+            "y": 519,
+            "width": 226,
+            "height": 220
+          },
+          "highAlphaContentBounds": [
+            274,
+            521,
+            496,
+            737
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ribbonStiletto",
+          "sourceBounds": {
+            "x": 540,
+            "y": 529,
+            "width": 187,
+            "height": 200
+          },
+          "highAlphaContentBounds": [
+            542,
+            531,
+            725,
+            727
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "safetyPinLance",
+          "sourceBounds": {
+            "x": 768,
+            "y": 519,
+            "width": 222,
+            "height": 211
+          },
+          "highAlphaContentBounds": [
+            770,
+            521,
+            988,
+            728
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "glassBeadDart",
+          "sourceBounds": {
+            "x": 1044,
+            "y": 545,
+            "width": 170,
+            "height": 173
+          },
+          "highAlphaContentBounds": [
+            1046,
+            547,
+            1212,
+            716
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "embroideryStiletto",
+          "sourceBounds": {
+            "x": 38,
+            "y": 763,
+            "width": 215,
+            "height": 207
+          },
+          "highAlphaContentBounds": [
+            40,
+            765,
+            251,
+            968
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "satinSeamRipper",
+          "sourceBounds": {
+            "x": 286,
+            "y": 762,
+            "width": 215,
+            "height": 202
+          },
+          "highAlphaContentBounds": [
+            288,
+            764,
+            499,
+            962
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "clockworkBodkin",
+          "sourceBounds": {
+            "x": 546,
+            "y": 763,
+            "width": 196,
+            "height": 197
+          },
+          "highAlphaContentBounds": [
+            548,
+            765,
+            740,
+            958
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "starButtonStiletto",
+          "sourceBounds": {
+            "x": 799,
+            "y": 770,
+            "width": 198,
+            "height": 198
+          },
+          "highAlphaContentBounds": [
+            801,
+            772,
+            995,
+            966
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "moonThreadNeedle",
+          "sourceBounds": {
+            "x": 1041,
+            "y": 758,
+            "width": 187,
+            "height": 217
+          },
+          "highAlphaContentBounds": [
+            1043,
+            760,
+            1226,
+            973
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "cometPin",
+          "sourceBounds": {
+            "x": 34,
+            "y": 987,
+            "width": 221,
+            "height": 234
+          },
+          "highAlphaContentBounds": [
+            36,
+            989,
+            253,
+            1219
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "carouselLance",
+          "sourceBounds": {
+            "x": 264,
+            "y": 978,
+            "width": 226,
+            "height": 243
+          },
+          "highAlphaContentBounds": [
+            266,
+            980,
+            488,
+            1219
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ticketNeedle",
+          "sourceBounds": {
+            "x": 508,
+            "y": 991,
+            "width": 223,
+            "height": 215
+          },
+          "highAlphaContentBounds": [
+            510,
+            993,
+            729,
+            1204
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "velvetSeamRipper",
+          "sourceBounds": {
+            "x": 787,
+            "y": 990,
+            "width": 234,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            789,
+            992,
+            1019,
+            1201
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ringmasterPin",
+          "sourceBounds": {
+            "x": 1027,
+            "y": 990,
+            "width": 198,
+            "height": 205
+          },
+          "highAlphaContentBounds": [
+            1029,
+            992,
+            1223,
+            1193
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Per-item bounds measured from alpha >128 connected silhouettes, assigned by each component center to its row-major atlas cell. Disconnected components in one cell are combined (e.g. the button pair and detached magic glow); each crop has 2 px measured-bound padding, checked against every other item silhouette. Generated source PNG copied byte-for-byte."
+    },
+    {
+      "id": "unique-item-art-spell",
+      "src": "assets/items/magic-weapons.png",
+      "purpose": "25 unique equipment illustrations",
+      "sha256": "74a83eb6174c84b6756c4b462d97a059b4d7f895c8f62b92e3f8e3ad79497ad3",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        0,
+        7,
+        1251,
+        1254
+      ],
+      "highAlphaBounds": [
+        43,
+        33,
+        1230,
+        1209
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "rod",
+          "sourceBounds": {
+            "x": 56,
+            "y": 41,
+            "width": 148,
+            "height": 206
+          },
+          "highAlphaContentBounds": [
+            58,
+            43,
+            202,
+            245
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "lullabyRod",
+          "sourceBounds": {
+            "x": 291,
+            "y": 36,
+            "width": 190,
+            "height": 210
+          },
+          "highAlphaContentBounds": [
+            293,
+            38,
+            479,
+            244
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "singalongScepter",
+          "sourceBounds": {
+            "x": 556,
+            "y": 31,
+            "width": 144,
+            "height": 218
+          },
+          "highAlphaContentBounds": [
+            558,
+            33,
+            698,
+            247
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "starWand",
+          "sourceBounds": {
+            "x": 814,
+            "y": 32,
+            "width": 150,
+            "height": 218
+          },
+          "highAlphaContentBounds": [
+            816,
+            34,
+            962,
+            248
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "cloudFlute",
+          "sourceBounds": {
+            "x": 1042,
+            "y": 46,
+            "width": 190,
+            "height": 201
+          },
+          "highAlphaContentBounds": [
+            1044,
+            48,
+            1230,
+            245
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "floodrod",
+          "sourceBounds": {
+            "x": 71,
+            "y": 269,
+            "width": 109,
+            "height": 224
+          },
+          "highAlphaContentBounds": [
+            73,
+            271,
+            178,
+            491
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "lullabyScepter",
+          "sourceBounds": {
+            "x": 309,
+            "y": 275,
+            "width": 167,
+            "height": 215
+          },
+          "highAlphaContentBounds": [
+            311,
+            277,
+            474,
+            488
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "lanternWand",
+          "sourceBounds": {
+            "x": 559,
+            "y": 269,
+            "width": 120,
+            "height": 221
+          },
+          "highAlphaContentBounds": [
+            561,
+            271,
+            677,
+            488
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "velvetConductor",
+          "sourceBounds": {
+            "x": 786,
+            "y": 274,
+            "width": 178,
+            "height": 210
+          },
+          "highAlphaContentBounds": [
+            788,
+            276,
+            962,
+            482
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "bedtimeStar",
+          "sourceBounds": {
+            "x": 1058,
+            "y": 270,
+            "width": 174,
+            "height": 224
+          },
+          "highAlphaContentBounds": [
+            1060,
+            272,
+            1230,
+            492
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleChime",
+          "sourceBounds": {
+            "x": 57,
+            "y": 515,
+            "width": 141,
+            "height": 208
+          },
+          "highAlphaContentBounds": [
+            59,
+            517,
+            196,
+            721
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "buttonStarWand",
+          "sourceBounds": {
+            "x": 317,
+            "y": 513,
+            "width": 126,
+            "height": 214
+          },
+          "highAlphaContentBounds": [
+            319,
+            515,
+            441,
+            725
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ribbonLoomRod",
+          "sourceBounds": {
+            "x": 508,
+            "y": 511,
+            "width": 236,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            510,
+            513,
+            742,
+            722
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "bedtimeBobbin",
+          "sourceBounds": {
+            "x": 826,
+            "y": 510,
+            "width": 113,
+            "height": 217
+          },
+          "highAlphaContentBounds": [
+            828,
+            512,
+            937,
+            725
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "starryPincushion",
+          "sourceBounds": {
+            "x": 1067,
+            "y": 507,
+            "width": 150,
+            "height": 221
+          },
+          "highAlphaContentBounds": [
+            1069,
+            509,
+            1215,
+            726
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "moonKiteWand",
+          "sourceBounds": {
+            "x": 44,
+            "y": 738,
+            "width": 186,
+            "height": 216
+          },
+          "highAlphaContentBounds": [
+            46,
+            740,
+            228,
+            952
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "plushCometScepter",
+          "sourceBounds": {
+            "x": 279,
+            "y": 752,
+            "width": 210,
+            "height": 197
+          },
+          "highAlphaContentBounds": [
+            281,
+            754,
+            487,
+            947
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleOrchestraRod",
+          "sourceBounds": {
+            "x": 559,
+            "y": 739,
+            "width": 150,
+            "height": 215
+          },
+          "highAlphaContentBounds": [
+            561,
+            741,
+            707,
+            952
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "lanternThreadStaff",
+          "sourceBounds": {
+            "x": 824,
+            "y": 736,
+            "width": 148,
+            "height": 217
+          },
+          "highAlphaContentBounds": [
+            826,
+            738,
+            970,
+            951
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "velvetNightWand",
+          "sourceBounds": {
+            "x": 1074,
+            "y": 738,
+            "width": 132,
+            "height": 215
+          },
+          "highAlphaContentBounds": [
+            1076,
+            740,
+            1204,
+            951
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "fairgroundFirefly",
+          "sourceBounds": {
+            "x": 41,
+            "y": 973,
+            "width": 189,
+            "height": 235
+          },
+          "highAlphaContentBounds": [
+            43,
+            975,
+            228,
+            1206
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "carouselMoon",
+          "sourceBounds": {
+            "x": 295,
+            "y": 971,
+            "width": 170,
+            "height": 238
+          },
+          "highAlphaContentBounds": [
+            297,
+            973,
+            463,
+            1207
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "velvetCometRod",
+          "sourceBounds": {
+            "x": 529,
+            "y": 974,
+            "width": 218,
+            "height": 237
+          },
+          "highAlphaContentBounds": [
+            531,
+            976,
+            745,
+            1209
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ticketStarWand",
+          "sourceBounds": {
+            "x": 802,
+            "y": 968,
+            "width": 177,
+            "height": 240
+          },
+          "highAlphaContentBounds": [
+            804,
+            970,
+            977,
+            1206
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "midnightCarousel",
+          "sourceBounds": {
+            "x": 1055,
+            "y": 963,
+            "width": 144,
+            "height": 248
+          },
+          "highAlphaContentBounds": [
+            1057,
+            965,
+            1197,
+            1209
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Per-item bounds measured from alpha >128 connected silhouettes, assigned by each component center to its row-major atlas cell. Disconnected components in one cell are combined (e.g. the button pair and detached magic glow); each crop has 2 px measured-bound padding, checked against every other item silhouette. Generated source PNG copied byte-for-byte."
+    },
+    {
+      "id": "unique-item-art-headBody",
+      "src": "assets/items/head-body-gear.png",
+      "purpose": "20 unique equipment illustrations",
+      "sha256": "54cbf9ed32e4718fad300bbbf1bd1e8b6e99a381aaced7c274fa67acef045d4e",
+      "width": 1402,
+      "height": 1122,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        32,
+        27,
+        1372,
+        1122
+      ],
+      "highAlphaBounds": [
+        38,
+        73,
+        1369,
+        1053
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "coat",
+          "sourceBounds": {
+            "x": 37,
+            "y": 86,
+            "width": 235,
+            "height": 179
+          },
+          "highAlphaContentBounds": [
+            39,
+            88,
+            270,
+            263
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "oilskin",
+          "sourceBounds": {
+            "x": 311,
+            "y": 71,
+            "width": 243,
+            "height": 203
+          },
+          "highAlphaContentBounds": [
+            313,
+            73,
+            552,
+            272
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "cap",
+          "sourceBounds": {
+            "x": 603,
+            "y": 85,
+            "width": 204,
+            "height": 193
+          },
+          "highAlphaContentBounds": [
+            605,
+            87,
+            805,
+            276
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "rivethelm",
+          "sourceBounds": {
+            "x": 871,
+            "y": 91,
+            "width": 195,
+            "height": 189
+          },
+          "highAlphaContentBounds": [
+            873,
+            93,
+            1064,
+            278
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "pillowCap",
+          "sourceBounds": {
+            "x": 1141,
+            "y": 74,
+            "width": 216,
+            "height": 216
+          },
+          "highAlphaContentBounds": [
+            1143,
+            76,
+            1355,
+            288
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "earmuffCrown",
+          "sourceBounds": {
+            "x": 43,
+            "y": 326,
+            "width": 226,
+            "height": 204
+          },
+          "highAlphaContentBounds": [
+            45,
+            328,
+            267,
+            528
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleHelm",
+          "sourceBounds": {
+            "x": 331,
+            "y": 328,
+            "width": 197,
+            "height": 226
+          },
+          "highAlphaContentBounds": [
+            333,
+            330,
+            526,
+            552
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "teaCosyHood",
+          "sourceBounds": {
+            "x": 603,
+            "y": 324,
+            "width": 200,
+            "height": 227
+          },
+          "highAlphaContentBounds": [
+            605,
+            326,
+            801,
+            549
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ribbonVisor",
+          "sourceBounds": {
+            "x": 862,
+            "y": 343,
+            "width": 243,
+            "height": 208
+          },
+          "highAlphaContentBounds": [
+            864,
+            345,
+            1103,
+            549
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "kettleHelmet",
+          "sourceBounds": {
+            "x": 1141,
+            "y": 331,
+            "width": 229,
+            "height": 214
+          },
+          "highAlphaContentBounds": [
+            1143,
+            333,
+            1368,
+            543
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "starryHood",
+          "sourceBounds": {
+            "x": 51,
+            "y": 586,
+            "width": 226,
+            "height": 211
+          },
+          "highAlphaContentBounds": [
+            53,
+            588,
+            275,
+            795
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "paradeBonnet",
+          "sourceBounds": {
+            "x": 318,
+            "y": 571,
+            "width": 243,
+            "height": 225
+          },
+          "highAlphaContentBounds": [
+            320,
+            573,
+            559,
+            794
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "quiltedVest",
+          "sourceBounds": {
+            "x": 595,
+            "y": 594,
+            "width": 217,
+            "height": 191
+          },
+          "highAlphaContentBounds": [
+            597,
+            596,
+            810,
+            783
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "kettleApron",
+          "sourceBounds": {
+            "x": 855,
+            "y": 596,
+            "width": 236,
+            "height": 200
+          },
+          "highAlphaContentBounds": [
+            857,
+            598,
+            1089,
+            794
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "velvetWaistcoat",
+          "sourceBounds": {
+            "x": 1138,
+            "y": 593,
+            "width": 220,
+            "height": 198
+          },
+          "highAlphaContentBounds": [
+            1140,
+            595,
+            1356,
+            789
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "rainCape",
+          "sourceBounds": {
+            "x": 36,
+            "y": 847,
+            "width": 255,
+            "height": 208
+          },
+          "highAlphaContentBounds": [
+            38,
+            849,
+            289,
+            1053
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "storybookTunic",
+          "sourceBounds": {
+            "x": 318,
+            "y": 839,
+            "width": 242,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            320,
+            841,
+            558,
+            1050
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "festivalCoat",
+          "sourceBounds": {
+            "x": 590,
+            "y": 835,
+            "width": 231,
+            "height": 220
+          },
+          "highAlphaContentBounds": [
+            592,
+            837,
+            819,
+            1053
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "cloudPajamas",
+          "sourceBounds": {
+            "x": 847,
+            "y": 851,
+            "width": 244,
+            "height": 204
+          },
+          "highAlphaContentBounds": [
+            849,
+            853,
+            1089,
+            1053
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "captainJacket",
+          "sourceBounds": {
+            "x": 1123,
+            "y": 839,
+            "width": 248,
+            "height": 211
+          },
+          "highAlphaContentBounds": [
+            1125,
+            841,
+            1369,
+            1048
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Generated transparent 5x4 atlas; item crops are measured >128 alpha connected-component bounds with 2px padding, assigned by nearest row-major cell center. Full generated source PNG retained unchanged."
+    },
+    {
+      "id": "unique-item-art-handsFeet",
+      "src": "assets/items/hands-feet-gear.png",
+      "purpose": "20 unique equipment illustrations",
+      "sha256": "2fe4fb720c0896e4464dee3b44015ba16a0ea838115f704fd7e8d44f60dbce49",
+      "width": 1402,
+      "height": 1122,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        0,
+        22,
+        1384,
+        1122
+      ],
+      "highAlphaBounds": [
+        37,
+        83,
+        1368,
+        1058
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "grips",
+          "sourceBounds": {
+            "x": 40,
+            "y": 108,
+            "width": 240,
+            "height": 172
+          },
+          "highAlphaContentBounds": [
+            42,
+            110,
+            278,
+            278
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "boots",
+          "sourceBounds": {
+            "x": 321,
+            "y": 85,
+            "width": 232,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            323,
+            87,
+            551,
+            296
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "workgloves",
+          "sourceBounds": {
+            "x": 584,
+            "y": 117,
+            "width": 245,
+            "height": 181
+          },
+          "highAlphaContentBounds": [
+            586,
+            119,
+            827,
+            296
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "wornboots",
+          "sourceBounds": {
+            "x": 865,
+            "y": 155,
+            "width": 246,
+            "height": 134
+          },
+          "highAlphaContentBounds": [
+            867,
+            157,
+            1109,
+            287
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "waders",
+          "sourceBounds": {
+            "x": 1148,
+            "y": 81,
+            "width": 220,
+            "height": 217
+          },
+          "highAlphaContentBounds": [
+            1150,
+            83,
+            1366,
+            296
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ribbonMitts",
+          "sourceBounds": {
+            "x": 42,
+            "y": 332,
+            "width": 231,
+            "height": 220
+          },
+          "highAlphaContentBounds": [
+            44,
+            334,
+            271,
+            550
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleGauntlets",
+          "sourceBounds": {
+            "x": 332,
+            "y": 375,
+            "width": 210,
+            "height": 161
+          },
+          "highAlphaContentBounds": [
+            334,
+            377,
+            540,
+            534
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "pastryMitts",
+          "sourceBounds": {
+            "x": 587,
+            "y": 366,
+            "width": 242,
+            "height": 181
+          },
+          "highAlphaContentBounds": [
+            589,
+            368,
+            827,
+            545
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "spoolBracers",
+          "sourceBounds": {
+            "x": 866,
+            "y": 390,
+            "width": 246,
+            "height": 135
+          },
+          "highAlphaContentBounds": [
+            868,
+            392,
+            1110,
+            523
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "starGloves",
+          "sourceBounds": {
+            "x": 1146,
+            "y": 338,
+            "width": 224,
+            "height": 214
+          },
+          "highAlphaContentBounds": [
+            1148,
+            340,
+            1368,
+            550
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "mittenMitts",
+          "sourceBounds": {
+            "x": 35,
+            "y": 605,
+            "width": 245,
+            "height": 191
+          },
+          "highAlphaContentBounds": [
+            37,
+            607,
+            278,
+            794
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "captainsGloves",
+          "sourceBounds": {
+            "x": 329,
+            "y": 607,
+            "width": 224,
+            "height": 201
+          },
+          "highAlphaContentBounds": [
+            331,
+            609,
+            551,
+            806
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "woollyWristguards",
+          "sourceBounds": {
+            "x": 596,
+            "y": 603,
+            "width": 226,
+            "height": 201
+          },
+          "highAlphaContentBounds": [
+            598,
+            605,
+            820,
+            802
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "slipperBoots",
+          "sourceBounds": {
+            "x": 866,
+            "y": 607,
+            "width": 245,
+            "height": 191
+          },
+          "highAlphaContentBounds": [
+            868,
+            609,
+            1109,
+            796
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "rainGaloshes",
+          "sourceBounds": {
+            "x": 1146,
+            "y": 613,
+            "width": 217,
+            "height": 192
+          },
+          "highAlphaContentBounds": [
+            1148,
+            615,
+            1361,
+            803
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "sockSkates",
+          "sourceBounds": {
+            "x": 41,
+            "y": 865,
+            "width": 240,
+            "height": 185
+          },
+          "highAlphaContentBounds": [
+            43,
+            867,
+            279,
+            1048
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "buttonClogs",
+          "sourceBounds": {
+            "x": 322,
+            "y": 874,
+            "width": 225,
+            "height": 170
+          },
+          "highAlphaContentBounds": [
+            324,
+            876,
+            545,
+            1042
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "cloudSlippers",
+          "sourceBounds": {
+            "x": 585,
+            "y": 883,
+            "width": 244,
+            "height": 156
+          },
+          "highAlphaContentBounds": [
+            587,
+            885,
+            827,
+            1037
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "paradeBoots",
+          "sourceBounds": {
+            "x": 877,
+            "y": 816,
+            "width": 230,
+            "height": 244
+          },
+          "highAlphaContentBounds": [
+            879,
+            818,
+            1105,
+            1058
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "stargazerShoes",
+          "sourceBounds": {
+            "x": 1154,
+            "y": 871,
+            "width": 211,
+            "height": 181
+          },
+          "highAlphaContentBounds": [
+            1156,
+            873,
+            1363,
+            1050
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Generated transparent 5x4 atlas; item crops are measured >128 alpha connected-component bounds with 2px padding, assigned by nearest row-major cell center. Full generated source PNG retained unchanged."
+    },
+    {
+      "id": "unique-item-art-offhandAccessory",
+      "src": "assets/items/offhands-accessories.png",
+      "purpose": "20 unique equipment illustrations",
+      "sha256": "e4eaf2e3482e53a4393ca8703ae221cccc8ae3e48aadc83eb8ae5f773be04d91",
+      "width": 1402,
+      "height": 1122,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        0,
+        23,
+        1388,
+        1122
+      ],
+      "highAlphaBounds": [
+        38,
+        43,
+        1379,
+        1086
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "shield",
+          "sourceBounds": {
+            "x": 44,
+            "y": 63,
+            "width": 245,
+            "height": 217
+          },
+          "highAlphaContentBounds": [
+            49,
+            69,
+            283,
+            280
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "focus",
+          "sourceBounds": {
+            "x": 329,
+            "y": 67,
+            "width": 205,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            335,
+            72,
+            528,
+            275
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "charm",
+          "sourceBounds": {
+            "x": 632,
+            "y": 47,
+            "width": 147,
+            "height": 233
+          },
+          "highAlphaContentBounds": [
+            638,
+            53,
+            773,
+            280
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "gateShield",
+          "sourceBounds": {
+            "x": 883,
+            "y": 47,
+            "width": 182,
+            "height": 233
+          },
+          "highAlphaContentBounds": [
+            888,
+            53,
+            1059,
+            280
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "lantern",
+          "sourceBounds": {
+            "x": 1178,
+            "y": 38,
+            "width": 163,
+            "height": 242
+          },
+          "highAlphaContentBounds": [
+            1184,
+            43,
+            1335,
+            280
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "penny",
+          "sourceBounds": {
+            "x": 69,
+            "y": 302,
+            "width": 172,
+            "height": 252
+          },
+          "highAlphaContentBounds": [
+            75,
+            307,
+            236,
+            549
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "band",
+          "sourceBounds": {
+            "x": 318,
+            "y": 343,
+            "width": 209,
+            "height": 192
+          },
+          "highAlphaContentBounds": [
+            324,
+            349,
+            521,
+            530
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "quiltBuckler",
+          "sourceBounds": {
+            "x": 573,
+            "y": 280,
+            "width": 264,
+            "height": 270
+          },
+          "highAlphaContentBounds": [
+            578,
+            325,
+            831,
+            545
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleFocus",
+          "sourceBounds": {
+            "x": 879,
+            "y": 280,
+            "width": 223,
+            "height": 270
+          },
+          "highAlphaContentBounds": [
+            884,
+            280,
+            1097,
+            545
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "wardingBlanket",
+          "sourceBounds": {
+            "x": 1137,
+            "y": 280,
+            "width": 238,
+            "height": 279
+          },
+          "highAlphaContentBounds": [
+            1142,
+            328,
+            1370,
+            553
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "buttonShield",
+          "sourceBounds": {
+            "x": 32,
+            "y": 575,
+            "width": 285,
+            "height": 267
+          },
+          "highAlphaContentBounds": [
+            38,
+            581,
+            311,
+            842
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "tinnyFocus",
+          "sourceBounds": {
+            "x": 329,
+            "y": 571,
+            "width": 240,
+            "height": 271
+          },
+          "highAlphaContentBounds": [
+            335,
+            576,
+            564,
+            842
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "stitchedWard",
+          "sourceBounds": {
+            "x": 585,
+            "y": 582,
+            "width": 247,
+            "height": 260
+          },
+          "highAlphaContentBounds": [
+            591,
+            588,
+            827,
+            842
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimblePendant",
+          "sourceBounds": {
+            "x": 902,
+            "y": 564,
+            "width": 156,
+            "height": 265
+          },
+          "highAlphaContentBounds": [
+            908,
+            570,
+            1052,
+            823
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "spoolBracelet",
+          "sourceBounds": {
+            "x": 1114,
+            "y": 602,
+            "width": 271,
+            "height": 197
+          },
+          "highAlphaContentBounds": [
+            1120,
+            607,
+            1379,
+            793
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "teaCharm",
+          "sourceBounds": {
+            "x": 51,
+            "y": 842,
+            "width": 242,
+            "height": 250
+          },
+          "highAlphaContentBounds": [
+            56,
+            842,
+            287,
+            1086
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "toyCompass",
+          "sourceBounds": {
+            "x": 329,
+            "y": 842,
+            "width": 217,
+            "height": 242
+          },
+          "highAlphaContentBounds": [
+            335,
+            842,
+            540,
+            1078
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "buttonLocket",
+          "sourceBounds": {
+            "x": 597,
+            "y": 842,
+            "width": 219,
+            "height": 242
+          },
+          "highAlphaContentBounds": [
+            603,
+            842,
+            810,
+            1078
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "bellPendant",
+          "sourceBounds": {
+            "x": 888,
+            "y": 848,
+            "width": 191,
+            "height": 236
+          },
+          "highAlphaContentBounds": [
+            894,
+            854,
+            1074,
+            1078
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ribbonBrooch",
+          "sourceBounds": {
+            "x": 1114,
+            "y": 865,
+            "width": 266,
+            "height": 222
+          },
+          "highAlphaContentBounds": [
+            1120,
+            871,
+            1374,
+            1081
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Original generated RGBA atlas copied unchanged. Individual crops follow per-object visible alpha bounds, include detached parts, and use 5 px safety padding; crop gaps were checked for overlap. All 20 row-major cells contain one distinct item."
+    },
+    {
+      "id": "unique-item-art-relics",
+      "src": "assets/items/relic-collection.png",
+      "purpose": "19 unique equipment illustrations",
+      "sha256": "41376dedb4e5b7be08e4fa76f5f1f8431824d7f2b1203318e56c1f47a8b01329",
+      "width": 1402,
+      "height": 1122,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        0,
+        23,
+        1396,
+        1122
+      ],
+      "highAlphaBounds": [
+        33,
+        65,
+        1382,
+        1097
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "seal",
+          "sourceBounds": {
+            "x": 36,
+            "y": 60,
+            "width": 219,
+            "height": 219
+          },
+          "highAlphaContentBounds": [
+            42,
+            66,
+            249,
+            273
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "signet",
+          "sourceBounds": {
+            "x": 310,
+            "y": 78,
+            "width": 242,
+            "height": 200
+          },
+          "highAlphaContentBounds": [
+            315,
+            84,
+            547,
+            272
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "threadSpool",
+          "sourceBounds": {
+            "x": 615,
+            "y": 59,
+            "width": 250,
+            "height": 221
+          },
+          "highAlphaContentBounds": [
+            621,
+            65,
+            859,
+            280
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "patchworkHeart",
+          "sourceBounds": {
+            "x": 887,
+            "y": 68,
+            "width": 254,
+            "height": 212
+          },
+          "highAlphaContentBounds": [
+            892,
+            74,
+            1135,
+            280
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "luckyButton",
+          "sourceBounds": {
+            "x": 1186,
+            "y": 116,
+            "width": 201,
+            "height": 154
+          },
+          "highAlphaContentBounds": [
+            1192,
+            122,
+            1382,
+            264
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "dreamBell",
+          "sourceBounds": {
+            "x": 63,
+            "y": 325,
+            "width": 261,
+            "height": 236
+          },
+          "highAlphaContentBounds": [
+            69,
+            331,
+            318,
+            559
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "thimbleGuard",
+          "sourceBounds": {
+            "x": 332,
+            "y": 344,
+            "width": 218,
+            "height": 212
+          },
+          "highAlphaContentBounds": [
+            338,
+            350,
+            543,
+            550
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "amberMarble",
+          "sourceBounds": {
+            "x": 615,
+            "y": 280,
+            "width": 189,
+            "height": 267
+          },
+          "highAlphaContentBounds": [
+            620,
+            363,
+            799,
+            541
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "ribbonKnot",
+          "sourceBounds": {
+            "x": 863,
+            "y": 280,
+            "width": 241,
+            "height": 281
+          },
+          "highAlphaContentBounds": [
+            869,
+            280,
+            1098,
+            561
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "stuffingSatchel",
+          "sourceBounds": {
+            "x": 1143,
+            "y": 313,
+            "width": 233,
+            "height": 248
+          },
+          "highAlphaContentBounds": [
+            1149,
+            319,
+            1371,
+            561
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "feltFang",
+          "sourceBounds": {
+            "x": 88,
+            "y": 607,
+            "width": 166,
+            "height": 225
+          },
+          "highAlphaContentBounds": [
+            94,
+            613,
+            249,
+            826
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "darnedPatch",
+          "sourceBounds": {
+            "x": 316,
+            "y": 614,
+            "width": 233,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            322,
+            620,
+            544,
+            821
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "cocoaThimble",
+          "sourceBounds": {
+            "x": 615,
+            "y": 561,
+            "width": 177,
+            "height": 265
+          },
+          "highAlphaContentBounds": [
+            621,
+            565,
+            786,
+            820
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "picnicTin",
+          "sourceBounds": {
+            "x": 860,
+            "y": 561,
+            "width": 267,
+            "height": 272
+          },
+          "highAlphaContentBounds": [
+            865,
+            561,
+            1121,
+            827
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "lintLocket",
+          "sourceBounds": {
+            "x": 1183,
+            "y": 561,
+            "width": 189,
+            "height": 268
+          },
+          "highAlphaContentBounds": [
+            1189,
+            561,
+            1366,
+            823
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "lastToken",
+          "sourceBounds": {
+            "x": 28,
+            "y": 842,
+            "width": 237,
+            "height": 242
+          },
+          "highAlphaContentBounds": [
+            33,
+            847,
+            259,
+            1079
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "seedHeart",
+          "sourceBounds": {
+            "x": 304,
+            "y": 869,
+            "width": 252,
+            "height": 219
+          },
+          "highAlphaContentBounds": [
+            310,
+            875,
+            551,
+            1082
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "musicBox",
+          "sourceBounds": {
+            "x": 591,
+            "y": 842,
+            "width": 272,
+            "height": 259
+          },
+          "highAlphaContentBounds": [
+            596,
+            843,
+            857,
+            1095
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "encoreRibbon",
+          "sourceBounds": {
+            "x": 901,
+            "y": 845,
+            "width": 219,
+            "height": 258
+          },
+          "highAlphaContentBounds": [
+            907,
+            850,
+            1114,
+            1097
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Original generated RGBA atlas copied unchanged. Individual crops follow per-object visible alpha bounds, include detached parts, and use 5 px safety padding; crop gaps were checked for overlap. Cells 1\u201319 have individual relics; cell 20 has no visible pixels (alpha <= 1 only) and is recorded without an item."
+    },
+    {
+      "id": "unique-item-art-materials1",
+      "src": "assets/items/workshop-materials.png",
+      "purpose": "16 unique material illustrations",
+      "sha256": "cb26a16d7872f6d890dd7e244868f3cca24b8b3f6645e2e29e839860de040f2c",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        29,
+        17,
+        1242,
+        1254
+      ],
+      "highAlphaBounds": [
+        36,
+        89,
+        1220,
+        1199
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "Ledger scraps",
+          "sourceBounds": {
+            "x": 40,
+            "y": 89,
+            "width": 262,
+            "height": 240
+          },
+          "highAlphaContentBounds": [
+            42,
+            91,
+            300,
+            327
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Canal iron",
+          "sourceBounds": {
+            "x": 352,
+            "y": 101,
+            "width": 257,
+            "height": 217
+          },
+          "highAlphaContentBounds": [
+            354,
+            103,
+            607,
+            316
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Runic residue",
+          "sourceBounds": {
+            "x": 682,
+            "y": 87,
+            "width": 201,
+            "height": 239
+          },
+          "highAlphaContentBounds": [
+            684,
+            89,
+            881,
+            324
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Chainback shell",
+          "sourceBounds": {
+            "x": 958,
+            "y": 102,
+            "width": 262,
+            "height": 221
+          },
+          "highAlphaContentBounds": [
+            960,
+            104,
+            1218,
+            321
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Stamped brass",
+          "sourceBounds": {
+            "x": 43,
+            "y": 389,
+            "width": 266,
+            "height": 225
+          },
+          "highAlphaContentBounds": [
+            45,
+            391,
+            307,
+            612
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Floodglass",
+          "sourceBounds": {
+            "x": 362,
+            "y": 375,
+            "width": 237,
+            "height": 244
+          },
+          "highAlphaContentBounds": [
+            364,
+            377,
+            597,
+            617
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Floodglass Fragment",
+          "sourceBounds": {
+            "x": 664,
+            "y": 379,
+            "width": 251,
+            "height": 240
+          },
+          "highAlphaContentBounds": [
+            666,
+            381,
+            913,
+            617
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Salvaged fittings",
+          "sourceBounds": {
+            "x": 966,
+            "y": 373,
+            "width": 229,
+            "height": 249
+          },
+          "highAlphaContentBounds": [
+            968,
+            375,
+            1193,
+            620
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Repair fittings",
+          "sourceBounds": {
+            "x": 34,
+            "y": 658,
+            "width": 278,
+            "height": 246
+          },
+          "highAlphaContentBounds": [
+            36,
+            660,
+            310,
+            902
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Arcade tokens",
+          "sourceBounds": {
+            "x": 367,
+            "y": 668,
+            "width": 232,
+            "height": 229
+          },
+          "highAlphaContentBounds": [
+            369,
+            670,
+            597,
+            895
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Garden twine",
+          "sourceBounds": {
+            "x": 659,
+            "y": 675,
+            "width": 256,
+            "height": 217
+          },
+          "highAlphaContentBounds": [
+            661,
+            677,
+            913,
+            890
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Attic ribbon",
+          "sourceBounds": {
+            "x": 970,
+            "y": 678,
+            "width": 248,
+            "height": 220
+          },
+          "highAlphaContentBounds": [
+            972,
+            680,
+            1216,
+            896
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Arcade lint",
+          "sourceBounds": {
+            "x": 35,
+            "y": 947,
+            "width": 274,
+            "height": 254
+          },
+          "highAlphaContentBounds": [
+            37,
+            949,
+            307,
+            1199
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Prize gears",
+          "sourceBounds": {
+            "x": 357,
+            "y": 947,
+            "width": 242,
+            "height": 240
+          },
+          "highAlphaContentBounds": [
+            359,
+            949,
+            597,
+            1185
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Glass marbles",
+          "sourceBounds": {
+            "x": 644,
+            "y": 953,
+            "width": 273,
+            "height": 236
+          },
+          "highAlphaContentBounds": [
+            646,
+            955,
+            915,
+            1187
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Tin wheels",
+          "sourceBounds": {
+            "x": 954,
+            "y": 952,
+            "width": 268,
+            "height": 238
+          },
+          "highAlphaContentBounds": [
+            956,
+            954,
+            1220,
+            1188
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Original generated RGBA pixels copied unchanged. 4x4 row-major cells assigned by the centers of 16 connected alpha>128 object components. Each crop is the component bound plus a 2 px safety margin; no crop rectangles overlap."
+    },
+    {
+      "id": "unique-item-art-materials2",
+      "src": "assets/items/regional-materials.png",
+      "purpose": "16 unique material illustrations",
+      "sha256": "9ed21f1fe2f64c343bf35160e22877006fc54c3c81d1da1896511bd8e0c87243",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaBounds": [
+        0,
+        19,
+        1232,
+        1254
+      ],
+      "highAlphaBounds": [
+        49,
+        71,
+        1222,
+        1209
+      ],
+      "displaySizes": [
+        24,
+        32,
+        38,
+        48,
+        64
+      ],
+      "frames": [
+        {
+          "id": "Golden token",
+          "sourceBounds": {
+            "x": 59,
+            "y": 87,
+            "width": 231,
+            "height": 233
+          },
+          "highAlphaContentBounds": [
+            61,
+            89,
+            288,
+            318
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Garden seeds",
+          "sourceBounds": {
+            "x": 356,
+            "y": 69,
+            "width": 241,
+            "height": 255
+          },
+          "highAlphaContentBounds": [
+            358,
+            71,
+            595,
+            322
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Silvershell",
+          "sourceBounds": {
+            "x": 658,
+            "y": 87,
+            "width": 247,
+            "height": 237
+          },
+          "highAlphaContentBounds": [
+            660,
+            89,
+            903,
+            322
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Sprinkler brass",
+          "sourceBounds": {
+            "x": 971,
+            "y": 69,
+            "width": 244,
+            "height": 255
+          },
+          "highAlphaContentBounds": [
+            973,
+            71,
+            1213,
+            322
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Bright feathers",
+          "sourceBounds": {
+            "x": 54,
+            "y": 352,
+            "width": 252,
+            "height": 277
+          },
+          "highAlphaContentBounds": [
+            56,
+            354,
+            304,
+            627
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Garden medallion",
+          "sourceBounds": {
+            "x": 365,
+            "y": 381,
+            "width": 229,
+            "height": 229
+          },
+          "highAlphaContentBounds": [
+            367,
+            383,
+            592,
+            608
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Moth velvet",
+          "sourceBounds": {
+            "x": 647,
+            "y": 370,
+            "width": 275,
+            "height": 248
+          },
+          "highAlphaContentBounds": [
+            649,
+            372,
+            920,
+            616
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Packing twine",
+          "sourceBounds": {
+            "x": 982,
+            "y": 397,
+            "width": 229,
+            "height": 213
+          },
+          "highAlphaContentBounds": [
+            984,
+            399,
+            1209,
+            608
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Clock springs",
+          "sourceBounds": {
+            "x": 61,
+            "y": 680,
+            "width": 229,
+            "height": 220
+          },
+          "highAlphaContentBounds": [
+            63,
+            682,
+            288,
+            898
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Soft buttons",
+          "sourceBounds": {
+            "x": 349,
+            "y": 700,
+            "width": 252,
+            "height": 193
+          },
+          "highAlphaContentBounds": [
+            351,
+            702,
+            599,
+            891
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Keepsake key",
+          "sourceBounds": {
+            "x": 658,
+            "y": 661,
+            "width": 252,
+            "height": 239
+          },
+          "highAlphaContentBounds": [
+            660,
+            663,
+            908,
+            898
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Painted papier-m\u00e2ch\u00e9",
+          "sourceBounds": {
+            "x": 958,
+            "y": 683,
+            "width": 261,
+            "height": 224
+          },
+          "highAlphaContentBounds": [
+            960,
+            685,
+            1217,
+            905
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Carousel brass",
+          "sourceBounds": {
+            "x": 47,
+            "y": 929,
+            "width": 244,
+            "height": 275
+          },
+          "highAlphaContentBounds": [
+            49,
+            931,
+            289,
+            1202
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Velvet tickets",
+          "sourceBounds": {
+            "x": 335,
+            "y": 947,
+            "width": 292,
+            "height": 230
+          },
+          "highAlphaContentBounds": [
+            337,
+            949,
+            625,
+            1175
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Ringmaster ribbon",
+          "sourceBounds": {
+            "x": 670,
+            "y": 930,
+            "width": 222,
+            "height": 281
+          },
+          "highAlphaContentBounds": [
+            672,
+            932,
+            890,
+            1209
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        },
+        {
+          "id": "Velvet star",
+          "sourceBounds": {
+            "x": 963,
+            "y": 943,
+            "width": 261,
+            "height": 253
+          },
+          "highAlphaContentBounds": [
+            965,
+            945,
+            1222,
+            1194
+          ],
+          "anchor": "center",
+          "fit": "uniform contain; nested generated-raster SVG viewport clips all source edges"
+        }
+      ],
+      "references": [
+        "../design/soft-pixel/ledger-rat-idle.png",
+        "../design/soft-pixel/bracken-stall.png"
+      ],
+      "provenance": "Original image-generation RGBA source retained unchanged. Exact ART-DIRECTION.md positive and negative headers and both approved references supplied. Each catalog ID has its own illustrated source region; no code-drawn or recolored replacement artwork.",
+      "paletteNotes": "Rounded soft-pixel silhouettes; slate/teal/moss/parchment with restrained amber; broad material clusters.",
+      "approvalStatus": "Root reviewed all 24px and 48px item crops; actual runtime crop verification recorded in design/54_Unique_Item_Art.md.",
+      "notes": "Original generated RGBA pixels copied unchanged. 4x4 row-major cells assigned by the centers of 16 connected alpha>128 object components. Each crop is the component bound plus a 2 px safety margin; no crop rectangles overlap."
     }
   ]
 }

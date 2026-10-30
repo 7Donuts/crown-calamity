@@ -38,7 +38,7 @@ Needed next:
 ## Deferred content and verification
 
 - Special Editions remain supported for the original Chapter 1 ordinary enemies. Later regional variants need their own survival/reward review before being enabled.
-- New equipment shares existing generated atlas families. Distinct illustrations for every catalog entry are not yet produced.
+- Resolved in v0.14.1: all 154 equipment items and 32 materials now have unique generated illustrations. See `design/54_Unique_Item_Art.md`; generic service/navigation artwork remains shared by meaning.
 - Real-device mobile/browser layout, accessibility and long-session testing remain outstanding. This environment cannot launch Chromium.
 - Login, server authority, multiplayer, guilds, chat and land ownership remain future systems; local saves are not secure online progression.
 

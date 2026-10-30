@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crown &amp; Calamity · Illustrated item catalog</title>
+<link rel="stylesheet" href="pixel.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#22323a;color:#f3ecd7;font:16px/1.5 system-ui,sans-serif}main{max-width:1400px;margin:auto;padding:24px}h1,h2{font-family:Georgia,serif;color:#e4bd72}a{color:#b9d9ce}header{margin-bottom:24px}label{display:block}input{width:min(100%,600px);min-height:48px;padding:10px;background:#17282d;color:#f3ecd7;border:1px solid #72948c;border-radius:5px;font:inherit}.collection{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}.entry{padding:12px;border-bottom:1px solid #50686b;min-width:0}.entry strong{display:block;font-size:14px;overflow-wrap:anywhere}.entry small{color:#becfc6}.samples{height:68px;display:flex;align-items:center;gap:20px}.at24 .item-art{width:24px;height:24px}.at48 .item-art{width:48px;height:48px}.samples .item-art{background:transparent;border-radius:0}section{margin-top:28px}[hidden]{display:none!important}.empty{color:#becfc6}
+</style>
+</head>
+<body>
+<main>
+<header><a href="index.html">Return to Crown &amp; Calamity</a><h1>A pocketful of illustrated trouble.</h1><p>Every equipment item and material, shown at 24 and 48 pixels. Each has its own generated illustration in the game’s soft-pixel style.</p><label for="find">Find an item or material</label><input type="search" id="find" placeholder="Try: thimble, relic, slippers…" autocomplete="off"><p id="counts" aria-live="polite"></p></header>
+<section><h2>Equipment</h2><div id="equipment" class="collection"></div></section>
+<section><h2>Materials</h2><div id="materials" class="collection"></div></section>
+<p id="empty" class="empty" hidden>No matching illustrations.</p>
+</main>
+<script type="module">
+import { ITEMS, MATERIAL_LABELS } from './gear.js';
+import { renderItemArt, renderMaterialArt } from './item-art.js';
+const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function entry(id,name,description,render){return `<article class="entry" data-search="${escape((id+' '+name+' '+description).toLowerCase())}"><div class="samples"><span class="at24">${render(id,{size:'small'})}</span><span class="at48">${render(id,{size:'medium'})}</span></div><strong>${escape(name)}</strong><small>${escape(description)}</small></article>`;}
+document.querySelector('#equipment').innerHTML=Object.values(ITEMS).map(item=>entry(item.id,item.name,`${item.slot} · Grade ${item.tier}`,renderItemArt)).join('');
+document.querySelector('#materials').innerHTML=Object.entries(MATERIAL_LABELS).map(([id,name])=>entry(id,name,'Material',renderMaterialArt)).join('');
+const entries=[...document.querySelectorAll('.entry')];
+function filter(){const term=document.querySelector('#find').value.trim().toLowerCase();let count=0;for(const item of entries){item.hidden=!item.dataset.search.includes(term);if(!item.hidden)count++;}document.querySelector('#counts').textContent=`${count} of ${entries.length} illustrations`;document.querySelector('#empty').hidden=count>0;}
+document.querySelector('#find').addEventListener('input',filter);filter();
+</script>
+</body>
+</html>
