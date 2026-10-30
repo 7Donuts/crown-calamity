@@ -32,7 +32,7 @@ CP1 is authorized as a trial through delegated selection (D12): weapon T15/T20/T
 - The original walkthrough baseline ran three kits across seeds 1–3. None earned the first chapter receipt. This diagnoses policy/fixture gaps and does not establish later chapter balance or income.
 - G1-C adds regional material routing and twelve receipt-gated exchanges. Combat numbers, catalog prices, save schema, dependencies and art remain unchanged. No spec numbers changed and there is no new art debt.
 
-## Wrap-up handoff
+## Historical pre-CP1 wrap-up handoff
 
 Completed code is on main: C0 PR #9, corrected B0 PR #10 and regional workshop PR #12. Main's reviewed code passes all 43 test files; no production source changes are included in this documentation wrap-up.
 
@@ -46,7 +46,7 @@ No G2/G3 implementation or price-curve change has been merged. No checkpoint cho
 
 The curve preserves weapon T1–10, armor T1–4, relic/echo prices and capped resale. Combat, XP, rewards and gear stats are unchanged. The independent paired 240-cell mature-farm comparison kept fight/action/rest/coin/sale outcomes identical; the target price changed. Historical campaign-route projections suggest about 10–12 hours per best late-story weapon at 2.5-second inputs; optimized synthetic mature farms project about 5–6.5 hours. Weapon-plus-seven-armor purchase baskets are roughly 25–27 route-rate hours, before relics, affixes, upgrades and materials. These are model estimates, not a guarantee for each build or player.
 
-G1-A draft #13 must be rebased onto this trial and revalidated before its acceptance gate. The CP1 trial does not approve its current candidate. G2/G3 technical implementation remains to be completed in handoff order. No new art debt.
+G1-A draft #13 has been rebased onto this trial; its final matrix, independent review and packaging remain pending before its acceptance gate. The CP1 trial does not approve its current candidate. G2/G3 technical implementation remains to be completed in handoff order. No new art debt.
 
 ## Latest wrap-up after CP1
 
