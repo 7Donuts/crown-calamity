@@ -1,6 +1,7 @@
 # Spec: weapon families and weapon-type mastery
 
 Status: approved spec, 30 October 2026. Decisions **D3** and **D1** (option B) approved ([ROADMAP.md](../ROADMAP.md)). Proposal background: [design 45](45_Races_and_Weapons.md).
+Implementation status: data slice implemented (all 75 weapons tagged with family; family tags displayed in shop rows, item cards, and inspector). Family traits and weapon-type mastery are not yet implemented.
 
 ## Goal
 

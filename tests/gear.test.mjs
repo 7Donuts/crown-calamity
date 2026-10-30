@@ -339,3 +339,84 @@ test('recipeRegion returns correct region for recipes', async () => {
   assert.equal(recipeRegion({ cost: { 'Ledger scraps': 2, 'Prize gears': 1 } }), 2);
 });
 
+test('every weapon has exactly one family; the nine families cover all 75 weapons with no duplicates', async () => {
+  const { WEAPON_FAMILIES, familyLabel, ITEMS } = await import('../dist/gear.js');
+  assert.ok(WEAPON_FAMILIES, 'WEAPON_FAMILIES must be exported');
+  assert.ok(Object.isFrozen(WEAPON_FAMILIES), 'WEAPON_FAMILIES must be frozen');
+
+  const expectedFamilyIds = ['clubs', 'mauls', 'spears', 'needles', 'foils', 'stilettos', 'wands', 'scepters', 'batons'];
+  assert.deepEqual(Object.keys(WEAPON_FAMILIES), expectedFamilyIds);
+
+  const weapons = Object.values(ITEMS).filter(item => item.slot === 'weapon');
+  assert.equal(weapons.length, 75, 'catalog must contain 75 weapons');
+
+  const seenIds = new Set();
+  for (const [fid, family] of Object.entries(WEAPON_FAMILIES)) {
+    assert.ok(family.name && typeof family.name === 'string', `${fid} must have a display name`);
+    assert.ok(Array.isArray(family.ids), `${fid} must have an ids array`);
+    for (const wid of family.ids) {
+      assert.ok(!seenIds.has(wid), `Duplicate weapon ID ${wid} found in family ${fid}`);
+      seenIds.add(wid);
+      const item = ITEMS[wid];
+      assert.ok(item, `Weapon ${wid} in family ${fid} missing from ITEMS`);
+      assert.equal(item.slot, 'weapon', `${wid} must be a weapon`);
+      assert.equal(item.family, fid, `${wid} item.family must equal ${fid}`);
+      assert.equal(familyLabel(item), family.name, `familyLabel must return ${family.name} for ${wid}`);
+    }
+  }
+
+  assert.equal(seenIds.size, 75, 'all 75 weapons must belong to a family');
+  for (const item of weapons) {
+    assert.ok(item.family, `weapon ${item.id} must have a family property`);
+    assert.ok(expectedFamilyIds.includes(item.family), `weapon ${item.id} has invalid family ${item.family}`);
+  }
+
+  // Non-weapons return empty string
+  assert.equal(familyLabel(null), '');
+  assert.equal(familyLabel(undefined), '');
+  assert.equal(familyLabel({}), '');
+  assert.equal(familyLabel(ITEMS.shield), '');
+  assert.equal(familyLabel(ITEMS.seal), '');
+  assert.equal(familyLabel(ITEMS.penny), '');
+});
+
+test('no weapon price, base, tier, chapter, stats, twoHanded or focus changed', async () => {
+  const { ITEMS } = await import('../dist/gear.js');
+  const snapshots = {
+    sword: { price: 100, base: 14, tier: 1, chapter: 1, stats: undefined, twoHanded: undefined, focus: undefined },
+    ironsword: { price: 1292, base: 30, tier: 6, chapter: 2, stats: { mig: 2 }, twoHanded: undefined, focus: undefined },
+    teacupMace: { price: 167, base: 16, tier: 2, chapter: 1, stats: { mig: 1 }, twoHanded: undefined, focus: undefined },
+    quiltedSledge: { price: 1668101, base: 64, tier: 20, chapter: 4, stats: { mig: 3 }, twoHanded: true, focus: undefined },
+    pike: { price: 10000, base: 40, tier: 10, chapter: 2, stats: { mig: 2 }, twoHanded: true, focus: undefined },
+    blade: { price: 100, base: 14, tier: 1, chapter: 1, stats: undefined, twoHanded: undefined, focus: undefined },
+    moonlitStiletto: { price: 10000, base: 34, tier: 10, chapter: 2, stats: { fin: 2 }, twoHanded: undefined, focus: undefined },
+    pinFoil: { price: 464, base: 24, tier: 4, chapter: 1, stats: { fin: 1 }, twoHanded: undefined, focus: undefined },
+    glassblade: { price: 1292, base: 30, tier: 6, chapter: 2, stats: { fin: 2 }, twoHanded: undefined, focus: undefined },
+    rod: { price: 100, base: 14, tier: 1, chapter: 1, stats: undefined, twoHanded: undefined, focus: true },
+    singalongScepter: { price: 278, base: 18, tier: 3, chapter: 1, stats: { int: 1 }, twoHanded: undefined, focus: true },
+    lullabyRod: { price: 167, base: 17, tier: 2, chapter: 1, stats: { int: 1 }, twoHanded: undefined, focus: true }
+  };
+  for (const [id, expected] of Object.entries(snapshots)) {
+    const item = ITEMS[id];
+    assert.ok(item, `missing item ${id}`);
+    assert.equal(item.price, expected.price, `${id} price`);
+    assert.equal(item.base, expected.base, `${id} base`);
+    assert.equal(item.tier, expected.tier, `${id} tier`);
+    assert.equal(item.chapter, expected.chapter, `${id} chapter`);
+    assert.deepEqual(item.stats, expected.stats, `${id} stats`);
+    assert.equal(item.twoHanded, expected.twoHanded, `${id} twoHanded`);
+    assert.equal(item.focus, expected.focus, `${id} focus`);
+  }
+});
+
+test('rendered shop or item card for ironsword contains Clubs and bonkers', async () => {
+  const { renderMarket } = await import('../dist/market-ui.js');
+  const s = state();
+  const html = renderMarket(s, { vendorId: 'weaponsmith', mode: 'buy', filters: { showOwned: true, showOtherStyles: true, showLowerTiers: true } });
+  assert.ok(html.includes('data-stock-id="ironsword"'), 'ironsword should be in weaponsmith stock');
+  const ironSwordMatch = html.match(/<article class="vendor-card vendor-row" data-stock-id="ironsword">[\s\S]*?<\/article>/);
+  assert.ok(ironSwordMatch, 'found ironsword card');
+  assert.ok(ironSwordMatch[0].includes('Clubs and bonkers'), 'rendered ironsword shop row contains "Clubs and bonkers"');
+});
+
+
