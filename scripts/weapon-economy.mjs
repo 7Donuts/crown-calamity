@@ -14,6 +14,7 @@ const ACTION_MS = 1500;
 const HUNT_OVERHEAD_MS = 2500; // opening/result and menu travel per encounter
 const REST_MS = 4000;
 const SALE_OVERHEAD_MS = 1500;
+const WALKTHROUGH_VITALITY_POINTS = 7;
 const FINAL_RECEIPTS = ['municipal_works', 'arcade_finale', 'garden_finale', 'attic_finale', 'fair_finale'];
 // The unchanged XP curve needs 1,068,396 XP from level 1 to 50; 10k legal wins
 // is a finite safety ceiling that covers that progression route without
@@ -24,8 +25,11 @@ const median = values => [...values].sort((a, b) => a - b)[Math.floor(values.len
 
 function allocateForWalkthrough(s, counters) {
   while (s.points > 0) {
-    const stat = counters.vitalityAllocated < 5 ? 'vit' : counters.stat;
+    const stat = counters.vitalityAllocated < WALKTHROUGH_VITALITY_POINTS ? 'vit' : counters.stat;
     if (!G.allocate(s, stat)) break;
+    counters.allocatedStatPoints = (counters.allocatedStatPoints || 0) + 1;
+    counters.allocationsByStat ||= {};
+    counters.allocationsByStat[stat] = (counters.allocationsByStat[stat] || 0) + 1;
     if (stat === 'vit') counters.vitalityAllocated++;
   }
 }
@@ -172,6 +176,8 @@ function exchangeWalkthrough(s, counters, key, rng, clock, enemyId, source) {
     counters.defeats++;
     row.defeatCoinsLost = (row.defeatCoinsLost || 0) + (result.coinsLost || 0);
     counters.defeatCoinsLost += result.coinsLost || 0;
+    counters.defeatHistory ||= [];
+    counters.defeatHistory.push({ enemy: enemyId, source, coinsLost: result.coinsLost || 0, coinsAfterDefeat: s.coins, woundedUntil: s.woundedUntil || 0, chapter });
     counters.lastEncounter = { enemy: enemyId, source, outcome: 'defeat' };
     throw new Error(`Defeated by ${enemyId} during ${source}; stopping immediately`);
   }
@@ -217,6 +223,30 @@ function runFight(s, enemyId, source, clock, rng, counters, { chapterBoss = null
   restIfNeeded(s, clock, counters);
 }
 
+function runWithOneRetry(work, s, clock, counters, retryKey) {
+  try { return work(); }
+  catch (error) {
+    if (counters.lastEncounter?.outcome !== 'defeat') throw error;
+    counters.retriesByContract ||= {};
+    if ((counters.retriesByContract[retryKey] || 0) >= 1) throw error;
+    counters.retriesByContract[retryKey] = (counters.retriesByContract[retryKey] || 0) + 1;
+    counters.retryCount = (counters.retryCount || 0) + 1;
+    const defeatedAt = clock.now;
+    const coinsAfterDefeat = s.coins;
+    const woundedUntil = s.woundedUntil || 0;
+    const restsBeforeRecovery = counters.rests || 0;
+    restIfNeeded(s, clock, counters);
+    counters.retryHistory ||= [];
+    counters.retryHistory.push({ contract: retryKey, afterDefeatAt: defeatedAt, woundWaitMs: Math.max(0, woundedUntil - defeatedAt), coinsAfterDefeat, coinsAtRetryStart: s.coins, restsUsed: (counters.rests || 0) - restsBeforeRecovery });
+    return work();
+  }
+}
+
+function runFightWithOneRetry(s, enemyId, source, clock, rng, counters, options = {}) {
+  const retryKey = counters.activeContract || `chapter-${G.currentChapter(s)}-preparation`;
+  return runWithOneRetry(() => runFight(s, enemyId, source, clock, rng, counters, options), s, clock, counters, retryKey);
+}
+
 function commandStoryAction(s, clock, counters) {
   const next = G.availableStoryActions(s).find(row => row.enabled);
   if (!next) return false;
@@ -233,6 +263,11 @@ function delveCommand(s, id, clock, counters) {
 }
 
 function runMunicipalDelve(s, clock, rng, counters) {
+  const retryKey = counters.activeContract || `chapter-${G.currentChapter(s)}-delve`;
+  return runWithOneRetry(() => runMunicipalDelveAttempt(s, clock, rng, counters), s, clock, counters, retryKey);
+}
+
+function runMunicipalDelveAttempt(s, clock, rng, counters) {
   if (!s.delve && !G.startDelve(s)) throw new Error(`Cannot enter municipal delve at level ${s.level}; hp=${s.hp}; recovery=${JSON.stringify(G.restStatus(s, clock.now))}; municipal=${JSON.stringify(G.contractStatus(s, 'municipal_works'))}; clears=${s.clears}`);
   // These are the same explicit descent, route, camp and continue commands a
   // player submits. The route choice is fixed to records for reproducibility.
@@ -266,11 +301,12 @@ function prepareForMunicipalDelve(s, clock, rng, counters) {
   while (s.level < 8) {
     const hunt = G.ENEMIES.filter(enemy => enemy.id !== 'boss' && enemy.level <= s.level && G.enemyAccess(s, enemy.id).allowed).at(-1);
     if (!hunt) throw new Error(`No safe legal hunt can prepare for the Laundry Works delve at level ${s.level}`);
-    runFight(s, hunt.id, 'hunt', clock, rng, counters, { preparation: true });
+    runFightWithOneRetry(s, hunt.id, 'hunt', clock, rng, counters, { preparation: true });
   }
 }
 
 function progressContract(s, id, clock, rng, counters, prepareSafePoint = () => {}) {
+  counters.activeContract = id;
   if (G.availableContracts(s).some(c => c.id === id)) {
     if (!G.acceptContract(s, id)) throw new Error(`Could not accept ${id}`);
     counters.accepted++;
@@ -280,7 +316,10 @@ function progressContract(s, id, clock, rng, counters, prepareSafePoint = () => 
   while (guard++ < 200) {
     if (counters.defeats - defeatsAtStart >= 2) throw new Error(`Fixture hit two defeats while progressing ${id}; stopping instead of treating repeated retries as measured pacing`);
     const status = G.contractStatus(s, id);
-    if (!status?.active) return status?.completed || false;
+    if (!status?.active) {
+      counters.activeContract = null;
+      return status?.completed || false;
+    }
     if (status.ready) {
       clock.now += ACTION_MS;
       const coinsBeforeClaim = s.coins;
@@ -313,6 +352,7 @@ function progressContract(s, id, clock, rng, counters, prepareSafePoint = () => 
         });
         counters.receiptBaseline = { minute, minutesAt2_5sInput: minute + counters.inputActions * 1000 / 60_000, minutesAt4sInput: minute + counters.inputActions * 2500 / 60_000, actions: counters.actions, inputActions: counters.inputActions, wins: counters.wins, encounterCoins: counters.encounterCoins, coinsSpent: counters.coinsSpent, finiteSaleCoins: finiteSalePreviewCoins, contractCoins: counters.contractCoins };
       }
+      counters.activeContract = null;
       return true;
     }
     const objective = status.objectives.find(row => !row.done);
@@ -350,10 +390,10 @@ function progressContract(s, id, clock, rng, counters, prepareSafePoint = () => 
     while (targetEnemy && (s.level < (chapterInfo?.minLevel || 1) || levelForObjective > s.level)) {
       const preparationHunt = G.ENEMIES.filter(row => row.id !== enemyId && row.id !== 'boss' && G.enemyAccess(s, row.id).allowed && row.level <= s.level + 2).at(-1);
       if (!preparationHunt) break;
-      runFight(s, preparationHunt.id, 'hunt', clock, rng, counters, { preparation: true });
+      runFightWithOneRetry(s, preparationHunt.id, 'hunt', clock, rng, counters, { preparation: true });
     }
-    if (enemyId === chapterInfo?.bossId) runFight(s, enemyId, 'hunt', clock, rng, counters, { chapterBoss: chapter });
-    else runFight(s, enemyId, 'hunt', clock, rng, counters);
+    if (enemyId === chapterInfo?.bossId) runFightWithOneRetry(s, enemyId, 'hunt', clock, rng, counters, { chapterBoss: chapter });
+    else runFightWithOneRetry(s, enemyId, 'hunt', clock, rng, counters);
   }
   throw new Error(`Contract made no progress: ${id}`);
 }
@@ -366,7 +406,7 @@ export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades 
   const build = BUILDS[kit];
   const s = G.createCharacter({ name: `Economy ${kit}`, race: build.race, kit });
   const clock = { now: 1_000_000 };
-  const counters = { stat: build.stat, vitalityAllocated: 0, preparationHunts: 0, actions: 0, inputActions: 0, actionCounts: {}, wins: 0, defeats: 0, defeatCoinsLost: 0, encounterCoins: 0, achievementCoins: 0, contractCoins: 0, contractCoinsByChapter: {}, chapterEconomy: {}, rests: 0, storyCommands: 0, accepted: 0, claimed: 0, purchases: [], ownedEquips: [], coinsSpent: 0, receiptGear: [], receiptBaseline: { minute: 0, minutesAt2_5sInput: 0, minutesAt4sInput: 0, actions: 0, inputActions: 0, wins: 0, encounterCoins: 0, coinsSpent: 0, finiteSaleCoins: 0, contractCoins: 0 }, firstPurchaseAt: null, lastEncounter: null, policy: {} };
+  const counters = { stat: build.stat, vitalityAllocated: 0, allocatedStatPoints: 0, allocationsByStat: {}, preparationHunts: 0, actions: 0, inputActions: 0, actionCounts: {}, wins: 0, defeats: 0, defeatCoinsLost: 0, encounterCoins: 0, achievementCoins: 0, contractCoins: 0, contractCoinsByChapter: {}, chapterEconomy: {}, rests: 0, storyCommands: 0, accepted: 0, claimed: 0, purchases: [], ownedEquips: [], coinsSpent: 0, receiptGear: [], receiptBaseline: { minute: 0, minutesAt2_5sInput: 0, minutesAt4sInput: 0, actions: 0, inputActions: 0, wins: 0, encounterCoins: 0, coinsSpent: 0, finiteSaleCoins: 0, contractCoins: 0 }, firstPurchaseAt: null, lastEncounter: null, policy: {} };
   const rng = seededRng(`walkthrough-${kit}-${seed}`);
   const prepareSafePoint = () => {
     prepareMend(s);
@@ -413,7 +453,7 @@ export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades 
       const available = G.ENEMIES.filter(enemy => enemy.id !== 'boss' && G.enemyAccess(s, enemy.id).allowed && enemy.level <= s.level + 2);
       const hunt = available.at(-1);
       if (!hunt) throw new Error(`No legal hunt can reach level gate ${levelGate} from level ${s.level}`);
-      runFight(s, hunt.id, 'hunt', clock, rng, counters, { preparation: true });
+      runFightWithOneRetry(s, hunt.id, 'hunt', clock, rng, counters, { preparation: true });
       continue;
     }
     throw new Error(`Campaign dead end in chapter ${G.currentChapter(s)} at level ${s.level}; no available/active contracts; completed=${s.story.completed.join(',')}; accepted=${s.story.accepted.join(',')}; actions=${JSON.stringify(s.story.events.actions)}; completedReceipts=${s.story.completed.filter(id => FINAL_RECEIPTS.includes(id)).join(',')}`);
@@ -421,12 +461,12 @@ export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades 
   } catch (error) {
     return {
       status: 'incomplete', kit, seed, buyUpgrades, minutes: round((clock.now - 1_000_000) / 60_000),
-      level: s.level, coins: s.coins, gear: { ...s.gear }, inventory: [...s.bag], receipts: FINAL_RECEIPTS.filter(id => s.story.completed.includes(id)), defeatCoinsLost: counters.defeatCoinsLost, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, contractCoins: counters.contractCoins,
+      level: s.level, unspentStatPoints: s.points, coins: s.coins, gear: { ...s.gear }, inventory: [...s.bag], receipts: FINAL_RECEIPTS.filter(id => s.story.completed.includes(id)), defeatCoinsLost: counters.defeatCoinsLost, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, contractCoins: counters.contractCoins,
       currentChapter: G.currentChapter(s), wins: counters.wins, defeats: counters.defeats,
       actions: counters.actions, rests: counters.rests, storyCommands: counters.storyCommands,
       contractsClaimed: counters.claimed, firstUsefulPurchaseMinute: counters.firstPurchaseAt,
       purchases: counters.purchases, receiptGear: counters.receiptGear, coinsSpent: counters.purchases.reduce((n, row) => n + row.price, 0),
-      activeContracts: [...s.story.accepted], ownedEquips: counters.ownedEquips, policy: { vitalityAllocated: counters.vitalityAllocated, actions: counters.actionCounts, lastPurchaseCategory: counters.policy?.lastPurchaseCategory },
+      activeContracts: [...s.story.accepted], ownedEquips: counters.ownedEquips, retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], defeatHistory: counters.defeatHistory || [], policy: { vitalityAllocated: counters.vitalityAllocated, allocatedStatPoints: counters.allocatedStatPoints, allocationsByStat: counters.allocationsByStat, actions: counters.actionCounts, lastPurchaseCategory: counters.policy?.lastPurchaseCategory },
       currencyLedger: { startingCoins: 20, encounterCoins: counters.encounterCoins, contractCoins: counters.contractCoins, achievementCoins: counters.achievementCoins, saleCoins: 0, coinsSpent: counters.coinsSpent, defeatCoinsLost: counters.defeatCoinsLost, expectedCoins: 20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost, actualCoins: s.coins, residual: s.coins - (20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost) },
       lastEncounter: counters.lastEncounter, preparationHunts: counters.preparationHunts, error: error.message
     };
@@ -434,12 +474,13 @@ export function runCampaignWalkthrough({ kit = 'breaker', seed = 1, buyUpgrades 
   if (turns >= 1000 || s.story.completed.filter(id => FINAL_RECEIPTS.includes(id)).length < requiredReceipts) throw new Error('Campaign walkthrough exceeded command limit');
   const stoppedAtCheckpoint = stopIndex >= 0;
   return {
-    status: stoppedAtCheckpoint ? 'checkpoint' : 'completed', kit, seed, buyUpgrades, minutes: round((clock.now - 1_000_000) / 60_000), clockNow: stoppedAtCheckpoint ? clock.now : undefined, level: s.level, coins: s.coins,
+    status: stoppedAtCheckpoint ? 'checkpoint' : 'completed', kit, seed, buyUpgrades, minutes: round((clock.now - 1_000_000) / 60_000), clockNow: stoppedAtCheckpoint ? clock.now : undefined, level: s.level, unspentStatPoints: s.points, coins: s.coins,
     receipts: FINAL_RECEIPTS.filter(id => s.story.completed.includes(id)), currentChapter: G.currentChapter(s),
     wins: counters.wins, defeats: counters.defeats, defeatCoinsLost: counters.defeatCoinsLost, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, contractCoins: counters.contractCoins, actions: counters.actions, rests: counters.rests,
     storyCommands: counters.storyCommands, contractsClaimed: counters.claimed,
     firstUsefulPurchaseMinute: counters.firstPurchaseAt, purchases: counters.purchases, receiptGear: counters.receiptGear, coinsSpent: counters.purchases.reduce((n, row) => n + row.price, 0), gear: { ...s.gear },
-    policy: { vitalityAllocated: counters.vitalityAllocated, actions: counters.actionCounts, lastPurchaseCategory: counters.policy.lastPurchaseCategory }, ownedEquips: counters.ownedEquips, lastEncounter: counters.lastEncounter, preparationHunts: counters.preparationHunts,
+    retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], defeatHistory: counters.defeatHistory || [],
+    policy: { vitalityAllocated: counters.vitalityAllocated, allocatedStatPoints: counters.allocatedStatPoints, allocationsByStat: counters.allocationsByStat, actions: counters.actionCounts, lastPurchaseCategory: counters.policy.lastPurchaseCategory }, ownedEquips: counters.ownedEquips, lastEncounter: counters.lastEncounter, preparationHunts: counters.preparationHunts,
     currencyLedger: { startingCoins: 20, encounterCoins: counters.encounterCoins, contractCoins: counters.contractCoins, achievementCoins: counters.achievementCoins, saleCoins: 0, coinsSpent: counters.coinsSpent, defeatCoinsLost: counters.defeatCoinsLost, expectedCoins: 20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost, actualCoins: s.coins, residual: s.coins - (20 + counters.encounterCoins + counters.contractCoins + counters.achievementCoins - counters.coinsSpent - counters.defeatCoinsLost) },
     ...(stoppedAtCheckpoint ? { state: structuredClone(s) } : {})
   };
@@ -456,7 +497,7 @@ export function runEarnedTier10Preparation({ kit = 'breaker', seed = 1, sellDrop
   const build = BUILDS[kit];
   const clock = { now: checkpoint.clockNow };
   const rng = seededRng(`earned-tier10-${kit}-${seed}`);
-  const counters = { stat: build.stat, vitalityAllocated: checkpoint.policy.vitalityAllocated, preparationHunts: 0, actions: 0, inputActions: 0, actionCounts: {}, wins: 0, defeats: 0, defeatCoinsLost: 0, encounterCoins: 0, achievementCoins: 0, contractCoins: 0, contractCoinsByChapter: {}, chapterEconomy: {}, rests: 0, storyCommands: 0, accepted: 0, claimed: 0, purchases: [], ownedEquips: [], coinsSpent: 0, firstPurchaseAt: null, lastEncounter: null, policy: {} };
+  const counters = { stat: build.stat, vitalityAllocated: checkpoint.policy.vitalityAllocated, allocatedStatPoints: 0, allocationsByStat: {}, preparationHunts: 0, actions: 0, inputActions: 0, actionCounts: {}, wins: 0, defeats: 0, defeatCoinsLost: 0, encounterCoins: 0, achievementCoins: 0, contractCoins: 0, contractCoinsByChapter: {}, chapterEconomy: {}, rests: 0, storyCommands: 0, accepted: 0, claimed: 0, purchases: [], ownedEquips: [], coinsSpent: 0, firstPurchaseAt: null, lastEncounter: null, policy: {} };
   const target = Object.values(ITEMS).find(item => item.slot === 'weapon' && item.channel === build.channel && item.tier === 10);
   if (!target) throw new Error(`Missing tier-10 weapon for ${kit}`);
   const start = { coins: s.coins, level: s.level, wins: checkpoint.wins, actions: checkpoint.actions, minute: checkpoint.minutes, minuteExact: (checkpoint.clockNow - 1_000_000) / 60_000, receipt: 'arcade_finale', gear: { ...s.gear } };
@@ -499,7 +540,7 @@ export function runEarnedTier10Preparation({ kit = 'breaker', seed = 1, sellDrop
     for (let fight = 0; fight < maxFights; fight++) {
       enemy = chooseEnemy();
       if (!enemy) throw new Error(`No accessible Chapter 2 ordinary foe at level ${s.level}`);
-      runFight(s, enemy.id, 'hunt', clock, rng, counters);
+      runFightWithOneRetry(s, enemy.id, 'hunt', clock, rng, counters);
       equipOwnedUseful(s, build.channel, counters, clock);
       sellSpareItems();
       if (purchaseTier10()) return tier10PrepResult();
@@ -518,6 +559,7 @@ export function runEarnedTier10Preparation({ kit = 'breaker', seed = 1, sellDrop
       status, kit, seed, sellDrops, stage: 'post-receipt-preparation', checkpoint: { receipt: 'arcade_finale', minute: priorReceipt?.minute, minutesAt2_5sInput: priorReceipt?.minutesAt2_5sInput, minutesAt4sInput: priorReceipt?.minutesAt4sInput, level: start.level, coins: start.coins, gear: start.gear, finiteSalePreviewCoins: priorReceipt?.finiteSalePreviewCoins, currencyLedger: checkpoint.currencyLedger },
       targetItem: target.id, targetCoins: target.price, enemy: enemy?.id || null, wins: counters.wins, defeats: counters.defeats, defeatCoinsLost: counters.defeatCoinsLost,
       actions: counters.actions, inputActions: counters.inputActions, rests: counters.rests, encounterCoins: counters.encounterCoins, achievementCoins: counters.achievementCoins, saleCoins, sales,
+      retryCount: counters.retryCount || 0, retriesByContract: counters.retriesByContract || {}, retryHistory: counters.retryHistory || [], defeatHistory: counters.defeatHistory || [],
       initialCheckpointSaleCoins: saleReceipts.filter(row => row.pass === 'checkpoint-inventory').reduce((sum, row) => sum + row.coins, 0),
       initialCheckpointSales: saleReceipts.filter(row => row.pass === 'checkpoint-inventory').length,
       reacquiredDropSaleCoins: saleReceipts.filter(row => row.pass === 'reacquired-drop').reduce((sum, row) => sum + row.coins, 0),
@@ -715,7 +757,7 @@ export function createReport({ seeds = 1, walkthrough = true, sampleWins = 40, t
     model: {
       type: 'seeded offline fixture; outcomes are simulation estimates, not observed new-player data',
       assumptions: {
-        walkthrough: 'Fresh level-1 character, 20 starting coins, actual contracts/XP/rewards/receipts, actual enemy access and combat. Meets Mara and follows the records delve route; puts five earned points into Vitality, remaining points into the kit primary; legally prepares to level 8 before the delve; uses eligible Mend/Disrupt, actionInfo-gated Recover, safe finishes, heavy responses and Spin Cycle Vent. At safe points it equips useful owned drops and buys affordable improving armor/relics/interim same-channel weapons, preserving each kit offhand and excluding chapter-ceiling weapons. Paired policies save coins or use these purchases; neither sells loot.',
+        walkthrough: `Fresh level-1 character, 20 starting coins, actual contracts/XP/rewards/receipts, actual enemy access and combat. Meets Mara and follows the records delve route; allocates ${WALKTHROUGH_VITALITY_POINTS} earned points to Vitality, then points to the kit primary; legally prepares to level 8 before the delve; uses eligible Mend/Disrupt, actionInfo-gated Recover, safe finishes, heavy responses and Spin Cycle Vent. At safe points it equips useful owned drops and buys affordable improving armor/relics/interim same-channel weapons, preserving each kit offhand and excluding chapter-ceiling weapons. After a defeat it records the actual penalty, waits for the wound, uses production rest, and permits one full retry per contract; a second defeat in that contract stops the route. Paired policies save coins or use these purchases; neither sells loot.`,
         tier10Preparation: 'A second, separately labeled phase reloads the actual earned C2 finale checkpoint (receipt, level, gear, coins, inventory). It repeats the highest accessible C2 ordinary foe through production APIs until it buys the C2 tier-10 weapon. The sale branch sells each production-preview-allowed spare present on each sale pass. New drops may reacquire an already-sold ID and be sold on a later pass; realized sale flow is therefore not limited to the finite checkpoint inventory. It records checkpoint-inventory sales and reacquired-drop sales separately, along with each production sale receipt. This is post-receipt preparation, not campaign-route time.',
         farm: 'Synthetic mature build per region with a manually prepared chapter receipt and chapter-cap level. It uses the previous chapter’s top same-channel weapon (starter weapon in C1), current-region best defensive equipment, and repeats the highest nonboss enemy to save for that chapter’s highest-tier weapon. The target weapon is not pre-owned. This is repeatable-region throughput, not campaign walkthrough time.',
         timing: `${ACTION_MS / 1000}s/action base; ${HUNT_OVERHEAD_MS / 1000}s per fight for opening/result/navigation; ${REST_MS / 1000}s explicit rest when injured; ${SALE_OVERHEAD_MS / 1000}s per sale. Alternative input intervals report 2.5s and 4s actions. Sales use production resale receipts; only unequipped drops are sold.`,

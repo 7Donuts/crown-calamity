@@ -1,0 +1,240 @@
+{
+  "trials": 40,
+  "seed": 11,
+  "chainLength": 10,
+  "policy": "sustain",
+  "cells": [
+    {
+      "fixture": {
+        "id": "g1b-c3-breaker",
+        "kit": "breaker",
+        "race": "wolf",
+        "level": 28,
+        "gear": {
+          "weapon": "pike",
+          "head": "teaCosyHood",
+          "body": "oilskin",
+          "hands": "spoolBracers",
+          "feet": "buttonClogs",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "garden_magpie",
+      "policy": "sustain"
+    },
+    {
+      "fixture": {
+        "id": "g1b-c3-duelist",
+        "kit": "duelist",
+        "race": "bunny",
+        "level": 28,
+        "gear": {
+          "weapon": "moonlitStiletto",
+          "offhand": "gateShield",
+          "head": "teaCosyHood",
+          "body": "oilskin",
+          "hands": "spoolBracers",
+          "feet": "buttonClogs",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "garden_magpie",
+      "policy": "sustain"
+    },
+    {
+      "fixture": {
+        "id": "g1b-c3-caster",
+        "kit": "caster",
+        "race": "unicorn",
+        "level": 28,
+        "gear": {
+          "weapon": "bedtimeStar",
+          "offhand": "gateShield",
+          "head": "teaCosyHood",
+          "body": "oilskin",
+          "hands": "spoolBracers",
+          "feet": "buttonClogs",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "garden_magpie",
+      "policy": "sustain"
+    },
+    {
+      "fixture": {
+        "id": "g1b-c4-breaker",
+        "kit": "breaker",
+        "race": "wolf",
+        "level": 38,
+        "gear": {
+          "weapon": "pincushionPounder",
+          "offhand": "gateShield",
+          "head": "kettleHelmet",
+          "body": "festivalCoat",
+          "hands": "mittenMitts",
+          "feet": "cloudSlippers",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "attic_hugger",
+      "policy": "sustain"
+    },
+    {
+      "fixture": {
+        "id": "g1b-c4-duelist",
+        "kit": "duelist",
+        "race": "bunny",
+        "level": 38,
+        "gear": {
+          "weapon": "glassBeadDart",
+          "offhand": "gateShield",
+          "head": "kettleHelmet",
+          "body": "festivalCoat",
+          "hands": "mittenMitts",
+          "feet": "cloudSlippers",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "attic_hugger",
+      "policy": "sustain"
+    },
+    {
+      "fixture": {
+        "id": "g1b-c4-caster",
+        "kit": "caster",
+        "race": "unicorn",
+        "level": 38,
+        "gear": {
+          "weapon": "starryPincushion",
+          "offhand": "gateShield",
+          "head": "kettleHelmet",
+          "body": "festivalCoat",
+          "hands": "mittenMitts",
+          "feet": "cloudSlippers",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "attic_hugger",
+      "policy": "sustain"
+    },
+    {
+      "fixture": {
+        "id": "g1b-c5-breaker",
+        "kit": "breaker",
+        "race": "wolf",
+        "level": 48,
+        "gear": {
+          "weapon": "quiltedSledge",
+          "head": "starryHood",
+          "body": "cloudPajamas",
+          "hands": "woollyWristguards",
+          "feet": "stargazerShoes",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "fair_ringmaster",
+      "policy": "sustain"
+    },
+    {
+      "fixture": {
+        "id": "g1b-c5-duelist",
+        "kit": "duelist",
+        "race": "bunny",
+        "level": 48,
+        "gear": {
+          "weapon": "moonThreadNeedle",
+          "offhand": "gateShield",
+          "head": "starryHood",
+          "body": "cloudPajamas",
+          "hands": "woollyWristguards",
+          "feet": "stargazerShoes",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "fair_ringmaster",
+      "policy": "sustain"
+    },
+    {
+      "fixture": {
+        "id": "g1b-c5-caster",
+        "kit": "caster",
+        "race": "unicorn",
+        "level": 48,
+        "gear": {
+          "weapon": "velvetNightWand",
+          "offhand": "gateShield",
+          "head": "starryHood",
+          "body": "cloudPajamas",
+          "hands": "woollyWristguards",
+          "feet": "stargazerShoes",
+          "accessory": "lantern"
+        },
+        "abilities": [
+          "mend"
+        ],
+        "relics": [
+          "feltFang",
+          "darnedPatch"
+        ]
+      },
+      "enemy": "fair_ringmaster",
+      "policy": "sustain"
+    }
+  ]
+}

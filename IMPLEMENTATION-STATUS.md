@@ -15,15 +15,15 @@ This snapshot was wrapped up at the owner's request. Feature wiring and regressi
 
 ## Partially complete: campaign balance and pacing
 
-The current XP, reward and price values are a starting model. The continued weapon curve reaches about 129,155 at tier 15, 1.67 million at tier 20 and 21.54 million at tier 25. Those later ceilings have not been approved against earning rates. Synthetic late-game caster samples show frequent defeats. The bounded new-player fixture reaches the first chapter finale but has not completed a full campaign walkthrough.
+The current XP, reward and price values are a starting model. The continued weapon curve reaches about 129,155 at tier 15, 1.67 million at tier 20 and 21.54 million at tier 25. Those later ceilings have not been approved against earning rates. The published five-Vitality earned policy completes the five receipts in 33/40 Breaker, 40/40 Duelist and 23/40 Caster runs; the Caster rate falls below the two-thirds target, with most failures at the Chapter 1 boss. A candidate policy now allocates seven earned points to Vitality before favoring the kit stat; its no-retry diagnostic completed 40/40 Breaker, 40/40 Duelist and 20/40 Caster runs. A subsequent one-retry-per-contract candidate is preserved with passing tests but lacks final seeded validation and independent review; it remains draft work in PR #13. A separate production-reloaded C2 checkpoint measures post-receipt tier-10 preparation from actual carried coins, gear and inventory. Its sale branch includes actual repeat-drop resale receipts, not only the finite inventory preview at the checkpoint.
 
 Needed next:
 
-1. Complete an earned Chapter 1–5 walkthrough for Might, Finesse and magic builds using real claims, affordable interim gear and normal recovery. Do not substitute pre-completed chapter receipts for new-player timing.
-2. Test survivability with sensible Vitality, armor and healing choices, then tune enemies, progression and resources where problems remain. A simulation policy failing to use available tools is not proof that a fight is impossible.
-3. Measure first useful purchase, each chapter completion, and the tier-10 weapon with both encounter-only and loot-selling income. Account for purchases, defeats, four-second rests and realistic input/navigation time.
-4. Adjust Chapter 3–5 price growth and earning rates together. Preserve the requested tier-1 100 / tier-10 10,000 weapon endpoints. Decide later aspirational purchase durations before approving the million-gold prices.
-5. Verify every chapter can be completed without its most expensive equipment. Keep optional aspirational upgrades valuable after a story milestone.
+1. Review the latest retry-aware draft in PR #13, freeze its source, and run a final 40-seed earned matrix for all kits and both purchase policies. The seven-Vitality/no-retry diagnostic did not improve Caster (20/40 versus 23/40); keep failures, retries, costs and policy versions distinct.
+2. Use the checkpoint table's interval wins/actions, ordinary encounter coins, scripted-boss/delve rewards, contract awards, purchases, defeats, equipment and one-time sale previews to inform the price analysis.
+3. Recompute actual earned C2 tier-10 time from the final policy, separating encounter coins, finite checkpoint-sale preview, and repeat-drop sale receipts. Compare the finale timing with the 1–2 hour C1 aspiration and T10 with the 8–12 hour target. Report mismatches under the documented input pace.
+4. Adjust Chapter 3–5 price growth and earning rates together only after the owner approves a curve. Preserve the requested tier-1 100 / tier-10 10,000 weapon endpoints.
+5. Verify completion without a chapter-ceiling weapon. Receipt snapshots disclose armor, relics, drops and purchase costs so affordable equipment is not hidden in the gate result.
 
 ## Implemented: regional workshop economy
 
