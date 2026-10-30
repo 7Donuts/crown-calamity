@@ -41,3 +41,7 @@ The exchange, craft, resale, upgrade, affix, and purchase transitions pass a pos
 ## Reproduction
 
 Run `npm test` for regression coverage, `npm run economy` for bounded offline samples, and `python scripts-package.py` for the campaign/lab downloads and source ZIP. Read [the economy report](design/42_Campaign_Economy_Playtest.md) for fixture assumptions and limitations. The lab remains disposable and independent of campaign saves.
+
+## Owner-requested wrap-up: follow-up work preserved
+
+The reviewed B0 resource-carry fix and G1-C regional workshop rules are merged (PRs #10 and #12). Story walkthrough refinements, actual earned tier-10 purchase tests, and provisional price tables are preserved in unmerged draft PR #13. Its latest retry-aware candidate passes regression tests but lacks the final seeded balance matrix, independent G1-A review and packaging gate. No Chapter 3–5 curve has been selected; CP1–CP4 remain pending, and G2/G3 implementation has not started. See [the partial handoff](handoffs/reports/g1a-partial-handoff.md) and [progress](handoffs/reports/progress.md) for exact source snapshots, measured versus unverified results, and next steps.
