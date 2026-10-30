@@ -25,15 +25,11 @@ Needed next:
 4. Adjust Chapter 3–5 price growth and earning rates together. Preserve the requested tier-1 100 / tier-10 10,000 weapon endpoints. Decide later aspirational purchase durations before approving the million-gold prices.
 5. Verify every chapter can be completed without its most expensive equipment. Keep optional aspirational upgrades valuable after a story milestone.
 
-## Partially complete: regional workshop economy
+## Implemented: regional workshop economy
 
-Regional enemy and contract materials have display labels and are retained in saves. Most later materials do not yet have workshop spending uses. The current workbench still uses the original material rules; do not describe regional crafting as complete.
+Upgrades and reforges for Chapter 2–5 equipment use material families from that item's region. Chapter 1 upgrade and affix inputs, all existing exchange IDs, and paid item modifications remain unchanged. Each later chapter has two common-material conversions and one receipt-gated, repeatable exchange that supplies its boss material for relic progression; new recipes are also gated in the shared gear API.
 
-Needed next:
-
-- Map later upgrades and reforges to appropriate local materials so players need not farm the first region for everything.
-- Add a small, useful set of regional exchanges and uses for boss keepsakes.
-- Test every exchange/crafting/resale loop for profit exploits and verify the selected workshop item stays open.
+The exchange, craft, resale, upgrade, affix, and purchase transitions pass a positive resource-potential certificate, including the existing Chapter 1 recipes and the capped resale receipts. Seeded synthetic fights confirmed one guaranteed ordinary material per victory for every chapter enemy. This verifies the source route and profit-loop rule; the time to fund relic ranks remains unmeasured and is not claimed as approved balance.
 
 ## Deferred content and verification
 

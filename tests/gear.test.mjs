@@ -4,11 +4,134 @@ import {
   ITEMS, SLOTS, EXCHANGES, PREFIXES, SUFFIXES, resolveItem, slotChoices,
   equipItem, unequipItem, unequipReason, buyItem, exchangeMaterials,
   upgradePreview, upgradeItem, affixPreview, applyAffix, normalizeGearState,
-  effectiveItem, weaponRankScore, isStrictWeaponDowngrade, buyPreview, sellPreview, sellItem, buyAndEquipPreview, buyAndEquipItem
+  effectiveItem, weaponRankScore, isStrictWeaponDowngrade, buyPreview, sellPreview, sellItem, buyAndEquipPreview, buyAndEquipItem,
+  MATERIAL_CHAPTER, recipeRegion
 } from '../dist/gear.js';
 import { fresh, loadSave } from '../dist/engine.js';
 
 const state=(overrides={})=>({level:10,coins:1000,story:{completed:['municipal_works']},materials:{'Ledger scraps':10,'Canal iron':10,'Runic residue':10,'Chainback shell':10,'Stamped brass':10,'Floodglass':10,'Floodglass Fragment':2,'Salvaged fittings':10,'Repair fittings':10},bag:['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band','cap','boots','rivethelm','waders','signet','pike'],gear:{weapon:'rod',offhand:'shield',body:'coat'},itemMods:{},fight:null,delve:null,...overrides});
+
+const REGIONAL_FAMILIES={
+  2:{physical:'Prize gears',spell:'Arcade lint',armor:'Glass marbles',ward:'Tin wheels'},
+  3:{physical:'Sprinkler brass',spell:'Bright feathers',armor:'Garden seeds',ward:'Silvershell'},
+  4:{physical:'Clock springs',spell:'Moth velvet',armor:'Packing twine',ward:'Soft buttons'},
+  5:{physical:'Carousel brass',spell:'Painted papier-mâché',armor:'Ringmaster ribbon',ward:'Velvet tickets'}
+};
+const AFFIX_FAMILIES={keen:'physical',of_might:'physical',focused:'spell',of_insight:'spell',sturdy:'armor',of_vigor:'armor',warded:'ward',of_the_tide:'ward'};
+// Synthetic v6 save serialized with main engine b27c9a9412c072368dfd70bb80e4b4cc516e46e5.
+const LEGACY_UPGRADED_SAVE = JSON.parse(String.raw`{"version":6,"name":"G1-C Synthetic Save","race":"Human","raceId":null,"appearance":{"presentation":"female","hairStyle":"tousled","hairColor":"ink","eyeColor":"hazel","skinTone":"copper"},"relicSockets":[{"unlocked":false,"relicId":null,"copiesPaid":{}},{"unlocked":false,"relicId":null,"copiesPaid":{}},{"unlocked":false,"relicId":null,"copiesPaid":{}}],"origin":"Former Gutter Canal surveyor","level":6,"xp":1499,"levelPointsPaid":2,"points":8,"stats":{"mig":10,"fin":9,"int":13,"vit":12,"wil":11,"ins":8,"lck":9},"hp":380,"mp":66,"sp":65,"coins":987,"gear":{"weapon":"rod","offhand":"shield","head":null,"body":"coat","hands":null,"feet":null,"accessory":null,"accessory2":null,"relic":"signet","relic2":null},"bag":["rod","thimblePike","shield","coat","signet"],"passive":"prepared","learnedAbilities":["arc","prepared"],"equippedAbilities":["arc"],"mastery":{"arc":{"rank":1,"marks":0}},"quest":0,"pending":null,"kills":{},"equipmentMisses":0,"variantMeters":{},"variantOffers":{},"materials":{"Canal iron":7,"Runic residue":5,"Salvaged fittings":4,"Repair fittings":3,"Ledger scraps":2},"achievements":[],"discoveries":[],"journal":[{"title":"A provisional stuffie","text":"Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.","kind":"story"}],"log":[],"fight":null,"last":null,"delve":null,"clears":0,"guardCount":0,"totalExchanges":0,"nextActionAt":0,"restReadyAt":0,"woundedUntil":0,"visited":["rats"],"caseFiles":{},"settings":{"details":false},"pluckCarry":0,"signatureRelics":[],"itemMods":{"rod":{"upgrade":2,"prefix":"keen"},"thimblePike":{"upgrade":2,"prefix":"keen"},"coat":{"upgrade":1,"suffix":"of_vigor"}},"story":{"accepted":[],"completed":["municipal_works"],"events":{"victories":{},"actions":{},"seen":[]},"introStage":0,"choices":{"contractRoutes":{}},"baselines":{},"legacyReady":[],"legacyImported":false}}`);
+
+test('upgrades and affixes use the item chapter materials while Chapter 1 keeps its historical routes',()=>{
+ const chapterOneMaterial=item=>item.base?(item.channel==='spell'?'Runic residue':'Canal iron'):item.armor?'Salvaged fittings':item.ward?'Repair fittings':'Runic residue';
+ const expectedUpgradeMaterial=item=>item.chapter===1?chapterOneMaterial(item):REGIONAL_FAMILIES[item.chapter][item.base?(item.channel==='spell'?'spell':'physical'):item.armor?'armor':item.ward?'ward':'spell'];
+ const ample=Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,100]));
+ for(const item of Object.values(ITEMS)){
+  for(const level of [0,2]){
+   const s=state({bag:[item.id],gear:{},coins:1e6,materials:ample,itemMods:{[item.id]:{upgrade:level}}});
+   const preview=upgradePreview(s,item.id),expected=expectedUpgradeMaterial(item);
+   assert.deepEqual(preview.cost.materials,{[expected]:level===2?2:1},`${item.id} upgrade ${level+1}`);
+   assert.ok(MATERIAL_CHAPTER[expected]===item.chapter||(item.chapter===1&&MATERIAL_CHAPTER[expected]==='general'),`${item.id} uses a Chapter ${item.chapter} or preserved general material`);
+  }
+ }
+ for(const [affixId,family] of Object.entries(AFFIX_FAMILIES))for(let chapter=1;chapter<=5;chapter++){
+  const affix=PREFIXES[affixId]||SUFFIXES[affixId],item=Object.values(ITEMS).find(row=>row.chapter===chapter&&affix.slots.includes(row.slot));
+  assert.ok(item,`${affixId} has a chapter ${chapter} target`);
+  const s=state({bag:[item.id],gear:{},coins:1e6,materials:ample});
+  const preview=affixPreview(s,item.id,PREFIXES[affixId]?'prefix':'suffix',affixId);
+  const expected=chapter===1?Object.keys(affix.cost.materials)[0]:REGIONAL_FAMILIES[chapter][family];
+  assert.deepEqual(Object.keys(preview.cost.materials),[expected],`${affixId} chapter ${chapter}`);
+  assert.ok(MATERIAL_CHAPTER[expected]===chapter||(chapter===1&&MATERIAL_CHAPTER[expected]==='general'),`${affixId} uses a Chapter ${chapter} or preserved general material`);
+ }
+});
+
+test('every exchange previews and applies the same coin and material deductions',()=>{
+ const ample=Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,100]));
+ for(const item of Object.values(ITEMS)){
+  const s=state({bag:[item.id],gear:{},coins:1e6,materials:{...ample}}),preview=upgradePreview(s,item.id),beforeCoins=s.coins,before={...s.materials};
+  assert.ok(upgradeItem(s,item.id),`${item.id} upgrade applies`);assert.equal(beforeCoins-s.coins,preview.cost.coins);
+  for(const [mat,count] of Object.entries(preview.cost.materials))assert.equal(before[mat]-s.materials[mat],count,`${item.id} charges previewed ${mat}`);
+ }
+ for(const [affixId] of Object.entries(AFFIX_FAMILIES))for(let chapter=1;chapter<=5;chapter++){
+  const affix=PREFIXES[affixId]||SUFFIXES[affixId],item=Object.values(ITEMS).find(row=>row.chapter===chapter&&affix.slots.includes(row.slot));
+  const s=state({bag:[item.id],gear:{},coins:1e6,materials:{...ample}}),kind=PREFIXES[affixId]?'prefix':'suffix',preview=affixPreview(s,item.id,kind,affixId),beforeCoins=s.coins,before={...s.materials};
+  assert.ok(applyAffix(s,item.id,kind,affixId),`${affixId} applies in chapter ${chapter}`);assert.equal(beforeCoins-s.coins,preview.cost.coins);
+  for(const [mat,count] of Object.entries(preview.cost.materials))assert.equal(before[mat]-s.materials[mat],count,`${affixId} charges previewed ${mat}`);
+ }
+});
+
+test('captured main save retains already-paid upgrades and affixes without recharging',()=>{
+ const captured=LEGACY_UPGRADED_SAVE,coins=captured.coins,materials=structuredClone(captured.materials),loaded=loadSave(JSON.stringify(captured));
+ assert.ok(loaded);assert.deepEqual(loaded.itemMods,captured.itemMods);assert.deepEqual(loaded.stats,captured.stats);assert.equal(loaded.points,captured.points);assert.deepEqual(loaded.gear,captured.gear);for(const id of captured.bag)assert.ok(loaded.bag.includes(id),`${id} remains in the bag`);assert.deepEqual(loaded.materials,materials);assert.equal(loaded.coins,coins);
+ const p=upgradePreview(loaded,'thimblePike');assert.equal(p.level,2);assert.deepEqual(p.cost.materials,{'Sprinkler brass':2});assert.deepEqual(loaded.itemMods,captured.itemMods);assert.equal(loaded.coins,coins);assert.deepEqual(loaded.materials,materials);
+ loaded.coins=5000;loaded.materials['Sprinkler brass']=2;const nextCost=upgradePreview(loaded,'thimblePike').cost,coinsBefore=loaded.coins;
+ assert.deepEqual(upgradeItem(loaded,'thimblePike'),{id:'thimblePike',upgrade:3});assert.equal(coinsBefore-loaded.coins,nextCost.coins);assert.equal(loaded.materials['Sprinkler brass'],0);assert.equal(loaded.itemMods.rod.upgrade,captured.itemMods.rod.upgrade);assert.equal(loaded.itemMods.coat.upgrade,captured.itemMods.coat.upgrade);
+});
+
+test('regional exchanges are receipt-gated in the shared API and grouped by chapter',()=>{
+ for(const chapter of [2,3,4,5]){
+  const recipes=Object.values(EXCHANGES).filter(recipe=>recipe.chapter===chapter);assert.ok(recipes.length>=2&&recipes.length<=3,`chapter ${chapter} has two or three new recipes`);
+  for(const recipe of recipes){assert.equal(recipeRegion(recipe),chapter,`${recipe.id} appears in its chapter`);const locked=state({level:50,coins:1e6,materials:Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,100])),bag:['rod'],story:{completed:[]}}),snapshot=structuredClone(locked);assert.equal(exchangeMaterials(locked,recipe.id),false,`${recipe.id} rejects a direct early API call`);assert.deepEqual(locked,snapshot);
+   const completed=['municipal_works','arcade_finale','garden_finale','attic_finale','fair_finale'].slice(0,chapter-1),unlocked=state({level:50,coins:1e6,materials:Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,100])),bag:['rod'],story:{completed}});assert.ok(exchangeMaterials(unlocked,recipe.id),`${recipe.id} is available after its receipt`);
+  }
+ }
+});
+
+test('each later chapter has one repeatable boss-material supply exchange without consuming boss materials',()=>{
+ const bossByChapter={2:'Golden token',3:'Garden medallion',4:'Keepsake key',5:'Velvet star'};
+ for(const [chapter,bossMaterial] of Object.entries(bossByChapter)){
+  const recipes=Object.values(EXCHANGES).filter(recipe=>recipe.chapter===Number(chapter)&&recipe.gain?.[bossMaterial]);assert.equal(recipes.length,1,`chapter ${chapter} has one boss-material supply recipe`);
+  const recipe=recipes[0];assert.equal(recipe.gain[bossMaterial],1);assert.ok(!Object.hasOwn(recipe.cost,bossMaterial),'boss material is an output, not an input');assert.deepEqual(recipe.gainItems||[],[],'rank supply remains repeatable');
+  const s=state({level:50,coins:1e6,materials:Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,100])),bag:['rod'],story:{completed:['municipal_works','arcade_finale','garden_finale','attic_finale','fair_finale'].slice(0,Number(chapter)-1)}}),before=s.materials[bossMaterial];
+  for(let n=0;n<3;n++)assert.ok(exchangeMaterials(s,recipe.id),`${recipe.id} can supply rank 3 repeatedly`);
+  assert.equal(s.materials[bossMaterial]-before,3);
+ }
+});
+
+test('all exchange, craft, resale, upgrade, affix and buy transitions obey one no-profit potential certificate',()=>{
+ // Coins and ordinary materials each have positive unit value; boss materials carry five.
+ // Item-state value is its actual capped resale receipt, including paid upgrades.
+ const value={...Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,1])), 'Floodglass Fragment':5,'Golden token':5,'Garden medallion':5,'Keepsake key':5,'Velvet star':5};
+ assert.ok(Object.values(value).every(weight=>weight>0),'every material has positive potential');
+ const maxSale=id=>sellPreview(state({bag:[id],gear:{},itemMods:{[id]:{upgrade:3}}}),id).price;
+ const materialValue=materials=>Object.entries(materials||{}).reduce((sum,[key,count])=>sum+count*value[key],0);
+ for(const [id,recipe] of Object.entries(EXCHANGES)){
+  const input=(recipe.coins||0)+materialValue(recipe.cost),output=materialValue(recipe.gain)+(recipe.gainItems||[]).reduce((sum,itemId)=>sum+maxSale(itemId),0);
+  assert.ok(input>=output,`${id}: inputs have potential ${input}, outputs ${output}`);
+  const mats=Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,(recipe.cost?.[key]||0)*2])),s=state({level:50,coins:(recipe.coins||0)*2+1,materials:mats,bag:['rod'],gear:{weapon:'rod'},story:{completed:['municipal_works','arcade_finale','garden_finale','attic_finale','fair_finale']}}),beforeCoins=s.coins,beforeMats={...s.materials},beforeBag=[...s.bag];
+  const applied=exchangeMaterials(s,id);assert.ok(applied,`${id} applies through the shared action API`);assert.equal(beforeCoins-s.coins,recipe.coins||0,`${id} charges the declared coin cost`);
+  for(const mat of Object.keys(mats))assert.equal((beforeMats[mat]||0)-(s.materials[mat]||0),(recipe.cost?.[mat]||0)-(recipe.gain?.[mat]||0),`${id} material delta for ${mat}`);
+  assert.deepEqual(s.bag.filter(itemId=>!beforeBag.includes(itemId)),recipe.gainItems||[],`${id} item outputs match its definition`);
+  const itemValue=id=>maxSale(id),beforePotential=beforeCoins+materialValue(beforeMats)+beforeBag.filter(itemId=>itemId!=='rod').reduce((sum,itemId)=>sum+itemValue(itemId),0),afterPotential=s.coins+materialValue(s.materials)+s.bag.filter(itemId=>itemId!=='rod').reduce((sum,itemId)=>sum+itemValue(itemId),0);
+  assert.ok(beforePotential>=afterPotential,`${id}: actual API execution remains within the potential certificate`);
+ }
+ for(const [id,item] of Object.entries(ITEMS))if(item.price){
+  assert.ok(item.price>=maxSale(id),`${id}: purchase price covers maximum capped resale`);
+  const s=state({level:50,coins:item.price,bag:[],gear:{},story:{completed:['municipal_works','arcade_finale','garden_finale','attic_finale','fair_finale']}}),coins=s.coins;
+  assert.equal(buyItem(s,id),true,`${id} can be purchased`);assert.ok(sellItem(s,id),`${id} can be sold after purchase`);assert.ok(s.coins<=coins,`${id} buy/sell does not create coins`);
+ }
+ for(const item of Object.values(ITEMS))for(let level=0;level<3;level++){
+  const s=state({bag:[item.id],gear:{},coins:1e6,materials:Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,100])),itemMods:{[item.id]:{upgrade:level}}}),p=upgradePreview(s,item.id),next=structuredClone(s);assert.ok(upgradeItem(next,item.id));
+  const saleBefore=sellPreview(s,item.id).price,saleAfter=sellPreview(next,item.id).price;assert.ok(p.cost.coins+materialValue(p.cost.materials)>=saleAfter-saleBefore,`${item.id} upgrade ${level+1} cannot create sale potential`);
+ }
+ for(const item of Object.values(ITEMS))if(!item.keepsake)for(let level=0;level<=3;level++){
+  const s=state({bag:[item.id],gear:{},coins:100,itemMods:{[item.id]:{upgrade:level}}}),receipt=sellPreview(s,item.id).price,potentialBefore=s.coins+receipt;
+  assert.ok(sellItem(s,item.id),`${item.id} at +${level} can be sold`);assert.equal(s.coins,100+receipt);assert.equal(potentialBefore,s.coins,`${item.id} sale preserves potential at +${level}`);
+ }
+ const allReceipts=['municipal_works','arcade_finale','garden_finale','attic_finale','fair_finale'];
+ for(const item of Object.values(ITEMS))if(item.price){const p=buyPreview(state({coins:1e9,bag:[],gear:{},story:{completed:allReceipts},level:50}),item.id);assert.ok(p.allowed);assert.ok(p.price>=sellPreview(state({bag:[item.id],gear:{}}),item.id).price,`${item.id}: production buy/sell path cannot profit`);}
+ for(const [affixId] of Object.entries(AFFIX_FAMILIES))for(let chapter=1;chapter<=5;chapter++){
+  const affix=PREFIXES[affixId]||SUFFIXES[affixId],item=Object.values(ITEMS).find(row=>row.chapter===chapter&&affix.slots.includes(row.slot)),kind=PREFIXES[affixId]?'prefix':'suffix';
+  const s=state({bag:[item.id],gear:{},coins:1e6,materials:Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,100]))}),p=affixPreview(s,item.id,kind,affixId),next=structuredClone(s);assert.ok(applyAffix(next,item.id,kind,affixId));
+  const beforePotential=s.coins+materialValue(s.materials)+sellPreview(s,item.id).price,afterPotential=next.coins+materialValue(next.materials)+sellPreview(next,item.id).price;
+  assert.ok(beforePotential>=afterPotential,`${affixId} chapter ${chapter} actual application cannot create potential`);
+ }
+ for(const [kind,first,second,slot] of [['prefix','keen','focused','weapon'],['prefix','sturdy','warded','head'],['suffix','of_vigor','of_the_tide','body'],['suffix','of_might','of_vigor','hands']])for(let chapter=1;chapter<=5;chapter++){
+  const item=Object.values(ITEMS).find(row=>row.chapter===chapter&&row.slot===slot),s=state({bag:[item.id],gear:{},coins:1e6,materials:Object.fromEntries([...Object.keys(MATERIAL_CHAPTER),'Salvaged fittings','Repair fittings'].map(key=>[key,100]))});
+  assert.ok(applyAffix(s,item.id,kind,first),`${first} applies in chapter ${chapter}`);const before=s.coins+materialValue(s.materials)+sellPreview(s,item.id).price;
+  assert.equal(affixPreview(s,item.id,kind,second).replacing,first);assert.ok(applyAffix(s,item.id,kind,second),`${second} replaces ${first} in chapter ${chapter}`);
+  const after=s.coins+materialValue(s.materials)+sellPreview(s,item.id).price;assert.ok(before>=after,`${first}→${second} cannot create potential`);
+ }
+});
 
 test('catalog preserves every original item id and exposes all ten slots',()=>{
   for(const id of ['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band'])assert.ok(ITEMS[id],id);
@@ -249,7 +372,7 @@ test('affix coin costs scale with equipment chapter using upgrade chapter multip
   const s = state({
     bag: ['rod', 'thimblePike'],
     coins: 10000,
-    materials: { 'Canal iron': 10 }
+    materials: { 'Canal iron': 10, 'Sprinkler brass': 10 }
   });
   assert.equal(ITEMS.rod.chapter, 1);
   assert.equal(ITEMS.thimblePike.chapter, 3);
@@ -260,14 +383,14 @@ test('affix coin costs scale with equipment chapter using upgrade chapter multip
   assert.equal(c1Preview.cost.coins, PREFIXES.keen.cost.coins);
   assert.equal(c3Preview.cost.coins, PREFIXES.keen.cost.coins * 16);
   assert.deepEqual(c1Preview.cost.materials, PREFIXES.keen.cost.materials);
-  assert.deepEqual(c3Preview.cost.materials, PREFIXES.keen.cost.materials);
+  assert.deepEqual(c3Preview.cost.materials, {'Sprinkler brass':1});
 });
 
 test('affixPreview cost equals what applyAffix actually deducts', () => {
   const s = state({
     bag: ['thimblePike'],
     coins: 5000,
-    materials: { 'Canal iron': 5 }
+    materials: { 'Sprinkler brass': 5 }
   });
   const preview = affixPreview(s, 'thimblePike', 'prefix', 'keen');
   assert.equal(preview.allowed, true);
