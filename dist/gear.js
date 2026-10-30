@@ -193,6 +193,48 @@ const CATEGORY_TIERS = Object.freeze({
   feet:['wornboots','boots','slipperBoots','rainGaloshes','sockSkates','buttonClogs','waders','cloudSlippers','paradeBoots','stargazerShoes'],
   accessory:['penny','thimblePendant','spoolBracelet','teaCharm','toyCompass','lantern','buttonLocket','bellPendant','band','ribbonBrooch']
 });
+export const WEAPON_FAMILIES = Object.freeze({
+  clubs: Object.freeze({
+    name: 'Clubs and bonkers',
+    ids: Object.freeze(['sword','buttonBaton','ironsword','blanketClub','buttonBashers','bobbinClub','patchworkRam','thimbleKnocker','carouselClub','ticketPuncher'])
+  }),
+  mauls: Object.freeze({
+    name: 'Mauls and hammers',
+    ids: Object.freeze(['teacupMace','pillowMallet','spoonSledge','kettleHammer','plushMaul','thimbleMaul','pincushionPounder','kettleDrumHammer','quiltedSledge','fairgroundMaul','ringmasterDrum','velvetBumper'])
+  }),
+  spears: Object.freeze({
+    name: 'Spears and pikes',
+    ids: Object.freeze(['pike','thimblePike','spoolSpear'])
+  }),
+  needles: Object.freeze({
+    name: 'Needles and needleblades',
+    ids: Object.freeze(['blade','spoolblade','ribbonRapier','thimbleSabre','satinNeedle','starlingEdge','moonlitStiletto','moonThreadNeedle','ticketNeedle'])
+  }),
+  foils: Object.freeze({
+    name: 'Foils, rapiers and lances',
+    ids: Object.freeze(['pinFoil','spoolfoil','pinwheelRapier','needleFoil','safetyPinLance','carouselLance'])
+  }),
+  stilettos: Object.freeze({
+    name: 'Stilettos, pins and darts',
+    ids: Object.freeze(['glassblade','ribbonStiletto','glassBeadDart','embroideryStiletto','satinSeamRipper','clockworkBodkin','starButtonStiletto','cometPin','velvetSeamRipper','ringmasterPin'])
+  }),
+  wands: Object.freeze({
+    name: 'Wands',
+    ids: Object.freeze(['rod','starWand','lanternWand','thimbleChime','buttonStarWand','moonKiteWand','velvetNightWand','fairgroundFirefly','ticketStarWand'])
+  }),
+  scepters: Object.freeze({
+    name: 'Scepters and rods',
+    ids: Object.freeze(['singalongScepter','floodrod','lullabyScepter','ribbonLoomRod','bedtimeBobbin','plushCometScepter','carouselMoon','velvetCometRod'])
+  }),
+  batons: Object.freeze({
+    name: 'Batons, staves and flutes',
+    ids: Object.freeze(['lullabyRod','cloudFlute','velvetConductor','bedtimeStar','starryPincushion','thimbleOrchestraRod','lanternThreadStaff','midnightCarousel'])
+  })
+});
+export function familyLabel(item){
+  if(!item||item.slot!=='weapon'||!item.family)return '';
+  return WEAPON_FAMILIES[item.family]?.name||'';
+}
 // Relics are priced from chapter income, not the weapon curve: about one chapter's contract coins or
 // roughly a hundred of that chapter's wins (design 43). A relic's tier is its chapter. Finale keepsakes
 // are never stocked; echoPrice only sets their echo license base.
@@ -213,6 +255,19 @@ for (const [id,tier] of Object.entries(WEAPON_TIERS)) {
   const item=ITEMS[id]; if(!item) throw new Error(`Missing weapon catalog item ${id}`);
   item.tier=tier; item.chapter=weaponChapter(tier);
   item.price=Math.round(100*Math.pow(100,(tier-1)/9));
+}
+const seenFamilyWeaponIds = new Set();
+for (const [familyId, family] of Object.entries(WEAPON_FAMILIES)) {
+  for (const id of family.ids) {
+    if (seenFamilyWeaponIds.has(id)) throw new Error(`Weapon ID ${id} appears twice in WEAPON_FAMILIES`);
+    seenFamilyWeaponIds.add(id);
+    const item = ITEMS[id];
+    if (!item || item.slot !== 'weapon') throw new Error(`Unknown weapon ID ${id} in family ${familyId}`);
+    item.family = familyId;
+  }
+}
+if (Object.values(ITEMS).some(item => item.slot === 'weapon' && !item.family)) {
+  throw new Error('Every weapon needs a weapon family');
 }
 for (const [id,row] of Object.entries(RELIC_CATALOG)) {
   const item=ITEMS[id]; if(!item||item.slot!=='relic') throw new Error(`Missing relic catalog item ${id}`);

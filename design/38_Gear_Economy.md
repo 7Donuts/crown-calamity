@@ -1,6 +1,6 @@
 # Gear economy
 
-The outfitter has 145 items: 75 weapons (25 per scaling channel) and ten each of the offhand, head, body, hands, feet, accessory, and relic categories. Existing item IDs remain save-format identifiers for ownership, loadouts, drops, recipes, and item modifications. Catalog names and descriptions use found toy parts, sewing supplies, soft fabric, and other objects a stuffie could carry Underfoot.
+The outfitter has 145 items: 75 weapons (25 per scaling channel) and ten each of the offhand, head, body, hands, feet, accessory, and relic categories. Existing item IDs remain save-format identifiers for ownership, loadouts, drops, recipes, and item modifications. All 75 weapons carry a family tag identifying one of nine weapon families (clubs, mauls, spears, needles, foils, stilettos, wands, scepters, batons), displayed on item cards, shop rows and the build inspector. Catalog names and descriptions use found toy parts, sewing supplies, soft fabric, and other objects a stuffie could carry Underfoot.
 
 Items have a content tier and a chapter. These labels never restrict equipping owned gear. Chapter stock opens when the player claims the preceding chapter’s finale receipt; a purchase preview names the required chapter. A character may still equip, modify, or sell owned gear from a later chapter. No item uses a character-level equip requirement.
 

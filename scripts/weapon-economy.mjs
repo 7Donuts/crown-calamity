@@ -2,7 +2,7 @@
 // drives a browser or live input. Story commands below are explicit fixture
 // decisions made through the same production APIs the UI calls.
 import * as G from '../dist/engine.js';
-import { ITEMS } from '../dist/gear.js';
+import { ITEMS, WEAPON_FAMILIES } from '../dist/gear.js';
 import { seededRng } from '../dist/lab.js';
 
 const BUILDS = {
@@ -364,6 +364,11 @@ export function catalogAudit() {
     return { tier, chapter: rows[0]?.chapter ?? null, count: rows.length, prices: [...new Set(rows.map(item => item.price))] };
   });
   const errors = [];
+  for (const item of weapons) {
+    if (!item.family || !Object.hasOwn(WEAPON_FAMILIES, item.family)) {
+      errors.push(`${item.id} has no known family (${item.family})`);
+    }
+  }
   for (const channel of ['heavy', 'precision', 'spell']) {
     const rows = weapons.filter(item => item.channel === channel).sort((a, b) => a.tier - b.tier);
     if (rows.length !== 25) errors.push(`${channel} has ${rows.length} weapons, expected 25`);

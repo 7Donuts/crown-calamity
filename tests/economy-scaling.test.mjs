@@ -13,6 +13,11 @@ test('regional weapon inventory has 25 monotonic tiers in each channel and chapt
   assert.deepEqual(audit.tiers[24].prices, [21544347]);
 });
 
+test('every weapon in catalog audit belongs to a recognized weapon family', () => {
+  const audit = catalogAudit();
+  assert.deepEqual(audit.errors, []);
+});
+
 test('C2 mature-region throughput approaches the 8–12 hour aspiration for the 10k weapon', () => {
   const result = runRegionFarm({ chapter: 2, kit: 'breaker', sell: false, seed: 1, sampleWins: 20 });
   assert.equal(result.status, 'completed');
