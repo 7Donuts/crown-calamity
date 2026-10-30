@@ -87,7 +87,7 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
  #app .page.in-combat{padding-bottom:360px}
  #app .mobile-nav button{font-size:11px;color:#bcc9af}
  #app .mobile-nav button.active{color:#f0d6a1}
- #app .attribute{grid-template-columns:34px minmax(0,1fr) 28px 44px;gap:8px}
+ #app .attribute{grid-template-columns:34px minmax(0,1fr) 28px 48px;gap:8px}
  #app .attribute small{font-size:12px}
  #app .attribute b{font-size:14px}
  #app .kit{font-size:14px}
@@ -109,6 +109,8 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
 #app .attribute small{display:block;font-size:13px;line-height:1.8;margin-top:8px;color:#e3d2ad}
 #app .attribute{padding:20px 0;align-items:start}
 #app .attribute .attr-code,#app .attribute .attr-value,#app .attribute button{margin-top:4px}
+#app .attribute{grid-template-columns:38px minmax(0,1fr) 30px 48px}
+#app .attribute button{min-width:48px;min-height:48px;display:inline-flex;align-items:center;justify-content:center}
 #app .attribute b{font-size:17px}
 .inspect-target{display:block;color:#d4deca;font-size:14px;margin:18px 0}
 .inspect-target select{display:block;width:100%;min-height:48px;background:#152018;color:#fff8e8;border:1px solid #758967;border-radius:5px;padding:10px 12px;margin-top:8px;font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -129,7 +131,7 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
 #app .damage-profile p,#app .loot-receipt{font-size:13px;color:#d0dcc4;margin:12px 0 0}
 #app .fortune-panel p{font-size:15px;margin-top:17px}
 @media(max-width:740px){
- #app .attribute{grid-template-columns:32px minmax(0,1fr) 28px 44px;gap:7px}
+ #app .attribute{grid-template-columns:32px minmax(0,1fr) 28px 48px;gap:7px}
  #app .attribute .attr-code{width:30px;font-size:9px}
  #app .attribute .attr-value{font-size:22px}
  #app .attribute small{font-size:13px}
@@ -396,7 +398,7 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
 #app .story-hint{font-size:13px;color:#cad7bc;margin:10px 0}
 .story-contact{border-left:3px solid #b6a36e}
 .story-contact h3{margin-top:12px}
-.story-future summary{cursor:pointer;color:#e3cfa6;min-height:40px;font-size:15px}
+.story-future summary{cursor:pointer;color:#e3cfa6;min-height:48px;display:flex;align-items:center;font-size:15px}
 .story-future-row{padding:15px 0;border-bottom:1px solid #45513d}
 .story-future-row strong{display:block;font-family:Georgia,serif;font-size:20px;color:#f5efdb}
 .story-future-row span{color:#d3bd8e;font-size:12px}
