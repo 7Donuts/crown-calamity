@@ -65,6 +65,44 @@ Design cooperative encounters, public events, and optional PvP after the trusted
 
 Territory, kingdoms, markets, and broader politics remain later possibilities. Each needs a defined purpose and a reliable economy before implementation.
 
+## Parked systems from the Shimlar comparison
+
+Status: parked. Current work is the core game; none of these is scheduled. Each needs an owner decision before it is picked up. Background, sources and measured numbers are in [design 40](design/40_Shimlar_Comparison.md). Nothing below changes current gameplay or save formats.
+
+### Notice Board bounties
+
+A rules version 1 prototype runs in the Playtest Lab only (`dist/bounties.js`, scenario `bounty_board`). It stays there; it is not wired into campaign saves. The v0.14.0 economy left it with two known gaps, and campaign use needs more decisions:
+
+- **Pricing (rules version 2).** The bonus is a share of kill coins, and v0.14.0 made kill coins small, so the coin-led bounty pays 0 or 1 coin. Either price all three channels from one XP-equivalent budget, using the coin-to-XP ratio the authored minor contracts already use (about one coin per three XP), or drop the coin-led profile. Keep the rule that a repeatable bounty never outpays the authored minor contract for the same target.
+- **Chapters 2 to 5.** The rotation names only chapter 1 targets, so the board is empty from level 12 to the level 50 cap. A per-chapter rotation must offer only chapters the character has unlocked (`chapterUnlocked`) and keep the two-level window.
+- **Campaign placement.** Design 37 sequences bounties inside the Works Ledger (R5a, step 7). Moving them into the campaign adds a save field and needs a save-format decision and migration.
+- **Economy check.** Re-run `npm run economy` (design 38) with an assumed bounty cadence before release.
+- **Smaller rules.** Whether delve victories count, whether more than one bounty may be active, and whether the material-led profile needs a larger share.
+- **Online.** The server owns each profile's rotation position, acceptance, progress counters and the once-only claim key, in the same transaction as the victory that completes the bounty.
+
+### Request gate follow-ups (Phase 2)
+
+`server/authority.js` is a tested reference for the Phase 2 check order. When Phase 2 starts:
+
+- Decide which actions a moderator hold freezes once trading exists. The reference freezes buy, sell and contract claims only.
+- Set alert thresholds for `malformed`, `ownership`, `action_id_reused` and `duplicate_reward` events. A correct client never sends these, so a small count can justify a human look.
+- Add per-account and per-address request rate limits. Keep them separate from the 650 ms pacing rule so ordinary repetition is never punished.
+- Choose receipt retention. The reference keeps 500 receipts per character and relies on the version check after eviction.
+- Leave password storage and sign-in to the Phase 1 identity provider.
+
+### Treat buff
+
+A single slot for a bought treat that gives a small flat bonus for a set number of encounters, counted by encounters and never by time. It works as a coin sink with an explicit purchase. It adds a numeric source, so it needs the design 23 PvP budget check, and a value set against the v0.14.0 economy.
+
+### Reputation axis
+
+Track which side of the stuffie world a character fights: things that dislike stuffies, or things that like them too much. Reputation could change which contracts are offered. It needs an owner decision on whether it affects rewards. Any rankings stay local until the server records results (design 37, R7d).
+
+### Guild perks and shared bosses (Phase 4 and 5)
+
+- **Guild perks.** Guild strength comes from verified member contribution, unlocks a menu of perks, and the guild chooses one. The perk is removed automatically when strength drops below its threshold.
+- **Shared bosses.** Reward every verified participant by contribution, not by who lands the last hit, which invites kill stealing.
+
 ## PvP prerequisites for the current stats
 
 The [stat audit](design/23_Stat_and_PvP_Audit.md) leaves all seven attributes provisional. Compare equal investment and legal equipment, mastery, and ability budgets; level alone does not make a fair matchup. Luck's acquisition advantage needs separate consideration from its modest critical-hit contribution, and accuracy/evasion must be evaluated with the current 55% glancing-damage floor.
@@ -81,6 +119,9 @@ Build a dedicated player-to-player resolver before drawing match conclusions fro
 | Meaning of initial online play: shared world, co-op, or both | Multiplayer implementation |
 | Guild purpose, roles, and membership rules | Guild implementation |
 | Chat, trading, banks, and moderation scope | Relevant social/economic features |
+| Bounty pricing (rules version 2), chapter rotation, and campaign placement | Moving bounties out of the Playtest Lab |
+| Moderator hold scope, anomaly alert thresholds, request rate limits | Phase 2 request handling |
+| Treat buff value and reputation axis scope | Either system leaving this parked list |
 
 These requirements guide future architecture. They do not expand the current prototype into a production multiplayer service in this iteration.
 
