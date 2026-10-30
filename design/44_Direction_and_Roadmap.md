@@ -48,7 +48,7 @@ Design 35 already gives the in-world reason: stuffies become more Real by being 
 | B. Restuffing (RWK reincarnation) | Reset to level 1, keep "free levels" that skip XP, keep part of mastery, change race | Closest to RWK; strong relevel rush | Destructive; conflicts with the preserve-progress rule; players lose things |
 | C. Paragon track only | After level 50, XP feeds a separate rank with small permanent bonuses | Simple | Thin; no new content or decisions; tends toward grind |
 
-**A prerequisite either way.** The weapon price curve `round(100 × 100^((tier − 1) / 9))` is fine to tier 25 (21.5 million coins) but reaches 36 million at tier 26 and 278 million at tier 30. Content past the story needs a different growth model: gear tiers per layer that reset price scale against that layer's income, with power growing more slowly than price. Keep the agreed tier-1 (100) and tier-10 (10,000) endpoints. This is the first design task for extended progression.
+**A prerequisite either way.** The former story price curve `round(100 × 100^((tier − 1) / 9))` is now retained only through tier 10. G1-B's CP1 trial prices story tiers 15/20/25 at 15,000/30,000/60,000 and Spec 50 now starts post-story entry gear at 1,100 on-level wins (best gear remains 2,000). Content past the story still needs a growth model with gear tiers per layer scaled against that layer's income, and with power growing more slowly than price. Keep the agreed tier-1 (100) and tier-10 (10,000) endpoints. CP4 must test the fitted post-story curve before calling it balanced.
 
 ## The world: layers, planes and exploration (proposal)
 

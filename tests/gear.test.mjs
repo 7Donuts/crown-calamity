@@ -142,6 +142,7 @@ test('catalog preserves every original item id and exposes all ten slots',()=>{
 
 test('expanded catalog has chapter stock, a generated art family for each item, and monotonic weapons',async()=>{
   const {ITEM_ART}=await import('../dist/item-art.js');
+  const expectedWeaponPrices=[100,167,278,464,774,1292,2154,3594,5995,10000,10845,11761,12754,13832,15000,17230,19793,22736,26117,30000,34461,39585,45471,52233,60000];
   const counts={};for(const item of Object.values(ITEMS))counts[item.slot]=(counts[item.slot]||0)+1;
   assert.equal(Object.keys(ITEMS).length,154);
   for(const slot of ['offhand','head','body','hands','feet','accessory'])assert.equal(counts[slot],10,slot);
@@ -152,7 +153,7 @@ test('expanded catalog has chapter stock, a generated art family for each item, 
     assert.deepEqual(tiers,Array.from({length:25},(_,i)=>i+1),`${channel} weapon tiers`);
     const primary={heavy:'mig',spell:'int',precision:'fin'}[channel];
     const ladder=Object.values(ITEMS).filter(item=>item.slot==='weapon'&&item.channel===channel).sort((a,b)=>a.tier-b.tier);
-    for(const item of ladder)assert.equal(item.price,Math.round(100*100**((item.tier-1)/9)));
+    for(const item of ladder)assert.equal(item.price,expectedWeaponPrices[item.tier-1],`${channel} tier ${item.tier} price`);
     const attackPower=item=>item.base+1.8*(item.stats?.[primary]||0);
     for(let i=1;i<ladder.length;i++)assert.ok(attackPower(ladder[i])>attackPower(ladder[i-1]),`${channel} tier ${ladder[i].tier} exceeds tier ${ladder[i-1].tier}`);
   }
@@ -503,13 +504,13 @@ test('every weapon has exactly one family; the nine families cover all 75 weapon
   assert.equal(familyLabel(ITEMS.penny), '');
 });
 
-test('no weapon price, base, tier, chapter, stats, twoHanded or focus changed', async () => {
+test('weapon anchors change only approved prices while bases, tiers, chapters, stats and loadout tags stay fixed', async () => {
   const { ITEMS } = await import('../dist/gear.js');
   const snapshots = {
     sword: { price: 100, base: 14, tier: 1, chapter: 1, stats: undefined, twoHanded: undefined, focus: undefined },
     ironsword: { price: 1292, base: 30, tier: 6, chapter: 2, stats: { mig: 2 }, twoHanded: undefined, focus: undefined },
     teacupMace: { price: 167, base: 16, tier: 2, chapter: 1, stats: { mig: 1 }, twoHanded: undefined, focus: undefined },
-    quiltedSledge: { price: 1668101, base: 64, tier: 20, chapter: 4, stats: { mig: 3 }, twoHanded: true, focus: undefined },
+    quiltedSledge: { price: 30000, base: 64, tier: 20, chapter: 4, stats: { mig: 3 }, twoHanded: true, focus: undefined },
     pike: { price: 10000, base: 40, tier: 10, chapter: 2, stats: { mig: 2 }, twoHanded: true, focus: undefined },
     blade: { price: 100, base: 14, tier: 1, chapter: 1, stats: undefined, twoHanded: undefined, focus: undefined },
     moonlitStiletto: { price: 10000, base: 34, tier: 10, chapter: 2, stats: { fin: 2 }, twoHanded: undefined, focus: undefined },

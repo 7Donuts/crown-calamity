@@ -2,6 +2,8 @@
 
 Source: `/workspace/sites/crown-and-calamity` at `cbc14b9`. This is a read-only analysis; the custom policy probe is a `/tmp` copy of `scripts/weapon-economy.mjs` using the production engine APIs. No production files changed.
 
+**Historical pre-G1-B snapshot.** Its catalog-price audit records the old T1–25 formula and is not the current price schedule; see [the G1-B CP1 trial report](g1b-price-curve.md).
+
 ## Existing walkthrough baseline
 
 Command-equivalent: import `runCampaignWalkthrough` from `scripts/weapon-economy.mjs`; run kits `breaker`, `duelist`, `caster`, seeds 1–3, `buyUpgrades: true`. All nine cells stop before receipt `municipal_works`, at level 7. Wins: 74–77; defeats: 1–2; simulated active time: 19.3–20.7 minutes; full rests: 74–77. Every run gets stuck at the Chapter 1 Laundry Works delve. The two failures shown as `Cannot continue to the Laundry Works boss` are attribution errors: the guardian fight defeated the character, combat clears the delve on death, and the fixture continues issuing delve commands. Other cells stop on the two-defeat safety threshold during the delve.

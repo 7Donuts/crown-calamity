@@ -1,5 +1,7 @@
 # G1-B / CP1 package — PROVISIONAL
 
+**Superseded:** The owner later delegated CP1 curve selection and authorized the 25% armor / 1,100-win entry trial recorded in [the implemented G1-B report](g1b-price-curve.md). This earlier candidate analysis is retained as history only; do not use it as the current decision package.
+
 **For review only. No curve is selected or implemented.** These candidate tables use the frozen intermediate G1-A policy matrix (`2f04f24`, exact tree also run as `40642c2`) before a later survivability-policy revision. Root has flagged that this matrix is not the final G1-A approval because Caster completed only 23/40 runs. Recompute this package from the final policy measurements before sending the owner a decision request.
 
 ## What the options test
