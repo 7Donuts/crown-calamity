@@ -170,18 +170,6 @@ function restoreFixedProgression(s, fixed) {
   s.stats = structuredClone(fixed.stats); s.mastery = structuredClone(fixed.mastery);
 }
 
-function postVictoryResources(before, info, result, victoryHeal, fixedTotals) {
-  const hp = Math.max(0, Math.min(fixedTotals.hp, before.hp + (result.healed || 0) + (result.relicHealed || 0) + victoryHeal));
-  let mp = before.mp - info.mp + (result.manaRegenerated || 0);
-  let sp = before.sp - info.sp;
-  if (info.label === 'Shake it off') {
-    const rec = before.recover;
-    mp = Math.min(fixedTotals.mp, Math.max(0, before.mp - info.mp) + rec.mana + (result.manaRegenerated || 0));
-    sp = Math.min(fixedTotals.sp, before.sp + rec.stamina);
-  }
-  return { hp, mp: Math.max(0, Math.min(fixedTotals.mp, mp)), sp: Math.max(0, Math.min(fixedTotals.sp, sp)) };
-}
-
 /** Simulate independent seeded chains. Resources and relic carry persist within each chain; only each seed begins full. */
 export function runCell(options) {
   if (!options || typeof options !== 'object' || Array.isArray(options)) throw new Error('Cell config must be an object');
@@ -215,8 +203,8 @@ export function runCell(options) {
       const encounterStartHp = s.hp;
       let count = 0;
       while (s.fight && count < 100) {
-        const key = selectAction(s, policy), info = G.actionInfo(s, key), profile = G.actionProfile(s, key, enemy);
-        const before = { hp: s.hp, mp: s.mp, sp: s.sp, recover: G.recoverProfile(s), enemyHp: s.fight.hp, fight: s.fight };
+        const key = selectAction(s, policy), profile = G.actionProfile(s, key, enemy);
+        const before = { hp: s.hp, enemyHp: s.fight.hp, fight: s.fight };
         const priorLogs = structuredClone(s.log);
         clock.now += ACTION_MS; count++;
         const res = G.exchange(s, key, rng, clock.now);
@@ -237,13 +225,17 @@ export function runCell(options) {
           if (s.level !== fixed.level) throw new Error(`Victory would level fixture ${fixture.id || fixture.kit}; refusing a fixed-build balance row`);
           const victoryHeal = victoryHealingFromLogs(addedLogs);
           sums.relics += victoryHeal;
-          const endHp = Math.max(0, Math.min(fixedTotals.hp, before.hp + (res.healed || 0) + (res.relicHealed || 0) + victoryHeal));
+          // Only the Chapter 1 delve boss auto-rests inside victory(). Exclude
+          // that refill from its loss metric; scripted bosses never chain.
+          const endHp = enemy === G.CHAPTERS[0].bossId
+            ? Math.min(fixedTotals.hp, before.hp + (res.healed || 0) + (res.relicHealed || 0) + victoryHeal)
+            : s.hp;
           const lost = encounterStartHp - endHp;
           sums.wins++; sums.netLost += lost; sums.lostShare += lost / fixedTotals.hp;
           sums.maxLostShare = Math.max(sums.maxLostShare, lost / fixedTotals.hp);
-          const post = postVictoryResources(before, info, res, victoryHeal, fixedTotals);
           restoreFixedProgression(s, fixed);
-          s.hp = post.hp; s.mp = post.mp; s.sp = post.sp;
+          // Carry the engine's actual resources, including final-blow Ribbon
+          // Knot and Dream Bell gains. Rebuilding them drops production effects.
         } else if (res.defeat) {
           sums.defeats++; chainFinished = false;
           break;
@@ -251,8 +243,7 @@ export function runCell(options) {
       }
       if (s.fight) throw new Error(`Fight exceeded 100 exchanges: ${enemy}`);
       if (s.last?.type === 'defeat') break;
-      // The chapter-one boss closes its real delve and auto-rests. Keep only the
-      // exchange-derived resource result above; it is not a chain recovery event.
+      // Bosses are single encounters; their resource state is never carried.
       if (isBoss) break;
     }
     if (chainFinished && chainEncounters === chainLength) sums.chainsCompleted++;
@@ -280,7 +271,7 @@ export function runCell(options) {
 
 export function renderMarkdown(rows, { command }) {
   const fmt = n => n === null ? '—' : typeof n === 'number' ? round1(n).toString() : n;
-  const lines = ['# Balance simulation', '', `Command: \`${command}\``, '', 'Each seed starts one independent chain at full Stuffing, Sparkle and Bounce; within a chain those resources and relic Pluck carry forward. There is no rest or between-fight refill. The table shows average HP/MP/SP/Pluck at encounter start so carried resources are visible. Fixture XP is normalized to zero on the clone; any victory that levels the fixed fixture is rejected. Level, stats, points, and mastery are reset to fixture values after each victory, and resource overflow above fixture caps is discarded. Chapter-one scripted boss fixtures use the valid municipal delve node; its production auto-rest is removed from measured carry. Later scripted bosses use valid synthetic finale contracts and are single encounters because the production contract cannot be farmed. Defeats end a chain. Seed lists and chain length are shown per row.', '', 'Damage columns distinguish the expected shared `actionProfile` estimate, engine-reported attempted damage, HP actually removed (including logged relic reflection), and overkill. Mend and relic values are realized engine heal values; chapter victory relic healing is read from the corresponding actual log receipt. Menders and race traits are listed as not measured because the engine has no implementation for them.', '', '| Fixture | Enemy / context | Policy | Seeds / chain | Encounters | Wins | Defeats | Completed chains | Win rate | Net Stuffing lost / won fight | Max lost | Avg HP/MP/SP/Pluck at start | Exchanges / encounter | Expected profile damage / exchange | Attempted / exchange | Landed / exchange | Overkill / exchange | Mend / encounter | Relics / encounter | Menders | Traits |', '|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|'];
+  const lines = ['# Balance simulation', '', `Command: \`${command}\``, '', 'Each seed starts one independent chain at full Stuffing, Sparkle and Bounce; within a chain those resources and relic Pluck carry forward. There is no rest or between-fight refill. The table shows average HP/MP/SP/Pluck at encounter start so carried resources are visible. Fixture XP is normalized to zero on the clone; any victory that levels the fixed fixture is rejected. Level, stats, points, and mastery are reset to fixture values after each victory; HP/MP/SP and Pluck carry remain as resolved by the engine. Chapter-one scripted boss fixtures use the valid municipal delve node; its production auto-rest is excluded only from the net Stuffing-loss metric. Later scripted bosses use valid synthetic finale contracts and are single encounters because the production contract cannot be farmed. Defeats end a chain. Seed lists and chain length are shown per row.', '', 'Damage columns distinguish the expected shared `actionProfile` estimate, engine-reported attempted damage, HP actually removed (including logged relic reflection), and overkill. Mend and relic values are realized engine heal values; chapter victory relic healing is read from the corresponding actual log receipt. Menders and race traits are listed as not measured because the engine has no implementation for them.', '', '| Fixture | Enemy / context | Policy | Seeds / chain | Encounters | Wins | Defeats | Completed chains | Win rate | Net Stuffing lost / won fight | Max lost | Avg HP/MP/SP/Pluck at start | Exchanges / encounter | Expected profile damage / exchange | Attempted / exchange | Landed / exchange | Overkill / exchange | Mend / encounter | Relics / encounter | Menders | Traits |', '|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|'];
   for (const r of rows) lines.push(`| ${r.fixture} | ${r.enemy} (${r.context}) | ${r.policy} | ${r.trials} × ${r.chainLength} | ${r.encounters} | ${r.wins} | ${r.defeats} | ${r.chainsCompleted} | ${fmt(r.winRate * 100)}% of encounters | ${fmt(r.netStuffingLostShareOfMax === null ? null : r.netStuffingLostShareOfMax * 100)}% max (${fmt(r.netStuffingLostPerWonFight)}) | ${fmt(r.maxStuffingLostShareOfMax === null ? null : r.maxStuffingLostShareOfMax * 100)}% | ${['hp', 'mp', 'sp', 'pluck'].map(key => fmt(r.averageResourcesAtEncounterStart[key])).join('/')} | ${fmt(r.exchangesPerEncounter)} | ${fmt(r.expectedProfileDamagePerExchange)} | ${fmt(r.attemptedDamagePerExchange)} | ${fmt(r.landedDamagePerExchange)} | ${fmt(r.overkillPerExchange)} | ${fmt(r.healingBySource.mend)} | ${fmt(r.healingBySource.relics)} | ${r.healingBySource.menders} | ${r.healingBySource.traits} |`);
   for (const r of rows) lines.push('', `Seeds for ${r.fixture}/${r.enemy}/${r.policy}: ${r.seeds.join(', ')}`);
   return lines.join('\n') + '\n';

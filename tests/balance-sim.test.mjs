@@ -7,6 +7,7 @@ import { gunzipSync } from 'node:zlib';
 import * as G from '../dist/engine.js';
 import * as C from '../dist/characters.js';
 import { parseArgs, runCell } from '../scripts/balance-sim.mjs';
+import { hero, mulberry, POLICIES } from './sim-helpers.mjs';
 
 // Synthetic main save and two-character roster serialized with the unchanged cbc14b9 engine.
 const CAPTURED_MAIN_GZIP = 'H4sIAAAAAAAAA+1WTW/cNhD9K4QOOSlGvM6H7Zvt1m2ABnFjB0UR5TBLjqTpUqRCjrTeLPa/ByQl7dpOkQYGihTdk6jHmeFw+Dh862wOHrPTTM7l4fP5SZZnHvoArIusR+fJmiI7fZkXmYEGi+y0yH4FZ9B7cQ4eNRkssrzIHMg0e9EppXFpHdfiHMH5afq1igZzBBcxaFsEByY6rousdejRMHBas8hKbECn8DWQu+aVTmuw7bxGNc1cWG1dnCGziCiucAvW8Bl1hP2CzI01KYq0bYuuyDYhP9Qkr61cIPsiO/2wLrLO6PAfki5Bexyt4jZMp3UeQxD6K6CArTeb/F/2+5gXmXVUUSrYpXUNOvFLx4xOXIABLXznelzZVHKNfajE6WFeZLdtkZ0+G8ErS4bHyAFtIzD8eIY4XhdZQ1UIENAyLhuHZHgc9jQNl6S3BsH/JCwnF2EUql6HFI5eBnY1YfjyeVgrjk7ibpPX4dGrvMiqyJuQwhKhHSjil9YlHtiyrMEkivmaUA/0QNip39yq1XD2wAN9jPJbgxKRt38gJXpv3eor0GyLxWMaGKv5EkyVOB/g0Sxsdw6hdB92s97JdEppGyQcbwveU58Y2zpswQ3E1xjuoTqbkyYm9Ck0OBln75gqRz2NAfFTR237wPGOTQOeMW57PYQMAwfhdkXyNOAWkRyb3fB/axSsPnXoeSQXGpU8hhIuSOtIsM2YYYOG35D3OHKwB0dg+A0yusl0AN+W5Q7YAKMj0ANjf0NVoRNeOmgDNNvEc6wJewyrxAKEXSvy0vbohpoE6C/bOQN6aAlMPHSgM9E621Noj+GOcVeWlDoV4y1Hkz9QS9ugYCu4RvHeKHSltZzH38HlqafPqMTSOq3EHA0C17mYY01GCTAB4yWiiT7nVImbmkzlD8SlDv6mYmvE7x2scgGC7dIIWwptPQurlI8R0CgvbIpwpzMMqwT8ulNePBE/hY+GzihnG+BckBeeYUWmEsqtDsRNsEVoxIXDpVjWViwQW0EsuAYWS1iJGnoUlTUoGvKeTHUg/rRdgnurO8OIDlUoC5kePVMFjAexdgsaLzDHSxf7m7bVeBolVfXO9dTgd/4U6nhNxlap0+MTuVN14NSF7cxIQLYM+udbWYOpJoYZvOUzGZ6fs9HOoed3CGo1IUvbGYXqveHY3FLH88SxcX8I/A+ECtlK8HhJGideemQOp5doqZCBIkdjuw8Gre7k4gJcvHmx71JlgDuH70IvmVhJjM0bq7aBU7niZZUS2yGZmIRtWo07APYD5cMDT5LtQPd1uhVh9zsJo4l+m9Tinb1mqHBITtaWJA6hpDXsQPI72/EQL7W8pBGmkBorkKtY0jGjBL1uWut4+/xtNlmeORv60H01cjhk2o+SQtYQ1kb3dBZ5FA4yTh3lO5Pjw073nQ5TK2bgQYl8Q/i83WueveZ5nOZ58S3NM3v2n5A8u7/fK3X26ubx6mYvZfZSZi9lfngpEx+7B7pj9p2642Zp7+qOK9QaWTwRV9SK886YuP970qMzZvVI7TF38Y18lPLw8aXa647v1x3HW9kx+5rsOJ5Ux8kkOg6PJtVxvFUds+NRdbw4HlXHq6N/pDrmGhQ+UB2By82PJzq2yW4T3GuOvebYa4695vj/aI6Pm2zzBYPh9F7gGQAA';
@@ -131,4 +132,89 @@ test('scripted bosses start only through their valid chapter contract fixture', 
 test('balance simulator rejects invalid fixture and policy inputs', () => {
   assert.throws(() => runCell({ fixture: { id: 'bad', kit: 'missing', level: 1, race: 'bear' }, enemy: 'rats', policy: 'strike', seeds: [1] }), /unknown kit/i);
   assert.throws(() => runCell({ fixture: { id: 'ok', kit: 'breaker', level: 1, race: 'bear' }, enemy: 'rats', policy: 'skip', seeds: [1] }), /unknown policy/i);
+});
+
+
+// Independent reference: execute production actions and retain their actual state.
+// Do not import the harness's fixture preparation or resource accounting here.
+function directEngineChain(save, { seeds, chainLength, policy = 'strike', enemy = 'rats' }) {
+  const starts = { hp: 0, mp: 0, sp: 0, pluck: 0 };
+  const actions = Object.create(null);
+  let encounters = 0, wins = 0, defeats = 0, lost = 0, finishingRibbonGains = 0;
+  for (const seed of seeds) {
+    const s = G.loadSave(save);
+    assert.ok(s);
+    const fixedMastery = structuredClone(s.mastery), level = s.level;
+    const caps = G.totals(s);
+    s.xp = 0; s.hp = caps.hp; s.mp = caps.mp; s.sp = caps.sp;
+    const rng = mulberry(seed);
+    let now = 1_000_000_000_000;
+    for (let encounter = 0; encounter < chainLength; encounter++) {
+      assert.ok(G.startFight(s, enemy, 'hunt', now));
+      encounters++;
+      for (const key of ['hp', 'mp', 'sp']) starts[key] += s[key];
+      starts.pluck += s.fight.pluck || 0;
+      const startHp = s.hp;
+      let rounds = 0;
+      while (s.fight && rounds++ < 100) {
+        const key = POLICIES[policy](s), oldRows = new Set(s.log);
+        actions[key] = (actions[key] || 0) + 1;
+        now += 700;
+        const result = G.exchange(s, key, rng, now);
+        assert.ok(result.ok, result.reason);
+        if (result.victory) {
+          assert.equal(s.level, level, 'reference fixture must not level up');
+          wins++; lost += startHp - s.hp;
+          finishingRibbonGains += s.log.filter(row => !oldRows.has(row) && row.text.startsWith('Ribbon Knot restored ')).length;
+          s.xp = 0; s.mastery = structuredClone(fixedMastery);
+        }
+        if (result.defeat) defeats++;
+      }
+      assert.equal(s.fight, null, 'reference fight stays bounded');
+      if (s.hp <= 0) break;
+    }
+  }
+  return {
+    encounters, wins, defeats, finishingRibbonGains,
+    averageResourcesAtEncounterStart: Object.fromEntries(Object.entries(starts).map(([key, value]) => [key, value / encounters])),
+    netStuffingLostPerWonFight: wins ? lost / wins : null,
+    actionCounts: actions
+  };
+}
+
+function casterRelicSave(relics) {
+  const s = hero('caster', 9, { race: 'unicorn' });
+  for (const [index, id] of relics.entries()) {
+    if (!s.bag.includes(id)) s.bag.push(id);
+    assert.ok(G.equip(s, id, index ? 'relic2' : 'relic'));
+  }
+  return JSON.stringify(s);
+}
+
+test('Dream Bell victory mana matches the direct engine over two fights', () => {
+  const save = casterRelicSave(['dreamBell']);
+  const options = { seeds: [41], chainLength: 2, policy: 'strike', enemy: 'rats' };
+  const reference = directEngineChain(save, options);
+  assert.equal(reference.averageResourcesAtEncounterStart.mp, 104.5);
+  const actual = runCell({ fixture: { id: 'dream-bell-regression', save }, ...options });
+  assert.deepEqual(actual.averageResourcesAtEncounterStart, reference.averageResourcesAtEncounterStart);
+});
+
+test('resource carry and subsequent actions match production across relic chains', () => {
+  for (const relics of [['dreamBell'], ['ribbonKnot', 'cocoaThimble'], ['dreamBell', 'ribbonKnot'], ['patchworkHeart', 'cocoaThimble']]) {
+    const save = casterRelicSave(relics);
+    for (const chainLength of [1, 2, 9, 15]) {
+      const options = { seeds: [41, 42, 88], chainLength, policy: 'strike', enemy: 'rats' };
+      const reference = directEngineChain(save, options);
+      const actual = runCell({ fixture: { id: relics.join('+'), save }, ...options });
+      const context = `${relics.join('+')}, chain=${chainLength}`;
+      for (const key of ['encounters', 'wins', 'defeats', 'averageResourcesAtEncounterStart', 'actionCounts']) {
+        assert.deepEqual(actual[key], reference[key], `${context}: ${key}`);
+      }
+      assert.equal(actual.netStuffingLostPerWonFight, reference.netStuffingLostPerWonFight, context);
+      if (chainLength === 15 && relics.includes('ribbonKnot')) {
+        assert.ok(reference.finishingRibbonGains > 0, `${context}: exercises Ribbon Knot on final blows`);
+      }
+    }
+  }
 });

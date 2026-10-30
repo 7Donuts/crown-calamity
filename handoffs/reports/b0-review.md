@@ -48,3 +48,7 @@ This reassessment changes only the P2 disposition. **Gate 2 remains FAIL solely 
 FAIL / STOP. Independently reviewed the source and reproduced the Dream Bell carry error: two caster level-9 Unicorn fights against rats with seed 41 and strike policy report encounter-start mana average 103.5; the equivalent production chain starts at [110, 99], average 104.5. `postVictoryResources` omits the actual victory mana restoration. Final-blow Ribbon Knot restoration also needs coverage in the next attempt. No approval is given to this harness or to its use as balance evidence.
 
 Full suite: 43/43 test files pass; changed-file syntax, diff checks and a temporary standalone package pass. These regression checks do not invalidate the reproduced measurement bug. No gameplay numbers or save format changed. The task has failed review twice and is stopped under the handoff rule.
+
+## Owner-authorized resumption — resolved
+
+After the stop, the owner asked root to handle the fix personally. The corrected harness retains actual engine resources rather than reconstructing them after victory. Fresh independent review passed; see `b0-resource-review.md` for evidence and direct-engine regression coverage. The failed gates above are preserved as historical findings, not the disposition of the corrected code.
