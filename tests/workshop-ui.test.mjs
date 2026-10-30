@@ -38,6 +38,6 @@ test('upgrade and reforge keep the chosen Sewing Kit item open with a fresh prev
   await ui.act('exchange:craft_cap');await ui.act('exchange-confirm:craft_cap');
   assert.ok(ui.getState().bag.includes('cap'));
   assert.equal(ui.getModal().open,true,'a crafted item opens its fresh comparison inspector');
-  assert.match(ui.getModal().innerHTML,/Ledger-Keeper’s Cap/);
+  assert.ok(ui.getModal().innerHTML.includes(G.ITEMS.cap.name));
   assert.match(ui.getApp().innerHTML,/workbench-item selected" data-workbench-item="cap"/);
 });

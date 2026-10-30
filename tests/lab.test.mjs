@@ -3,8 +3,8 @@ import * as G from '../dist/engine.js';
 import * as Lab from '../dist/lab.js';
 
 {
-  assert.equal(Lab.LAB_SCENARIOS.length,8);
-  for(const id of ['fresh_intro_goal','routine_repetition','heavy_telegraph','build_equipment','return_orientation','longer_level_pacing','night_shift','bounty_board'])assert.ok(Lab.LAB_SCENARIOS.some(s=>s.id===id));
+  assert.equal(Lab.LAB_SCENARIOS.length,9);
+  for(const id of ['fresh_intro_goal','routine_repetition','heavy_telegraph','build_equipment','return_orientation','longer_level_pacing','night_shift','level_cap_progress','bounty_board'])assert.ok(Lab.LAB_SCENARIOS.some(s=>s.id===id));
   assert.equal(Lab.createLabSession({scenarioId:'missing'}),null);
   const a=Lab.createLabSession({scenarioId:'fresh_intro_goal',seed:'same'});
   const b=Lab.createLabSession({scenarioId:'fresh_intro_goal',seed:'same'});
@@ -27,6 +27,17 @@ import * as Lab from '../dist/lab.js';
     assert.equal(s.character.hp,G.totals(s.character).hp,`${scenario.id} fixture starts at full health`);
     assert.equal(s.character.mp,G.totals(s.character).mp,`${scenario.id} fixture starts at full mana`);
     assert.equal(s.character.sp,G.totals(s.character).sp,`${scenario.id} fixture starts at full stamina`);
+    if(scenario.id==='build_equipment'){
+      assert.equal(G.storyState(s.character).campaign.current,2);
+      assert.match(scenario.description,/synthetic claimed Chapter 1 finale/);
+    }
+    if(scenario.id==='level_cap_progress'){
+      const progress=G.progression(s.character);
+      assert.equal(G.storyState(s.character).campaign.current,5);
+      assert.equal(progress.level,50);assert.equal(progress.levelXP,0);assert.equal(progress.levelRequired,0);assert.equal(progress.capped,true);
+      assert.equal('part' in s.character,false);assert.equal(progress.totalEarned,196);
+      assert.equal(Lab.labSummary(s).starting.xp,0);assert.equal(Lab.labSummary(s).starting.levelRequired,0);
+    }
   }
 }
 
@@ -72,11 +83,18 @@ import * as Lab from '../dist/lab.js';
 
 {
   const s=Lab.createLabSession({scenarioId:'build_equipment',seed:3});
-  assert.equal(s.character.coins,200);
-  assert.equal(Lab.labUse(s,'buy','oilskin'),true);
-  const resale=G.sellPreview(s.character,'oilskin').price;
-  assert.equal(Lab.labUse(s,'sell','oilskin').coins,resale);
-  assert.deepEqual(s.shopActions,{attempted:2,completed:2});
+  assert.equal(s.character.coins,1000);
+  const sidegrade=Object.keys(G.ITEMS).find(id=>G.buyPreview(s.character,id).allowed&&G.buyPreview(s.character,id).chapterRequired===2&&G.ITEMS[id].slot==='body');
+  assert.ok(sidegrade,'the documented Chapter 2 fixture has an available body-slot sidegrade');
+  const catalogName=G.ITEMS[sidegrade].name;
+  const chapterLocked=Object.keys(G.ITEMS).find(id=>G.buyPreview(s.character,id).chapterRequired===3);
+  assert.ok(chapterLocked);assert.equal(G.buyPreview(s.character,chapterLocked).allowed,false);
+  assert.equal(Lab.labUse(s,'buy',chapterLocked),false,'lab purchases keep the production chapter gate');
+  assert.equal(s.character.coins,1000);
+  assert.equal(Lab.labUse(s,'buy',sidegrade),true,catalogName);
+  const resale=G.sellPreview(s.character,sidegrade).price;
+  assert.equal(Lab.labUse(s,'sell',sidegrade).coins,resale,catalogName);
+  assert.deepEqual(s.shopActions,{attempted:3,completed:2});
   assert.equal(Lab.labRest(s),true);
   assert.ok(s.events.some(e=>e.type==='rest'));
   Lab.setLabNotes(s,'The price was easy to compare.');
@@ -85,6 +103,14 @@ import * as Lab from '../dist/lab.js';
   assert.equal(report.counters.shopActions.completed,2);
   assert.equal('name' in report.ending,false);
   assert.equal('roster' in report,false);
+}
+
+{
+  const s=Lab.createLabSession({scenarioId:'level_cap_progress',seed:50});
+  const p=G.progression(s.character),report=Lab.labSummary(s);
+  assert.equal(p.capped,true);assert.equal(p.level,50);assert.equal(p.levelXP,0);assert.equal(p.levelRequired,0);
+  assert.equal(report.counters.earnedAttributePoints,0,'the capped level grants no partial or additional attribute points');
+  assert.equal('part' in s.character,false);
 }
 
 {

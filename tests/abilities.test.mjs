@@ -148,14 +148,14 @@ const fresh=()=>G.fresh();
 
 
 {
-  const guarded=fresh();guarded.level=2;
+  const guarded=fresh();guarded.level=2;guarded.delve={node:4,path:'records',campUsed:true};
   assert.equal(G.startFight(guarded,'boss','delve'),true);
   assert.equal(G.exchange(guarded,'guard',()=>0,0).ok,true);
   assert.equal(G.exchange(guarded,'guard',()=>0,700).ok,true);
   assert.equal(guarded.usefulGuards,2,'useful Guards count without Reservoir equipped');
   assert.equal(G.abilityStatus(guarded,'reservoir').eligible,true);
 
-  const wardcast=fresh();
+  const wardcast=fresh();wardcast.delve={node:4,path:'records',campUsed:true};
   assert.equal(G.startFight(wardcast,'boss','delve'),true);
   assert.equal(G.exchange(wardcast,'combo',()=>0,0).ok,true);
   assert.equal(wardcast.usefulGuards,1,'Wardcast also counts a useful Guard without Reservoir');
@@ -175,9 +175,9 @@ console.log('ability progression tests passed');
 
 // Disrupt mastery comes from an actual interrupt, not its incidental weak hit.
 {
- const s=G.fresh();s.level=5;s.quest=3;G.learnAbility(s,'disrupt');G.equipAbility(s,'disrupt');G.startFight(s,'crab','delve');
+ const s=G.fresh();s.level=5;s.quest=3;G.learnAbility(s,'disrupt');G.equipAbility(s,'disrupt');s.delve={node:0,path:null,campUsed:false};G.startFight(s,'crab','delve');
  G.exchange(s,'disrupt',()=>.2,1000);assert.equal(s.fight.used.includes('disrupt'),false);
- const next=G.fresh();next.level=5;next.quest=3;G.learnAbility(next,'disrupt');G.equipAbility(next,'disrupt');G.startFight(next,'crab','delve');next.fight.round=1;
+ const next=G.fresh();next.level=5;next.quest=3;G.learnAbility(next,'disrupt');G.equipAbility(next,'disrupt');next.delve={node:0,path:null,campUsed:false};G.startFight(next,'crab','delve');next.fight.round=1;
  G.exchange(next,'disrupt',()=>.2,1000);assert.equal(next.fight.used.includes('disrupt'),true);
 }
 // Corrupted v3 loadouts are rejected instead of silently losing a slot on import.

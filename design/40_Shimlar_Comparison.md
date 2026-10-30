@@ -87,16 +87,17 @@ Design 37 already sets the rules for bounties: a separate record type that never
 - Claiming pays once, records the claim, and advances only that profile past the claimed entry. Abandoning forfeits progress and leaves the board exactly as it was, so declining never rerolls an offer. Accepting, claiming and abandoning wait until a fight ends.
 - The board lives on the lab session, not the character. Nothing is added to campaign saves.
 
-Measured offers from the prototype:
+Measured offers from the prototype, after merging v0.14.0 (which cut kill coins, for example rats from 9 coins to 1):
 
 | Level | Experience-led | Coin-led | Material-led |
 | --- | --- | --- | --- |
-| 1 to 3 | Rat Swarm × 4: +26 XP, +3 coins | Raccoon × 3: +13 XP, +8 coins | Wisp × 3: +5 XP, +5 coins, 1 material |
-| 5 | Wisp × 3: +35 XP, +5 coins | Crab × 3: +25 XP, +16 coins | Appraiser × 2: +7 XP, +7 coins, 1 material |
-| 8 | Appraiser × 2: +43 XP, +7 coins | Chewster × 2: +26 XP, +18 coins | Appraiser × 3: +10 XP, +11 coins, 1 material |
-| 10 | Chewster × 2: +53 XP, +9 coins | Chewster × 3: +40 XP, +28 coins | Chewster × 2: +8 XP, +9 coins, 1 material |
+| 1 to 3 | Rat Swarm × 4: +26 XP | Raccoon × 3: +13 XP | Wisp × 3: +5 XP, 1 material |
+| 5 | Wisp × 3: +35 XP | Crab × 3: +25 XP, +1 coin | Appraiser × 2: +7 XP, 1 material |
+| 8 | Appraiser × 2: +43 XP | Chewster × 2: +26 XP, +1 coin | Appraiser × 3: +10 XP, 1 material |
+| 10 | Chewster × 2: +53 XP | Chewster × 3: +40 XP, +1 coin | Chewster × 2: +8 XP, 1 material |
+| 12 to 50 | none | none | none |
 
-At level 10 only Chewster is within the window, so offers repeat a target; the profiles still differ.
+At level 10 only Chewster is within the window, so offers repeat a target; the profiles still differ. Before v0.14.0 the coin-led column paid 8 to 28 coins; now it pays almost nothing (see open questions 5 and 6).
 
 The first draft used a 50% budget. Its experience-led Chewster × 2 bounty paid 76 XP, more than the authored minor contract for the same hunt (Watch the Doggy Door, 58 XP). A repeatable bounty should not outpay authored story, so the budget is 35% and `tests/bounties.test.mjs` checks every profile against every single-target minor contract.
 
@@ -106,6 +107,8 @@ The first draft used a 50% budget. Its experience-led Chewster × 2 bounty paid 
 2. An economy check with `npm run economy` (design 38) once a bounty cadence is assumed. The prototype changes no campaign pacing.
 3. Whether delve victories count toward a bounty, and whether more than one may be active.
 4. Whether the material-led profile needs a larger material share to feel distinct; one material is a small reward next to the others.
+5. Coin pricing after v0.14.0. The bonus is a share of kill coins, and v0.14.0 made kill coins small, so the coin-led profile now pays 0 or 1 coin and no longer reads as a choice. Options: price all three channels from one XP-equivalent budget using the coin-to-XP ratio the authored minor contracts already use (roughly one coin per three XP), or drop the coin-led profile. Either is a rules version 2 decision.
+6. Chapters 2 to 5. The rotation names only chapter 1 targets, so the board is empty from level 12 to the level 50 cap. A per-chapter rotation would also need to respect `chapterUnlocked`.
 
 ## Item 3. Show the damage that actually landed (shipped in the campaign)
 

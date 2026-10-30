@@ -1,4 +1,5 @@
 // Pure equipment and crafting rules. Item ids are save-format identifiers.
+import { currentChapter, chapterUnlocked } from './campaign.js';
 export const SLOTS = Object.freeze({
   weapon: 'Weapon', offhand: 'Offhand', head: 'Head', body: 'Body', hands: 'Hands',
   feet: 'Feet', accessory: 'Accessory', accessory2: 'Accessory 2', relic: 'Relic'
@@ -7,33 +8,33 @@ const ACCESSORY_SLOTS = ['accessory', 'accessory2'];
 const SLOT_KEYS = Object.keys(SLOTS);
 
 export const ITEMS = Object.freeze({
-  rod:{id:'rod',name:"Inspector’s Rod",slot:'weapon',base:14,channel:'spell',focus:true,level:1,price:18,desc:'A focus-tagged rod. Strike scales with Intellect; supports a shield.'},
-  sword:{id:'sword',name:'Canal-Iron Sword',slot:'weapon',base:14,channel:'heavy',level:1,price:18,desc:'An honest length of iron. Strike scales with Might.'},
-  blade:{id:'blade',name:'Surveyor’s Blade',slot:'weapon',base:14,channel:'precision',level:1,price:20,desc:'For precise measurements and less precise disputes. Scales with Finesse.'},
-  shield:{id:'shield',name:'Salvaged Buckler',slot:'offhand',armor:10,level:1,price:12,desc:'Enough shield to make a point. Enables Wardcast with a rod.'},
-  focus:{id:'focus',name:'Chalkbound Focus',slot:'offhand',spellBase:3,focus:true,level:1,price:15,desc:'+3 spell base. Trades shield protection for spell output.'},
-  charm:{id:'charm',name:'Canalstone Charm',slot:'offhand',ward:8,stats:{ins:2},level:1,price:16,desc:'+2 Insight, +8 ward. A small stone with good intentions.'},
-  coat:{id:'coat',name:'Patched Workcoat',slot:'body',armor:8,ward:4,level:1,price:20,desc:'+8 armor, +4 ward. Dry is a relative term.'},
-  gateShield:{id:'gateShield',name:'Riveted Gate Shield',slot:'offhand',armor:28,level:3,price:45,desc:'+28 armor. A retired piece of infrastructure.'},
-  oilskin:{id:'oilskin',name:'Oilskin Coat',slot:'body',armor:20,ward:12,level:3,price:50,desc:'+20 armor, +12 ward. Finally, an actual waterproof layer.'},
-  grips:{id:'grips',name:'Chainback Grips',slot:'hands',armor:6,stats:{mig:2},level:5,price:65,desc:'+2 Might, +6 armor. Reclaimed from a reluctant donor.'},
-  lantern:{id:'lantern',name:'Lantern-Eye Charm',slot:'accessory',stats:{ins:2},ward:8,level:6,price:75,desc:'+2 Insight, +8 ward. Lets you see the problem more clearly.'},
-  floodrod:{id:'floodrod',name:'Floodglass Conductor',slot:'weapon',base:26,channel:'spell',focus:true,stats:{int:2},level:6,price:95,desc:'26 weapon base, +2 Intellect. Focus-tagged; works with a shield.'},
-  ironsword:{id:'ironsword',name:'Lockwarden’s Sword',slot:'weapon',base:30,channel:'heavy',stats:{mig:2},level:6,price:95,desc:'30 weapon base, +2 Might. A persuasive argument.'},
-  glassblade:{id:'glassblade',name:'Floodglass Needle',slot:'weapon',base:30,channel:'precision',stats:{fin:2},level:6,price:95,desc:'30 weapon base, +2 Finesse. Precision has its rewards.'},
-  seal:{id:'seal',name:'Superintendent’s Seal',slot:'relic',relicEffect:'seal',level:8,desc:'The first useful Guard each fight grants 15 barrier.'},
-  penny:{id:'penny',name:'Copper-Thread Charm',slot:'accessory',stats:{lck:4},level:1,price:25,desc:'+4 Luck. A little fortune, worn on purpose. Improves critical and equipment-drop chances.'},
-  band:{id:'band',name:'Floodglass Band',slot:'accessory',ward:8,stats:{int:2},level:8,desc:'+2 Intellect, +8 ward. Quietly, reliably magical.'},
-  cap:{id:'cap',name:'Ledger-Keeper’s Cap',slot:'head',armor:4,stats:{ins:1},level:1,price:22,desc:'+1 Insight, +4 armor. Keeps the paperwork out of your eyes.'},
-  boots:{id:'boots',name:'Sluicewalker Boots',slot:'feet',armor:3,stats:{fin:1},level:2,price:24,desc:'+1 Finesse, +3 armor. Grip tested on wet stone.'},
-  workgloves:{id:'workgloves',name:'Dockhand Workgloves',slot:'hands',armor:2,stats:{fin:1},level:1,price:16,desc:'+1 Finesse, +2 armor. Worn smooth by honest municipal labor.'},
-  wornboots:{id:'wornboots',name:'Canal-Walking Boots',slot:'feet',armor:1,stats:{fin:1},level:1,price:16,desc:'+1 Finesse, +1 armor. Better than bare feet on wet stone.'},
-  rivethelm:{id:'rivethelm',name:'Chainback Rivet Helm',slot:'head',armor:11,stats:{vit:1},level:5,price:68,desc:'+1 Vitality, +11 armor. A hard answer to a hard shell.'},
-  waders:{id:'waders',name:'Floodgate Waders',slot:'feet',armor:7,ward:5,stats:{wil:1},level:6,price:78,desc:'+1 Will, +7 armor, +5 ward. Rated for municipal flooding.'},
-  signet:{id:'signet',name:'Stamped Brass Signet',slot:'relic',relicEffect:'signet',stats:{wil:1},ward:8,level:4,price:58,desc:'+1 Will, +8 ward. Recover restores 2 extra Sparkle (mana).'},
-  pike:{id:'pike',name:'Lockwarden’s Breach Pike',slot:'weapon',base:40,channel:'heavy',twoHanded:true,stats:{mig:2},level:7,price:125,desc:'Two-handed, 40 weapon base and +2 Might. Its long reach trades away the offhand.'},
+  rod:{id:'rod',name:"Squeaker-Glass Wand",slot:'weapon',base:14,channel:'spell',focus:true,level:1,price:18,desc:'A squeaker-glass wand. Spells scale with Intellect; it works with a shield.'},
+  sword:{id:'sword',name:'Lost-Button Bonker',slot:'weapon',base:14,channel:'heavy',level:1,price:18,desc:'A hefty button-bonker. Strikes scale with Might.'},
+  blade:{id:'blade',name:'Darning-Needle Blade',slot:'weapon',base:14,channel:'precision',level:1,price:20,desc:'A nimble darning blade. Strikes scale with Finesse.'},
+  shield:{id:'shield',name:'Pot-Lid Button Shield',slot:'offhand',armor:10,level:1,price:12,desc:'Enough shield to make a point. Enables Wardcast with a rod.'},
+  focus:{id:'focus',name:'Crayon-Star Focus',slot:'offhand',spellBase:3,focus:true,level:1,price:15,desc:'+3 spell base. Trades shield protection for spell output.'},
+  charm:{id:'charm',name:'Pebble-Pocket Charm',slot:'offhand',ward:8,stats:{ins:2},level:1,price:16,desc:'+2 Insight, +8 ward. A small stone with good intentions.'},
+  coat:{id:'coat',name:'Quilt-Scrap Jacket',slot:'body',armor:8,ward:4,level:1,price:20,desc:'+8 armor, +4 ward. Dry is a relative term.'},
+  gateShield:{id:'gateShield',name:'Tin-Gate Buckler',slot:'offhand',armor:28,level:3,price:45,desc:'+28 armor. A retired piece of infrastructure.'},
+  oilskin:{id:'oilskin',name:'Rain-Cape Patchcoat',slot:'body',armor:20,ward:12,level:3,price:50,desc:'+20 armor, +12 ward. Finally, an actual waterproof layer.'},
+  grips:{id:'grips',name:'Thimble-Stud Mitts',slot:'hands',armor:6,stats:{mig:2},level:5,price:65,desc:'+2 Might, +6 armor. Reclaimed from a reluctant donor.'},
+  lantern:{id:'lantern',name:'Glowbug Button Charm',slot:'accessory',stats:{ins:2},ward:8,level:6,price:75,desc:'+2 Insight, +8 ward. Lets you see the problem more clearly.'},
+  floodrod:{id:'floodrod',name:'Squeaker-Core Scepter',slot:'weapon',base:26,channel:'spell',focus:true,stats:{int:2},level:6,price:95,desc:'26 weapon base, +2 Intellect. Focus-tagged; works with a shield.'},
+  ironsword:{id:'ironsword',name:'Toy-Guard Club',slot:'weapon',base:30,channel:'heavy',stats:{mig:2},level:6,price:95,desc:'30 weapon base, +2 Might. A persuasive argument.'},
+  glassblade:{id:'glassblade',name:'Squeaker-Glass Stiletto',slot:'weapon',base:30,channel:'precision',stats:{fin:2},level:6,price:95,desc:'30 weapon base, +2 Finesse. Precision has its rewards.'},
+  seal:{id:'seal',name:'Keeper’s Brass Button',slot:'relic',relicEffect:'seal',level:8,desc:'The first useful Guard each fight grants 15 barrier.'},
+  penny:{id:'penny',name:'Lucky Copper Button',slot:'accessory',stats:{lck:4},level:1,price:25,desc:'+4 Luck. A little fortune, worn on purpose. Improves critical and equipment-drop chances.'},
+  band:{id:'band',name:'Squeaker-Glass Ring',slot:'accessory',ward:8,stats:{int:2},level:8,desc:'+2 Intellect, +8 ward. Quietly, reliably magical.'},
+  cap:{id:'cap',name:'Ledger-Scrap Bonnet',slot:'head',armor:4,stats:{ins:1},level:1,price:22,desc:'+1 Insight, +4 armor. Keeps the paperwork out of your eyes.'},
+  boots:{id:'boots',name:'Sluice-Sock Boots',slot:'feet',armor:3,stats:{fin:1},level:2,price:24,desc:'+1 Finesse, +3 armor. Grip tested on wet stone.'},
+  workgloves:{id:'workgloves',name:'Patchwork Paws',slot:'hands',armor:2,stats:{fin:1},level:1,price:16,desc:'+1 Finesse, +2 armor. Worn smooth by honest municipal labor.'},
+  wornboots:{id:'wornboots',name:'Canal-Step Slippers',slot:'feet',armor:1,stats:{fin:1},level:1,price:16,desc:'+1 Finesse, +1 armor. Better than bare feet on wet stone.'},
+  rivethelm:{id:'rivethelm',name:'Button-Stud Bonnet',slot:'head',armor:11,stats:{vit:1},level:5,price:68,desc:'+1 Vitality, +11 armor. A hard answer to a hard shell.'},
+  waders:{id:'waders',name:'Floodgate Welly-Socks',slot:'feet',armor:7,ward:5,stats:{wil:1},level:6,price:78,desc:'+1 Will, +7 armor, +5 ward. Rated for municipal flooding.'},
+  signet:{id:'signet',name:'Brass-Stamp Ring',slot:'relic',relicEffect:'signet',stats:{wil:1},ward:8,level:4,price:58,desc:'+1 Will, +8 ward. Recover restores 2 extra Sparkle (mana).'},
+  pike:{id:'pike',name:'Gate-Latch Needle Pike',slot:'weapon',base:40,channel:'heavy',twoHanded:true,stats:{mig:2},level:7,price:125,desc:'A two-handed needle pike with +2 Might; its long reach trades away the offhand.'},
   // Additional catalog pieces use existing generated item-art families.
-  spoolblade:{id:'spoolblade',name:'Spool-Whipped Saber',slot:'weapon',base:20,channel:'precision',stats:{fin:1},level:2,desc:'A tidy blade with an untidy tassel.'},
+  spoolblade:{id:'spoolblade',name:'Bobbin-Thread Needleblade',slot:'weapon',base:20,channel:'precision',stats:{fin:1},level:2,desc:'A small sewing blade with a jaunty thread tassel.'},
   teacupMace:{id:'teacupMace',name:'Teacup Mallet',slot:'weapon',base:16,channel:'heavy',stats:{mig:1},level:2,desc:'Porcelain outside, surprisingly stern inside.'},
   lullabyRod:{id:'lullabyRod',name:'Lullaby Baton',slot:'weapon',base:17,channel:'spell',focus:true,stats:{int:1},level:2,desc:'A soft hum, followed by a very firm bonk.'},
   buttonBaton:{id:'buttonBaton',name:'Button-Bonk Baton',slot:'weapon',base:18,channel:'heavy',stats:{mig:1},level:3,desc:'A sturdy toy baton with a very large button.'},
@@ -42,13 +43,13 @@ export const ITEMS = Object.freeze({
   kettleHammer:{id:'kettleHammer',name:'Kettle-Knight Hammer',slot:'weapon',base:31,channel:'heavy',stats:{mig:2},level:7,desc:'A brave little hammer for a brave little knight.'},
   blanketClub:{id:'blanketClub',name:'Blanket-Roll Club',slot:'weapon',base:32,channel:'heavy',stats:{mig:2},level:8,desc:'Rolled tight and ready for a pillow-fort siege.'},
   plushMaul:{id:'plushMaul',name:'Plush Parade Maul',slot:'weapon',base:33,channel:'heavy',stats:{mig:2},level:9,desc:'A ceremonial mallet with practical ambitions.'},
-  ribbonRapier:{id:'ribbonRapier',name:'Ribbon-Tail Rapier',slot:'weapon',base:22,channel:'precision',stats:{fin:1},level:3,desc:'A narrow blade with a very dashing ribbon.'},
+  ribbonRapier:{id:'ribbonRapier',name:'Ribbon-Tail Needleblade',slot:'weapon',base:22,channel:'precision',stats:{fin:1},level:3,desc:'A narrow blade with a very dashing ribbon.'},
   pinFoil:{id:'pinFoil',name:'Pincushion Foil',slot:'weapon',base:24,channel:'precision',stats:{fin:1},level:4,desc:'Pointy, nimble, and safely stored in felt.'},
-  thimbleSabre:{id:'thimbleSabre',name:'Thimbleguard Sabre',slot:'weapon',base:26,channel:'precision',stats:{fin:1},level:5,desc:'A neat cut with a neat little handguard.'},
+  thimbleSabre:{id:'thimbleSabre',name:'Thimble-Guard Needleblade',slot:'weapon',base:26,channel:'precision',stats:{fin:1},level:5,desc:'A neat cut with a neat little handguard.'},
   satinNeedle:{id:'satinNeedle',name:'Satin-Stitch Needleblade',slot:'weapon',base:31,channel:'precision',stats:{fin:2},level:7,desc:'A precise point for unpicking a bad plan.'},
-  starlingEdge:{id:'starlingEdge',name:'Starling’s Edge',slot:'weapon',base:32,channel:'precision',stats:{fin:2},level:8,desc:'Light as a feather, sharp as a bedtime reminder.'},
-  spoolfoil:{id:'spoolfoil',name:'Golden Spool Foil',slot:'weapon',base:33,channel:'precision',stats:{fin:2},level:9,desc:'A fine edge wound around a very fine story.'},
-  moonlitStiletto:{id:'moonlitStiletto',name:'Moonlit Stiletto',slot:'weapon',base:34,channel:'precision',stats:{fin:2},level:10,desc:'A bright little blade for a careful little step.'},
+  starlingEdge:{id:'starlingEdge',name:'Star-Button Needleblade',slot:'weapon',base:32,channel:'precision',stats:{fin:2},level:8,desc:'Light as a feather, sharp as a bedtime reminder.'},
+  spoolfoil:{id:'spoolfoil',name:'Golden-Bobbin Foil',slot:'weapon',base:33,channel:'precision',stats:{fin:2},level:9,desc:'A fine edge wound around a very fine story.'},
+  moonlitStiletto:{id:'moonlitStiletto',name:'Moonlit Thread Needle',slot:'weapon',base:34,channel:'precision',stats:{fin:2},level:10,desc:'A bright little blade for a careful little step.'},
   singalongScepter:{id:'singalongScepter',name:'Singalong Scepter',slot:'weapon',base:18,channel:'spell',focus:true,stats:{int:1},level:3,desc:'Every spell gets a chorus and a tiny flourish.'},
   starWand:{id:'starWand',name:'Star-Button Wand',slot:'weapon',base:20,channel:'spell',focus:true,stats:{int:1},level:4,desc:'A sewn star points the spell in the right direction.'},
   cloudFlute:{id:'cloudFlute',name:'Cloud-Puff Flute',slot:'weapon',base:22,channel:'spell',focus:true,stats:{int:1},level:5,desc:'A gentle note with a firm magical finish.'},
@@ -56,43 +57,43 @@ export const ITEMS = Object.freeze({
   lanternWand:{id:'lanternWand',name:'Pocket-Lantern Wand',slot:'weapon',base:28,channel:'spell',focus:true,stats:{int:2},level:8,desc:'A little light for finding the right enchantment.'},
   velvetConductor:{id:'velvetConductor',name:'Velvet-String Conductor',slot:'weapon',base:29,channel:'spell',focus:true,stats:{int:2},level:9,desc:'Conducts a whole orchestra of quiet magic.'},
   bedtimeStar:{id:'bedtimeStar',name:'Bedtime Star Baton',slot:'weapon',base:30,channel:'spell',focus:true,stats:{int:2},level:10,desc:'A final sparkle before the adventure continues.'},
-  quiltBuckler:{id:'quiltBuckler',name:'Quilted Pot Lid',slot:'offhand',armor:14,level:2,desc:'The stew can wait. Incoming trouble cannot.'},
-  thimbleFocus:{id:'thimbleFocus',name:'Thimble Tuning Fork',slot:'offhand',spellBase:4,focus:true,level:2,desc:'A tiny chime with a rather large opinion.'},
-  wardingBlanket:{id:'wardingBlanket',name:'Pocket Ward Blanket',slot:'offhand',ward:11,stats:{wil:1},level:3,desc:'For cold nights and questionable hexes.'},
-  buttonShield:{id:'buttonShield',name:'Big Button Buckler',slot:'offhand',armor:18,level:3,desc:'The button is decorative. The shield is not.'},
-  tinnyFocus:{id:'tinnyFocus',name:'Tin Whistle Focus',slot:'offhand',spellBase:5,focus:true,stats:{int:1},level:4,desc:'A piercing note in every sense.'},
-  stitchedWard:{id:'stitchedWard',name:'Patchwork Ward',slot:'offhand',ward:15,stats:{wil:1},level:4,desc:'Every patch remembers a close call.'},
-  pillowCap:{id:'pillowCap',name:'Pillow-Fort Helmet',slot:'head',armor:6,stats:{vit:1},level:2,desc:'Engineered to survive enthusiastic pillow fights.'},
-  earmuffCrown:{id:'earmuffCrown',name:'Earmuff Crown',slot:'head',armor:8,stats:{wil:1},level:3,desc:'Royal protection from cold ears and bad ideas.'},
-  thimbleHelm:{id:'thimbleHelm',name:'Thimble-Stack Helm',slot:'head',armor:10,stats:{ins:1},level:4,desc:'A stack of thimbles. Very official.'},
-  teaCosyHood:{id:'teaCosyHood',name:'Tea-Cosy Hood',slot:'head',armor:12,ward:3,level:5,desc:'Warm, snug, and mildly enchanted by biscuits.'},
-  ribbonVisor:{id:'ribbonVisor',name:'Ribbon-Tied Visor',slot:'head',armor:13,stats:{fin:1},level:6,desc:'Keeps fringe out of the line of fire.'},
-  kettleHelmet:{id:'kettleHelmet',name:'Kettle-Knight Helm',slot:'head',armor:15,ward:4,stats:{vit:1},level:7,desc:'A brave little kettle with a visor.'},
+  quiltBuckler:{id:'quiltBuckler',name:'Patch-Quilt Pot-Lid Shield',slot:'offhand',armor:14,level:2,desc:'The stew can wait. Incoming trouble cannot.'},
+  thimbleFocus:{id:'thimbleFocus',name:'Thimble-Tone Focus',slot:'offhand',spellBase:4,focus:true,level:2,desc:'A tiny chime with a rather large opinion.'},
+  wardingBlanket:{id:'wardingBlanket',name:'Pocket-Square Ward',slot:'offhand',ward:11,stats:{wil:1},level:3,desc:'For cold nights and questionable hexes.'},
+  buttonShield:{id:'buttonShield',name:'Big-Bobble Button Shield',slot:'offhand',armor:18,level:3,desc:'The button is decorative. The shield is not.'},
+  tinnyFocus:{id:'tinnyFocus',name:'Tin-Whistle Star Focus',slot:'offhand',spellBase:5,focus:true,stats:{int:1},level:4,desc:'A piercing note in every sense.'},
+  stitchedWard:{id:'stitchedWard',name:'Patchwork Paw Ward',slot:'offhand',ward:15,stats:{wil:1},level:4,desc:'Every patch remembers a close call.'},
+  pillowCap:{id:'pillowCap',name:'Pillow-Fort Bonnet',slot:'head',armor:6,stats:{vit:1},level:2,desc:'Engineered to survive enthusiastic pillow fights.'},
+  earmuffCrown:{id:'earmuffCrown',name:'Earmuff Button Crown',slot:'head',armor:8,stats:{wil:1},level:3,desc:'Royal protection from cold ears and bad ideas.'},
+  thimbleHelm:{id:'thimbleHelm',name:'Thimble-Stack Bonnet',slot:'head',armor:10,stats:{ins:1},level:4,desc:'A stack of thimbles. Very official.'},
+  teaCosyHood:{id:'teaCosyHood',name:'Tea-Cosy Pincushion Hood',slot:'head',armor:12,ward:3,level:5,desc:'Warm, snug, and mildly enchanted by biscuits.'},
+  ribbonVisor:{id:'ribbonVisor',name:'Ribbon-Bow Visor',slot:'head',armor:13,stats:{fin:1},level:6,desc:'Keeps fringe out of the line of fire.'},
+  kettleHelmet:{id:'kettleHelmet',name:'Toy-Kettle Bonnet',slot:'head',armor:15,ward:4,stats:{vit:1},level:7,desc:'A brave little kettle with a visor.'},
   starryHood:{id:'starryHood',name:'Star-Print Snood',slot:'head',armor:16,ward:5,stats:{wil:1},level:8,desc:'A night sky, stitched close around your ears.'},
-  paradeBonnet:{id:'paradeBonnet',name:'Parade Bonnet',slot:'head',armor:18,stats:{ins:2},level:9,desc:'Makes every retreat look like a procession.'},
-  quiltedVest:{id:'quiltedVest',name:'Patchwork Parade Vest',slot:'body',armor:12,ward:5,level:2,desc:'The pockets are mostly for snacks.'},
+  paradeBonnet:{id:'paradeBonnet',name:'Parade-Day Bonnet',slot:'head',armor:18,stats:{ins:2},level:9,desc:'Makes every retreat look like a procession.'},
+  quiltedVest:{id:'quiltedVest',name:'Patchwork Pocket Vest',slot:'body',armor:12,ward:5,level:2,desc:'The pockets are mostly for snacks.'},
   kettleApron:{id:'kettleApron',name:'Kettle-Warden Apron',slot:'body',armor:15,stats:{vit:1},level:3,desc:'Stain resistant, spell resistant, soup resistant.'},
-  velvetWaistcoat:{id:'velvetWaistcoat',name:'Velvet Waistcoat',slot:'body',armor:18,ward:6,stats:{ins:1},level:4,desc:'Dressy enough for danger.'},
-  rainCape:{id:'rainCape',name:'Buttoned Rain Cape',slot:'body',armor:21,ward:7,level:5,desc:'A tiny cape for very large weather.'},
-  storybookTunic:{id:'storybookTunic',name:'Storybook Tunic',slot:'body',armor:24,stats:{wil:1},level:6,desc:'The margins contain useful footnotes.'},
+  velvetWaistcoat:{id:'velvetWaistcoat',name:'Velvet Scrap Waistcoat',slot:'body',armor:18,ward:6,stats:{ins:1},level:4,desc:'Dressy enough for danger.'},
+  rainCape:{id:'rainCape',name:'Buttoned Rain-Patch Cape',slot:'body',armor:21,ward:7,level:5,desc:'A tiny cape for very large weather.'},
+  storybookTunic:{id:'storybookTunic',name:'Storybook Quilt Tunic',slot:'body',armor:24,stats:{wil:1},level:6,desc:'The margins contain useful footnotes.'},
   festivalCoat:{id:'festivalCoat',name:'Festival Lantern Coat',slot:'body',armor:27,ward:8,stats:{vit:1},level:7,desc:'Bright lining, sturdy seams.'},
   cloudPajamas:{id:'cloudPajamas',name:'Cloud-Quilt Pajamas',slot:'body',armor:29,ward:10,stats:{wil:1},level:8,desc:'Dream-soft fabric, nightmare-tough stitching.'},
   captainJacket:{id:'captainJacket',name:'Button-Captain Jacket',slot:'body',armor:32,stats:{mig:1,vit:1},level:9,desc:'For captains of boats, beds, or blanket forts.'},
   ribbonMitts:{id:'ribbonMitts',name:'Ribbon-Pull Mitts',slot:'hands',armor:4,stats:{fin:1},level:2,desc:'A bow at the wrist; a grip like a knot.'},
-  thimbleGauntlets:{id:'thimbleGauntlets',name:'Thimble-Finger Gauntlets',slot:'hands',armor:7,stats:{mig:1},level:3,desc:'Precision fit for very small screws.'},
-  pastryMitts:{id:'pastryMitts',name:'Pastry-Safe Mitts',slot:'hands',armor:9,ward:2,level:4,desc:'Rated for hot trays and hot tempers.'},
-  spoolBracers:{id:'spoolBracers',name:'Spool-Guard Bracers',slot:'hands',armor:11,stats:{vit:1},level:5,desc:'Threaded tight against scrapes.'},
-  starGloves:{id:'starGloves',name:'Star-Catcher Gloves',slot:'hands',armor:13,stats:{ins:1},level:6,desc:'For reaching into the odd corners of the sky.'},
-  mittenMitts:{id:'mittenMitts',name:'Mittens of Many Mittens',slot:'hands',armor:15,ward:3,stats:{wil:1},level:7,desc:'Warm hands, several layers of courage.'},
-  captainsGloves:{id:'captainsGloves',name:'Captain’s Knot Gloves',slot:'hands',armor:17,stats:{mig:1,fin:1},level:8,desc:'Every knot stays tied, even under pressure.'},
-  woollyWristguards:{id:'woollyWristguards',name:'Woolly Wristguards',slot:'hands',armor:19,ward:4,stats:{vit:1},level:9,desc:'A little extra padding for a long day.'},
-  slipperBoots:{id:'slipperBoots',name:'Moonlit Slipper Boots',slot:'feet',armor:4,stats:{fin:1},level:2,desc:'Quiet steps, loud ambitions.'},
-  rainGaloshes:{id:'rainGaloshes',name:'Rain-Drum Galoshes',slot:'feet',armor:6,ward:3,level:3,desc:'They squeak in time with the weather.'},
-  sockSkates:{id:'sockSkates',name:'Sock-Skate Shoes',slot:'feet',armor:8,stats:{fin:1},level:4,desc:'Fast on polished floors; use judgment.'},
-  buttonClogs:{id:'buttonClogs',name:'Button-Soled Clogs',slot:'feet',armor:10,stats:{vit:1},level:5,desc:'Every step makes a satisfying click.'},
-  cloudSlippers:{id:'cloudSlippers',name:'Cloud-Puff Slippers',slot:'feet',armor:12,ward:4,level:6,desc:'A soft landing, even after a hard lesson.'},
-  paradeBoots:{id:'paradeBoots',name:'Parade Ground Boots',slot:'feet',armor:14,stats:{mig:1},level:7,desc:'March bravely; polish occasionally.'},
-  stargazerShoes:{id:'stargazerShoes',name:'Stargazer Shoes',slot:'feet',armor:16,ward:5,stats:{ins:1},level:8,desc:'Point toes toward the next bright idea.'},
+  thimbleGauntlets:{id:'thimbleGauntlets',name:'Thimble-Finger Mitts',slot:'hands',armor:7,stats:{mig:1},level:3,desc:'Precision fit for very small screws.'},
+  pastryMitts:{id:'pastryMitts',name:'Pastry-Patch Paws',slot:'hands',armor:9,ward:2,level:4,desc:'Rated for hot trays and hot tempers.'},
+  spoolBracers:{id:'spoolBracers',name:'Spool-Thread Cuffs',slot:'hands',armor:11,stats:{vit:1},level:5,desc:'Threaded tight against scrapes.'},
+  starGloves:{id:'starGloves',name:'Star-Catcher Mitts',slot:'hands',armor:13,stats:{ins:1},level:6,desc:'For reaching into the odd corners of the sky.'},
+  mittenMitts:{id:'mittenMitts',name:'Mittens of Many Patches',slot:'hands',armor:15,ward:3,stats:{wil:1},level:7,desc:'Warm hands, several layers of courage.'},
+  captainsGloves:{id:'captainsGloves',name:'Captain’s Knot Mitts',slot:'hands',armor:17,stats:{mig:1,fin:1},level:8,desc:'Every knot stays tied, even under pressure.'},
+  woollyWristguards:{id:'woollyWristguards',name:'Woolly Pawguards',slot:'hands',armor:19,ward:4,stats:{vit:1},level:9,desc:'A little extra padding for a long day.'},
+  slipperBoots:{id:'slipperBoots',name:'Moonlit Slipper Socks',slot:'feet',armor:4,stats:{fin:1},level:2,desc:'Quiet steps, loud ambitions.'},
+  rainGaloshes:{id:'rainGaloshes',name:'Rain-Drum Wellies',slot:'feet',armor:6,ward:3,level:3,desc:'They squeak in time with the weather.'},
+  sockSkates:{id:'sockSkates',name:'Sock-Skate Slippers',slot:'feet',armor:8,stats:{fin:1},level:4,desc:'Fast on polished floors; use judgment.'},
+  buttonClogs:{id:'buttonClogs',name:'Button-Sole Booties',slot:'feet',armor:10,stats:{vit:1},level:5,desc:'Every step makes a satisfying click.'},
+  cloudSlippers:{id:'cloudSlippers',name:'Cloud-Puff Socks',slot:'feet',armor:12,ward:4,level:6,desc:'A soft landing, even after a hard lesson.'},
+  paradeBoots:{id:'paradeBoots',name:'Parade-Step Boots',slot:'feet',armor:14,stats:{mig:1},level:7,desc:'March bravely; polish occasionally.'},
+  stargazerShoes:{id:'stargazerShoes',name:'Stargazer Booties',slot:'feet',armor:16,ward:5,stats:{ins:1},level:8,desc:'Point toes toward the next bright idea.'},
   thimblePendant:{id:'thimblePendant',name:'Lucky Thimble Pendant',slot:'accessory',stats:{lck:1},level:2,desc:'A thimble for tiny emergencies.'},
   spoolBracelet:{id:'spoolBracelet',name:'Spool-Thread Bracelet',slot:'accessory',stats:{fin:1},level:3,desc:'A spare thread is always handy.'},
   teaCharm:{id:'teaCharm',name:'Tea-Bag Talisman',slot:'accessory',ward:3,stats:{wil:1},level:4,desc:'Steeped in patience, apparently.'},
@@ -108,27 +109,97 @@ export const ITEMS = Object.freeze({
   amberMarble:{id:'amberMarble',name:'Amber Marble',slot:'relic',relicEffect:'amberMarble',ward:5,level:5,desc:'Your first damaging action each fight deals 3 extra damage.'},
   ribbonKnot:{id:'ribbonKnot',name:'Ribbon Knot of Resolve',slot:'relic',relicEffect:'ribbonKnot',stats:{mig:1},level:6,desc:'A free physical strike restores 1 Sparkle (mana).'},
   stuffingSatchel:{id:'stuffingSatchel',name:'Emergency Stuffing Satchel',slot:'relic',relicEffect:'stuffingSatchel',stats:{vit:1},level:7,desc:'Mend restores 10% more Stuffing (health).'}
+  ,
+  // Later chapters add original stuffie-sized weapons. Their stable IDs are
+  // also used by saves and the shared generated art atlas.
+  thimblePike:{id:'thimblePike',name:'Thimble-Point Pike',slot:'weapon',base:46,channel:'heavy',twoHanded:true,stats:{mig:2},desc:'A sewing thimble lashed to a knitting needle. Long reach, no offhand.'},
+  spoolSpear:{id:'spoolSpear',name:'Spool-Thread Spear',slot:'weapon',base:48,channel:'heavy',stats:{mig:2},desc:'A sharpened bobbin wrapped in tough thread.'},
+  buttonBashers:{id:'buttonBashers',name:'Button-Basher Pair',slot:'weapon',base:50,channel:'heavy',stats:{mig:2},desc:'Two oversized coat buttons, gripped like tiny cudgels.'},
+  thimbleMaul:{id:'thimbleMaul',name:'Thimble-Stack Maul',slot:'weapon',base:52,channel:'heavy',twoHanded:true,stats:{mig:3},desc:'A tower of sewing thimbles packed around a stout handle.'},
+  pincushionPounder:{id:'pincushionPounder',name:'Pincushion Pounder',slot:'weapon',base:54,channel:'heavy',stats:{mig:2},desc:'A padded mallet with a safely tucked-away point.'},
+  bobbinClub:{id:'bobbinClub',name:'Grand Bobbin Club',slot:'weapon',base:56,channel:'heavy',stats:{mig:3},desc:'A huge wooden spool, just right for underfoot trouble.'},
+  kettleDrumHammer:{id:'kettleDrumHammer',name:'Tin-Kettle Drumhammer',slot:'weapon',base:58,channel:'heavy',twoHanded:true,stats:{mig:3},desc:'A toy kettle mounted on a firm dowel. It rings on impact.'},
+  patchworkRam:{id:'patchworkRam',name:'Patchwork Rammer',slot:'weapon',base:60,channel:'heavy',stats:{mig:3,vit:1},desc:'A stuffed battering roll with reinforced seams.'},
+  thimbleKnocker:{id:'thimbleKnocker',name:'Thimble-Knuckle Knocker',slot:'weapon',base:62,channel:'heavy',stats:{mig:3},desc:'A pair of brass thimbles sewn into sturdy mitts.'},
+  quiltedSledge:{id:'quiltedSledge',name:'Quilted Doorstop Sledge',slot:'weapon',base:64,channel:'heavy',twoHanded:true,stats:{mig:3},desc:'A dense quilted head on a reclaimed toy handle.'},
+  pinwheelRapier:{id:'pinwheelRapier',name:'Pinwheel-Tip Rapier',slot:'weapon',base:35,channel:'precision',stats:{fin:2},desc:'A narrow toy blade with a bright spinning pom.'},
+  needleFoil:{id:'needleFoil',name:'Darning-Needle Foil',slot:'weapon',base:37,channel:'precision',stats:{fin:2},desc:'A long blunt needle made for precise little jabs.'},
+  ribbonStiletto:{id:'ribbonStiletto',name:'Ribbon-Tied Stiletto',slot:'weapon',base:39,channel:'precision',stats:{fin:2},desc:'A tiny bright blade hidden under a fluttering bow.'},
+  safetyPinLance:{id:'safetyPinLance',name:'Safety-Pin Lance',slot:'weapon',base:41,channel:'precision',stats:{fin:2},desc:'A giant closed safety pin, quick and carefully pointed.'},
+  glassBeadDart:{id:'glassBeadDart',name:'Glass-Bead Needle Dart',slot:'weapon',base:43,channel:'precision',stats:{fin:2},desc:'A fine stitch-needle with a heavy bead pommel.'},
+  embroideryStiletto:{id:'embroideryStiletto',name:'Embroidery-Hoop Stiletto',slot:'weapon',base:45,channel:'precision',stats:{fin:3},desc:'A slender blade balanced with a little wooden hoop.'},
+  satinSeamRipper:{id:'satinSeamRipper',name:'Satin-Seam Ripper',slot:'weapon',base:47,channel:'precision',stats:{fin:3},desc:'A neat seam tool with a very deliberate hooked tip.'},
+  clockworkBodkin:{id:'clockworkBodkin',name:'Clockwork Bodkin',slot:'weapon',base:49,channel:'precision',stats:{fin:3},desc:'A spring-loaded sewing awl for swift, exact strikes.'},
+  starButtonStiletto:{id:'starButtonStiletto',name:'Star-Button Stiletto',slot:'weapon',base:51,channel:'precision',stats:{fin:3},desc:'A precise little point topped by a gleaming star button.'},
+  moonThreadNeedle:{id:'moonThreadNeedle',name:'Moon-Thread Needleblade',slot:'weapon',base:53,channel:'precision',stats:{fin:3},desc:'A silvery needle wrapped in luminous thread.'},
+  thimbleChime:{id:'thimbleChime',name:'Thimble-Chime Wand',slot:'weapon',base:34,channel:'spell',focus:true,stats:{int:2},desc:'A tiny wand capped with a silver sewing thimble.'},
+  buttonStarWand:{id:'buttonStarWand',name:'Button-Star Wand',slot:'weapon',base:36,channel:'spell',focus:true,stats:{int:2},desc:'A bright star button guides every careful spell.'},
+  ribbonLoomRod:{id:'ribbonLoomRod',name:'Ribbon-Loom Rod',slot:'weapon',base:38,channel:'spell',focus:true,stats:{int:2},desc:'A toy loom shuttle humming with woven magic.'},
+  bedtimeBobbin:{id:'bedtimeBobbin',name:'Bedtime Bobbin Scepter',slot:'weapon',base:40,channel:'spell',focus:true,stats:{int:2},desc:'A polished thread spool that hums a calming spell.'},
+  starryPincushion:{id:'starryPincushion',name:'Starry Pincushion Staff',slot:'weapon',base:42,channel:'spell',focus:true,stats:{int:2},desc:'A soft pincushion dotted with safe, shining pins.'},
+  moonKiteWand:{id:'moonKiteWand',name:'Moon-Kite Wand',slot:'weapon',base:44,channel:'spell',focus:true,stats:{int:3},desc:'A toy kite tail channels a ribbon of moonlight.'},
+  plushCometScepter:{id:'plushCometScepter',name:'Plush-Comet Scepter',slot:'weapon',base:46,channel:'spell',focus:true,stats:{int:3},desc:'A stuffed comet charm carries a bright, steady spell.'},
+  thimbleOrchestraRod:{id:'thimbleOrchestraRod',name:'Thimble-Orchestra Baton',slot:'weapon',base:48,channel:'spell',focus:true,stats:{int:3},desc:'A conductor’s baton with a chorus of tiny chimes.'},
+  lanternThreadStaff:{id:'lanternThreadStaff',name:'Lantern-Thread Staff',slot:'weapon',base:50,channel:'spell',focus:true,stats:{int:3},desc:'A lantern bead lights a path through difficult magic.'},
+  velvetNightWand:{id:'velvetNightWand',name:'Velvet-Night Wand',slot:'weapon',base:52,channel:'spell',focus:true,stats:{int:3},desc:'Soft velvet wraps a star-bright spell core.'},
+  // Chapter 5 keeps the catalog useful through the finale.
+  fairgroundMaul:{id:'fairgroundMaul',name:'Fairground Plush Maul',slot:'weapon',base:66,channel:'heavy',twoHanded:true,stats:{mig:3},desc:'A carnival mallet packed with resilient stuffing.'},
+  carouselClub:{id:'carouselClub',name:'Carousel-Horse Club',slot:'weapon',base:68,channel:'heavy',stats:{mig:3},desc:'A wooden carousel pony makes a very determined club.'},
+  ticketPuncher:{id:'ticketPuncher',name:'Giant Ticket-Puncher',slot:'weapon',base:70,channel:'heavy',stats:{mig:3,fin:1},desc:'A toy ticket punch with a satisfying, hefty snap.'},
+  ringmasterDrum:{id:'ringmasterDrum',name:'Ringmaster’s Drumhammer',slot:'weapon',base:72,channel:'heavy',twoHanded:true,stats:{mig:3},desc:'A stuffed parade drum on a sturdy little handle.'},
+  velvetBumper:{id:'velvetBumper',name:'Velvet Bumper Maul',slot:'weapon',base:74,channel:'heavy',stats:{mig:4},desc:'A padded fairground bumper made for a forceful bonk.'},
+  cometPin:{id:'cometPin',name:'Comet-Tail Hatpin',slot:'weapon',base:55,channel:'precision',stats:{fin:3},desc:'A fine hatpin trailing bright threads like a comet.'},
+  carouselLance:{id:'carouselLance',name:'Carousel Ribbon Lance',slot:'weapon',base:57,channel:'precision',stats:{fin:3},desc:'A nimble lance wrapped in a streamer of satin.'},
+  ticketNeedle:{id:'ticketNeedle',name:'Silver Ticket Needle',slot:'weapon',base:59,channel:'precision',stats:{fin:3},desc:'A silver sewing needle sharpened for exact work.'},
+  velvetSeamRipper:{id:'velvetSeamRipper',name:'Velvet-Seam Ripper',slot:'weapon',base:61,channel:'precision',stats:{fin:3},desc:'A careful seam tool honed for one clean opening.'},
+  ringmasterPin:{id:'ringmasterPin',name:'Ringmaster’s Star Pin',slot:'weapon',base:63,channel:'precision',stats:{fin:4},desc:'A showy lapel pin with a surprisingly sharp point.'},
+  fairgroundFirefly:{id:'fairgroundFirefly',name:'Fairground Firefly Wand',slot:'weapon',base:54,channel:'spell',focus:true,stats:{int:3},desc:'A toy firefly lantern guides bright, nimble magic.'},
+  carouselMoon:{id:'carouselMoon',name:'Carousel-Moon Scepter',slot:'weapon',base:56,channel:'spell',focus:true,stats:{int:3},desc:'A tiny carousel moon spins up a steady spell.'},
+  velvetCometRod:{id:'velvetCometRod',name:'Velvet-Comet Rod',slot:'weapon',base:58,channel:'spell',focus:true,stats:{int:3},desc:'A plush comet tail weaves a trail of light.'},
+  ticketStarWand:{id:'ticketStarWand',name:'Golden Ticket Star Wand',slot:'weapon',base:60,channel:'spell',focus:true,stats:{int:3},desc:'A golden ticket folds into a bright spell focus.'},
+  midnightCarousel:{id:'midnightCarousel',name:'Midnight Carousel Baton',slot:'weapon',base:62,channel:'spell',focus:true,stats:{int:4},desc:'A little carousel horse circles a deep, velvet spell.'}
 });
 
-// Ten weapons per channel; ten pieces per other category. Tiers never restrict ownership or equipment.
-const CATEGORY_BASE = {weapon:30,offhand:28,head:25,body:32,hands:25,feet:25,accessory:35,relic:90};
+// Content tiers describe regional stock and stay separate from character levels.
+const CATEGORY_BASE = {offhand:16,head:18,body:24,hands:14,feet:14,accessory:22};
 const WEAPON_TIERS = Object.freeze({
   sword:1,teacupMace:2,buttonBaton:3,pillowMallet:4,spoonSledge:5,ironsword:6,kettleHammer:7,blanketClub:8,plushMaul:9,pike:10,
   blade:1,spoolblade:2,ribbonRapier:3,pinFoil:4,thimbleSabre:5,glassblade:6,satinNeedle:7,starlingEdge:8,spoolfoil:9,moonlitStiletto:10,
-  rod:1,lullabyRod:2,singalongScepter:3,starWand:4,cloudFlute:5,floodrod:6,lullabyScepter:7,lanternWand:8,velvetConductor:9,bedtimeStar:10
+  rod:1,lullabyRod:2,singalongScepter:3,starWand:4,cloudFlute:5,floodrod:6,lullabyScepter:7,lanternWand:8,velvetConductor:9,bedtimeStar:10,
+  thimblePike:11,spoolSpear:12,buttonBashers:13,thimbleMaul:14,pincushionPounder:15,bobbinClub:16,kettleDrumHammer:17,patchworkRam:18,thimbleKnocker:19,quiltedSledge:20,fairgroundMaul:21,carouselClub:22,ticketPuncher:23,ringmasterDrum:24,velvetBumper:25,
+  pinwheelRapier:11,needleFoil:12,ribbonStiletto:13,safetyPinLance:14,glassBeadDart:15,embroideryStiletto:16,satinSeamRipper:17,clockworkBodkin:18,starButtonStiletto:19,moonThreadNeedle:20,cometPin:21,carouselLance:22,ticketNeedle:23,velvetSeamRipper:24,ringmasterPin:25,
+  thimbleChime:11,buttonStarWand:12,ribbonLoomRod:13,bedtimeBobbin:14,starryPincushion:15,moonKiteWand:16,plushCometScepter:17,thimbleOrchestraRod:18,lanternThreadStaff:19,velvetNightWand:20,fairgroundFirefly:21,carouselMoon:22,velvetCometRod:23,ticketStarWand:24,midnightCarousel:25
 });
-for (const slot of ['weapon','offhand','head','body','hands','feet','accessory','relic']) {
-  const ids=Object.keys(ITEMS).filter(id=>ITEMS[id].slot===slot);
-  ids.forEach((id,index)=>{
-    const item=ITEMS[id], tier=slot==='weapon'?WEAPON_TIERS[id]:Math.max(1,Number(item.level)||1);
-    if (!tier) throw new Error(`Missing catalog tier for ${id}`);
-    item.tier=tier;
-    item.price=slot==='weapon'
-      ? Math.round(100*Math.pow(100,(tier-1)/9))
-      : Math.round((CATEGORY_BASE[slot]||25)*Math.pow(2.4,tier-1));
-    item.level=undefined;
-  });
+const CATEGORY_TIERS = Object.freeze({
+  offhand:['shield','focus','charm','quiltBuckler','thimbleFocus','gateShield','wardingBlanket','buttonShield','tinnyFocus','stitchedWard'],
+  head:['cap','pillowCap','earmuffCrown','thimbleHelm','rivethelm','teaCosyHood','ribbonVisor','kettleHelmet','starryHood','paradeBonnet'],
+  body:['coat','quiltedVest','oilskin','kettleApron','velvetWaistcoat','rainCape','storybookTunic','festivalCoat','cloudPajamas','captainJacket'],
+  hands:['workgloves','ribbonMitts','thimbleGauntlets','pastryMitts','grips','spoolBracers','starGloves','mittenMitts','captainsGloves','woollyWristguards'],
+  feet:['wornboots','boots','slipperBoots','rainGaloshes','sockSkates','buttonClogs','waders','cloudSlippers','paradeBoots','stargazerShoes'],
+  accessory:['penny','thimblePendant','spoolBracelet','teaCharm','toyCompass','lantern','buttonLocket','bellPendant','band','ribbonBrooch']
+});
+const RELIC_TIERS=['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'];
+const RELIC_PRICES=[500,1200,3500,8000,20000,50000,125000,300000,750000,1800000];
+const weaponChapter=tier=>tier<=4?1:tier<=10?2:Math.ceil((tier-10)/5)+2;
+for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) {
+  if (ids.length !== 10) throw new Error(`Expected ten ${slot} catalog tiers`);
+  ids.forEach((id,index)=>{ const item=ITEMS[id]; item.tier=index+1; item.chapter=Math.ceil((index+1)/2); });
 }
+for (const [id,tier] of Object.entries(WEAPON_TIERS)) {
+  const item=ITEMS[id]; if(!item) throw new Error(`Missing weapon catalog item ${id}`);
+  item.tier=tier; item.chapter=weaponChapter(tier);
+  item.price=Math.round(100*Math.pow(100,(tier-1)/9));
+}
+RELIC_TIERS.forEach((id,index)=>{const item=ITEMS[id];item.tier=index+1;item.chapter=Math.ceil((index+1)/2);item.price=RELIC_PRICES[index];});
+for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) for (const id of ids) {
+  const item=ITEMS[id]; item.price=Math.round(CATEGORY_BASE[slot]*Math.pow(3.2,item.tier-1));
+}
+for (const item of Object.values(ITEMS)) {
+  delete item.level;
+  const regionalTopTier={1:4,2:10,3:15,4:20,5:25}[item.chapter];
+  item.lootEligible=item.slot!=='relic' && !(item.slot==='weapon' && item.tier===regionalTopTier);
+}
+for (const id of ['rod','sword','blade','shield','focus','charm','coat']) ITEMS[id].lootEligible=false;
 for (const item of Object.values(ITEMS)) if (item.slot === 'offhand' && (item.armor || 0) > 0) item.shield = true;
 
 // Material names are save keys in `s.materials` and must never be renamed. These are the display labels shown to players.
@@ -141,7 +212,30 @@ export const MATERIAL_LABELS = Object.freeze({
   'Floodglass': 'Squeaker cores',
   'Floodglass Fragment': 'Drum fragment',
   'Salvaged fittings': 'Spare thread',
-  'Repair fittings': 'Patches'
+  'Repair fittings': 'Patches',
+  'Arcade tokens': 'Arcade tokens',
+  'Garden twine': 'Garden twine',
+  'Attic ribbon': 'Attic ribbon',
+  'Arcade lint': 'Prize lint',
+  'Prize gears': 'Claw cogs',
+  'Glass marbles': 'Runaway marbles',
+  'Tin wheels': 'Tin wheels',
+  'Golden token': 'Gold token',
+  'Garden seeds': 'Garden seeds',
+  'Silvershell': 'Silver shell',
+  'Sprinkler brass': 'Sprinkler brass',
+  'Bright feathers': 'Bright feathers',
+  'Garden medallion': 'Garden medal',
+  'Moth velvet': 'Moth velvet',
+  'Packing twine': 'Packing twine',
+  'Clock springs': 'Clock springs',
+  'Soft buttons': 'Soft buttons',
+  'Keepsake key': 'Keepsake key',
+  'Painted papier-mâché': 'Painted paper',
+  'Carousel brass': 'Carousel brass',
+  'Velvet tickets': 'Velvet tickets',
+  'Ringmaster ribbon': 'Ringmaster ribbon',
+  'Velvet star': 'Velvet star'
 });
 export function materialLabel(key) {
   return typeof key === 'string' && Object.hasOwn(MATERIAL_LABELS, key) ? MATERIAL_LABELS[key] : String(key ?? '');
@@ -161,8 +255,8 @@ export const EXCHANGES = Object.freeze({
   craft_cap:{id:'craft_cap',name:'Assemble a ledger-keeper’s cap',cost:{'Ledger scraps':2,'Salvaged fittings':1},gain:{},gainItems:['cap'],coins:8,level:1},
   craft_boots:{id:'craft_boots',name:'Assemble sluicewalker boots',cost:{'Canal iron':3,'Ledger scraps':2},gain:{},gainItems:['boots'],coins:18,level:2},
   craft_gate_shield:{id:'craft_gate_shield',name:'Rivet a gate shield',cost:{'Canal iron':3,'Salvaged fittings':2},gain:{},gainItems:['gateShield'],coins:24,level:3},
-  fragment_seal:{id:'fragment_seal',name:'Forge the Superintendent’s Seal',cost:{'Floodglass Fragment':5},gain:{},gainItems:['seal'],coins:0,level:8},
-  fragment_band:{id:'fragment_band',name:'Forge a Floodglass Band',cost:{'Floodglass Fragment':5},gain:{},gainItems:['band'],coins:0,level:8}
+  fragment_seal:{id:'fragment_seal',name:'Forge the Keeper’s Brass Button',cost:{'Floodglass Fragment':5},gain:{},gainItems:['seal'],coins:0,level:8},
+  fragment_band:{id:'fragment_band',name:'Forge a Squeaker-Glass Ring',cost:{'Floodglass Fragment':5},gain:{},gainItems:['band'],coins:0,level:8}
 });
 
 export const PREFIXES = Object.freeze({
@@ -209,6 +303,18 @@ export function effectiveItem(s,id){
   return item;
 }
 
+const CHANNEL_ATTRIBUTE=Object.freeze({heavy:'mig',precision:'fin',spell:'int'});
+export function weaponRankScore(s,id){
+  const item=effectiveItem(s,id),primary=item&&CHANNEL_ATTRIBUTE[item.channel];
+  if(!item||item.slot!=='weapon'||!primary)return null;
+  return item.base+1.8*(item.stats?.[primary]||0);
+}
+export function isStrictWeaponDowngrade(s,candidateId,currentId=s?.gear?.weapon){
+  const candidate=ITEMS[candidateId],current=ITEMS[currentId];
+  if(!candidate||!current||candidate.slot!=='weapon'||current.slot!=='weapon'||candidate.channel!==current.channel)return false;
+  return weaponRankScore(s,candidateId)<weaponRankScore(s,currentId);
+}
+
 export function resolveItem(s,id){const item=effectiveItem(s,id);return item?{...item,owned:owned(s,id),levelRequired:null,usable:true}:null;}
 export function slotChoices(s,id){
   const item=ITEMS[id];if(!item||!owned(s,id))return [];
@@ -232,8 +338,9 @@ export function equipItem(s,id,targetSlot){
 export function unequipItem(s,slot){if(unequipReason(s,slot))return false;s.gear[slot]=null;return true;}
 export function buyPreview(s,id){
   const item=ITEMS[id],price=item?.price||0;
-  let reason=!item?'Unknown item.':LOCKED(s)?'Shopping is unavailable during a fight or delve.':!price?'This item is not stocked by the outfitter.':owned(s,id)?'You already own this item.':(s.coins||0)<price?'You cannot afford this item.':null;
-  return {allowed:!reason,reason,price,item:item?clone(item):null,tier:item?.tier||null,tierLabel:item?`Tier ${item.tier}`:null,levelRequired:null};
+  const chapterRequired=item?.chapter||null;
+  let reason=!item?'Unknown item.':LOCKED(s)?'Shopping is unavailable during a fight or delve.':!chapterUnlocked(s,chapterRequired)?`This stock opens in Chapter ${chapterRequired}.`:!price?'This item is not stocked by the outfitter.':owned(s,id)?'You already own this item.':(s.coins||0)<price?'You cannot afford this item.':null;
+  return {allowed:!reason,reason,price,item:item?clone(item):null,tier:item?.tier||null,tierLabel:item?`Tier ${item.tier}`:null,chapterRequired,chapterCurrent:currentChapter(s),levelRequired:null};
 }
 export function buyItem(s,id){
   const p=buyPreview(s,id);if(!p.allowed||!Array.isArray(s.bag))return false;
@@ -259,14 +366,16 @@ export function buyAndEquipItem(s,id,targetSlot){
   s.coins-=p.price;s.bag.push(id);if(s.itemMods)delete s.itemMods[id];s.gear=gear;
   return {id,slot:p.selectedSlot,price:p.price,clearedOffhand:p.willClearOffhand};
 }
-function baseResaleValue(item){return item.price||item.value||12+5*item.level;}
+const CHAPTER_SALVAGE = Object.freeze([0,3,6,11,20,38]);
+function baseResaleValue(item){return CHAPTER_SALVAGE[item.chapter]||3;}
 const CRAFT_SALE_CAPS = Object.freeze({cap:8,boots:18,gateShield:24,seal:1,band:1});
 function resaleValue(s,id){
   const item=ITEMS[id];if(!item)return 0;
   const base=baseResaleValue(item),up=Math.max(0,Math.min(3,Number.isInteger(s.itemMods?.[id]?.upgrade)?s.itemMods[id].upgrade:0));
+  // Regional salvage receipts track local coin rewards, not exponential sticker prices.
   // Upgrades return at most three extra coins, and affixes return no material value.
   const craftCap=Object.hasOwn(CRAFT_SALE_CAPS,id)?CRAFT_SALE_CAPS[id]:Infinity;
-  return Math.max(1,Math.min(Math.floor(base*.45),Math.floor(base*.25)+up,craftCap));
+  return Math.max(1,Math.min(base+up,craftCap));
 }
 export function sellPreview(s,id){
   const item=ITEMS[id],price=item?resaleValue(s,id):0;
@@ -288,7 +397,8 @@ export function exchangeMaterials(s,recipeId){
 }
 
 const UPGRADE_COINS=[0,35,70,120];
-function upgradeCost(item,level){const mat=item.base?(item.channel==='spell'?'Runic residue':'Canal iron'):item.armor?'Salvaged fittings':item.ward?'Repair fittings':'Runic residue';return makeCost(UPGRADE_COINS[level+1],{[mat]:level===2?2:1});}
+const UPGRADE_CHAPTER_MULTIPLIERS=[1,1,4,16,64,256];
+function upgradeCost(item,level){const mat=item.base?(item.channel==='spell'?'Runic residue':'Canal iron'):item.armor?'Salvaged fittings':item.ward?'Repair fittings':'Runic residue';const coins=UPGRADE_COINS[level+1]*(UPGRADE_CHAPTER_MULTIPLIERS[item.chapter]||1);return makeCost(coins,{[mat]:level===2?2:1});}
 function statPreview(s,id,nextMods){const before=effectiveItem(s,id),after=effectiveItem({...s,itemMods:{...s.itemMods,[id]:nextMods}},id);return {before,after};}
 export function upgradePreview(s,id){
  const item=ITEMS[id],mod=s?.itemMods?.[id]||{},level=mod.upgrade||0,cost=item&&level<3?upgradeCost(item,level):noCost();

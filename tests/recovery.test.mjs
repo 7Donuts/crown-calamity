@@ -76,7 +76,7 @@ test('every accepted zero-mana action regenerates once while clock time alone ne
     const s = G.fresh();
     s.learnedAbilities = ['brace','disrupt','driving','aegis','expose'];
     s.equippedAbilities = ['arc','brace','disrupt','driving','aegis','expose'];
-    if (key === 'vent') { G.startFight(s, 'boss', 'delve'); s.fight.hp = 400; }
+    if (key === 'vent') { s.delve={node:4,path:'records',campUsed:true};G.startFight(s, 'boss', 'delve'); s.fight.hp = 400; }
     else G.startFight(s, 'rats');
     s.mp = 0;
     const info = G.actionInfo(s, key);

@@ -136,7 +136,7 @@ test('starting an encounter focuses desktop controls and returns mobile players 
 test('the actual UI action handlers carry a rescue build through character, gear, shop, workbench, and save flows', async () => {
   const {ui,storage,getElement}=await bootApp();
   noBrokenText(ui.getApp().innerHTML,'initial hunt');
-  matches(ui.getApp().innerHTML,/An honest day/);
+  matches(ui.getApp().innerHTML,/TRAVEL BETWEEN CHAPTERS/);
   matches(ui.getApp().innerHTML,/data-action="hunt:rats"/);
 
   await ui.act('hunt:rats');
@@ -215,14 +215,14 @@ test('the actual UI action handlers carry a rescue build through character, gear
   assert.equal(ui.getState().itemMods.rod.prefix,'keen');
 
   await ui.act('nav:guide');
-  matches(ui.getApp().innerHTML,/Save format v5/);
-  matches(ui.getApp().innerHTML,/Imports v1, v2, v3, v4, and v5/);
+  matches(ui.getApp().innerHTML,/Save format v6/);
+  matches(ui.getApp().innerHTML,/Imports v1 through v6/);
   await ui.act('import');
   matches(ui.getModal().innerHTML,/Import as new character/);
   const legacyId=ui.getRoster().activeId,existing=structuredClone(ui.getState()),legacy=G.fresh(); legacy.version=2; legacy.coins=41;
   getElement('#save-file').files=[{size:120,text:async()=>JSON.stringify(legacy)}];
   await ui.act('confirm-import');
-  assert.equal(ui.getState().version,5);
+  assert.equal(ui.getState().version,6);
   assert.equal(ui.getState().coins,41);
   assert.equal(ui.getRoster().characters.length,2,'import adds a character instead of replacing the roster');
   const importedId=ui.getRoster().activeId;assert.notEqual(importedId,legacyId);
@@ -250,7 +250,7 @@ test('the character gear page retains every slot while Satchel keeps spare equip
   assert.equal(G.equip(s,'pike','weapon'),true);
   ui.render();
   assert.equal(s.gear.offhand,null);
-  matches(ui.getApp().innerHTML,/Occupied by Lockwarden’s Breach Pike/);
+  matches(ui.getApp().innerHTML,new RegExp(`Occupied by ${G.resolveItem(s,'pike').name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}`));
   assert.equal(G.equip(s,'shield','offhand'),false);
   await ui.act('nav:character');await ui.act('char-tab:gear');
   noBrokenText(ui.getApp().innerHTML,'interactive equipment diagram');
@@ -261,11 +261,11 @@ test('the character gear page retains every slot while Satchel keeps spare equip
   assert.deepEqual(slotButtons.slice(0,9),expectedSlots);
   assert.deepEqual(slotButtons.slice(9),expectedSlots);
   await ui.act('slot:offhand');
-  matches(ui.getModal().innerHTML,/Occupied by your two-handed Lockwarden’s Breach Pike/);
+  matches(ui.getModal().innerHTML,new RegExp(`Occupied by your two-handed ${G.resolveItem(s,'pike').name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}`));
 });
 
 test('relic resonance UI reviews each unlock and copy license without replacing core gear slots',async()=>{
-  const s=G.fresh();s.coins=2_000_000;s.bag.push('signet','seal');s.gear.relic='signet';
+  const s=G.fresh();s.level=11;s.story.completed.push('municipal_works','arcade_finale','garden_finale');s.coins=2_000_000;s.bag.push('signet','seal');s.gear.relic='signet';
   const {ui}=await bootApp(s);
   await ui.act('nav:character');await ui.act('char-tab:gear');
   assert.equal(Object.keys(G.SLOTS).length,9,'echoes do not add ordinary gear slots');

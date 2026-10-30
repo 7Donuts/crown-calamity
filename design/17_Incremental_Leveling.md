@@ -1,6 +1,6 @@
 # Incremental Leveling and Character Creation
 
-Each completed level grants four attribute points. XP accumulates continuously within the current level; partial progress grants no points. The level cap is 10; reaching level 10 awards 36 progression points from the nine completed levels, and no further XP or points are awarded.
+Each completed level grants four attribute points. XP accumulates continuously within the current level; partial progress grants no points. The campaign preview level cap is 50; reaching level 50 awards 196 progression points from the 49 completed levels, and no further XP or points are awarded.
 
 ## XP curve
 
@@ -22,7 +22,7 @@ Level 1 therefore takes 300 XP. The XP curve is unchanged.
 | 8 | 2,316 |
 | 9 | 2,796 |
 
-XP remains cumulative within the current level. A single reward can cross several level boundaries; each completed level grants four points and leftover XP carries forward. Any leftover XP at the level 10 cap is discarded. The exported `progression(state)` helper reports current level, XP within the level, required XP, next reward, total points earned from progression, and cap state.
+XP remains cumulative within the current level. A single reward can cross several level boundaries; each completed level grants four points and leftover XP carries forward. Any leftover XP at the level 50 cap is discarded. The exported `progression(state)` helper reports current level, XP within the level, required XP, next reward, total points earned from progression, and cap state.
 
 ## Early pacing with minor and major contracts
 
@@ -38,7 +38,7 @@ Abilities continue to check full character level. Equipment tiers do not impose 
 
 ## Migration from versions 1–4
 
-Migration preserves the character's current level, XP, invested attributes, and unspent points. Versions 1–3 map the fraction of the old within-level XP requirement to the same fraction of the three-times requirement, then preserve points already paid by crossed legacy thresholds. Version 4 XP is already normalized and remains unchanged. A hidden `levelPointsPaid` value tracks the 0–3 legacy points already awarded in the current level; reaching the next full level grants only the remainder needed to reach four, then clears that value. This prevents loss of earned points without granting duplicate lifetime points. Migration runs once and removes the old part marker; level 10 remains capped.
+Migration preserves the character's current level, XP, invested attributes, and unspent points. Versions 1–3 map the fraction of the old within-level XP requirement to the same fraction of the three-times requirement, then preserve points already paid by crossed legacy thresholds. Version 4 XP is already normalized and remains unchanged. A hidden `levelPointsPaid` value tracks the 0–3 legacy points already awarded in the current level; reaching the next full level grants only the remainder needed to reach four, then clears that value. This prevents loss of earned points without granting duplicate lifetime points. Migration runs once and removes the old part marker; Legacy level-10 saves keep their existing XP and can now progress beyond the old cap. Save v6 retains prior partial credit.
 
 ## Character creation and starter equipment
 

@@ -27,11 +27,14 @@ test('nominal bounty XP matches the engine victory XP for an in-window target',(
 });
 
 test('rewards split a 35% bonus budget 60/30/10 by profile, with a material-led floor of one',()=>{
-  // Four rat wins pay 128 XP, 36 coins and 4 Ledger scraps on their own.
+  // Four rat wins pay 128 XP, 4 coins (v0.14.0 pricing) and 4 Ledger scraps on their own.
   assert.equal(B.BONUS_BUDGET_PCT,35);assert.deepEqual([...B.PROFILE_SHARES],[60,30,10]);
-  assert.deepEqual(B.bountyReward('rats',4,'xp'),{xp:26,coins:3,materials:{}});
-  assert.deepEqual(B.bountyReward('rats',4,'coins'),{xp:13,coins:7,materials:{}});
-  assert.deepEqual(B.bountyReward('rats',4,'materials'),{xp:4,coins:3,materials:{'Ledger scraps':1}});
+  assert.deepEqual(B.bountyReward('rats',4,'xp'),{xp:26,coins:0,materials:{}});
+  assert.deepEqual(B.bountyReward('rats',4,'coins'),{xp:13,coins:0,materials:{}});
+  assert.deepEqual(B.bountyReward('rats',4,'materials'),{xp:4,coins:0,materials:{'Ledger scraps':1}});
+  // Coin shares follow kill coins, so a richer target shows the 60/30/10 coin split.
+  const crab=G.ENEMIES.find(e=>e.id==='crab');
+  assert.equal(B.bountyReward('crab',3,'coins').coins,Math.floor(crab.coins*3*35*60/10000));
   assert.equal(B.bountyReward('boss',1,'xp').xp>0,true,'pricing is pure; eligibility is enforced separately');
   assert.equal(B.bountyReward('rats',0,'xp'),null);assert.equal(B.bountyReward('rats',2,'gold'),null);
 });

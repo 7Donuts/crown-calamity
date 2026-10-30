@@ -4,13 +4,14 @@ import * as G from '../dist/engine.js';
 const rng=()=>.2;
 // A legally prepared character fixture for the original combat-mechanic checks.
 function classicCombatant(){const s=G.fresh();s.learnedAbilities=['arc','brace','disrupt','mend','reservoir','prepared'];s.equippedAbilities=['arc','brace','disrupt'];s.passive='reservoir';for(const id of ['brace','disrupt','mend'])s.mastery[id]={rank:1,marks:0};return s;}
+function startForInspection(s,e){const chapter=G.enemyChapter(e.id);s.level=50;s.hp=5000;s.story.completed=G.CHAPTERS.filter(c=>c.id<chapter).map(c=>c.finale);const meta=G.CHAPTERS.find(c=>c.id===chapter);if(e.id===meta.bossId){if(chapter===1){s.delve={node:4,path:'records',campUsed:true};return G.startFight(s,e.id,'delve');}const contract=G.STORY_CONTRACTS[meta.finale];s.story.accepted=[meta.finale];for(const objective of contract.objectives){if(objective.source==='victories'&&objective.enemy!==e.id)s.story.events.victories[objective.enemy]=objective.target;if(objective.source==='actions')s.story.events.actions[objective.action]=objective.target;}return G.startChapterBoss(s,chapter);}return G.startFight(s,e.id,'hunt');}
 // Existing combat scenarios advance a fake clock; no real waiting in tests.
 const step=(s,key,r=rng)=>G.exchange(s,key,r,Math.max(1000,s.nextActionAt||0));
 function win(s,id='rats',action='cast'){assert.ok(G.startFight(s,id));let n=0;while(s.fight&&n++<100){let a=G.actionInfo(s,action);step(s,a.reason?'recover':action,rng);}assert.equal(s.last.type,'victory');return n;}
 test('starting investment and derived resources match the design equations',()=>{const s=G.fresh(),t=G.totals(s);assert.equal(Object.values(s.stats).reduce((a,b)=>a+b),68);assert.equal(t.hp,380);assert.equal(t.mp,66);assert.equal(t.sp,65);});
 test('one action resolves exactly one exchange; snapshots do not progress on load',()=>{const s=G.fresh();G.startFight(s,'rats');assert.equal(s.fight.round,0);const result=step(s,'attack',rng);assert.ok(result.ok);assert.equal(s.totalExchanges,1);assert.equal(s.fight.round,1);assert.equal(s.coins,0);assert.ok(s.fight.hp>0);const raw=JSON.stringify(s);const loaded=G.loadSave(raw);assert.equal(JSON.stringify(loaded),raw);assert.equal(step(s,'unknown',rng).ok,false);assert.equal(JSON.stringify(s),raw);});
 test('insufficient resources and missing focus cannot spend exchanges',()=>{const s=G.fresh();G.practice(s,'breaker');G.startFight(s,'rats');assert.equal(step(s,'cast',rng).ok,false);assert.equal(s.fight.round,0);s.mp=0;assert.equal(step(s,'mend',rng).ok,false);assert.equal(s.fight.round,0);});
-test('victory cancels enemy response and issues one reward only',()=>{const s=G.fresh();G.startFight(s,'rats');s.fight.hp=1;const hp=s.hp;const r=step(s,'attack',rng);assert.ok(r.victory);assert.equal(s.hp,hp);assert.equal(s.coins,9);assert.equal(s.xp,32);assert.equal(s.kills.rats,1);step(s,'attack',rng);assert.equal(s.coins,9);});
+test('victory cancels enemy response and issues one reward only',()=>{const s=G.fresh();G.startFight(s,'rats');s.fight.hp=1;const hp=s.hp;const r=step(s,'attack',rng);assert.ok(r.victory);assert.equal(s.hp,hp);assert.equal(s.coins,1);assert.equal(s.xp,32);assert.equal(s.kills.rats,1);step(s,'attack',rng);assert.equal(s.coins,1);});
 test('first rescue is an earned minor-to-major story milestone and rewards once',()=>{
  const s=G.fresh();assert.ok(G.storyAction(s,'meet_mara'));assert.ok(G.acceptContract(s,'proof_of_trouble'));
  for(let n=0;n<3;n++){G.restore(s);win(s);}
@@ -19,21 +20,21 @@ test('first rescue is an earned minor-to-major story milestone and rewards once'
  assert.ok(G.acceptContract(s,'drainage_inspection'));
  for(let n=0;n<3;n++){G.restore(s);win(s);}
  assert.equal(G.contractStatus(s,'drainage_inspection').ready,false);assert.ok(G.storyAction(s,'secure_passage'));assert.ok(G.storyAction(s,'rescue_mara'));
- assert.ok(G.claimContract(s,'drainage_inspection','materials'));assert.equal(s.level,2);assert.equal(s.points,4);assert.equal(s.quest,1);assert.equal(s.coins,76);assert.equal(s.materials['Repair fittings'],3);assert.equal(s.achievements.length,1);
+ assert.ok(G.claimContract(s,'drainage_inspection','materials'));assert.equal(s.level,2);assert.equal(s.points,4);assert.equal(s.quest,1);assert.equal(s.coins,28);assert.equal(s.materials['Repair fittings'],3);assert.equal(s.achievements.length,1);
  const snapshot=JSON.stringify(s);assert.equal(G.claimContract(s,'drainage_inspection','coins'),false);assert.equal(JSON.stringify(s),snapshot);
 });
 test('useful guard charges one Reservoir charge and records one discovery',()=>{const s=classicCombatant();G.startFight(s,'rats');s.fight.round=2;step(s,'guard',rng);assert.equal(s.fight.charge,1);assert.equal(s.discoveries.length,1);const boosted=structuredClone(s),normal=structuredClone(s);normal.fight.charge=0;const a=step(boosted,'cast',rng),b=step(normal,'cast',rng);assert.ok(a.damage>b.damage);assert.equal(boosted.fight.charge,0);assert.equal(boosted.discoveries.length,1);step(s,'recover',rng);assert.equal(s.fight.charge,0);});
 test('guard without a meaningful hostile hit grants no charge or achievement',()=>{const s=G.fresh();G.startFight(s,'rats');step(s,'guard',rng);assert.equal(s.fight.charge,0);assert.equal(s.guardCount,0);assert.equal(s.discoveries.length,0);});
 test('Wardcast budgets a weaker spell with guard in a single exchange',()=>{const s=classicCombatant();G.startFight(s,'rats');s.fight.round=2;const cast=structuredClone(s);const a=step(s,'combo',rng),b=G.exchange(cast,'cast',rng);assert.ok(a.damage<b.damage);assert.ok(s.hp>cast.hp);assert.equal(s.totalExchanges,1);assert.equal(s.sp,55);assert.equal(s.mp,50);assert.equal(s.fight.charge,1);});
-test('cooldown N blocks the next N completed exchanges',()=>{const s=classicCombatant();G.startFight(s,'crab','delve');s.fight.hp=1000;s.hp=2000;step(s,'brace',rng);assert.equal(s.fight.round,1);assert.ok(G.actionInfo(s,'brace').reason);step(s,'guard',rng);assert.ok(G.actionInfo(s,'brace').reason);step(s,'guard',rng);assert.equal(G.actionInfo(s,'brace').reason,null);});
-test('interrupt cancels an actual heavy response and respects immunity',()=>{const s=classicCombatant();G.startFight(s,'crab','delve');s.fight.round=1;const hp=s.hp;step(s,'disrupt',rng);assert.equal(s.hp,hp);assert.ok(s.fight.used.includes('disrupt'));assert.equal(s.fight.interruptImmune,5);assert.ok(G.actionInfo(s,'disrupt').reason);});
+test('cooldown N blocks the next N completed exchanges',()=>{const s=classicCombatant();s.delve={node:0,path:null,campUsed:false};G.startFight(s,'crab','delve');s.fight.hp=1000;s.hp=2000;step(s,'brace',rng);assert.equal(s.fight.round,1);assert.ok(G.actionInfo(s,'brace').reason);step(s,'guard',rng);assert.ok(G.actionInfo(s,'brace').reason);step(s,'guard',rng);assert.equal(G.actionInfo(s,'brace').reason,null);});
+test('interrupt cancels an actual heavy response and respects immunity',()=>{const s=classicCombatant();s.delve={node:0,path:null,campUsed:false};G.startFight(s,'crab','delve');s.fight.round=1;const hp=s.hp;step(s,'disrupt',rng);assert.equal(s.hp,hp);assert.ok(s.fight.used.includes('disrupt'));assert.equal(s.fight.interruptImmune,5);assert.ok(G.actionInfo(s,'disrupt').reason);});
 test('mastery only comes from a relevant eligible victory',()=>{const s=G.fresh();G.startFight(s,'rats');step(s,'cast',rng);assert.equal(s.mastery.arc.marks,0);while(s.fight)step(s,'cast',rng);assert.equal(s.mastery.arc.marks,1);G.restore(s);win(s,'rats','attack');assert.equal(s.mastery.arc.marks,1);});
 test('gear, allocation, recovery and respec are locked inside encounters and delves',()=>{const s=G.fresh();s.points=4;G.startFight(s,'rats');for(const fn of [()=>G.equip(s,'sword'),()=>G.allocate(s,'vit'),()=>G.restore(s),()=>G.resetStats(s),()=>G.practice(s,'caster')])assert.equal(fn(),false);});
 test('attribute allocation previews have real resource effects; respec preserves budget',()=>{const s=G.fresh();G.awardXP(s,G.xpNeeded(1));const t=G.totals(s);assert.ok(G.allocate(s,'vit'));assert.equal(G.totals(s).hp,t.hp+10);assert.equal(s.points,3);G.resetStats(s);assert.equal(s.points,16);assert.equal(Object.values(s.stats).reduce((a,b)=>a+b)+s.points,72);});
 test('withdrawal and defeat cannot issue provisional rewards',()=>{const s=G.fresh();G.startFight(s,'rats');step(s,'withdraw',rng);assert.equal(s.coins,0);assert.equal(s.xp,0);assert.equal(s.fight,null);G.restore(s);G.startFight(s,'rats');s.hp=1;step(s,'guard',rng);assert.equal(s.last.type,'defeat');assert.equal(s.coins,0);assert.equal(s.xp,0);assert.ok(G.restore(s));});
-test('equipment purchase is affordable without a level gate and cannot be duplicated',()=>{const s=G.fresh();s.coins=G.ITEMS.oilskin.price;assert.ok(G.buy(s,'oilskin'));assert.equal(s.coins,0);assert.equal(G.buy(s,'oilskin'),false);assert.equal(s.level,1);assert.ok(G.equip(s,'oilskin'));assert.equal(G.totals(s).armor,30);});
+test('equipment purchase is affordable without a level gate and cannot be duplicated',()=>{const s=G.fresh();s.story.completed.push('municipal_works');s.coins=G.ITEMS.oilskin.price;assert.ok(G.buy(s,'oilskin'));assert.equal(s.coins,0);assert.equal(G.buy(s,'oilskin'),false);assert.equal(s.level,1);assert.ok(G.equip(s,'oilskin'));assert.equal(G.totals(s).armor,30);});
 test('full delve route has one camp and first-clear reward is not repeatable',()=>{const s=G.fresh();G.awardXP(s,20000);s.story.completed=['proof_of_trouble','drainage_inspection','permit_with_teeth','bent_gate','someone_expendable'];assert.ok(G.acceptContract(s,'municipal_works'));s.hp=5000;s.mp=5000;s.sp=5000;assert.ok(G.startDelve(s));assert.ok(G.delveAction(s,'enter'));while(s.fight){s.hp=5000;s.mp=5000;step(s,'cast',rng);}assert.equal(s.delve.node,1);assert.ok(G.delveAction(s,'records'));while(s.fight){s.hp=5000;s.mp=5000;step(s,'cast',rng);}assert.equal(s.delve.node,3);assert.ok(G.delveAction(s,'rest'));assert.equal(G.delveAction(s,'rest'),false);assert.ok(G.delveAction(s,'continue'));while(s.fight){s.hp=5000;s.mp=5000;step(s,'cast',rng);}assert.equal(s.clears,1);assert.equal(s.pending,'bossLoot');assert.equal(s.delve,null);assert.ok(G.chooseBossLoot(s,'seal'));assert.equal(G.chooseBossLoot(s,'band'),false);assert.ok(s.bag.includes('seal'));assert.ok(s.journal.some(j=>j.title==='A choice below the Rinse Line'));});
-test('level cap and mastery caps are explicit',()=>{const s=G.fresh();G.awardXP(s,100000);assert.equal(s.level,10);assert.equal(s.xp,0);assert.equal(s.points,36);G.awardXP(s,100000);assert.equal(s.points,36);});
+test('level cap and mastery caps are explicit',()=>{const s=G.fresh();G.awardXP(s,10_000_000);assert.equal(s.level,50);assert.equal(s.xp,0);assert.equal(s.points,196);G.awardXP(s,100000);assert.equal(s.points,196);});
 test('invalid saves are rejected without throwing',()=>{for(const v of ['bad',null,'{}','{"version":2}','[]'])assert.equal(G.loadSave(v),null);});
 
 test('shared 650ms delay rejects spam and action switching without mutating state',()=>{
@@ -112,7 +113,7 @@ test('seven-attribute respec preserves the total budget at every prototype level
 });
 test('inspector damage matches combat for each target, stance, damage channel and outcome',()=>{
  for(const e of G.ENEMIES)for(const key of ['attack','cast','combo','disrupt'])for(const outcome of ['normal','critical','glance']){
-  const s=classicCombatant();s.level=10;s.hp=2000;G.startFight(s,e.id,'delve');s.fight.round=e.id==='boss'?3:0;
+  const s=classicCombatant();assert.ok(startForInspection(s,e),`earned chapter access for ${e.id}`);s.fight.round=e.id==='boss'?3:0;
   if(e.id==='boss')s.fight.hp=180;if(e.id==='hound'){s.fight.streak=3;s.fight.channel=['cast','combo'].includes(key)?'arcane':'physical';}
   s.fight.charge=1;const profile=G.actionProfile(s,key,e.id),rolls=outcome==='glance'?[.999]:outcome==='critical'?[.1,0]:[.1,.99];
   const result=step(s,key,()=>rolls.shift()??.2);assert.equal(result.damage,profile[outcome],`${e.id} ${key} ${outcome}`);
@@ -130,14 +131,16 @@ test('save imports reject malformed resource and currency fields before renderin
 test('equipment drought protection grants loot or salvage by the sixth victory and survives reload',()=>{
  let s=G.createCharacter({name:'Quartermaster',kit:'breaker'});const coins=s.coins;
  for(let n=1;n<=6;n++){
+  const expectedProtectedLoot=G.lootPool(G.ENEMIES.find(e=>e.id==='rats')).filter(id=>!s.bag.includes(id)).at(-1);
   assert.ok(G.startFight(s,'rats'));s.fight.hp=1;
   assert.equal(G.exchange(s,'attack',()=>.99,s.nextActionAt||1000).victory,true);
   assert.equal(s.materials['Ledger scraps'],n,'materials remain guaranteed even when equipment misses');
-  assert.equal(s.coins,coins+9*n);
+  assert.equal(s.coins,coins+n);
   if(n<6){assert.equal(s.last.loot,null);assert.equal(s.equipmentMisses,n);}
-  else{assert.equal(s.last.loot,'penny');assert.equal(s.equipmentMisses,0);assert.equal(s.last.dropProtected,true);}
+  else{assert.equal(s.last.loot,expectedProtectedLoot);assert.equal(s.equipmentMisses,0);assert.equal(s.last.dropProtected,true);}
   const loaded=G.loadSave(JSON.stringify(s));assert.ok(loaded);s=loaded;
  }
+ for(const id of G.lootPool(G.ENEMIES.find(e=>e.id==='rats')))if(!s.bag.includes(id))s.bag.push(id);
  assert.ok(G.startFight(s,'rats'));s.fight.hp=1;
  const rolls=[.5,.5,0,0];G.exchange(s,'attack',()=>rolls.shift()??0,s.nextActionAt);
  assert.equal(s.last.salvaged,true);assert.equal(s.equipmentMisses,0);

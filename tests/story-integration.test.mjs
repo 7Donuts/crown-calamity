@@ -63,7 +63,7 @@ test('the first-run story UI carries Mara’s introduction through the minor and
   await winRats(ui);await winRats(ui);await winRats(ui);
   assert.equal(G.contractStatus(ui.getState(),'proof_of_trouble').ready,true);
   await ui.act('nav:story');
-  noMissing(ui.getApp().innerHTML);contains(ui.getApp().innerHTML,'3 / 3');contains(ui.getApp().innerHTML,'Report to Mara · collect reward');
+  noMissing(ui.getApp().innerHTML);contains(ui.getApp().innerHTML,'3 / 3');contains(ui.getApp().innerHTML,'Report to Mara Purl · collect reward');
   const minorCoins=ui.getState().coins;
   await ui.act('story-claim:proof_of_trouble:coins');
   assert.equal(ui.getState().story.completed.includes('proof_of_trouble'),true);

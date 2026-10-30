@@ -171,3 +171,43 @@
 #app .vendor-tab-name { display: inline-flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.2; }
 #app .vendor-tab-name small, #app .vendor-header h2 .vendor-kind { font-size: 12px; font-weight: 400; color: inherit; opacity: .84; letter-spacing: 0; }
 #app .vendor-header h2 { flex-wrap: wrap; }
+
+/* Chapter travel and compact collection controls. */
+#app :is(.chapter-travel,.chapter-travel-list,.chapter-travel-card,.chapter-boss,.chapter-boss-row,.shop-filters,.shop-filter-row,.locked-collections) { min-width: 0; }
+#app .chapter-travel { display: grid; gap: 12px; margin: 0 0 16px; }
+#app .chapter-travel > div:first-child p { margin: 4px 0 0; color: var(--menu-muted); }
+#app .chapter-travel-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,190px),1fr)); gap: 8px; }
+#app .chapter-travel-card { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-height: 76px; padding: 10px 12px; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+#app .chapter-travel-card strong { font-size: 14px; line-height: 1.3; }
+#app .chapter-travel-card span,#app .chapter-travel-card small { color: var(--menu-muted); font-size: 12px; line-height: 1.4; }
+#app .chapter-travel-card.active { border-color: var(--menu-gold); color: #f1dba8; box-shadow: inset 3px 0 var(--menu-gold); }
+#app .chapter-travel-card.locked { opacity: .72; }
+#app .chapter-boss { margin-top: 16px; }
+#app .chapter-boss-row { display: grid; grid-template-columns: 56px minmax(0,1fr) auto; gap: 12px; align-items: center; }
+#app .chapter-boss-row .enemy-token { width: 52px; height: 52px; }
+#app .chapter-boss-row h3,#app .chapter-boss-row p { margin: 0 0 4px; }
+#app .chapter-boss-row small { display: block; color: var(--menu-muted); line-height: 1.4; }
+#app .chapter-boss-row button { min-height: 48px; white-space: normal; }
+#app .hunt-lock-reason { display: block; margin-top: 4px; color: var(--menu-gold); }
+#app .shop-filters { width: 100%; margin: 12px 0; padding: 10px 12px; border: 1px solid #45523e; background: #172219; }
+#app .shop-filters legend { padding: 0 6px; color: #ead5a3; font-weight: 700; }
+#app .shop-filter-row { display: flex; flex-wrap: wrap; gap: 6px; }
+#app .shop-filter-row button { min-height: 48px; padding: 8px 12px; }
+#app .shop-filter-row button.active { border-color: var(--menu-gold); background: #303729; color: #f4e0b4; }
+#app .shop-filters p { margin: 8px 0 0; color: var(--menu-muted); font-size: 12px; line-height: 1.45; }
+#app .locked-collections { margin: 12px 0; padding: 4px 12px; border: 1px solid #45523e; background: #172219; }
+#app .locked-collections summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; color: #ead5a3; }
+#app .locked-collections ul { margin: 0 0 10px; padding-left: 22px; }
+#app .locked-collections li { display: flex; flex-wrap: wrap; gap: 5px 10px; padding: 4px 0; }
+#app .locked-collections li span { color: var(--menu-muted); }
+@media (max-width: 740px) {
+  #app .chapter-travel-list { grid-template-columns: minmax(0,1fr); }
+  #app .chapter-travel-card { min-height: 60px; }
+  #app .chapter-boss-row { grid-template-columns: 46px minmax(0,1fr); }
+  #app .chapter-boss-row .enemy-token { width: 44px; height: 44px; }
+  #app .chapter-boss-row button { grid-column: 1 / -1; width: 100%; }
+  #app .shop-filter-row button { flex: 1 1 100px; white-space: normal; }
+  #app .mobile-nav { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 0; overflow: hidden; }
+  #app .mobile-nav button { min-width: 0; width: 100%; min-height: 52px; padding: 5px 2px; font-size: 10px; }
+  #app .mobile-nav button span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}

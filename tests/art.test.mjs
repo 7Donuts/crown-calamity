@@ -9,7 +9,7 @@ import { ITEMS } from '../dist/gear.js';
 import { ITEM_ART, ITEM_ART_ATLAS, renderItemArt } from '../dist/item-art.js';
 import { UI_ICONS } from '../dist/ui-icons.js';
 import { MENU_ICONS, menuIcon } from '../dist/menu-icons.js';
-import { ENEMY_ART, ENEMY_ATLAS, renderEnemyArt } from '../dist/enemy-art.js';
+import { CHAPTER_ENEMY_ATLAS, ENEMY_ART, ENEMY_ATLAS, renderEnemyArt } from '../dist/enemy-art.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const readDist = path => readFile(resolve(root, 'dist', path), 'utf8');
@@ -42,7 +42,7 @@ function parsePercentStyles(html) {
 
 test('every gear item has a percentage-cropped item sprite, with unknown IDs omitted', async () => {
   const itemIds = Object.keys(ITEMS);
-  assert.equal(itemIds.length, 100, 'item art covers thirty weapons and ten items per nonweapon category');
+  assert.equal(itemIds.length, 145, 'item art covers seventy-five weapons and ten items per nonweapon category');
   assert.deepEqual(Object.keys(ITEM_ART).sort(), [...itemIds].sort());
 
   for (const id of itemIds) {
@@ -102,6 +102,33 @@ test('all engine enemies resolve to bounded frames in their shipped PNG atlas', 
   const rats = ENEMY_ART.rats ?? ENEMY_ART.rat;
   assert.ok((rats.frames ?? []).length >= 4, 'rat idle art retains at least four frames');
   assert.match(renderEnemyArt(G.ENEMIES.find(enemy => enemy.id === 'rats'), { animated: true }), /enemy-idle/);
+});
+
+test('chapter enemies use individually measured square crops from the generated atlas', async () => {
+  const keys = [
+    'arcade_dust', 'arcade_crane', 'arcade_marble', 'arcade_racer', 'arcade_boss',
+    'garden_ant', 'garden_snail', 'garden_sprinkler', 'garden_magpie', 'garden_boss',
+    'attic_moth', 'attic_box', 'attic_clock', 'attic_hugger', 'attic_boss',
+    'fair_mask', 'fair_carousel', 'fair_ticket', 'fair_ringmaster', 'fair_boss'
+  ];
+  const bytes = await readFile(resolve(root, 'dist', CHAPTER_ENEMY_ATLAS.src));
+  const png = pngInfo(bytes);
+  assert.equal(png.width, CHAPTER_ENEMY_ATLAS.width);
+  assert.equal(png.height, CHAPTER_ENEMY_ATLAS.height);
+  assert.equal(png.hasAlpha, true);
+  for (const key of keys) {
+    const art = ENEMY_ART[key];
+    assert.ok(art, `${key} has an art key`);
+    assert.equal(art.src, CHAPTER_ENEMY_ATLAS.src);
+    assert.ok(art.frame.width > 0 && art.frame.height > 0, `${key} has a measured crop`);
+    const [x0, y0, x1, y1] = art.visibleBounds;
+    assert.ok(x0 >= art.frame.x && y0 >= art.frame.y, `${key} content begins inside its crop`);
+    assert.ok(x1 <= art.frame.x + art.frame.width && y1 <= art.frame.y + art.frame.height, `${key} content ends inside its crop`);
+    const html = renderEnemyArt({ id: key, name: key });
+    assert.ok(html.includes(CHAPTER_ENEMY_ATLAS.src), `${key} renders from the generated atlas`);
+    const styles = parsePercentStyles(html);
+    assert.ok(Math.abs(styles.width / styles.height - art.width / art.height) < 1e-9, `${key} crop preserves source proportions`);
+  }
 });
 
 test('generated UI and menu icons cover their public keys and render as accessible PNG viewports', () => {

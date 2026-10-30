@@ -14,9 +14,11 @@ test('one XP award carries across levels and stops cleanly at the cap',()=>{
   const s={level:1,xp:250,points:0,levelPointsPaid:0};
   assert.deepEqual(advanceXP(s,800),{levels:2,points:8});
   assert.equal(s.level,3);assert.equal(s.xp,306);assert.equal(s.points,8);
-  assert.deepEqual(advanceXP(s,100000),{levels:7,points:28});
-  assert.equal(s.level,10);assert.equal(s.xp,0);assert.equal(s.points,36);
-  assert.deepEqual(progression(s),{level:10,levelXP:0,levelRequired:0,nextReward:null,totalEarned:36,capped:true});
+  assert.deepEqual(advanceXP(s,100000),{levels:19,points:76});
+  assert.equal(s.level,22);assert.equal(s.xp,670);assert.equal(s.points,84);
+  assert.deepEqual(advanceXP(s,10_000_000),{levels:28,points:112});
+  assert.equal(s.level,50);assert.equal(s.xp,0);assert.equal(s.points,196);
+  assert.deepEqual(progression(s),{level:50,levelXP:0,levelRequired:0,nextReward:null,totalEarned:196,capped:true});
 });
 
 test('legacy partial rewards remain in the budget and only the unpaid remainder is granted',()=>{

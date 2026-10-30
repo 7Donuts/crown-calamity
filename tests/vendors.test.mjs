@@ -68,9 +68,10 @@ test('combat and delve lock purchases through shared gear previews', () => {
 test('vendor rows include the full catalog and describe tiers without level requirements',()=>{
   const s=state({level:1,coins:1_000_000});
   const rows=Object.keys(VENDORS).flatMap(vendor=>vendorStock(s,vendor,'buy'));
-  assert.equal(rows.length,100);
+  assert.equal(rows.length,Object.values(ITEMS).filter(item=>item.price).length);
   const high=rows.find(row=>row.id==='stuffingSatchel');
-  assert.equal(high.preview.allowed,true);
-  assert.equal(high.preview.levelRequired,null);
+  assert.equal(high.preview.allowed,false);
+  assert.match(high.preview.reason,/Chapter/);
+  assert.equal(high.preview.chapterRequired,ITEMS.stuffingSatchel.chapter);
   assert.equal(high.preview.tierLabel,`Tier ${ITEMS.stuffingSatchel.tier}`);
 });

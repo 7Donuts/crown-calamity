@@ -87,6 +87,8 @@ test('defeat ends the Shift and forfeits only the unfiled bonus; the engine appl
   let now=win(s,t),c=s.character;
   now=win(s,now);now=win(s,now);
   assert.equal(S.pendingOffer(s.shift)?.milestone,3);Lab.labShiftSkip(s,3,now);
+  now=win(s,now);now=win(s,now);now=win(s,now);
+  assert.equal(S.pendingOffer(s.shift)?.milestone,6);Lab.labShiftSkip(s,6,now);
   c.coins=500;c.hp=1;
   const coinsBefore=c.coins,xp=G.progression(c).totalEarned,gear=JSON.stringify(c.gear),mats=JSON.stringify(c.materials),unfiled=S.unfiledReceipts(s.shift);
   assert.ok(unfiled.coins>0,'Overtime had accrued something to lose');

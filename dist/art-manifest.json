@@ -107,6 +107,607 @@
       ]
     },
     {
+      "id": "underfoot-chapters-enemy-atlas",
+      "src": "assets/enemies/underfoot-chapters-atlas.png",
+      "purpose": "Twenty individually cropped enemy sprites for chapters 2\u20135",
+      "sha256": "98846796b77ba58459a21faef3fe7226097d4097586f658922a0ba214f03971a",
+      "displaySizes": [
+        48,
+        68,
+        100,
+        192
+      ],
+      "provenance": "Original transparent image-generation atlas, generated with the canonical ART-DIRECTION.md positive and negative headers using the approved Ledger Rat and Bracken Quay references. PNG bytes preserved unchanged; measured rectangular crops include detached claw and sprinkler spray components.",
+      "width": 1402,
+      "height": 1122,
+      "mode": "RGBA",
+      "alpha": true,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaContentBounds": [
+        0,
+        19,
+        1386,
+        1122
+      ],
+      "layout": {
+        "columns": 5,
+        "rows": 4,
+        "note": "Uneven source spacing; runtime uses individual measured crops rather than equal-grid slicing."
+      },
+      "frameContent": [
+        {
+          "key": "arcade_dust",
+          "frame": [
+            38,
+            64,
+            220,
+            263
+          ],
+          "visibleBounds": [
+            44,
+            70,
+            252,
+            321
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            38,
+            64,
+            258,
+            327
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            220,
+            263
+          ]
+        },
+        {
+          "key": "arcade_crane",
+          "frame": [
+            315,
+            47,
+            223,
+            278
+          ],
+          "visibleBounds": [
+            321,
+            53,
+            532,
+            319
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            321,
+            47,
+            538,
+            325
+          ],
+          "alphaBoundsRelative": [
+            6,
+            0,
+            223,
+            278
+          ]
+        },
+        {
+          "key": "arcade_marble",
+          "frame": [
+            589,
+            138,
+            215,
+            187
+          ],
+          "visibleBounds": [
+            595,
+            144,
+            798,
+            319
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            589,
+            140,
+            804,
+            325
+          ],
+          "alphaBoundsRelative": [
+            0,
+            2,
+            215,
+            187
+          ]
+        },
+        {
+          "key": "arcade_racer",
+          "frame": [
+            870,
+            130,
+            224,
+            195
+          ],
+          "visibleBounds": [
+            876,
+            136,
+            1088,
+            319
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            870,
+            130,
+            1094,
+            325
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            224,
+            195
+          ]
+        },
+        {
+          "key": "arcade_boss",
+          "frame": [
+            1150,
+            53,
+            213,
+            274
+          ],
+          "visibleBounds": [
+            1156,
+            59,
+            1357,
+            321
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            1150,
+            53,
+            1363,
+            326
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            213,
+            273
+          ]
+        },
+        {
+          "key": "garden_ant",
+          "frame": [
+            42,
+            343,
+            222,
+            237
+          ],
+          "visibleBounds": [
+            48,
+            349,
+            258,
+            574
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            43,
+            343,
+            264,
+            580
+          ],
+          "alphaBoundsRelative": [
+            1,
+            0,
+            222,
+            237
+          ]
+        },
+        {
+          "key": "garden_snail",
+          "frame": [
+            306,
+            405,
+            227,
+            177
+          ],
+          "visibleBounds": [
+            312,
+            411,
+            527,
+            576
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            306,
+            405,
+            533,
+            582
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            227,
+            177
+          ]
+        },
+        {
+          "key": "garden_sprinkler",
+          "frame": [
+            571,
+            342,
+            256,
+            240
+          ],
+          "visibleBounds": [
+            577,
+            348,
+            821,
+            576
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            571,
+            342,
+            827,
+            582
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            256,
+            240
+          ]
+        },
+        {
+          "key": "garden_magpie",
+          "frame": [
+            825,
+            361,
+            285,
+            224
+          ],
+          "visibleBounds": [
+            831,
+            367,
+            1104,
+            579
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            825,
+            361,
+            1110,
+            585
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            285,
+            224
+          ]
+        },
+        {
+          "key": "garden_boss",
+          "frame": [
+            1155,
+            338,
+            209,
+            246
+          ],
+          "visibleBounds": [
+            1161,
+            344,
+            1358,
+            578
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            1156,
+            338,
+            1364,
+            584
+          ],
+          "alphaBoundsRelative": [
+            1,
+            0,
+            209,
+            246
+          ]
+        },
+        {
+          "key": "attic_moth",
+          "frame": [
+            21,
+            608,
+            254,
+            230
+          ],
+          "visibleBounds": [
+            27,
+            614,
+            269,
+            832
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            21,
+            608,
+            275,
+            838
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            254,
+            230
+          ]
+        },
+        {
+          "key": "attic_box",
+          "frame": [
+            315,
+            625,
+            223,
+            207
+          ],
+          "visibleBounds": [
+            321,
+            631,
+            532,
+            826
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            315,
+            625,
+            538,
+            832
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            223,
+            207
+          ]
+        },
+        {
+          "key": "attic_clock",
+          "frame": [
+            571,
+            610,
+            227,
+            224
+          ],
+          "visibleBounds": [
+            577,
+            616,
+            792,
+            828
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            571,
+            610,
+            798,
+            834
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            227,
+            224
+          ]
+        },
+        {
+          "key": "attic_hugger",
+          "frame": [
+            807,
+            612,
+            299,
+            225
+          ],
+          "visibleBounds": [
+            813,
+            618,
+            1100,
+            831
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            807,
+            612,
+            1106,
+            836
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            299,
+            224
+          ]
+        },
+        {
+          "key": "attic_boss",
+          "frame": [
+            1125,
+            601,
+            248,
+            226
+          ],
+          "visibleBounds": [
+            1131,
+            607,
+            1367,
+            821
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            1125,
+            601,
+            1372,
+            827
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            247,
+            226
+          ]
+        },
+        {
+          "key": "fair_mask",
+          "frame": [
+            40,
+            865,
+            203,
+            218
+          ],
+          "visibleBounds": [
+            46,
+            871,
+            237,
+            1077
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            40,
+            865,
+            243,
+            1083
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            203,
+            218
+          ]
+        },
+        {
+          "key": "fair_carousel",
+          "frame": [
+            296,
+            836,
+            244,
+            249
+          ],
+          "visibleBounds": [
+            302,
+            842,
+            534,
+            1079
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            296,
+            836,
+            540,
+            1085
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            244,
+            249
+          ]
+        },
+        {
+          "key": "fair_ticket",
+          "frame": [
+            575,
+            898,
+            251,
+            185
+          ],
+          "visibleBounds": [
+            581,
+            904,
+            820,
+            1077
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            575,
+            898,
+            824,
+            1083
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            249,
+            185
+          ]
+        },
+        {
+          "key": "fair_ringmaster",
+          "frame": [
+            866,
+            863,
+            219,
+            221
+          ],
+          "visibleBounds": [
+            872,
+            869,
+            1079,
+            1078
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            868,
+            863,
+            1085,
+            1084
+          ],
+          "alphaBoundsRelative": [
+            2,
+            0,
+            219,
+            221
+          ]
+        },
+        {
+          "key": "fair_boss",
+          "frame": [
+            1125,
+            827,
+            250,
+            259
+          ],
+          "visibleBounds": [
+            1131,
+            833,
+            1369,
+            1080
+          ],
+          "visibleBoundsThreshold": 128,
+          "alphaBounds": [
+            1125,
+            827,
+            1373,
+            1086
+          ],
+          "alphaBoundsRelative": [
+            0,
+            0,
+            248,
+            259
+          ]
+        }
+      ],
+      "approvalStatus": "Root approved source atlas, 64px crop previews and 100px runtime renders. Browser layout review remains outstanding.",
+      "alphaBoundsThreshold16": [
+        26,
+        52,
+        1369,
+        1081
+      ]
+    },
+    {
       "id": "ledger-rat-idle",
       "src": "assets/enemies/ledger-rat-idle.png",
       "purpose": "Four held Ledger Rat poses",

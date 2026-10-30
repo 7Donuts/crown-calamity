@@ -221,7 +221,7 @@ test('gear comparison remains an explicit review before the player equips anythi
   const modal = ui.getModal().innerHTML;
   assert.match(modal, /EQUIPMENT COMPARISON/);
   assert.match(modal, /CURRENTLY EQUIPPED/);
-  assert.match(modal, /Canal-Iron Sword/);
+  assert.ok(modal.includes(G.ITEMS.sword.name));
   assert.match(modal, /data-action="equip:sword:weapon"/);
   assert.equal(state.gear.weapon, priorWeapon, 'opening a comparison cannot equip the item');
 });
@@ -328,7 +328,7 @@ test('world and community navigation labels planned features and leaves campaign
   assert.equal(ui.getView(), 'world', 'invalid navigation is ignored');
   assert.equal(JSON.stringify(state), before);
   await ui.act('nav:hunt');
-  assert.match(ui.getApp().innerHTML, /An honest day/);
+  assert.match(ui.getApp().innerHTML, /TRAVEL BETWEEN CHAPTERS/);
   assert.equal(JSON.stringify(state), before, 'returning to the local hunt does not start an encounter');
 });
 

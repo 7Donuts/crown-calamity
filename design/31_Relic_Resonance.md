@@ -4,7 +4,9 @@ The original Relic equipment slot remains the core relic slot. Three optional ec
 
 ## Attunement and cost
 
-Sockets unlock in order for 5,000, 25,000, and 125,000 coins. Unlock and attunement previews show the full price and benefit before spending. Echo attunement requires ownership of the base relic. Every socket keeps its paid license after clearing, and clearing does not refund coins. A paid license can be reattuned in its original socket without paying again. Duplicate licenses for the same relic cost four times the previous license; their first price follows the relic's category base and tier curve. Mutations reject fights, delves, pending rests, and future wounds, and failed mutations spend nothing.
+Two relics become available in each chapter, in this order: Signet and Seal; Thread Spool and Patchwork Heart; Lucky Button and Dream Bell; Thimble Guard and Amber Marble; Ribbon Knot and Stuffing Satchel. Their purchase prices are 500, 1,200, 3,500, 8,000, 20,000, 50,000, 125,000, 300,000, 750,000, and 1,800,000 coins. These are authored relic costs, separate from the normal armor and weapon price curves. A low-chapter relic remains useful later because its unique effect does not depend on a numerical tier ladder.
+
+Sockets unlock in order for 5,000, 25,000, and 125,000 coins, with new unlocks requiring Chapters 2, 3, and 4. Previously paid sockets remain open. Unlock and attunement previews show the full price and benefit before spending. Echo attunement requires ownership of the base relic. Every socket keeps its paid license after clearing, and clearing does not refund coins. A paid license can be reattuned in its original socket without paying again. Duplicate licenses for the same relic cost four times the previous license; the first license for a relic uses its listed purchase price. Mutations reject fights, delves, pending rests, and future wounds, and failed mutations spend nothing.
 
 ## Effects
 
