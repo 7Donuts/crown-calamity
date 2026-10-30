@@ -250,6 +250,8 @@ The original modular pack remains under `design/Crown-and-Calamity-Design-v0.1/`
 - [Relic engine](design/43_Relic_Engine.md)
 - [Direction and roadmap](design/44_Direction_and_Roadmap.md)
 - [Races and weapons proposal](design/45_Races_and_Weapons.md)
+- [Build roadmap and decision register](ROADMAP.md)
+- Build specs: [two hands](design/46_Spec_Two_Hands.md), [weapon families](design/47_Spec_Weapon_Families.md), [race identity](design/48_Spec_Race_Identity.md), [relic engine v2](design/49_Spec_Relic_Engine_v2.md), [growth and Becoming Real](design/50_Spec_Growth_and_Becoming_Real.md), [world and exploration](design/51_Spec_World_and_Exploration.md), [Hideaways](design/52_Spec_Hideaways.md), [shared play](design/53_Spec_Shared_Play.md)
 - [Online development roadmap](FUTURE-DEVELOPMENT.md)
 
 This is still a local solo prototype. Login, server-authoritative actions/randomness/rewards, account persistence, guilds, and multiplayer are future work. Local saves, clocks, and code remain editable. The shared delay limits rapid input; it is not production anti-cheat.

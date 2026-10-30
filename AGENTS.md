@@ -33,7 +33,7 @@ The original pack in `design/Crown-and-Calamity-Design-v0.1/` is retained histor
 
 ## Product direction (owner decisions, 30 October 2026)
 
-Read `design/44_Direction_and_Roadmap.md` before planning new systems; `design/45_Races_and_Weapons.md` holds the race and weapon proposals.
+Read `design/44_Direction_and_Roadmap.md` before planning new systems. `ROADMAP.md` holds the build order, the decision register (D1 onward) and the definition of done; designs 46 to 53 are the build specs. Build a system only from its spec, and only the parts whose decisions the register shows approved. If a spec is wrong or missing something, update the spec in the same change. When the owner asks for planning only, change documents only, not code.
 
 - The goal is an improved take on Race War Kingdoms with our own systems and the stuffie theme and story, which stay.
 - Multiplayer and its services are core. Solo progression must still never require a guild or other players.
@@ -41,7 +41,7 @@ Read `design/44_Direction_and_Roadmap.md` before planning new systems; `design/4
 - Progression is open-ended; the five-chapter story is the introduction that opens the wider world.
 - The world will have map exploration and locations, possibly across several layers or planes.
 - Players may own land and build, but only with a real gameplay purpose; land never produces anything passively.
-- The two-hand system, the race rework, weapon families and the relic echo and older-relic decisions in design 44 and 45 are proposals awaiting owner approval. Do not implement them without it.
+- The two-hand system, the race rework, weapon families, relic engine v2, growth past level 50, the world, Hideaways and shared play are specified (designs 46 to 53) but await the owner decisions listed in `ROADMAP.md`. Do not implement them without approval.
 
 ## Current story and character rules
 

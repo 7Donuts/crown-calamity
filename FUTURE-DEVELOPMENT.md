@@ -1,6 +1,6 @@
 # Crown & Calamity: online platform and future development plan
 
-Status: planned, not built. Multiplayer and its services are a core part of the product (owner decision, 30 October 2026). The current game is a browser-local prototype: local saves, clocks and code remain editable, and nothing here may be presented as a secure online system until the server owns it. Product direction, pillars and the game-systems proposals are in [design 44](design/44_Direction_and_Roadmap.md); races and weapons are in [design 45](design/45_Races_and_Weapons.md).
+Status: planned, not built. Multiplayer and its services are a core part of the product (owner decision, 30 October 2026). The current game is a browser-local prototype: local saves, clocks and code remain editable, and nothing here may be presented as a secure online system until the server owns it. Product direction and pillars are in [design 44](design/44_Direction_and_Roadmap.md). The combined build order, the decision register and the game-system build specs (designs 46 to 53) are in [ROADMAP.md](ROADMAP.md).
 
 The current interface includes a World page and a social drawer as planning placeholders. Travel, guilds, friend search, holdings and chat controls remain disabled; there are no online accounts, shared records, land claims or live messages behind them. See [design 29](design/29_Interface_Polish.md) for the current UI boundary.
 
@@ -146,7 +146,7 @@ When Phase 2 starts: decide which actions a moderator hold freezes once trading 
 
 ### Treat buff
 
-A single slot for a bought treat with a small flat bonus for a set number of encounters, counted by encounters and never by time. A coin sink; it needs the design 23 PvP budget check. Hideaway Pantry snacks (design 44) may replace it.
+A single slot for a bought treat with a small flat bonus for a set number of encounters, counted by encounters and never by time. A coin sink; it needs the design 23 PvP budget check. Superseded by Hideaway Pantry snacks ([design 52](design/52_Spec_Hideaways.md)) if that spec is built.
 
 ### Reputation axis
 

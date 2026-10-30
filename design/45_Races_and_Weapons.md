@@ -1,6 +1,6 @@
 # Races and weapons: stronger identities that tie the build together (proposal)
 
-Prepared 30 October 2026. Proposal for owner approval; nothing here is implemented yet. Direction and pillars are in [design 44](44_Direction_and_Roadmap.md). Current race rules are in design 30; the relic engine is in design 43.
+Prepared 30 October 2026. Proposal for owner approval; nothing here is implemented yet. The build specs derived from it are [design 47](47_Spec_Weapon_Families.md) (weapons) and [design 48](48_Spec_Race_Identity.md) (races); build from those. Direction and pillars are in [design 44](44_Direction_and_Roadmap.md). Current race rules are in design 30; the relic engine is in design 43.
 
 ## Why change
 
@@ -72,6 +72,8 @@ Spears and pikes have only three weapons; later layers should add more so every 
 If design 44 option B (two hands, one verb) is chosen, families also define what a weapon does in the second hand: a club adds a small bonk on Strike, a needle adds a quick jab, a wand casts a reduced Arc Bolt, a scepter strengthens Guard. A tenth family, **Menders** (needle-and-thread kits, bandage rolls), becomes the healing hand item, giving RWK-style healing while fighting. If option C is chosen, Menders become offhand items instead.
 
 ## Implementation outline (after approval)
+
+Superseded in detail by designs 47 and 48; kept for history.
 
 1. Add `family` to every weapon and a new `dist/weapon-families.js` with traits and their numbers. Apply traits in `actionProfile` and the exchange, so combat and the inspector share one calculation.
 2. Add race traits, Pluck hooks and affinities to `dist/races.js` and the engine, with new spreads for new characters only.

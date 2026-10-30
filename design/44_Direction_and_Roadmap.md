@@ -1,6 +1,6 @@
 # Direction and roadmap: an RWK-style game that is ours
 
-Prepared 30 October 2026 from owner direction. This document records the product direction, the owner decisions, and the proposals that follow from them. Proposals are marked as such and need owner approval before implementation. Races and weapons are detailed in [design 45](45_Races_and_Weapons.md); the online platform plan is in [FUTURE-DEVELOPMENT.md](../FUTURE-DEVELOPMENT.md).
+Prepared 30 October 2026 from owner direction. The build order, decision register and build specs (designs 46 to 53) are in [ROADMAP.md](../ROADMAP.md); where a spec and this document differ, the spec is the build contract. This document records the product direction, the owner decisions, and the proposals that follow from them. Proposals are marked as such and need owner approval before implementation. Races and weapons are detailed in [design 45](45_Races_and_Weapons.md); the online platform plan is in [FUTURE-DEVELOPMENT.md](../FUTURE-DEVELOPMENT.md).
 
 ## The goal
 
@@ -75,9 +75,9 @@ RWK's kingdoms and houses were bought and taxed, and mostly measured wealth. Our
 
 What a Hideaway does:
 
-1. **Preparation.** A Hideaway is where you set up before going out. A Sewing Nook lets you re-slot relics and hands for free there. A Pantry turns materials into packed snacks (one-fight boons such as starting Pluck). A Practice Dummy shows real damage per exchange (design 36 R5a). Preparing is an explicit action, used up in a fight; nothing accrues.
+1. **Preparation.** A Hideaway is where you set up before going out. A Sewing Nook stores named loadouts you can swap in one input. A Pantry turns materials into packed snacks (one-fight boons such as starting Pluck). A Practice Dummy shows real damage per exchange (design 36 R5a). Preparing is an explicit action, used up in a fight; nothing accrues.
 2. **Workshop and relic growth.** Relic ranks (design 27 and 40: deliver regional materials and a boss keepsake to raise a relic) happen at a Hideaway workbench. This gives every layer's materials a lasting use, which IMPLEMENTATION-STATUS.md lists as missing.
-3. **Anchor.** A Hideaway is a travel point and a rest point in its layer, which makes exploring deep layers practical.
+3. **Anchor.** A Hideaway is a one-tap travel point in its layer, which makes exploring deep layers practical.
 4. **Defense against Spring Cleaning.** The game's Calamity, Spring Cleaning, sweeps through layers as a world event. Unclaimed locations get "tidied away" (caches and secured routes reset); defended Hideaways keep their neighbourhood safe. This makes land a co-operative and guild concern (Phase 6 online) and ties land to the story's title.
 5. **Identity.** Visitable, decoratable, and shown on your profile.
 
@@ -142,6 +142,8 @@ The owner's current focus is the core game, so the order is core first, then the
 5. **Shared world.** Guilds, trading, Spring Cleaning events and shared bosses, then competitive ladders.
 
 ## Open questions for the owner
+
+These are tracked as D1 to D8 in the [ROADMAP.md](../ROADMAP.md) decision register.
 
 1. Two-hand option: A, B or C (B recommended, lab first).
 2. Approve the race rework and weapon families in design 45 for implementation.
