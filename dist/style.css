@@ -272,14 +272,14 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
 }
 
 /* Equipment diagram: a functional slot map centered on a generic outline. */
-#app .gear-diagram{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(88px,auto));grid-template-areas:"weapon head offhand" "accessory figure accessory2" "hands figure feet" "body figure relic";gap:9px;align-items:stretch;margin:17px 0 24px;max-width:900px}
+#app .gear-diagram{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(88px,auto));grid-template-areas:"weapon head offhand" "body figure relic" "hands figure relic2" "feet accessory accessory2";gap:9px;align-items:stretch;margin:17px 0 24px;max-width:900px}
 #app .gear-slot-card{display:flex;min-width:0;min-height:84px;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;padding:10px;background:#202c23;border:1px solid #56674c;text-align:left;overflow-wrap:anywhere}
 #app .gear-slot-card.empty{background:#18221b;border-style:dashed;color:#d2ddc8}
 #app .gear-slot-card:hover:not(:disabled),#app .gear-slot-card:focus-visible{background:#2c3b2d;border-color:#e0c58f}
 #app .gear-slot-label{font-size:11px;color:#f1d69a;letter-spacing:.45px;text-transform:uppercase}
 #app .gear-slot-card strong{font-size:13px;line-height:1.35;color:#fff8e8}
 #app .gear-slot-card small{font-size:11px;line-height:1.4;color:#c7d2be}
-#app .slot-weapon{grid-area:weapon}#app .slot-head{grid-area:head}#app .slot-offhand{grid-area:offhand}#app .slot-accessory{grid-area:accessory}#app .slot-accessory2{grid-area:accessory2}#app .slot-hands{grid-area:hands}#app .slot-feet{grid-area:feet}#app .slot-body{grid-area:body}#app .slot-relic{grid-area:relic}
+#app .slot-weapon{grid-area:weapon}#app .slot-head{grid-area:head}#app .slot-offhand{grid-area:offhand}#app .slot-accessory{grid-area:accessory}#app .slot-accessory2{grid-area:accessory2}#app .slot-hands{grid-area:hands}#app .slot-feet{grid-area:feet}#app .slot-body{grid-area:body}#app .slot-relic{grid-area:relic}#app .slot-relic2{grid-area:relic2}
 #app .gear-figure{grid-area:figure;display:flex;min-width:0;align-items:center;justify-content:center;flex-direction:column;gap:5px;border:1px solid #344234;border-radius:10px;background:radial-gradient(ellipse at center,#283629 0%,#19221b 72%);color:#becbb4}
 #app .gear-figure span{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#d8c18d}
 #app .equipment-list{border-top:1px solid #3b4838;padding-top:16px}
@@ -402,7 +402,7 @@ body,#app{background:#111715;color:#f5f4e9;font-family:-apple-system,BlinkMacSys
 @media(max-width:740px){.story-chapter-progress{display:grid;grid-template-columns:1fr 1fr}.story-objectives li{font-size:14px}.story-buttons>button{width:100%}#app .mobile-nav button{min-width:48px;padding-left:6px;padding-right:6px}}
 
 /* Keep the requested body-slot map legible, including on narrow phones. */
-#app .gear-diagram{grid-template-areas:"weapon head offhand" "body figure relic" "hands figure accessory" "feet figure accessory2"}
+#app .gear-diagram{grid-template-areas:"weapon head offhand" "body figure relic" "hands figure relic2" "feet accessory accessory2"}
 #app .gear-slot-label{font-size:12px}
 #app .gear-slot-card strong{font-size:14px;line-height:1.45}
 #app .gear-slot-card small{font-size:12px;line-height:1.5}

@@ -6,7 +6,7 @@ export {VENDORS,classifyVendor};
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const vendorIcons={weaponsmith:'weapons',armorer:'armor',curio:'curios'};
-const slotLabel=slot=>slot==='accessory2'?'Second accessory':G.SLOTS[slot]||slot;
+const slotLabel=slot=>slot==='accessory2'?'Second accessory':slot==='relic2'?'Second relic':G.SLOTS[slot]||slot;
 const button=(action,label,disabled=false,cls='subtle')=>`<button data-action="${esc(action)}" class="${cls}" ${disabled?'disabled':''}>${label}</button>`;
 const filterButton=(action,label,active=false)=>`<button data-action="${esc(action)}" class="${active?'active':'subtle'}" aria-pressed="${active}">${esc(label)}</button>`;
 const itemFields=[['base','Weapon base'],['armor','Armor'],['ward','Ward'],['spellBase','Spell base']];
@@ -71,7 +71,7 @@ const format=(key,n)=>key==='critChance'||key==='equipmentDropChance'?percentage
 // Inspect a hypothetical purchase; never equips, spends coins, or mutates the save.
 export function stockComparison(state,id,targetSlot=null){
   const item=baseVendorItem(id);if(!item||!item.price)return null;
-  const slots=item.slot==='accessory'?['accessory','accessory2']:[item.slot];
+  const slots=item.slot==='accessory'?['accessory','accessory2']:item.slot==='relic'?['relic','relic2']:[item.slot];
   const selected=slots.includes(targetSlot)?targetSlot:slots.find(slot=>!state.gear[slot])||slots[0];
   const oldId=state.gear[selected],old=oldId?G.resolveItem(state,oldId):null;
   const blockedOffhand=selected==='offhand'&&G.ITEMS[state.gear.weapon]?.twoHanded;

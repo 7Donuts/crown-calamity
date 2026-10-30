@@ -9,18 +9,19 @@ import {
 
 const state=(overrides={})=>({level:10,coins:1000,story:{completed:['municipal_works']},materials:{'Ledger scraps':10,'Canal iron':10,'Runic residue':10,'Chainback shell':10,'Stamped brass':10,'Floodglass':10,'Floodglass Fragment':2,'Salvaged fittings':10,'Repair fittings':10},bag:['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band','cap','boots','rivethelm','waders','signet','pike'],gear:{weapon:'rod',offhand:'shield',body:'coat'},itemMods:{},fight:null,delve:null,...overrides});
 
-test('catalog preserves every original item id and exposes all nine slots',()=>{
+test('catalog preserves every original item id and exposes all ten slots',()=>{
   for(const id of ['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band'])assert.ok(ITEMS[id],id);
   assert.deepEqual([ITEMS.rod.base,ITEMS.rod.channel,ITEMS.rod.focus,ITEMS.sword.base,ITEMS.sword.channel,ITEMS.blade.channel,ITEMS.shield.armor,ITEMS.focus.spellBase,ITEMS.seal.slot,ITEMS.penny.stats.lck],[14,'spell',true,14,'heavy','precision',10,3,'relic',4]);
-  assert.deepEqual(Object.keys(SLOTS),['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic']);
+  assert.deepEqual(Object.keys(SLOTS),['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic','relic2']);
   assert.ok(EXCHANGES.fragment_glass&&PREFIXES.keen&&SUFFIXES.of_vigor);
 });
 
 test('expanded catalog has chapter stock, a generated art family for each item, and monotonic weapons',async()=>{
   const {ITEM_ART}=await import('../dist/item-art.js');
   const counts={};for(const item of Object.values(ITEMS))counts[item.slot]=(counts[item.slot]||0)+1;
-  assert.equal(Object.keys(ITEMS).length,145);
-  for(const slot of ['offhand','head','body','hands','feet','accessory','relic'])assert.equal(counts[slot],10,slot);
+  assert.equal(Object.keys(ITEMS).length,154);
+  for(const slot of ['offhand','head','body','hands','feet','accessory'])assert.equal(counts[slot],10,slot);
+  assert.equal(counts.relic,19,'fourteen stocked relics and five finale keepsakes');
   assert.equal(counts.weapon,75);
   for(const channel of ['heavy','spell','precision']){
     const tiers=Object.values(ITEMS).filter(item=>item.slot==='weapon'&&item.channel===channel).map(item=>item.tier).sort((a,b)=>a-b);
@@ -41,12 +42,14 @@ test('expanded catalog has chapter stock, a generated art family for each item, 
   for(const id of Object.keys(ITEMS))assert.ok(ITEM_ART[id],`${id} has generated family art`);
   for(const id of ['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'])assert.ok(ITEMS[id]);
   assert.ok(ITEMS.signet.relicEffect==='signet');assert.ok(ITEMS.threadSpool.relicEffect==='threadSpool');
-  assert.deepEqual(['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'].map(id=>ITEMS[id].price),[500,1200,3500,8000,20000,50000,125000,300000,750000,1800000]);
+  // Relics are priced from chapter income (design 43), and finale keepsakes are never stocked.
+  assert.deepEqual(['feltFang','darnedPatch','signet','seal','threadSpool','patchworkHeart','cocoaThimble','picnicTin','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'].map(id=>ITEMS[id].price),[60,90,120,180,300,400,450,550,1000,1200,2400,3000,5000,6000]);
+  for(const id of ['lintLocket','lastToken','seedHeart','musicBox','encoreRibbon'])assert.ok(ITEMS[id].keepsake&&!ITEMS[id].price&&ITEMS[id].echoPrice>0,id);
   assert.deepEqual(['rod','sword','blade','shield','focus','charm','coat'].map(id=>ITEMS[id].lootEligible),Array(7).fill(false));
   for(const item of Object.values(ITEMS).filter(x=>x.slot==='relic'))assert.equal(item.lootEligible,false);
 });
 
-test('full nine-slot loadout preserves legacy traits and counts each owned ID once',()=>{
+test('full ten-slot loadout preserves legacy traits and counts each owned ID once',()=>{
   const s=state({gear:{weapon:'rod'}});
   for(const [id,slot]of [['shield','offhand'],['cap','head'],['coat','body'],['grips','hands'],['boots','feet'],['penny','accessory'],['lantern','accessory2'],['signet','relic']])assert.equal(equipItem(s,id,slot),true);
   // Re-equipping an item in place cannot add a second copy of its stats.
@@ -64,11 +67,13 @@ test('full nine-slot loadout preserves legacy traits and counts each owned ID on
   assert.equal(items.find(i=>i.id==='shield').armor,10);assert.equal(items.find(i=>i.id==='penny').stats.lck,4);
 });
 
-test('owned gear equips in all nine slots and accessories can occupy both slots',()=>{
+test('owned gear equips in all ten slots and accessories and relics can occupy both of their slots',()=>{
   const s=state({gear:{weapon:'rod'}});
-  for(const [id,slot]of [['sword','weapon'],['shield','offhand'],['cap','head'],['coat','body'],['grips','hands'],['boots','feet'],['penny','accessory'],['lantern','accessory2'],['signet','relic']])assert.equal(equipItem(s,id,slot),true,`${id} -> ${slot}`);
-  assert.deepEqual(Object.fromEntries(Object.entries(s.gear).filter(([,id])=>id)),{weapon:'sword',offhand:'shield',head:'cap',body:'coat',hands:'grips',feet:'boots',accessory:'penny',accessory2:'lantern',relic:'signet'});
+  for(const [id,slot]of [['sword','weapon'],['shield','offhand'],['cap','head'],['coat','body'],['grips','hands'],['boots','feet'],['penny','accessory'],['lantern','accessory2'],['signet','relic'],['seal','relic2']])assert.equal(equipItem(s,id,slot),true,`${id} -> ${slot}`);
+  assert.deepEqual(Object.fromEntries(Object.entries(s.gear).filter(([,id])=>id)),{weapon:'sword',offhand:'shield',head:'cap',body:'coat',hands:'grips',feet:'boots',accessory:'penny',accessory2:'lantern',relic:'signet',relic2:'seal'});
   assert.equal(s.gear.accessory,'penny');assert.equal(s.gear.accessory2,'lantern');
+  assert.equal(equipItem(s,'signet','relic2'),true,'moving a relic between its slots never duplicates it');assert.deepEqual([s.gear.relic,s.gear.relic2],[null,'signet']);
+  assert.equal(equipItem(s,'signet','accessory'),false,'a relic never fits an accessory slot');
 });
 
 test('an ID cannot occupy two slots, and two-handed weapons reserve the offhand',()=>{

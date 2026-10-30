@@ -1,7 +1,8 @@
-// Optional echo sockets for owned relic items. The core gear.relic slot remains
-// authoritative for the original full-strength relic and its unique proc.
-import { ITEMS, effectiveItem } from './gear.js';
+// Optional echo sockets for owned relic items. The two core relic slots (gear.relic and
+// gear.relic2) remain authoritative for full-strength relics and their unique procs.
+import { ITEMS, effectiveItem, RELIC_SLOTS } from './gear.js';
 import { currentChapter, chapterUnlocked } from './campaign.js';
+import { ENGINE_EFFECTS } from './relic-engine.js';
 
 export const RELIC_SOCKET_COUNT = 3;
 export const RELIC_UNLOCK_COSTS = Object.freeze([5000, 25000, 125000]);
@@ -20,7 +21,8 @@ export const RELIC_EFFECTS = Object.freeze({
   thimbleGuard: { name: 'Thimble Guard', desc: 'The first useful Guard each fight adds 4 barrier.' },
   amberMarble: { name: 'Amber Marble', desc: 'Your first damaging action each fight deals 3 extra damage.' },
   ribbonKnot: { name: 'Ribbon Knot', desc: 'A free physical strike restores 1 Sparkle (mana).' },
-  stuffingSatchel: { name: 'Stuffing Satchel', desc: 'Mend restores 10% more Stuffing (health).' }
+  stuffingSatchel: { name: 'Stuffing Satchel', desc: 'Mend restores 10% more Stuffing (health).' },
+  ...Object.fromEntries(Object.entries(ENGINE_EFFECTS).map(([id, effect]) => [id, { name: effect.name, desc: effect.desc }]))
 });
 
 const validRelic = id => !!ITEMS[id] && ITEMS[id].slot === 'relic';
@@ -30,6 +32,7 @@ const echoCost = (count, price = 0) => Math.min(Number.MAX_SAFE_INTEGER, Math.ma
 const locked = s => !!(s?.fight || s?.delve || (Number.isFinite(s?.restReadyAt) && s.restReadyAt > 0) || (Number.isFinite(s?.woundedUntil) && s.woundedUntil > Date.now()));
 const lockReason = s => s?.fight ? 'Relics cannot be changed during a fight.' : s?.delve ? 'Relics cannot be changed during a delve.' : 'Relics cannot be changed while resting or wounded.';
 const owned = (s, id) => Array.isArray(s?.bag) && s.bag.includes(id);
+const inCore = (s, id) => RELIC_SLOTS.some(slot => s?.gear?.[slot] === id);
 
 function freshSocket() { return { unlocked: false, relicId: null, copiesPaid: {} }; }
 
@@ -94,8 +97,8 @@ function echoPreview(s, slot, baseId) {
   const licensedHere = !!socket?.copiesPaid?.[baseId];
   const priorLicenses = sockets.reduce((n, x) => n + (x.copiesPaid?.[baseId] ? 1 : 0), 0) - (licensedHere ? 1 : 0);
   const duplicateCount = priorLicenses;
-  const coinCost = licensedHere ? 0 : echoCost(priorLicenses, item?.price);
-  const coreSame = s?.gear?.relic === baseId;
+  const coinCost = licensedHere ? 0 : echoCost(priorLicenses, item?.price || item?.echoPrice);
+  const coreSame = inCore(s, baseId);
   const activeBefore = sockets.slice(0, Math.max(0, index)).filter(x => x.relicId === baseId).length;
   const effectScale = coreSame ? RELIC_EFFECT_SCALES[activeBefore] || 0 : activeBefore === 0 ? 1 : RELIC_EFFECT_SCALES[activeBefore - 1] || 0;
   const hasFlatEffect = !!item && (Object.values(item.stats || {}).some(value => value > 0) || (item.armor || 0) > 0 || (item.ward || 0) > 0);
@@ -107,7 +110,7 @@ function echoPreview(s, slot, baseId) {
         : !hasFlatEffect && !hasEchoEffect(baseId) ? 'This relic has no echoable effect.'
               : socket.relicId === baseId ? 'That relic is already attuned here.'
                 : (s.coins || 0) < coinCost ? 'You cannot afford this relic echo.' : null;
-  const later = licensedHere ? 0 : echoCost(priorLicenses + 1, item?.price);
+  const later = licensedHere ? 0 : echoCost(priorLicenses + 1, item?.price || item?.echoPrice);
   return { allowed: !reason, reason, slot: index, relicId: baseId, name: item?.name || null,
     coinCost, duplicateCount, effectScale, nextCost: later,
     effect: item ? { stats: { ...(item.stats || {}) }, armor: item.armor || 0, ward: item.ward || 0, unique: RELIC_EFFECTS[baseId] || null } : null };
@@ -143,8 +146,7 @@ export function relicBonuses(s) {
     if (!RELIC_EFFECTS[id] || scale <= 0) return;
     out.effects[id] = (out.effects[id] || 0) + scale;
   };
-  const coreId = s?.gear?.relic;
-  if (validRelic(coreId)) addEffect(coreId, 1);
+  for (const slot of RELIC_SLOTS) if (validRelic(s?.gear?.[slot])) addEffect(s.gear[slot], 1);
   const sockets = ensured(s) || [];
   const used = {};
   sockets.forEach(socket => {
@@ -152,7 +154,7 @@ export function relicBonuses(s) {
     const id = socket.relicId, item = effectiveItem(s, id);
     if (!item) return;
     const duplicateCount = used[id] || 0;
-    const scale = s?.gear?.relic === id
+    const scale = inCore(s, id)
       ? RELIC_EFFECT_SCALES[duplicateCount] || 0
       : duplicateCount === 0 ? 1 : RELIC_EFFECT_SCALES[duplicateCount - 1] || 0;
     addEffect(id, scale);

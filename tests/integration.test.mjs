@@ -116,11 +116,11 @@ test('gear mutations share real combat totals and damage profiles, then recipe c
   for (const amount of Object.values(s.materials)) assert.ok(amount >= 0, 'crafting never creates negative stock');
 });
 
-test('all nine equipped slots contribute once and a two-handed weapon reserves offhand everywhere', () => {
+test('all ten equipped slots contribute once and a two-handed weapon reserves offhand everywhere', () => {
   const s=G.fresh(); s.level=10;
   for (const id of ['floodrod','cap','oilskin','grips','boots','penny','lantern','signet','pike']) s.bag.push(id);
   for (const [id,slot] of [['floodrod','weapon'],['cap','head'],['oilskin','body'],['grips','hands'],['boots','feet'],['penny','accessory'],['lantern','accessory2'],['signet','relic']]) assert.equal(G.equip(s,id,slot),true,`${id} fits ${slot}`);
-  assert.deepEqual(Object.keys(G.SLOTS),['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic']);
+  assert.deepEqual(Object.keys(G.SLOTS),['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic','relic2']);
   assert.equal(s.gear.accessory,'penny'); assert.equal(s.gear.accessory2,'lantern');
   assert.equal(G.totals(s).armor,43);
   assert.equal(G.totals(s).ward,28);

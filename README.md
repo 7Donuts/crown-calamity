@@ -28,6 +28,16 @@ Then open `Crown-and-Calamity.html` directly in a modern browser. The package em
 
 Progress is browser-local. Export a save from Records → Field Guide before clearing browser data, changing devices, or opening a new downloaded file. File-based storage varies by browser; export/import is the reliable backup and transfer route.
 
+## Unreleased: the relic engine
+
+- **Two relic slots for everyone.** Every character, new or loaded from an older save, has two full-strength relic slots. Echo sockets are unchanged.
+- **Pluck.** A per-fight relic charge from 0 to 8. Generator relics turn guarding, interrupts, recovering, Expose, repetition or getting hurt into Pluck; payoff relics turn it into healing, damage or a head start in the next fight. It only appears when you equip an engine relic.
+- **Heal while fighting.** The Felt Vampire Fang (Chapter 1, 60 coins) restores 20% of the damage that landed, plus 3% per Pluck, up to 10% of maximum Stuffing per exchange; overkill never heals. In seeded fixtures, a planned relic pair roughly halves net Stuffing lost per fight, so you rest about half as often.
+- **Finale keepsakes.** Each chapter finale grants a unique relic once: Lint-Trap Locket, Last-Token Charm, Seed-Packet Heart, Keepsake Music Box and Encore Ribbon. Saves that already cleared a finale receive it on load. Keepsakes cannot be sold.
+- **Repriced relics.** Relics now cost from 60 to 6,000 coins by chapter, instead of 500 to 1.8 million.
+
+See [the relic engine](design/43_Relic_Engine.md).
+
 ## Unreleased: Shimlar comparison and three prototypes
 
 - **Overkill shown honestly.** When a blow ends a fight, the combat log and feedback now say how much was actually needed, for example `40 physical damage · only 6 needed`. The same applies to an enemy blow that defeats you. Attempted damage is still reported, and Playtest Lab telemetry is unchanged.
@@ -237,6 +247,7 @@ The original modular pack remains under `design/Crown-and-Calamity-Design-v0.1/`
 - [Art direction proposals](design/26_Art_Directions.md)
 - [RWK relic and itemization research](design/27_RWK_Relics_and_Itemization.md)
 - [Shimlar comparison and prototypes](design/40_Shimlar_Comparison.md)
+- [Relic engine](design/43_Relic_Engine.md)
 - [Online development roadmap](FUTURE-DEVELOPMENT.md)
 
 This is still a local solo prototype. Login, server-authoritative actions/randomness/rewards, account persistence, guilds, and multiplayer are future work. Local saves, clocks, and code remain editable. The shared delay limits rapid input; it is not production anti-cheat.

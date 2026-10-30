@@ -375,14 +375,26 @@ export function catalogAudit() {
       if (item.price !== expectedPrice) errors.push(`${item.id} price ${item.price} mismatches formula (${expectedPrice})`);
     }
   }
-  for (const slot of ['offhand', 'head', 'body', 'hands', 'feet', 'accessory', 'relic']) {
+  // Relics follow chapter income, not a ten-tier curve (design 43): stocked relics get dearer chapter by
+  // chapter, and each chapter finale grants exactly one unstocked, unsellable keepsake.
+  const relics = catalog.filter(item => item.slot === 'relic');
+  for (const item of relics) if (!(item.chapter >= 1 && item.chapter <= 5) || item.tier !== item.chapter) errors.push(`${item.id} relic tier must equal its chapter`);
+  for (let chapter = 1; chapter < 5; chapter++) {
+    const here = relics.filter(item => item.chapter === chapter && item.price), next = relics.filter(item => item.chapter === chapter + 1 && item.price);
+    if (here.length && next.length && Math.max(...here.map(item => item.price)) >= Math.min(...next.map(item => item.price))) errors.push(`relic prices do not rise from chapter ${chapter} to ${chapter + 1}`);
+  }
+  for (let chapter = 1; chapter <= 5; chapter++) {
+    const keepsakes = relics.filter(item => item.keepsake && item.finale === chapter);
+    if (keepsakes.length !== 1 || keepsakes.some(item => item.price || item.chapter !== chapter)) errors.push(`chapter ${chapter} needs exactly one unstocked finale keepsake`);
+  }
+  for (const slot of ['offhand', 'head', 'body', 'hands', 'feet', 'accessory']) {
     const rows = catalog.filter(item => item.slot === slot).sort((a, b) => a.tier - b.tier);
     if (rows.length !== 10 || rows.some((item, index) => item.tier !== index + 1)) errors.push(`${slot} catalog does not contain tiers 1–10`);
     for (let i = 1; i < rows.length; i++) if (rows[i].price <= rows[i - 1].price) errors.push(`${slot} price does not rise at tier ${rows[i].tier}`);
     for (const item of rows) {
       const expectedChapter = Math.ceil(item.tier / 2);
       if (item.chapter !== expectedChapter) errors.push(`${item.id} chapter ${item.chapter} mismatches tier ${item.tier}`);
-      if (slot !== 'relic' && item.price !== Math.round(rows[0].price * Math.pow(3.2, item.tier - 1))) errors.push(`${item.id} price mismatches ${slot} scaling formula`);
+      if (item.price !== Math.round(rows[0].price * Math.pow(3.2, item.tier - 1))) errors.push(`${item.id} price mismatches ${slot} scaling formula`);
     }
   }
   for (const enemy of G.ENEMIES) {

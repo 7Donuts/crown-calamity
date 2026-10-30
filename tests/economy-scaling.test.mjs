@@ -5,7 +5,7 @@ import { catalogAudit, runRegionFarm } from '../scripts/weapon-economy.mjs';
 test('regional weapon inventory has 25 monotonic tiers in each channel and chapter-locked loot', () => {
   const audit = catalogAudit();
   assert.equal(audit.count, 75);
-  assert.equal(audit.catalogCount, 145);
+  assert.equal(audit.catalogCount, 154);
   assert.deepEqual(audit.errors, []);
   assert.deepEqual(audit.tiers.map(({ tier, chapter, count }) => [tier, chapter, count]), Array.from({ length: 25 }, (_, i) => [i + 1, i < 4 ? 1 : i < 10 ? 2 : i < 15 ? 3 : i < 20 ? 4 : 5, 3]));
   assert.deepEqual(audit.tiers[0].prices, [100]);

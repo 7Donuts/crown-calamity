@@ -75,6 +75,9 @@ export const ITEM_ART = Object.freeze({
   toyCompass:frames.ring,buttonLocket:frames.ring,bellPendant:frames.pendant,ribbonBrooch:frames.pendant,
   threadSpool:frames.materials,patchworkHeart:frames.signet,luckyButton:frames.canalstone,dreamBell:frames.signet,
   thimbleGuard:frames.signet,amberMarble:frames.canalstone,ribbonKnot:frames.pendant,stuffingSatchel:frames.toolkit,
+  // Relic engine pieces reuse generated atlas families until distinct art is produced (design 43).
+  feltFang:frames.pendant,darnedPatch:frames.materials,cocoaThimble:frames.signet,picnicTin:frames.toolkit,
+  lintLocket:frames.pendant,lastToken:frames.canalstone,seedHeart:frames.signet,musicBox:frames.toolkit,encoreRibbon:frames.ring,
   thimblePike:frames.pike,spoolSpear:frames.sword,buttonBashers:frames.sword,thimbleMaul:frames.sword,pincushionPounder:frames.sword,
   bobbinClub:frames.sword,kettleDrumHammer:frames.sword,patchworkRam:frames.sword,thimbleKnocker:frames.sword,quiltedSledge:frames.sword,
   pinwheelRapier:frames.blade,needleFoil:frames.blade,ribbonStiletto:frames.blade,safetyPinLance:frames.blade,glassBeadDart:frames.blade,

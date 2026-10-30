@@ -2,9 +2,13 @@
 import { currentChapter, chapterUnlocked } from './campaign.js';
 export const SLOTS = Object.freeze({
   weapon: 'Weapon', offhand: 'Offhand', head: 'Head', body: 'Body', hands: 'Hands',
-  feet: 'Feet', accessory: 'Accessory', accessory2: 'Accessory 2', relic: 'Relic'
+  feet: 'Feet', accessory: 'Accessory', accessory2: 'Accessory 2', relic: 'Relic', relic2: 'Relic 2'
 });
 const ACCESSORY_SLOTS = ['accessory', 'accessory2'];
+// Items whose category fits more than one slot. Every character starts with both relic slots.
+export const RELIC_SLOTS = Object.freeze(['relic', 'relic2']);
+const MULTI_SLOTS = Object.freeze({ accessory: ACCESSORY_SLOTS, relic: RELIC_SLOTS });
+const slotsFor = item => item ? (MULTI_SLOTS[item.slot] || [item.slot]) : [];
 const SLOT_KEYS = Object.keys(SLOTS);
 
 export const ITEMS = Object.freeze({
@@ -108,7 +112,18 @@ export const ITEMS = Object.freeze({
   thimbleGuard:{id:'thimbleGuard',name:'Thimble Guard',slot:'relic',relicEffect:'thimbleGuard',armor:5,level:5,desc:'The first useful Guard each fight adds 4 barrier.'},
   amberMarble:{id:'amberMarble',name:'Amber Marble',slot:'relic',relicEffect:'amberMarble',ward:5,level:5,desc:'Your first damaging action each fight deals 3 extra damage.'},
   ribbonKnot:{id:'ribbonKnot',name:'Ribbon Knot of Resolve',slot:'relic',relicEffect:'ribbonKnot',stats:{mig:1},level:6,desc:'A free physical strike restores 1 Sparkle (mana).'},
-  stuffingSatchel:{id:'stuffingSatchel',name:'Emergency Stuffing Satchel',slot:'relic',relicEffect:'stuffingSatchel',stats:{vit:1},level:7,desc:'Mend restores 10% more Stuffing (health).'}
+  stuffingSatchel:{id:'stuffingSatchel',name:'Emergency Stuffing Satchel',slot:'relic',relicEffect:'stuffingSatchel',stats:{vit:1},level:7,desc:'Mend restores 10% more Stuffing (health).'},
+  // Relic engine pieces (design 43). Effects and numbers live in relic-engine.js.
+  feltFang:{id:'feltFang',name:'Felt Vampire Fang',slot:'relic',relicEffect:'feltFang',stats:{vit:1},desc:'Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held.'},
+  darnedPatch:{id:'darnedPatch',name:'Darned-Elbow Patch',slot:'relic',relicEffect:'darnedPatch',armor:4,desc:'Each enemy attack that hurts you gains 1 Pluck, or 2 from a heavy.'},
+  cocoaThimble:{id:'cocoaThimble',name:'Hot-Cocoa Thimble',slot:'relic',relicEffect:'cocoaThimble',stats:{wil:1},desc:'When you win, each Pluck you still hold restores 4% of maximum Stuffing (health).'},
+  picnicTin:{id:'picnicTin',name:'Picnic-Tin Keepsake',slot:'relic',relicEffect:'picnicTin',stats:{ins:1},desc:'When you win, up to 3 Pluck carry into your next fight. Resting, defeat or Go still empties the tin.'},
+  // Finale keepsakes: granted once by each chapter's finale claim, never stocked or sold.
+  lintLocket:{id:'lintLocket',name:'Lint-Trap Locket',slot:'relic',relicEffect:'lintLocket',keepsake:true,finale:1,stats:{vit:2},desc:'Each useful Guard gains 2 Pluck, or 3 against a heavy. The first heavy you guard each fight sends 25% of the damage you prevented back at the enemy.'},
+  lastToken:{id:'lastToken',name:'Last-Token Charm',slot:'relic',relicEffect:'lastToken',keepsake:true,finale:2,stats:{fin:2},desc:'A successful Disrupt gains 3 Pluck and Rattles the enemy: its next attack deals 30% less.'},
+  seedHeart:{id:'seedHeart',name:'Seed-Packet Heart',slot:'relic',relicEffect:'seedHeart',keepsake:true,finale:3,stats:{wil:2},desc:'Shake it off gains 2 Pluck. If the enemy’s response that exchange is not a heavy, it also restores 6% of maximum Stuffing (health).'},
+  musicBox:{id:'musicBox',name:'Keepsake Music Box',slot:'relic',relicEffect:'musicBox',keepsake:true,finale:4,stats:{ins:2},desc:'Expose gains 2 Pluck. Its bonus waits up to two exchanges for your next damaging action, and that action cannot glance.'},
+  encoreRibbon:{id:'encoreRibbon',name:'Encore Ribbon',slot:'relic',relicEffect:'encoreRibbon',keepsake:true,finale:5,stats:{mig:1,fin:1,int:1},desc:'Repeating a damaging action of the same kind gains 1 Pluck. Your damaging actions deal 3% more per Pluck held.'}
   ,
   // Later chapters add original stuffie-sized weapons. Their stable IDs are
   // also used by saves and the shared generated art atlas.
@@ -178,8 +193,17 @@ const CATEGORY_TIERS = Object.freeze({
   feet:['wornboots','boots','slipperBoots','rainGaloshes','sockSkates','buttonClogs','waders','cloudSlippers','paradeBoots','stargazerShoes'],
   accessory:['penny','thimblePendant','spoolBracelet','teaCharm','toyCompass','lantern','buttonLocket','bellPendant','band','ribbonBrooch']
 });
-const RELIC_TIERS=['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'];
-const RELIC_PRICES=[500,1200,3500,8000,20000,50000,125000,300000,750000,1800000];
+// Relics are priced from chapter income, not the weapon curve: about one chapter's contract coins or
+// roughly a hundred of that chapter's wins (design 43). A relic's tier is its chapter. Finale keepsakes
+// are never stocked; echoPrice only sets their echo license base.
+export const RELIC_CATALOG=Object.freeze({
+  feltFang:{chapter:1,price:60},darnedPatch:{chapter:1,price:90},signet:{chapter:1,price:120},seal:{chapter:1,price:180},
+  threadSpool:{chapter:2,price:300},patchworkHeart:{chapter:2,price:400},cocoaThimble:{chapter:2,price:450},picnicTin:{chapter:2,price:550},
+  luckyButton:{chapter:3,price:1000},dreamBell:{chapter:3,price:1200},
+  thimbleGuard:{chapter:4,price:2400},amberMarble:{chapter:4,price:3000},
+  ribbonKnot:{chapter:5,price:5000},stuffingSatchel:{chapter:5,price:6000},
+  lintLocket:{chapter:1,echoPrice:200},lastToken:{chapter:2,echoPrice:600},seedHeart:{chapter:3,echoPrice:1500},musicBox:{chapter:4,echoPrice:3500},encoreRibbon:{chapter:5,echoPrice:7000}
+});
 const weaponChapter=tier=>tier<=4?1:tier<=10?2:Math.ceil((tier-10)/5)+2;
 for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) {
   if (ids.length !== 10) throw new Error(`Expected ten ${slot} catalog tiers`);
@@ -190,7 +214,11 @@ for (const [id,tier] of Object.entries(WEAPON_TIERS)) {
   item.tier=tier; item.chapter=weaponChapter(tier);
   item.price=Math.round(100*Math.pow(100,(tier-1)/9));
 }
-RELIC_TIERS.forEach((id,index)=>{const item=ITEMS[id];item.tier=index+1;item.chapter=Math.ceil((index+1)/2);item.price=RELIC_PRICES[index];});
+for (const [id,row] of Object.entries(RELIC_CATALOG)) {
+  const item=ITEMS[id]; if(!item||item.slot!=='relic') throw new Error(`Missing relic catalog item ${id}`);
+  item.tier=row.chapter; item.chapter=row.chapter; if(row.price)item.price=row.price; else delete item.price; if(row.echoPrice)item.echoPrice=row.echoPrice;
+}
+if (Object.values(ITEMS).some(item=>item.slot==='relic'&&!Object.hasOwn(RELIC_CATALOG,item.id))) throw new Error('Every relic needs a RELIC_CATALOG row');
 for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) for (const id of ids) {
   const item=ITEMS[id]; item.price=Math.round(CATEGORY_BASE[slot]*Math.pow(3.2,item.tier-1));
 }
@@ -275,7 +303,7 @@ export const SUFFIXES = Object.freeze({
 const LOCKED = s => !!(s?.fight || s?.delve);
 const noCost = () => ({coins:0,materials:{}});
 const clone = x => JSON.parse(JSON.stringify(x));
-function canFit(item,slot){return item && (item.slot===slot || (ACCESSORY_SLOTS.includes(slot)&&item.slot==='accessory'));}
+function canFit(item,slot){return !!item && slotsFor(item).includes(slot);}
 function owned(s,id){return Array.isArray(s?.bag)&&s.bag.includes(id);}
 function costAffordable(s,cost){return (s.coins||0)>=(cost.coins||0)&&Object.entries(cost.materials||{}).every(([m,n])=>(s.materials?.[m]||0)>=n);}
 function spend(s,cost){s.coins-=cost.coins||0;for(const [m,n]of Object.entries(cost.materials||{}))s.materials[m]-=n;}
@@ -318,7 +346,7 @@ export function isStrictWeaponDowngrade(s,candidateId,currentId=s?.gear?.weapon)
 export function resolveItem(s,id){const item=effectiveItem(s,id);return item?{...item,owned:owned(s,id),levelRequired:null,usable:true}:null;}
 export function slotChoices(s,id){
   const item=ITEMS[id];if(!item||!owned(s,id))return [];
-  return (item.slot==='accessory'?ACCESSORY_SLOTS:[item.slot]).filter(slot=>!(slot==='offhand'&&ITEMS[s.gear?.weapon]?.twoHanded));
+  return slotsFor(item).filter(slot=>!(slot==='offhand'&&ITEMS[s.gear?.weapon]?.twoHanded));
 }
 export function unequipReason(s,slot){
   if(LOCKED(s))return 'Equipment cannot be changed during a fight or delve.';
@@ -348,7 +376,7 @@ export function buyItem(s,id){
 }
 export function buyAndEquipPreview(s,id,targetSlot){
   const purchase=buyPreview(s,id), item=ITEMS[id];
-  let slots=item?(item.slot==='accessory'?ACCESSORY_SLOTS:[item.slot]).filter(slot=>!(slot==='offhand'&&ITEMS[s?.gear?.weapon]?.twoHanded)):[];
+  let slots=slotsFor(item).filter(slot=>!(slot==='offhand'&&ITEMS[s?.gear?.weapon]?.twoHanded));
   const selectedSlot=targetSlot||slots.find(slot=>!s?.gear?.[slot])||slots[0]||null;
   let reason=purchase.reason;
   if(!reason&&(!selectedSlot||!slots.includes(selectedSlot)||!canFit(item,selectedSlot)))reason='That item cannot be equipped in the selected slot.';
@@ -381,7 +409,7 @@ export function sellPreview(s,id){
   const item=ITEMS[id],price=item?resaleValue(s,id):0;
   const equipped=Object.values(s?.gear||{}).includes(id);
   const activeEcho=s?.relicSockets?.some(socket=>socket?.unlocked&&socket.relicId===id);
-  let reason=!item?'Unknown item.':LOCKED(s)?'Selling is unavailable during a fight or delve.':!owned(s,id)?'You do not own this item.':equipped?'Unequip this item before selling it.':activeEcho?'Clear all active echo sockets using this relic before selling it.':null;
+  let reason=!item?'Unknown item.':LOCKED(s)?'Selling is unavailable during a fight or delve.':!owned(s,id)?'You do not own this item.':equipped?'Unequip this item before selling it.':activeEcho?'Clear all active echo sockets using this relic before selling it.':item.keepsake?'Finale keepsakes stay with you; they cannot be sold.':null;
   return {allowed:!reason,reason,price,item:item?resolveItem(s,id):null,id};
 }
 export function sellItem(s,id){
