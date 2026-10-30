@@ -371,12 +371,6 @@ export function recipeRegion(recipe) {
   return highest !== null ? highest : 'general';
 }
 
-materialLabel.MATERIAL_CHAPTER = MATERIAL_CHAPTER;
-materialLabel.recipeRegion = recipeRegion;
-materialLabel.familyLabel = familyLabel;
-materialLabel.WEAPON_FAMILIES = WEAPON_FAMILIES;
-
-
 // Exchanges use guaranteed drops and quest materials; boss fragments always have a sink.
 export const EXCHANGES = Object.freeze({
   ledger_fittings:{id:'ledger_fittings',name:'Sort lint',cost:{'Ledger scraps':3},gain:{'Salvaged fittings':1},coins:5},
