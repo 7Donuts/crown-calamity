@@ -371,6 +371,19 @@ export function recipeRegion(recipe) {
   return highest !== null ? highest : 'general';
 }
 
+const REGIONAL_MATERIAL_FAMILIES=Object.freeze({
+  2:Object.freeze({physical:'Prize gears',spell:'Arcade lint',armor:'Glass marbles',ward:'Tin wheels'}),
+  3:Object.freeze({physical:'Sprinkler brass',spell:'Bright feathers',armor:'Garden seeds',ward:'Silvershell'}),
+  4:Object.freeze({physical:'Clock springs',spell:'Moth velvet',armor:'Packing twine',ward:'Soft buttons'}),
+  5:Object.freeze({physical:'Carousel brass',spell:'Painted papier-mâché',armor:'Ringmaster ribbon',ward:'Velvet tickets'})
+});
+const AFFIX_MATERIAL_FAMILY=Object.freeze({keen:'physical',of_might:'physical',focused:'spell',of_insight:'spell',sturdy:'armor',of_vigor:'armor',warded:'ward',of_the_tide:'ward'});
+function upgradeMaterialFamily(item){return item.base?(item.channel==='spell'?'spell':'physical'):item.armor?'armor':item.ward?'ward':'spell';}
+function regionalMaterial(item,family,legacyMaterial){
+ const candidate=item?.chapter===1?legacyMaterial:REGIONAL_MATERIAL_FAMILIES[item?.chapter]?.[family],region=MATERIAL_CHAPTER[candidate];
+ return region===item?.chapter||item?.chapter===1&&region==='general'?candidate:legacyMaterial;
+}
+
 // Exchanges use guaranteed drops and quest materials; boss fragments always have a sink.
 export const EXCHANGES = Object.freeze({
   ledger_fittings:{id:'ledger_fittings',name:'Sort lint',cost:{'Ledger scraps':3},gain:{'Salvaged fittings':1},coins:5},
@@ -386,7 +399,19 @@ export const EXCHANGES = Object.freeze({
   craft_boots:{id:'craft_boots',name:'Assemble sluicewalker boots',cost:{'Canal iron':3,'Ledger scraps':2},gain:{},gainItems:['boots'],coins:18,level:2},
   craft_gate_shield:{id:'craft_gate_shield',name:'Rivet a gate shield',cost:{'Canal iron':3,'Salvaged fittings':2},gain:{},gainItems:['gateShield'],coins:24,level:3},
   fragment_seal:{id:'fragment_seal',name:'Forge the Keeper’s Brass Button',cost:{'Floodglass Fragment':5},gain:{},gainItems:['seal'],coins:0,level:8},
-  fragment_band:{id:'fragment_band',name:'Forge a Squeaker-Glass Ring',cost:{'Floodglass Fragment':5},gain:{},gainItems:['band'],coins:0,level:8}
+  fragment_band:{id:'fragment_band',name:'Forge a Squeaker-Glass Ring',cost:{'Floodglass Fragment':5},gain:{},gainItems:['band'],coins:0,level:8},
+  arcade_tokens_gears:{id:'arcade_tokens_gears',name:'Press tokens into claw cogs',cost:{'Arcade tokens':2},gain:{'Prize gears':1},coins:0,chapter:2},
+  arcade_wheels_marbles:{id:'arcade_wheels_marbles',name:'Trade tin wheels for loose marbles',cost:{'Tin wheels':2},gain:{'Glass marbles':1},coins:0,chapter:2},
+  arcade_champion_token:{id:'arcade_champion_token',name:'Rebuild a champion’s gold token',cost:{'Arcade lint':4,'Prize gears':4},gain:{'Golden token':1},coins:100,chapter:2},
+  garden_twine_seeds:{id:'garden_twine_seeds',name:'Unpick twine into seed packets',cost:{'Garden twine':2},gain:{'Garden seeds':1},coins:0,chapter:3},
+  garden_shell_brass:{id:'garden_shell_brass',name:'Trade silver shells for sprinkler brass',cost:{'Silvershell':2},gain:{'Sprinkler brass':1},coins:0,chapter:3},
+  garden_medallion_exchange:{id:'garden_medallion_exchange',name:'Stamp a garden medal',cost:{'Garden seeds':4,'Bright feathers':4},gain:{'Garden medallion':1},coins:150,chapter:3},
+  attic_ribbon_twine:{id:'attic_ribbon_twine',name:'Unpick ribbon into packing twine',cost:{'Attic ribbon':2},gain:{'Packing twine':1},coins:0,chapter:4},
+  attic_buttons_springs:{id:'attic_buttons_springs',name:'Wind buttons into clock springs',cost:{'Soft buttons':2},gain:{'Clock springs':1},coins:0,chapter:4},
+  attic_keepsake_key:{id:'attic_keepsake_key',name:'Cut a spare keepsake key',cost:{'Moth velvet':4,'Soft buttons':4},gain:{'Keepsake key':1},coins:300,chapter:4},
+  fair_ticket_ribbon:{id:'fair_ticket_ribbon',name:'Unspool tickets into ringmaster ribbon',cost:{'Velvet tickets':2},gain:{'Ringmaster ribbon':1},coins:0,chapter:5},
+  fair_paper_brass:{id:'fair_paper_brass',name:'Trade painted paper for carousel brass',cost:{'Painted papier-mâché':2},gain:{'Carousel brass':1},coins:0,chapter:5},
+  fair_velvet_star:{id:'fair_velvet_star',name:'Set a spare velvet star',cost:{'Painted papier-mâché':4,'Ringmaster ribbon':4},gain:{'Velvet star':1},coins:500,chapter:5}
 });
 
 export const PREFIXES = Object.freeze({
@@ -520,7 +545,7 @@ export function sellItem(s,id){
   return {id,coins:p.price};
 }
 export function exchangeMaterials(s,recipeId){
-  const recipe=EXCHANGES[recipeId];if(LOCKED(s)||!recipe||!costAffordable(s,{coins:recipe.coins,materials:recipe.cost})||(recipe.gainItems||[]).some(id=>!ITEMS[id]||owned(s,id)))return false;
+  const recipe=EXCHANGES[recipeId];if(LOCKED(s)||!recipe||(recipe.chapter&&!chapterUnlocked(s,recipe.chapter))||!costAffordable(s,{coins:recipe.coins,materials:recipe.cost})||(recipe.gainItems||[]).some(id=>!ITEMS[id]||owned(s,id)))return false;
   spend(s,{coins:recipe.coins,materials:recipe.cost});s.materials??={};for(const [m,n]of Object.entries(recipe.gain||{}))s.materials[m]=(s.materials[m]||0)+n;
   const gainedItems=[...(recipe.gainItems||[])];s.bag??=[];for(const id of gainedItems)s.bag.push(id);
   return {recipeId,gained:{...(recipe.gain||{})},gainedItems};
@@ -528,8 +553,8 @@ export function exchangeMaterials(s,recipeId){
 
 const UPGRADE_COINS=[0,35,70,120];
 const UPGRADE_CHAPTER_MULTIPLIERS=[1,1,4,16,64,256];
-function upgradeCost(item,level){const mat=item.base?(item.channel==='spell'?'Runic residue':'Canal iron'):item.armor?'Salvaged fittings':item.ward?'Repair fittings':'Runic residue';const coins=UPGRADE_COINS[level+1]*(UPGRADE_CHAPTER_MULTIPLIERS[item.chapter]||1);return makeCost(coins,{[mat]:level===2?2:1});}
-export function affixCost(item,affix){if(!affix)return noCost();return makeCost(affix.cost.coins*(UPGRADE_CHAPTER_MULTIPLIERS[item?.chapter]||1),affix.cost.materials);}
+function upgradeCost(item,level){const oldMat=item.base?(item.channel==='spell'?'Runic residue':'Canal iron'):item.armor?'Salvaged fittings':item.ward?'Repair fittings':'Runic residue';const mat=regionalMaterial(item,upgradeMaterialFamily(item),oldMat);const coins=UPGRADE_COINS[level+1]*(UPGRADE_CHAPTER_MULTIPLIERS[item.chapter]||1);return makeCost(coins,{[mat]:level===2?2:1});}
+export function affixCost(item,affix){if(!affix)return noCost();const oldMat=Object.keys(affix.cost.materials||{})[0];const fallbackFamily=oldMat==='Canal iron'||oldMat==='Chainback shell'?'physical':oldMat==='Salvaged fittings'||oldMat==='Repair fittings'?'armor':'spell';const mat=regionalMaterial(item,AFFIX_MATERIAL_FAMILY[affix.id]||fallbackFamily,oldMat);return makeCost(affix.cost.coins*(UPGRADE_CHAPTER_MULTIPLIERS[item?.chapter]||1),{[mat]:Object.values(affix.cost.materials||{})[0]||1});}
 function statPreview(s,id,nextMods){const before=effectiveItem(s,id),after=effectiveItem({...s,itemMods:{...s.itemMods,[id]:nextMods}},id);return {before,after};}
 export function upgradePreview(s,id){
  const item=ITEMS[id],mod=s?.itemMods?.[id]||{},level=mod.upgrade||0,cost=item&&level<3?upgradeCost(item,level):noCost();

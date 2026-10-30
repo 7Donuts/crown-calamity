@@ -98,7 +98,7 @@ test('upgrade and reforge keep the chosen Sewing Kit item open with a fresh prev
   assert.match(ui.getApp().innerHTML,/workbench-item selected" data-workbench-item="cap"/);
 });
 
-test('Sewing Kit groups recipes by region with General and Chapter 1 headings and every recipe exactly once', async () => {
+test('Sewing Kit groups recipes by region and shows each recipe exactly once after its receipt', async () => {
   const save = G.createCharacter({ name: 'Mender', kit: 'bulwark' });
   save.bag.push('cap'); // hides firstWorkbenchProject so each recipe appears only in the exchange grid
   const { ui } = await bootWithSave(save);
@@ -109,10 +109,11 @@ test('Sewing Kit groups recipes by region with General and Chapter 1 headings an
   assert.match(appHtml, /<h[34][^>]*>General<\/h[34]>/);
   assert.match(appHtml, /<h[34][^>]*>Chapter 1 · The Work Beneath the Quay<\/h[34]>/);
 
-  // Every existing recipe in G.EXCHANGES still appears exactly once
+  // Historical recipes remain visible; new regional recipes appear only after their receipt.
   for (const recipe of Object.values(G.EXCHANGES)) {
     const matches = [...appHtml.matchAll(new RegExp(`data-action="exchange:${recipe.id}"`, 'g'))];
-    assert.equal(matches.length, 1, `Recipe ${recipe.id} should appear exactly once in workbench`);
+    const visible = !recipe.chapter || G.chapterUnlocked(save, recipe.chapter);
+    assert.equal(matches.length, visible ? 1 : 0, `Recipe ${recipe.id} visibility follows its receipt`);
   }
 });
 
