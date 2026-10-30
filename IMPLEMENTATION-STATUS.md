@@ -31,7 +31,7 @@ Upgrades and reforges for Chapter 2–5 equipment use material families from tha
 
 The exchange, craft, resale, upgrade, affix, and purchase transitions pass a positive resource-potential certificate, including the existing Chapter 1 recipes and the capped resale receipts. Seeded synthetic fights confirmed one guaranteed ordinary material per victory for every chapter enemy. This verifies the source route and profit-loop rule; the time to fund relic ranks remains unmeasured and is not claimed as approved balance.
 
-## Implemented for review: G1-B CP1 price trial
+## Implemented: G1-B CP1 price trial (merged PR #15)
 
 Weapons T1–10 retain the original prices. T11–25 interpolate geometrically through T15=15,000, T20=30,000, and T25=60,000. Armor keeps its existing category bases and T1–4 prices; the shared multiplier targets body T6=3,750, T8=7,500, T10=15,000. Spec 50 now uses 1,100 on-level wins as the entry-gear starting target (2,000 remains the best-gear target), authorized for this CP1 trial. No progression mechanics, enemy rewards, salvage caps, relic prices, or combat numbers change. The transition is numerically close at E51/E54; the fitted curve and final balance remain subject to CP4.
 
@@ -46,6 +46,10 @@ Weapons T1–10 retain the original prices. T11–25 interpolate geometrically t
 
 Run `npm test` for regression coverage, `npm run economy` for bounded offline samples, and `python scripts-package.py` for the campaign/lab downloads and source ZIP. Read [the economy report](design/42_Campaign_Economy_Playtest.md) for fixture assumptions and limitations. The lab remains disposable and independent of campaign saves.
 
-## Owner-requested wrap-up: follow-up work preserved
+## Historical pre-CP1 wrap-up: follow-up work preserved
 
 The reviewed B0 resource-carry fix and G1-C regional workshop rules are merged (PRs #10 and #12). G1-A walkthrough refinements and the G1-B CP1 trial are separate work: the G1-B curve has been implemented on its review branch, while G1-A's earned matrix remains provisional and its full balance gate is still open. CP4 remains pending. Owner direction authorizes proceeding with CP2's two-hands choice as built (revisable later) and approves the CP3 direction; neither approval means its implementation or gate is complete. See the [G1-A partial handoff](handoffs/reports/g1a-partial-handoff.md), [G1-B report](handoffs/reports/g1b-price-curve.md), and [progress](handoffs/reports/progress.md) for source snapshots and limits.
+
+## Wrap-up after the CP1 trial
+
+The CP1 trial is merged in PR #15. The remaining G1-A candidate is preserved as clean post-CP1 draft PR #13 (`3c6ae67`); its post-rebase regression suite passes 44/44 files, but final seeded validation, independent review and packaging remain incomplete. CP2/CP3 are pre-approved build paths, CP4 still needs fitted recommendations, and G2/G3 implementation has not started. Resume from [handoff 3](handoffs/ORCHESTRATOR-3-REMAINING.md), which supersedes older status notes.
