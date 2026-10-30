@@ -248,6 +248,8 @@ The original modular pack remains under `design/Crown-and-Calamity-Design-v0.1/`
 - [RWK relic and itemization research](design/27_RWK_Relics_and_Itemization.md)
 - [Shimlar comparison and prototypes](design/40_Shimlar_Comparison.md)
 - [Relic engine](design/43_Relic_Engine.md)
+- [Direction and roadmap](design/44_Direction_and_Roadmap.md)
+- [Races and weapons proposal](design/45_Races_and_Weapons.md)
 - [Online development roadmap](FUTURE-DEVELOPMENT.md)
 
 This is still a local solo prototype. Login, server-authoritative actions/randomness/rewards, account persistence, guilds, and multiplayer are future work. Local saves, clocks, and code remain editable. The shared delay limits rapid input; it is not production anti-cheat.

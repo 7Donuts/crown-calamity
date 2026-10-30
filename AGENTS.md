@@ -29,7 +29,19 @@ Run `npm test` (Node 22.8+) for all checks, or `node tests/engine.test.mjs` for 
 
 The original pack in `design/Crown-and-Calamity-Design-v0.1/` is retained historical source. Its agreed-direction document supersedes older whole-fight-click proposals. The v0.2 attribute document and later user instructions supersede the old six-attribute budget.
 
-`FUTURE-DEVELOPMENT.md` records login, server-controlled progression, online play, and guild requirements. These are future work. Do not represent client-controlled saves, combat, or rewards as secure online systems. Future server logic must own action timing, random rolls, ownership checks, and atomic reward grants.
+`FUTURE-DEVELOPMENT.md` is the online platform plan (accounts, server authority, social core, the open world online, shared play, competition, live operations). Multiplayer is a core product feature, but none of it is built yet. Do not represent client-controlled saves, combat, or rewards as secure online systems. Future server logic must own action timing, random rolls, ownership checks, and atomic reward grants. Write new game rules as pure shared modules with an injected clock and random source so a server can run them unchanged.
+
+## Product direction (owner decisions, 30 October 2026)
+
+Read `design/44_Direction_and_Roadmap.md` before planning new systems; `design/45_Races_and_Weapons.md` holds the race and weapon proposals.
+
+- The goal is an improved take on Race War Kingdoms with our own systems and the stuffie theme and story, which stay.
+- Multiplayer and its services are core. Solo progression must still never require a guild or other players.
+- Races are build identity and must feel and play differently; faction warfare between races is not the goal.
+- Progression is open-ended; the five-chapter story is the introduction that opens the wider world.
+- The world will have map exploration and locations, possibly across several layers or planes.
+- Players may own land and build, but only with a real gameplay purpose; land never produces anything passively.
+- The two-hand system, the race rework, weapon families and the relic echo and older-relic decisions in design 44 and 45 are proposals awaiting owner approval. Do not implement them without it.
 
 ## Current story and character rules
 
