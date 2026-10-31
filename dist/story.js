@@ -1,6 +1,7 @@
 // Authored contract progression. The engine is responsible for calling
 // recordStoryEvent only from real victory/delve actions and granting receipt XP.
 import { CHAPTERS, chapterUnlocked, currentChapter, campaignStatus } from './campaign.js';
+import { effectiveLevel } from './growth.js';
 const MAJOR_IDS=['drainage_inspection','permit_with_teeth','bent_gate','someone_expendable','municipal_works'];
 const ENEMY_IDS=new Set(CHAPTERS.flatMap(chapter=>[...chapter.enemyIds,chapter.bossId]));
 const req=(type,id,label,min=1)=>({type,id,label,min});
@@ -197,8 +198,8 @@ function count(obj,key){const n=obj?.[key];return Number.isInteger(n)&&n>0?n:0;}
 function complete(s,id){return s.story.completed.includes(id);}
 function eventMet(s,id,min=1){return count(s.story.events.actions,id)>=min;}
 function requirementRows(s,id){
- const c=STORY_CONTRACTS[id],st=s.story,legacy=st.legacyReady.includes(id);
- return c.requirements.map(r=>{let met=false;if(r.type==='completed')met=complete(s,r.id);else if(r.type==='level')met=(s.level||1)>=r.min;else if(r.type==='chapter')met=chapterUnlocked(s,Number(r.id));else if(r.type==='action')met=eventMet(s,r.id,r.min);if(legacy)met=true;return {id:r.id,type:r.type,label:r.label,required:r.min||1,current:r.type==='level'?(s.level||1):r.type==='chapter'?(chapterUnlocked(s,Number(r.id))?1:0):r.type==='completed'?(complete(s,r.id)?1:0):count(st.events.actions,r.id),met};});
+ const c=STORY_CONTRACTS[id],st=s.story,legacy=st.legacyReady.includes(id),el=effectiveLevel(s);
+ return c.requirements.map(r=>{let met=false;if(r.type==='completed')met=complete(s,r.id);else if(r.type==='level')met=el>=r.min;else if(r.type==='chapter')met=chapterUnlocked(s,Number(r.id));else if(r.type==='action')met=eventMet(s,r.id,r.min);if(legacy)met=true;return {id:r.id,type:r.type,label:r.label,required:r.min||1,current:r.type==='level'?el:r.type==='chapter'?(chapterUnlocked(s,Number(r.id))?1:0):r.type==='completed'?(complete(s,r.id)?1:0):count(st.events.actions,r.id),met};});
 }
 function baseline(s,id,group,key){return count(s.story.baselines?.[id]?.[group],key);}
 function objectiveValue(s,id,obj){

@@ -11,7 +11,7 @@ const KITS = new Set(['breaker', 'duelist', 'caster']);
 const ACTION_MS = 700;
 const MAX_SEEDS = 10000;
 const MAX_CHAIN = 50;
-const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'save', 'rulesPreview']);
+const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'realness', 'realnessChoices', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'save', 'rulesPreview', 'customItems', 'stats']);
 const NON_MEASURED = ['menders', 'raceTraits', 'familyTraits'];
 const round1 = n => Math.round(n * 10) / 10;
 

@@ -16,7 +16,9 @@ export {TELEGRAPH,GUARD_ACTIONS,DAMAGING_ACTIONS,telegraphText,strikeBonus,resol
 import {applyVariant,variantReward,variantVictory,startVariant,initialVariantState,normalizeVariants,normalizeFightVariant,variantSoak,variantResponse,VARIANT_THRESHOLD,VARIANT_LABEL,VARIANT_REWARDS,VARIANT_ENEMIES,VARIANT_TEXT,AFFIXES,AFFIX_ORDER,STATIC_BARRIER,isVariantEnemy,affixById,variantProgress,pendingOffer,rewardSummary} from './variants.js';
 export {VARIANT_THRESHOLD,VARIANT_LABEL,VARIANT_REWARDS,VARIANT_ENEMIES,VARIANT_TEXT,AFFIXES,AFFIX_ORDER,STATIC_BARRIER,isVariantEnemy,affixById,applyVariant,variantProgress,pendingOffer,rewardSummary};
 import {LEVEL_CAP,xpNeeded,progression,pointBudget,advanceXP,migrateLegacyProgression} from './progression.js';
-export {LEVEL_CAP,xpNeeded,progression,pointBudget};
+export {LEVEL_CAP,xpNeeded,progression,pointBudget,advanceXP};
+import {effectiveLevel,postStoryEnemyStats,postStoryRewards,postStoryGearPrice,postStoryWeaponBase,postStoryWeaponTier,REALNESS_CHOICES,normalizeRealness,postStoryEnemy} from './growth.js';
+export {effectiveLevel,postStoryEnemyStats,postStoryRewards,postStoryGearPrice,postStoryWeaponBase,postStoryWeaponTier,REALNESS_CHOICES,normalizeRealness,postStoryEnemy};
 import {normalizeRecovery,restStatus as recoveryStatus,finishRest as completeRest,cancelRest as abandonRest,applyDeathPenalty,REST_DURATION_MS,WOUND_DURATION_MS,DEATH_COIN_CAP,DEATH_COIN_RATE} from './recovery.js';
 export {REST_DURATION_MS,WOUND_DURATION_MS,DEATH_COIN_CAP,DEATH_COIN_RATE};
 import {CASE_MILESTONES,CASE_ENEMY_IDS,CASE_LORE,normalizeRecords,countExchange,countDamageTaken,recordVictory,caseFileView,earnedTitles,currentTitle,setTitle} from './records.js';
@@ -56,7 +58,7 @@ export const ENEMIES=[
 ENEMIES.push(...CAMPAIGN_ENEMIES);
 const BOSS_IDS=new Set(CHAPTERS.map(chapter=>chapter.bossId));
 // The enemy as it fights: base stats plus the stored fight.variant (if any). Every combat calculation reads this.
-export function fightEnemy(f){const e=f&&ENEMIES.find(x=>x.id===f.enemy);return e&&f.variant?applyVariant(e,f.variant):e;}
+export function fightEnemy(f){const e=f&&(f.enemyData||ENEMIES.find(x=>x.id===f.enemy));return e&&f.variant?applyVariant(e,f.variant):e;}
 export const QUESTS=[
 {title:'Lint Trap Rescue',text:'The Seam Crew’s foreman is trapped in the Lint Trap Canals. Clear the Nesting Rat Swarms and bring her home.',target:'rats',xp:68},
 {title:'A Seal with Static',text:'A Rummage Raccoon took the access seal. Recover it along the Rinse Walk.',target:'scavenger',xp:70},
@@ -64,7 +66,7 @@ export const QUESTS=[
 {title:'Tagged for Sale',text:'An appraiser guards the missing crew’s records. Recover them before the next rinse cycle.',target:'inspector',xp:180},
 {title:'The Laundry Works',text:'Reach level 6 and enter the Laundry Works. Find out why the washer has turned against the town.',target:'boss',xp:250}
 ];
-export function fresh(){return normalizeRelics(normalizeStory(normalizeRecovery(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',raceId:null,appearance:normalizeAppearance('bear'),relicSockets:[],origin:'Former Gutter Canal surveyor',level:1,xp:0,levelPointsPaid:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:66,sp:65,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,variantMeters:{},variantOffers:{},materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional stuffie',text:'Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,restReadyAt:0,woundedUntil:0,visited:['rats'],caseFiles:{},settings:{details:false},pluckCarry:0,signatureRelics:[]}))));}
+export function fresh(){return normalizeRelics(normalizeStory(normalizeRecovery(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',raceId:null,appearance:normalizeAppearance('bear'),relicSockets:[],origin:'Former Gutter Canal surveyor',level:1,realness:0,realnessChoices:[],realnessPick:null,xp:0,levelPointsPaid:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:66,sp:65,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,variantMeters:{},variantOffers:{},materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional stuffie',text:'Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,restReadyAt:0,woundedUntil:0,visited:['rats'],caseFiles:{},settings:{details:false},pluckCarry:0,signatureRelics:[]}))));}
 export const STARTER_KITS={
  bulwark:{gear:['rod','shield'],starterAbility:'arc',stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8}},
  caster:{gear:['rod','focus'],starterAbility:'arc',stats:{mig:8,fin:8,int:16,vit:8,wil:12,ins:8,lck:8}},
@@ -88,7 +90,7 @@ export const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 export function attunementUsed(s){return (s.equippedAbilities||[]).reduce((n,id)=>n+(ABILITIES[id]?.kind==='active'?ABILITIES[id].attunement:0),0)+(ABILITIES[s.passive]?.kind==='passive'?ABILITIES[s.passive].attunement:0);}
 
 function masteryData(s,id){const m=s.mastery?.[id]||{rank:1,marks:0};return {rank:m.rank,marks:m.marks,rank3Choice:m.choice||null,choices:Object.keys(MASTERY_CHOICES[id]||{}),descriptions:MASTERY_CHOICES[id]||{}};}
-export function abilityStatus(s,id){const a=ABILITIES[id];if(!a)return null;const learned=(s.learnedAbilities||[]).includes(id),equipped=a.kind==='passive'?s.passive===id:(s.equippedAbilities||[]).includes(id),r=a.requires||{},requirements={level:{required:r.level||1,met:s.level>=(r.level||1)},quest:{required:r.quest||0,met:(s.quest||0)>=(r.quest||0)},guardCount:{required:r.guardCount||0,met:(s.guardCount||0)>=(r.guardCount||0)},usefulGuards:{required:r.usefulGuards||0,met:(s.usefulGuards||0)>=(r.usefulGuards||0)}};const alternate=r.questOrGuards&&(requirements.quest.met||requirements.usefulGuards.met);let reason=null;if(!learned){if(!requirements.level.met)reason=`Requires level ${r.level}.`;else if(r.questOrGuards?!alternate:!requirements.quest.met)reason=r.questOrGuards?`Complete ${r.quest} quest or make ${r.usefulGuards} useful Guards.`:`Complete ${r.quest} quest${r.quest===1?'':'s'} first.`;else if(!requirements.guardCount.met)reason='Make a useful Guard in an encounter first.';}else if(!equipped)reason=a.kind==='passive'?'Equip this passive in the passive slot.':'Equip this ability in an active slot.';return {id,learned,equipped,eligible:!learned&&!reason,reason,requirements,attunement:a.attunement,kind:a.kind,mastery:masteryData(s,id)};}
+export function abilityStatus(s,id){const a=ABILITIES[id];if(!a)return null;const learned=(s.learnedAbilities||[]).includes(id),equipped=a.kind==='passive'?s.passive===id:(s.equippedAbilities||[]).includes(id),r=a.requires||{},requirements={level:{required:r.level||1,met:effectiveLevel(s)>=(r.level||1)},quest:{required:r.quest||0,met:(s.quest||0)>=(r.quest||0)},guardCount:{required:r.guardCount||0,met:(s.guardCount||0)>=(r.guardCount||0)},usefulGuards:{required:r.usefulGuards||0,met:(s.usefulGuards||0)>=(r.usefulGuards||0)}};const alternate=r.questOrGuards&&(requirements.quest.met||requirements.usefulGuards.met);let reason=null;if(!learned){if(!requirements.level.met)reason=`Requires level ${r.level}.`;else if(r.questOrGuards?!alternate:!requirements.quest.met)reason=r.questOrGuards?`Complete ${r.quest} quest or make ${r.usefulGuards} useful Guards.`:`Complete ${r.quest} quest${r.quest===1?'':'s'} first.`;else if(!requirements.guardCount.met)reason='Make a useful Guard in an encounter first.';}else if(!equipped)reason=a.kind==='passive'?'Equip this passive in the passive slot.':'Equip this ability in an active slot.';return {id,learned,equipped,eligible:!learned&&!reason,reason,requirements,attunement:a.attunement,kind:a.kind,mastery:masteryData(s,id)};}
 export function learnAbility(s,id){const a=ABILITIES[id],status=abilityStatus(s,id);if(!a||a.kind==='unknown'||s.fight||s.delve||!status?.eligible)return false;if(!s.learnedAbilities.includes(id))s.learnedAbilities.push(id);if(!s.mastery[id])s.mastery[id]={rank:1,marks:0};return true;}
 export function equipAbility(s,id){const a=ABILITIES[id];if(!a||s.fight||s.delve||!(s.learnedAbilities||[]).includes(id))return false;if(a.kind==='passive'){const old=s.passive;s.passive=id;if(attunementUsed(s)>6){s.passive=old;return false;}return true;}if(s.equippedAbilities.includes(id))return false;if(s.equippedAbilities.length>=3||attunementUsed(s)+a.attunement>6)return false;s.equippedAbilities.push(id);return true;}
 export function unequipAbility(s,id){if(s.fight||s.delve)return false;if(s.passive===id){s.passive=null;return true;}const n=s.equippedAbilities.indexOf(id);if(n<0)return false;s.equippedAbilities.splice(n,1);return true;}
@@ -111,9 +113,10 @@ export function totals(s){
  const bonusLuck=Math.max(0,a.lck-8),fortune=bonusLuck/(bonusLuck+40);
  const rank=id=>s.mastery?.[id]?.rank||1;
  const satchelMultiplier=1+.10*relicEffectStrength(s,'stuffingSatchel');
- return {...a,gearBonuses,hp:Math.floor(200+12*s.level+10*a.vit+4*a.wil+(passive.hp||0)),mp:Math.floor(30+2*a.wil+a.int+(passive.mp||0)),sp:Math.floor(35+1.5*a.vit+1.5*a.fin+(passive.sp||0)),armor,ward,spellBase,racePassive:ancestry?{name:ancestry.passiveName,...passive}:null,echoBonuses:echoes,
- physicalAcc:2*a.fin+a.ins+2*s.level,spellAcc:2*a.ins+a.wil+2*s.level,evasion:a.fin+2*a.ins+2*s.level+(s.passive==='footing'?8:0)+(passive.evasion||0),
- heavyPower:2*a.mig+s.level,precisionPower:2*a.fin+s.level,spellPower:2*a.int+s.level,
+ const el=effectiveLevel(s);
+ return {...a,gearBonuses,hp:Math.floor(200+12*el+10*a.vit+4*a.wil+(passive.hp||0)),mp:Math.floor(30+2*a.wil+a.int+(passive.mp||0)),sp:Math.floor(35+1.5*a.vit+1.5*a.fin+(passive.sp||0)),armor,ward,spellBase,racePassive:ancestry?{name:ancestry.passiveName,...passive}:null,echoBonuses:echoes,
+ physicalAcc:2*a.fin+a.ins+2*el,spellAcc:2*a.ins+a.wil+2*el,evasion:a.fin+2*a.ins+2*el+(s.passive==='footing'?8:0)+(passive.evasion||0),
+ heavyPower:2*a.mig+el,precisionPower:2*a.fin+el,spellPower:2*a.int+el,
  critChance:clamp(.05+.15*a.fin/(a.fin+208)+.10*fortune,.05,.25),critMultiplier:1.25,equipmentDropChance:.20+.15*fortune,
  mendHealing:Math.floor((40+1.4*a.int+.8*a.wil+5*rank('mend'))*(s.mastery?.mend?.choice==='healing'?1.15:1)*satchelMultiplier)};
 }
@@ -135,7 +138,7 @@ export function attributePreview(s,key){
  return {before,after,changes:fields.map(field=>({field,before:before[field],after:after[field]}))};
 }
 export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
- const e0=ENEMIES.find(x=>x.id===enemyId);if(!e0||!['attack','cast','combo','disrupt','driving','guardstrike','sidestep'].includes(key))return null;
+ const e0=(s.fight?.enemyData?.id===enemyId?s.fight.enemyData:null)||ENEMIES.find(x=>x.id===enemyId);if(!e0||!['attack','cast','combo','disrupt','driving','guardstrike','sidestep'].includes(key))return null;
  const t=totals(s),w=effectiveItem(s,s.gear.weapon),f=s.fight?.enemy===enemyId?s.fight:null,e=f?fightEnemy(f):e0,i=f?intent(s):null;
  const channel=['cast','combo'].includes(key)?'arcane':'physical',power=w.channel==='spell'?t.spellPower:w.channel==='precision'?t.precisionPower:t.heavyPower,masteryKey=['cast','combo'].includes(key)?'arc':['guardstrike','sidestep'].includes(key)?'driving':key,rank=s.mastery?.[masteryKey]?.rank||1;
  const accuracy=channel==='arcane'?t.spellAcc:t.physicalAcc;
@@ -150,7 +153,7 @@ export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
  if(i?.guarded&&channel==='physical')raw*=.65;
  if(e.id==='hound'&&f?.streak>=3&&f.channel===channel)raw*=.85;
  if(e.id==='boss'&&f&&f.hp/e.hp<.3&&((f.round%3===0&&channel==='physical')||(f.round%3===1&&channel==='arcane')))raw*=1.2;
- const reduced=raw*(1-mitigation(defense,s.level)),solidHit=bonus.noGlance||boxNoGlance?1:hitChance(accuracy,18+e.level*3);
+ const reduced=raw*(1-mitigation(defense,effectiveLevel(s))),solidHit=bonus.noGlance||boxNoGlance?1:hitChance(accuracy,18+e.level*3);
  const amberBonus=!f?.amberMarbleUsed&&rs('amberMarble')>0?Math.floor(reduced*.08*rs('amberMarble')):0;
  const normal=Math.max(1,Math.floor(reduced))+amberBonus,critical=Math.max(1,Math.floor(reduced*t.critMultiplier))+amberBonus,glance=Math.max(1,Math.floor(reduced*.55))+amberBonus;
  const available=channel!=='arcane'||hasFocus(s);
@@ -168,16 +171,16 @@ export function restStatus(s,now=Date.now()){return recoveryStatus(s,now);}
 export function beginRest(s,now=Date.now()){const status=restStatus(s,now),t=totals(s);if(s.fight||s.delve||status.active||(s.hp>=t.hp&&s.mp>=t.mp&&s.sp>=t.sp))return false;s.restReadyAt=Math.max(now+REST_DURATION_MS,s.woundedUntil||0);RE.clearCarry(s);return {readyAt:s.restReadyAt};}
 export function finishRest(s,now=Date.now()){return completeRest(s,now,totals(s));}
 export function cancelRest(s){return abandonRest(s);}
-function beginEncounter(s,e,source,now,opts={}){if(s.fight||s.hp<=0||restStatus(s,now).active||restStatus(s,now).wounded)return false;const variant=opts?.special===true?(source==='hunt'?startVariant(s,e.id):null):null;if(opts?.special===true&&!variant)return false;const fe=applyVariant(e,variant);if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+3);}s.fight={enemy:e.id,hp:fe.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,opening:false,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false,...(variant?{variant,variantState:initialVariantState(variant)}:{})};if(source==='hunt')(s.settings??={}).lastHunt=e.id;s.last=null;s.log=[];{const notes=[];RE.startFightHook(s,s.fight,strengthOf(s),notes,rankOf(s));if(notes.length)addLog(s,`Relics · ${notes.join(' · ')}.`,'special');}if(variant)addLog(s,`Special Edition · ${AFFIXES[variant.id].name}: ${AFFIXES[variant.id].effect}`,'special');if(!s.visited.includes(e.id))s.visited.push(e.id);return true;}
-export function enemyAccess(s,id){const chapter=enemyChapter(id),e=ENEMIES.find(enemy=>enemy.id===id);if(!s||!e||chapter===null)return {allowed:false,reason:'Unknown encounter.',chapter:null};const meta=CHAPTERS.find(row=>row.id===chapter),boss=id===meta.bossId;if(!chapterUnlocked(s,chapter))return {allowed:false,reason:`Complete ${CHAPTERS[chapter-2]?.finale||'the previous chapter finale'} first.`,chapter};if(boss)return {allowed:false,reason:'This boss is fought through its active finale contract.',chapter};if(s.level<meta.minLevel)return {allowed:false,reason:`Requires level ${meta.minLevel}.`,chapter};if(e.level>s.level+2)return {allowed:false,reason:`Requires level ${Math.max(1,e.level-2)}.`,chapter};return {allowed:true,reason:null,chapter};}
+function beginEncounter(s,e,source,now,opts={}){if(s.fight||s.hp<=0||restStatus(s,now).active||restStatus(s,now).wounded)return false;const variant=opts?.special===true?(source==='hunt'?startVariant(s,e.id):null):null;if(opts?.special===true&&!variant)return false;const fe=applyVariant(e,variant);if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+3);}s.fight={enemy:e.id,enemyData:e,hp:fe.hp,round:0,startLevel:effectiveLevel(s),charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,opening:false,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false,...(variant?{variant,variantState:initialVariantState(variant)}:{})};if(source==='hunt')(s.settings??={}).lastHunt=e.id;s.last=null;s.log=[];{const notes=[];RE.startFightHook(s,s.fight,strengthOf(s),notes,rankOf(s));if(notes.length)addLog(s,`Relics · ${notes.join(' · ')}.`,'special');}if(variant)addLog(s,`Special Edition · ${AFFIXES[variant.id].name}: ${AFFIXES[variant.id].effect}`,'special');if(!s.visited.includes(e.id))s.visited.push(e.id);return true;}
+export function enemyAccess(s,id){const chapter=enemyChapter(id),e=ENEMIES.find(enemy=>enemy.id===id);if(!s||!e||chapter===null)return {allowed:false,reason:'Unknown encounter.',chapter:null};const meta=CHAPTERS.find(row=>row.id===chapter),boss=id===meta.bossId;if(!chapterUnlocked(s,chapter))return {allowed:false,reason:`Complete ${CHAPTERS[chapter-2]?.finale||'the previous chapter finale'} first.`,chapter};if(boss)return {allowed:false,reason:'This boss is fought through its active finale contract.',chapter};if(effectiveLevel(s)<meta.minLevel)return {allowed:false,reason:`Requires level ${meta.minLevel}.`,chapter};if(e.level>effectiveLevel(s)+2)return {allowed:false,reason:`Requires level ${Math.max(1,e.level-2)}.`,chapter};return {allowed:true,reason:null,chapter};}
 export function unlockedEnemies(s,chapter=currentChapter(s)){const meta=CHAPTERS.find(row=>row.id===chapter);if(!meta||!chapterUnlocked(s,chapter))return [];return meta.enemyIds.map(id=>ENEMIES.find(enemy=>enemy.id===id)).filter(Boolean).filter(enemy=>enemyAccess(s,enemy.id).allowed);}
-export function startFight(s,id,source='hunt',now=Date.now(),opts={}){const e=ENEMIES.find(enemy=>enemy.id===id);if(!e)return false;if(source==='hunt'){if(!enemyAccess(s,id).allowed)return false;return beginEncounter(s,e,'hunt',now,opts);}if(source==='delve'){
+export function startFight(s,id,source='hunt',now=Date.now(),opts={}){const e=typeof id==='object'&&id!==null?id:(opts?.enemy||ENEMIES.find(enemy=>enemy.id===id));if(!e)return false;if(source==='hunt'){const chap=enemyChapter(e.id);if(chap!==null&&!enemyAccess(s,e.id).allowed)return false;return beginEncounter(s,e,'hunt',now,opts);}if(source==='delve'){
  const d=s.delve;if(!d||enemyChapter(id)!==1)return false;
  const expected=d.node===0?'crab':d.node===2?(d.path==='records'?'inspector':d.path==='overflow'?'hound':null):d.node===4?'boss':null;
  if(id!==expected)return false;return beginEncounter(s,e,'delve',now,opts);
  }return false;}
 export function startChapterBoss(s,chapterId,now=Date.now()){
- chapterId=Number(chapterId);const chapter=CHAPTERS.find(row=>row.id===chapterId);if(!chapter||chapterId===1||!chapterUnlocked(s,chapterId)||s.level<chapter.minLevel)return false;
+ chapterId=Number(chapterId);const chapter=CHAPTERS.find(row=>row.id===chapterId);if(!chapter||chapterId===1||!chapterUnlocked(s,chapterId)||effectiveLevel(s)<chapter.minLevel)return false;
  const status=contractStatus(s,chapter.finale);if(!status?.active)return false;
  const contract=STORY_CONTRACTS[chapter.finale],rows=status.objectives||[];
  const bossRows=new Set((contract?.objectives||[]).filter(objective=>objective.source==='victories'&&objective.enemy===chapter.bossId).map(objective=>objective.id));
@@ -344,19 +347,21 @@ export function claimContract(s,id,choice){
 }
 export function completeQuest(s,choice){const ids=['drainage_inspection','permit_with_teeth','bent_gate','someone_expendable','municipal_works'];return Number.isInteger(s.pending)?claimContract(s,ids[s.pending],choice):false;}
 export function chooseBossLoot(s,id){if(s.pending!=='bossLoot'||!['seal','band'].includes(id))return false;if(!s.bag.includes(id))s.bag.push(id);s.pending=null;return true;}
-export function startDelve(s){const recovery=restStatus(s);if(s.level<6||s.fight||s.delve||s.hp<=0||recovery.active||recovery.wounded)return false;if(!s.clears&&!contractStatus(s,'municipal_works')?.active&&!contractStatus(s,'municipal_works')?.completed)return false;s.delve={node:0,path:null,campUsed:false};s.last=null;recordStoryEvent(s,{type:'delve_enter'});return true;}
+export function startDelve(s){const recovery=restStatus(s);if(effectiveLevel(s)<6||s.fight||s.delve||s.hp<=0||recovery.active||recovery.wounded)return false;if(!s.clears&&!contractStatus(s,'municipal_works')?.active&&!contractStatus(s,'municipal_works')?.completed)return false;s.delve={node:0,path:null,campUsed:false};s.last=null;recordStoryEvent(s,{type:'delve_enter'});return true;}
 export function delveAction(s,key){const d=s.delve;if(!d||s.fight)return false;if(key==='leave'){s.delve=null;s.last=null;return true;}if(d.node===0&&key==='enter')return startFight(s,'crab','delve');if(d.node===1&&['records','overflow'].includes(key)){d.path=key;recordStoryEvent(s,{type:'delve_path',path:key});journal(s,'A choice below the Rinse Line',key==='records'?'You recovered the Lost & Found Ledger. Mara will learn where the Seam Crew were tagged.':'You secured the Drain Valve. The homes along the canal are safe.');d.node=2;return startFight(s,key==='records'?'inspector':'hound','delve');}if(d.node===3&&key==='rest'&&!d.campUsed){d.campUsed=true;const t=totals(s);s.hp=t.hp;s.mp=t.mp;s.sp=t.sp;return true;}if(d.node===3&&key==='continue'){d.node=4;return startFight(s,'boss','delve');}return false;}
 export function resetStats(s){if(s.fight||s.delve)return false;s.stats=Object.fromEntries(Object.keys(ATTRS).map(k=>[k,8]));s.points=pointBudget(s)-56;capResources(s);return true;}
 export function loadSave(raw){
  try{
   const s=JSON.parse(raw);
   if(!s||![1,2,3,4,5,VERSION].includes(s.version)||!s.stats||!s.gear||!Array.isArray(s.bag)||!Number.isInteger(s.level)||s.level<1||s.level>LEVEL_CAP||s.version<6&&s.level>10||!Number.isFinite(s.hp))return null;
+  if(s.realness!==undefined&&(!Number.isInteger(s.realness)||s.realness<0))return null;
+  if(s.realnessChoices!==undefined&&!Array.isArray(s.realnessChoices))return null;
   for(const key of ['hp','mp','sp','coins','xp'])if(!Number.isInteger(s[key])||s[key]<0)return null;
   if(s.quest!==undefined&&(!Number.isInteger(s.quest)||s.quest<0||s.quest>5))return null;
   const stats={...s.stats,lck:s.stats.lck??8};
   if(Object.keys(ATTRS).some(k=>!Number.isInteger(stats[k])||stats[k]<8))return null;
   if(s.points!==undefined&&(!Number.isInteger(s.points)||s.points<0))return null;
-  if(s.version===VERSION&&(!Number.isInteger(s.xp)||s.xp<0||(s.level===LEVEL_CAP?s.xp!==0:s.xp>=xpNeeded(s.level))||!Number.isInteger(s.levelPointsPaid)||s.levelPointsPaid<0||s.levelPointsPaid>3||Object.hasOwn(s,'part')))return null;
+  if(s.version===VERSION&&(!Number.isInteger(s.xp)||s.xp<0||(s.level===LEVEL_CAP?s.xp!==0:s.xp>=xpNeeded(s.level,s.realness||0))||!Number.isInteger(s.levelPointsPaid)||s.levelPointsPaid<0||s.levelPointsPaid>3||Object.hasOwn(s,'part')))return null;
   if(s.version===VERSION&&(!Array.isArray(s.learnedAbilities)||!Array.isArray(s.equippedAbilities)||s.equippedAbilities.length>3||s.learnedAbilities.some(id=>!ABILITIES[id])||s.equippedAbilities.some(id=>ABILITIES[id]?.kind!=='active')||!(s.passive===null||ABILITIES[s.passive]?.kind==='passive')))return null;
   if(s.version===VERSION){
    const learned=new Set(s.learnedAbilities),equipped=new Set(s.equippedAbilities);
@@ -366,7 +371,7 @@ export function loadSave(raw){
   if(attunementUsed(out)>6)return null;
   out.equipmentMisses=Number.isInteger(out.equipmentMisses)?clamp(out.equipmentMisses,0,5):0;
   if(typeof out.settings.lastHunt!=='string'||!ENEMIES.some(e=>e.id!=='boss'&&e.id===out.settings.lastHunt))delete out.settings.lastHunt;
-  normalizeGearState(out);normalizeRelics(out);normalizeRecovery(out);normalizeRecords(out);
+  normalizeGearState(out);normalizeRelics(out);normalizeRecovery(out);normalizeRecords(out);normalizeRealness(out);
   const ancestry=out.raceId?(resolveRace(out.raceId)||resolveRace(out.race)):null;out.raceId=ancestry?.id||null;out.appearance=normalizeAppearance(ancestry?.id||resolveRace(out.race)?.id||'bear',out.appearance);if(ancestry)out.race=ancestry.name;
   const resourceCaps=totals(out);out.hp=Math.min(out.hp,resourceCaps.hp);out.mp=Math.min(out.mp,resourceCaps.mp);out.sp=Math.min(out.sp,resourceCaps.sp);if(!out.gear.weapon||!ITEMS[out.gear.weapon])return null;
   normalizeVariants(out);

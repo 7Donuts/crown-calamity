@@ -471,7 +471,7 @@ export const LAB_MENDERS = Object.freeze({
 const LOCKED = s => !!(s?.fight || s?.delve);
 const noCost = () => ({coins:0,materials:{}});
 const clone = x => JSON.parse(JSON.stringify(x));
-function getItem(s, id) { return ITEMS[id] || (s?.rulesPreview?.twoHands ? LAB_MENDERS[id] : null) || null; }
+function getItem(s, id) { return s?.customItems?.[id] || ITEMS[id] || (s?.rulesPreview?.twoHands ? LAB_MENDERS[id] : null) || null; }
 function canFit(item,slot,s){
   if (!item) return false;
   if (s?.rulesPreview?.twoHands) {
