@@ -63,8 +63,10 @@ const clampInt = (n, lo, hi) => Math.max(lo, Math.min(hi, Math.floor(Number.isFi
 // Echo strength rounds to whole Pluck: a half-strength echo of a 1-Pluck trigger still counts.
 const scaled = (base, k) => k > 0 ? Math.max(0, Math.round(base * k)) : 0;
 
-/** True when any equipped or echoed relic takes part in the engine; the HUD only shows Pluck then. */
-export function engineActive(strength) { return ENGINE_RELIC_IDS.some(id => strength(id) > 0); }
+/** True when any equipped or echoed relic takes part in the engine or character has a race Pluck hook; the HUD shows Pluck then. */
+export function engineActive(strength, raceId = null) {
+  return Boolean(raceId) || ENGINE_RELIC_IDS.some(id => strength(id) > 0);
+}
 
 /** Adds Pluck up to the cap and records the source for the exchange summary. Returns the amount added. */
 export function gainPluck(f, amount, source, notes) {

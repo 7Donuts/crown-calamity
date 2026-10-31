@@ -98,16 +98,16 @@ test('finish heals count only realized recovery and campaign snapshots stay unch
 
 test('full-health Fang and overkill cannot create healing; victory relic heals are counted once', () => {
   const fullHealth = runCell({ fixture: { kit: 'breaker', level: 50, race: 'wolf', gear: { mainHand: 'velvetBumper' }, relics: ['feltFang'] }, enemy: 'rats', policy: 'strike', seeds: [88], chainLength: 1 });
-  assert.equal(fullHealth.overkillPerExchange, 434);
+  assert.equal(fullHealth.overkillPerExchange, 438);
   assert.equal(fullHealth.healingBySource.relics, 0);
   const heart = runCell({ fixture: { kit: 'breaker', level: 1, race: 'wolf', relics: ['darnedPatch', 'patchworkHeart'] }, enemy: 'rats', policy: 'strike', seeds: [41, 42], chainLength: 3 });
   const cocoa = runCell({ fixture: { kit: 'breaker', level: 1, race: 'wolf', relics: ['darnedPatch', 'cocoaThimble'] }, enemy: 'rats', policy: 'strike', seeds: [41, 42], chainLength: 3 });
-  assert.equal(heart.healingBySource.relics, 10.333333333333334);
-  assert.equal(cocoa.healingBySource.relics, 57.666666666666664);
+  assert.equal(heart.healingBySource.relics, 8.333333333333334);
+  assert.equal(cocoa.healingBySource.relics, 82);
 });
 
 test('a defeat ends its chain and is never treated as a completed route', () => {
-  const result = runCell({ fixture: { kit: 'caster', level: 1, race: 'cat' }, enemy: 'wisp', policy: 'strike', seeds: [1], chainLength: 50 });
+  const result = runCell({ fixture: { kit: 'caster', level: 1, race: 'bunny' }, enemy: 'wisp', policy: 'strike', seeds: [1], chainLength: 50 });
   assert.equal(result.encounters, 1);
   assert.equal(result.wins, 0);
   assert.equal(result.defeats, 1);
@@ -195,7 +195,7 @@ test('Dream Bell victory mana matches the direct engine over two fights', () => 
   const save = casterRelicSave(['dreamBell']);
   const options = { seeds: [41], chainLength: 2, policy: 'strike', enemy: 'rats' };
   const reference = directEngineChain(save, options);
-  assert.equal(reference.averageResourcesAtEncounterStart.mp, 104.5);
+  assert.equal(reference.averageResourcesAtEncounterStart.mp, 105.5);
   const actual = runCell({ fixture: { id: 'dream-bell-regression', save }, ...options });
   assert.deepEqual(actual.averageResourcesAtEncounterStart, reference.averageResourcesAtEncounterStart);
 });

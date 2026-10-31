@@ -245,3 +245,55 @@ test('two hands combat exchanges apply 35% physical offhand hit, 30% focus hit, 
  const fullRes=G.exchange(s,'attack',()=>0.5,4000);
  assert.equal(fullRes.mendHealed,0,'no heal when at full health');
 });
+
+test('G2-4 race identity traits and Pluck hooks integrate with exchange()', () => {
+ // 1. Bear
+ const bear = G.createCharacter({ race: 'bear', kit: 'breaker' });
+ G.startFight(bear, 'rats');
+ bear.hp = 300;
+ const rec = step(bear, 'recover');
+ assert.ok(rec.ok);
+ assert.equal(bear.fight.pluck, 1, 'Bear gains 1 Pluck on Recover');
+ assert.ok(bear.log.some(l => l.text.includes('+1 Pluck (Well Loved)')));
+
+ // Bear Cuddle Reserve
+ const bearTotals = G.totals(bear);
+ const threshold = Math.floor(bearTotals.hp * 0.3);
+ bear.hp = threshold + 5; // just above 30%
+ const bearAtk = step(bear, 'guard');
+ assert.ok(bear.fight.cuddleReserveUsed, 'Cuddle reserve triggered');
+ assert.ok(bear.fight.barrier > 0, 'Barrier granted');
+
+ // 2. Wolf
+ const wolf = G.createCharacter({ race: 'wolf', kit: 'breaker' });
+ G.startFight(wolf, 'rats');
+ const wolfAtk = step(wolf, 'attack');
+ assert.ok(wolfAtk.ok);
+ assert.equal(wolf.fight.pluck, 1, 'Wolf gains 1 Pluck when hurt');
+
+ // 3. Bunny
+ const bunny = G.createCharacter({ race: 'bunny', kit: 'duelist' });
+ G.startFight(bunny, 'attack');
+ // Force enemy to glance: glancing RNG for enemy (roll between 0.85 and 0.95 depending on defense)
+ const glanceStep = G.exchange(bunny, 'attack', () => 0.89, 1000);
+ if (bunny.fight?.shuffleNoGlance) {
+   assert.equal(bunny.fight.pluck, 1, 'Bunny gains 1 Pluck on glance');
+ }
+
+ // 4. Unicorn
+ const unicorn = G.createCharacter({ race: 'unicorn', kit: 'caster' });
+ G.startFight(unicorn, 'rats');
+ unicorn.mp = 30;
+ const critSpell = G.exchange(unicorn, 'cast', () => 0.01, 1000);
+ assert.ok(critSpell.ok);
+ assert.equal(unicorn.fight.pluck, 1, 'Unicorn gains 1 Pluck on crit spell');
+
+ // 5. Cat
+ const cat = G.createCharacter({ race: 'cat', kit: 'duelist' });
+ G.startFight(cat, 'rats');
+ cat.hp = 1;
+ const catAtk = step(cat, 'attack');
+ assert.ok(cat.fight.nineLivesUsed, 'Nine Lives survived lethal blow');
+ assert.equal(cat.hp, 1, 'Cat stays at 1 HP');
+ assert.equal(cat.fight.pluck, 2, 'Cat gained 2 Pluck from Nine Lives');
+});

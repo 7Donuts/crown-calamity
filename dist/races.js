@@ -1,7 +1,8 @@
 const freezeRace = (race) => Object.freeze({
   ...race,
   stats: Object.freeze({ ...race.stats }),
-  passive: Object.freeze({ ...race.passive })
+  passive: Object.freeze({ ...race.passive }),
+  affinities: Object.freeze([ ...(race.affinities || (race.affinity ? [race.affinity] : [])) ])
 });
 
 export const RACES = Object.freeze({
@@ -9,51 +10,136 @@ export const RACES = Object.freeze({
     id: 'bear', name: 'Cuddleworth Bears', epithet: 'The one everybody had.',
     description: 'Classic, much-hugged teddy bears with soft rounded ears, sturdy little paws, and a familiar huggable shape.',
     bursarReading: 'Model identified. Extremely common. Statistically, someone has hugged you.',
-    stats: { mig: 10, fin: 10, int: 10, vit: 10, wil: 10, ins: 9, lck: 9 },
+    playsAs: 'Resilient all-rounder that recovers mid-fight',
+    stats: { mig: 10, fin: 8, int: 8, vit: 13, wil: 13, ins: 8, lck: 8 },
     passive: { hp: 4, mp: 4, sp: 4, armor: 0, ward: 0, evasion: 0 },
     passiveName: 'Well Loved',
     passiveDescription: '+4 max Stuffing (Health), +4 max Sparkle (Mana), and +4 max Bounce (Stamina).',
-    trait: 'Every toy box has a Cuddleworth. Most have three.'
+    flavorTrait: 'Every toy box has a Cuddleworth. Most have three.',
+    trait: 'Well Loved',
+    traitName: 'Well Loved',
+    combatTrait: 'Well Loved',
+    altTrait: 'Thick Plush',
+    traitDescription: 'Shake it off (Recover) restores 5% of maximum Stuffing before the enemy response. Falling below 30% Stuffing grants a 10% barrier once per fight.',
+    traitSummary: 'Shake it off restores 5% Stuffing; falling below 30% grants a 10% barrier once per fight.',
+    traitTrigger: 'Shake it off (Recover); Falling below 30% Stuffing after an enemy response',
+    traitEffect: 'Restores 5% of maximum Stuffing; Barrier of 10% of maximum Stuffing for the next enemy response',
+    traitLimit: 'Every Recover (never above missing Stuffing); Barrier once per fight (within 30% barrier cap)',
+    pluckHook: '+1 on Recover',
+    pluckHookDesc: '+1 Pluck on Recover',
+    affinity: 'clubs',
+    affinities: Object.freeze(['clubs']),
+    affinityName: 'Clubs and bonkers',
+    homeLayer: 'The Underfoot (deep locations)',
+    homeLayerId: 'underfoot'
   }),
   wolf: freezeRace({
     id: 'wolf', name: 'Sturdy Stitch Wolves', epithet: 'Double-stitched. Den-tested.',
     description: 'Soft stuffed wolves with plush cheek tufts, gentle muzzles, and reinforced seams made for long rambles.',
     bursarReading: 'Seam strength: excessive. Fashion sense: practical.',
-    stats: { mig: 12, fin: 8, int: 8, vit: 13, wil: 10, ins: 9, lck: 8 },
+    playsAs: 'Bruiser who gets stronger when hurt',
+    stats: { mig: 14, fin: 8, int: 8, vit: 12, wil: 9, ins: 9, lck: 8 },
     passive: { hp: 12, mp: 0, sp: 0, armor: 1, ward: 0, evasion: 0 },
     passiveName: 'Reinforced Seams',
     passiveDescription: '+12 max Stuffing (Health) and +1 Armor.',
-    trait: 'Lifetime warranty. Nobody has ever successfully claimed it.'
+    flavorTrait: 'Lifetime warranty. Nobody has ever successfully claimed it.',
+    trait: 'Reinforced Seams',
+    traitName: 'Reinforced Seams',
+    combatTrait: 'Reinforced Seams',
+    altTrait: 'Pack Rhythm',
+    traitDescription: 'While below 50% Stuffing at the start of the exchange, heavy-channel (Might) strikes deal 10% more damage.',
+    traitSummary: 'Heavy strikes deal +10% damage while below half Stuffing.',
+    traitTrigger: 'A heavy-channel (Might) strike while below 50% Stuffing at the start of the exchange',
+    traitEffect: '+10% damage',
+    traitLimit: 'Every such strike',
+    pluckHook: '+1 when an enemy hit hurts you',
+    pluckHookDesc: '+1 Pluck when an enemy hit hurts you',
+    affinity: 'mauls',
+    affinities: Object.freeze(['mauls']),
+    affinityName: 'Mauls and hammers',
+    homeLayer: 'Inside the Walls',
+    homeLayerId: 'walls'
   }),
   bunny: freezeRace({
     id: 'bunny', name: 'Pellet & Pip Bunnies', epithet: 'Now with extra flop!',
     description: 'Bouncy plush bunnies with soft long ears, short paws, and the sort of floppy charm that escapes every shelf.',
     bursarReading: 'Posture: optional. Pellet count: confidential.',
-    stats: { mig: 8, fin: 12, int: 10, vit: 8, wil: 9, ins: 13, lck: 8 },
+    playsAs: 'Evasive duelist who punishes misses',
+    stats: { mig: 8, fin: 13, int: 8, vit: 9, wil: 9, ins: 13, lck: 8 },
     passive: { hp: 0, mp: 0, sp: 8, armor: 0, ward: 0, evasion: 2 },
     passiveName: 'Pellet Shuffle',
     passiveDescription: '+8 max Bounce (Stamina) and +2 Evasion.',
-    trait: 'Sits on any shelf edge. Falls off most of them on purpose.'
+    flavorTrait: 'Sits on any shelf edge. Falls off most of them on purpose.',
+    trait: 'Pellet Shuffle',
+    traitName: 'Pellet Shuffle',
+    combatTrait: 'Pellet Shuffle',
+    altTrait: 'Quick Paws',
+    traitDescription: 'Sidestep costs 4 less Bounce. After an enemy attack glances on you, your next damaging action cannot glance.',
+    traitSummary: 'Sidestep costs 4 less Bounce; after a glance on you, next strike cannot glance.',
+    traitTrigger: 'Sidestep; an enemy attack that glances on you',
+    traitEffect: 'Sidestep costs 4 less Bounce; after a glance on you, your next damaging action cannot glance',
+    traitLimit: 'No-glance lasts one following exchange; no damage bonus',
+    pluckHook: '+1 when an enemy attack glances on you',
+    pluckHookDesc: '+1 Pluck when an enemy attack glances on you',
+    affinity: 'foils',
+    affinities: Object.freeze(['foils']),
+    affinityName: 'Foils, rapiers and lances',
+    homeLayer: 'The High Shelves',
+    homeLayerId: 'shelves'
   }),
   unicorn: freezeRace({
     id: 'unicorn', name: 'Lullabrite Unicorns', epithet: 'A little glow for the night.',
     description: 'Dreamy stuffed unicorns with a soft little horn, curled fabric manes, and a calm nightlight glow.',
     bursarReading: 'Glow detected. Please do not point at sleeping residents.',
-    stats: { mig: 8, fin: 9, int: 13, vit: 8, wil: 12, ins: 9, lck: 9 },
+    playsAs: 'Caster and healer',
+    stats: { mig: 8, fin: 8, int: 14, vit: 9, wil: 12, ins: 9, lck: 8 },
     passive: { hp: 0, mp: 8, sp: 0, armor: 0, ward: 1, evasion: 0 },
     passiveName: 'Night-Light',
     passiveDescription: '+8 max Sparkle (Mana) and +1 Ward.',
-    trait: 'Afraid of the dark professionally, so you don\'t have to be.'
+    flavorTrait: 'Afraid of the dark professionally, so you don\'t have to be.',
+    trait: 'Night-Light',
+    traitName: 'Night-Light',
+    combatTrait: 'Night-Light',
+    altTrait: 'Starlight Thread',
+    traitDescription: 'A critical spell restores 4 Sparkle. Mend heals 10% more.',
+    traitSummary: 'Critical spells restore 4 Sparkle; Mend heals 10% more.',
+    traitTrigger: 'A critical spell; Mend',
+    traitEffect: 'A critical spell restores 4 Sparkle; Mend heals 10% more',
+    traitLimit: 'Never above maximum Sparkle',
+    pluckHook: '+1 on a critical spell or a Mend that heals',
+    pluckHookDesc: '+1 Pluck on a critical spell or a Mend that heals',
+    affinity: 'batons',
+    affinities: Object.freeze(['batons']),
+    affinityName: 'Batons, staves and flutes',
+    homeLayer: 'Dreamside',
+    homeLayerId: 'dreamside'
   }),
   cat: freezeRace({
     id: 'cat', name: 'Purrfect Patch Cats', epithet: 'Soft paws. Strong opinions.',
     description: 'Button-eyed stuffed cats with stitched whiskers, rounded paws, and a talent for landing on a cushion.',
     bursarReading: 'Whiskers aligned. Nap schedule: classified.',
-    stats: { mig: 8, fin: 12, int: 8, vit: 9, wil: 9, ins: 10, lck: 12 },
+    playsAs: 'Critical-hit gambler who will not stay down',
+    stats: { mig: 8, fin: 12, int: 8, vit: 8, wil: 8, ins: 10, lck: 14 },
     passive: { hp: 0, mp: 4, sp: 4, armor: 0, ward: 0, evasion: 1 },
     passiveName: 'Soft Landing',
     passiveDescription: '+1 Evasion, +4 max Sparkle (Mana), and +4 max Bounce (Stamina).',
-    trait: 'Always lands somewhere soft. Usually on your paperwork.'
+    flavorTrait: 'Always lands somewhere soft. Usually on your paperwork.',
+    trait: 'Nine Lives',
+    traitName: 'Nine Lives',
+    combatTrait: 'Nine Lives',
+    altTrait: 'Nine Lives',
+    traitDescription: 'An enemy blow that would reduce you to 0 Stuffing leaves you at 1 Stuffing instead (once per fight).',
+    traitSummary: 'Survive a lethal blow at 1 Stuffing once per fight.',
+    traitTrigger: 'An enemy blow that would reduce you to 0 Stuffing',
+    traitEffect: 'You stay at 1 Stuffing instead',
+    traitLimit: 'Once per fight; does not prevent defeat from a second lethal blow',
+    pluckHook: '+1 on your critical hit; +2 when Nine Lives triggers',
+    pluckHookDesc: '+1 Pluck on your critical hit; +2 when Nine Lives triggers',
+    affinity: 'needles',
+    affinities: Object.freeze(['needles']),
+    affinityName: 'Needles and needleblades',
+    homeLayer: 'The Donation Bag',
+    homeLayerId: 'donationBag'
   })
 });
 
@@ -208,4 +294,45 @@ export function resolveRace(idOrAlias) {
   const key=idOrAlias.trim().toLowerCase().replace(/\s+/g,' ');
   const id=Object.hasOwn(RACE_ALIASES,key)?RACE_ALIASES[key]:null;
   return id&&Object.hasOwn(RACES,id)?RACES[id]:null;
+}
+
+export function isHomeLayerActive(s) {
+  if (!s || (s.realness || 0) < 1 || !s.raceId) return false;
+  const race = RACES[s.raceId] || resolveRace(s.raceId);
+  if (!race || !race.homeLayer) return false;
+  const currentLayer = s.layer || s.fight?.layer || null;
+  if (!currentLayer) return false;
+  const hl = race.homeLayer.toLowerCase();
+  const cl = currentLayer.toLowerCase();
+  const hId = (race.homeLayerId || '').toLowerCase();
+  return cl === hl || cl === hId || hl.includes(cl) || cl.includes(hId);
+}
+
+export function raceCombatTrait(raceId) {
+  const race = RACES[raceId] || resolveRace(raceId);
+  if (!race) return null;
+  return Object.freeze({
+    name: race.trait,
+    altName: race.altTrait,
+    description: race.traitDescription,
+    summary: race.traitSummary,
+    trigger: race.traitTrigger,
+    effect: race.traitEffect,
+    limit: race.traitLimit,
+  });
+}
+
+export function racePluckHook(raceId) {
+  const race = RACES[raceId] || resolveRace(raceId);
+  return race?.pluckHook || null;
+}
+
+export function raceAffinity(raceId) {
+  const race = RACES[raceId] || resolveRace(raceId);
+  return race?.affinity || null;
+}
+
+export function raceHomeLayer(raceId) {
+  const race = RACES[raceId] || resolveRace(raceId);
+  return race?.homeLayer || null;
 }
