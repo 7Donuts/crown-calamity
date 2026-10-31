@@ -18,3 +18,14 @@ Ten campaign menders have been added to the catalog (`dist/gear.js`) with placeh
 | `feltPatchBook` | Felt Patch Book | Offhand (Mender) | 8 | 4 | `relic-collection.png` [88, 607, 166, 225] | Felt Fang |
 | `mendingHoop` | Mending Hoop | Offhand (Mender) | 9 | 5 | `relic-collection.png` [316, 614, 233, 213] | Darned Patch |
 | `goldenNeedleCase` | Golden Needle Case | Offhand (Mender) | 10 | 5 | `relic-collection.png` [1143, 313, 233, 248] | Stuffing Satchel |
+
+## G3-2 Becoming Real Trial Enemies (Design 50, Decision D6)
+
+Three dynamic trial enemies (`trial_stitch`, `trial_memory`, `trial_real` in `dist/growth.js`) reuse existing enemy illustrations via `portraitId` until bespoke trial guardian portraits are generated following `ART-DIRECTION.md`:
+
+| Trial Enemy ID | Display Name | Stage | Borrowed Portrait (`portraitId`) |
+|---|---|---|---|
+| `trial_stitch` | The Stitch-Tester | 1 (The Stitch-Test) | `shears_trooper` |
+| `trial_memory` | The Memory-Warden | 2 (The Memory-Test) | `heirloom_Armor` |
+| `trial_real` | The Real-Mirror | 3 (The Real-Test) | `star_stitcher` |
+

@@ -1,5 +1,5 @@
-import { ITEMS, effectiveItem, RELIC_SLOTS } from './gear.js';
-import { RELIC_EFFECTS, RELIC_UNLOCK_COSTS, relicSlots, unlockRelicPreview, attuneRelicPreview, relicBonuses, relicRank } from './relics.js';
+import { ITEMS, effectiveItem, RELIC_SLOTS, relic3Unlocked } from './gear.js';
+import { RELIC_EFFECTS, RELIC_UNLOCK_COSTS, relicSlots, unlockRelicPreview, attuneRelicPreview, relicBonuses, relicRank, echoScales } from './relics.js';
 import { renderItemArt } from './item-art.js';
 import { menuIcon } from './menu-icons.js';
 
@@ -18,7 +18,10 @@ function itemFacts(item) {
 function effectFact(id) { return RELIC_EFFECTS[id]?.desc || null; }
 
 function coreNode(state, slot = 'relic') {
-  const id = state?.gear?.[slot], item = id ? effectiveItem(state, id) : null, label = slot === 'relic' ? 'FIRST' : 'SECOND';
+  if (slot === 'relic3' && !relic3Unlocked(state)) {
+    return `<div class="relic-core-node is-empty is-locked"><span class="relic-core-art">${menuIcon('close', 'relic-placeholder')}</span><span class="relic-node-copy"><small>THIRD RELIC SLOT · LOCKED</small><strong>Locked third relic</strong><span>Unlock this full-strength third core relic slot via Becoming Real ("Third relic slot").</span></span></div>`;
+  }
+  const id = state?.gear?.[slot], item = id ? effectiveItem(state, id) : null, label = slot === 'relic' ? 'FIRST' : slot === 'relic2' ? 'SECOND' : 'THIRD';
   const rank = id ? relicRank(state, id) : 1;
   const facts = [...itemFacts(item), effectFact(id)].filter(Boolean);
   return `<div class="relic-core-node ${item ? 'is-filled' : 'is-empty'}"><span class="relic-core-art">${item ? renderItemArt(id, { size: 'large' }) : menuIcon('curios', 'relic-placeholder')}</span><span class="relic-node-copy"><small>${label} RELIC SLOT · FULL EFFECT${item ? ` · RANK ${rank}/3` : ''}</small><strong>${esc(item?.name || `No ${label.toLowerCase()} relic`)}</strong><span>${facts.length ? facts.map(esc).join(' · ') : item ? esc(item.desc) : `Equip a relic in the ${label.toLowerCase()} relic slot.`}</span></span></div>`;
@@ -60,6 +63,7 @@ function bonusSummary(state) {
 
 export function renderRelicSockets(state) {
   const sockets = relicSlots(state);
-  const uniqueProc = 'Each relic has one authored conditional benefit. Echoes only amplify equipped core relics, adding +50%, +25%, then +12.5% strength.';
-  return `<section class="relic-atelier" aria-labelledby="relic-atelier-title"><header class="relic-atelier-head"><div><span class="relic-overline">ATTUNEMENT · FLUFFINGTON QUAY</span><h2 id="relic-atelier-title">Keychain loops <small class="std">(Relic echo sockets)</small></h2><p>Relic resonance: equip two core relics and license up to three optional echoes.</p></div>${menuIcon('curios', 'relic-atelier-mark')}</header><div class="relic-socket-flow" aria-label="Two core relic slots and three optional keychain loops (echo sockets)"><div class="relic-core-pair">${coreNode(state, 'relic')}${coreNode(state, 'relic2')}</div><span class="relic-flow-link" aria-hidden="true"></span><div class="relic-echo-list">${sockets.map(socket => socketNode(state, socket)).join('')}</div></div>${bonusSummary(state)}<p class="relic-rule-note">${esc(uniqueProc)} Echoes can also add flat stats, armor, and ward. Echoes only amplify relics equipped in core slots; an unequipped relic becomes dormant until equipped again. Licenses stay paid to their loop; moving a type to another loop needs a new license at four times the previous same-type price.</p><p class="relic-unlock-note">One-time loop unlocks: ${RELIC_UNLOCK_COSTS.map(n => esc(money(n))).join(', ')}. Reviews show full price and benefits before confirmation.</p></section>`;
+  const scales = echoScales(state).map(n => `${(n * 100).toFixed(1).replace(/\.0$/, '')}%`).join(', ');
+  const uniqueProc = `Each relic has one authored conditional benefit. Echoes only amplify equipped core relics, adding +${scales.replace(', ', ', +').replace(', ', ', then +')} strength.`;
+  return `<section class="relic-atelier" aria-labelledby="relic-atelier-title"><header class="relic-atelier-head"><div><span class="relic-overline">ATTUNEMENT · FLUFFINGTON QUAY</span><h2 id="relic-atelier-title">Keychain loops <small class="std">(Relic echo sockets)</small></h2><p>Relic resonance: equip up to ${relic3Unlocked(state) ? 'three' : 'two'} core relics and license up to three optional echoes.</p></div>${menuIcon('curios', 'relic-atelier-mark')}</header><div class="relic-socket-flow" aria-label="Core relic slots and three optional keychain loops (echo sockets)"><div class="relic-core-pair">${coreNode(state, 'relic')}${coreNode(state, 'relic2')}${coreNode(state, 'relic3')}</div><span class="relic-flow-link" aria-hidden="true"></span><div class="relic-echo-list">${sockets.map(socket => socketNode(state, socket)).join('')}</div></div>${bonusSummary(state)}<p class="relic-rule-note">${esc(uniqueProc)} Echoes can also add flat stats, armor, and ward. Echoes only amplify relics equipped in core slots; an unequipped relic becomes dormant until equipped again. Licenses stay paid to their loop; moving a type to another loop needs a new license at four times the previous same-type price.</p><p class="relic-unlock-note">One-time loop unlocks: ${RELIC_UNLOCK_COSTS.map(n => esc(money(n))).join(', ')}. Reviews show full price and benefits before confirmation.</p></section>`;
 }

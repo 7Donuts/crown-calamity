@@ -61,7 +61,7 @@ test('every exchange previews and applies the same coin and material deductions'
 
 test('captured main save retains already-paid upgrades and affixes without recharging',()=>{
  const captured=LEGACY_UPGRADED_SAVE,coins=captured.coins,materials=structuredClone(captured.materials),loaded=loadSave(JSON.stringify(captured));
- assert.ok(loaded);assert.deepEqual(loaded.itemMods,captured.itemMods);assert.deepEqual(loaded.stats,captured.stats);assert.equal(loaded.points,captured.points);assert.deepEqual(loaded.gear,captured.gear);for(const id of captured.bag)assert.ok(loaded.bag.includes(id),`${id} remains in the bag`);assert.deepEqual(loaded.materials,materials);assert.equal(loaded.coins,coins);
+ assert.ok(loaded);assert.deepEqual(loaded.itemMods,captured.itemMods);assert.deepEqual(loaded.stats,captured.stats);assert.equal(loaded.points,captured.points);assert.deepEqual(loaded.gear,{...captured.gear,relic3:null});for(const id of captured.bag)assert.ok(loaded.bag.includes(id),`${id} remains in the bag`);assert.deepEqual(loaded.materials,materials);assert.equal(loaded.coins,coins);
  const p=upgradePreview(loaded,'thimblePike');assert.equal(p.level,2);assert.deepEqual(p.cost.materials,{'Sprinkler brass':2});assert.deepEqual(loaded.itemMods,captured.itemMods);assert.equal(loaded.coins,coins);assert.deepEqual(loaded.materials,materials);
  loaded.coins=5000;loaded.materials['Sprinkler brass']=2;const nextCost=upgradePreview(loaded,'thimblePike').cost,coinsBefore=loaded.coins;
  assert.deepEqual(upgradeItem(loaded,'thimblePike'),{id:'thimblePike',upgrade:3});assert.equal(coinsBefore-loaded.coins,nextCost.coins);assert.equal(loaded.materials['Sprinkler brass'],0);assert.equal(loaded.itemMods.rod.upgrade,captured.itemMods.rod.upgrade);assert.equal(loaded.itemMods.coat.upgrade,captured.itemMods.coat.upgrade);
@@ -133,10 +133,10 @@ test('all exchange, craft, resale, upgrade, affix and buy transitions obey one n
  }
 });
 
-test('catalog preserves every original item id and exposes all ten slots',()=>{
+test('catalog preserves every original item id and exposes all eleven slots',()=>{
   for(const id of ['rod','sword','blade','shield','focus','charm','coat','gateShield','oilskin','grips','lantern','floodrod','ironsword','glassblade','seal','penny','band'])assert.ok(ITEMS[id],id);
   assert.deepEqual([ITEMS.rod.base,ITEMS.rod.channel,ITEMS.rod.focus,ITEMS.sword.base,ITEMS.sword.channel,ITEMS.blade.channel,ITEMS.shield.armor,ITEMS.focus.spellBase,ITEMS.seal.slot,ITEMS.penny.stats.lck],[14,'spell',true,14,'heavy','precision',10,3,'relic',4]);
-  assert.deepEqual(Object.keys(SLOTS),['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic','relic2']);
+  assert.deepEqual(Object.keys(SLOTS),['weapon','offhand','head','body','hands','feet','accessory','accessory2','relic','relic2','relic3']);
   assert.ok(EXCHANGES.fragment_glass&&PREFIXES.keen&&SUFFIXES.of_vigor);
 });
 

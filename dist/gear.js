@@ -2,13 +2,20 @@
 import { currentChapter, chapterUnlocked } from './campaign.js';
 export const SLOTS = Object.freeze({
   weapon: 'Main hand', offhand: 'Second hand', head: 'Head', body: 'Body', hands: 'Hands',
-  feet: 'Feet', accessory: 'Accessory', accessory2: 'Accessory 2', relic: 'Relic', relic2: 'Relic 2'
+  feet: 'Feet', accessory: 'Accessory', accessory2: 'Accessory 2', relic: 'Relic', relic2: 'Relic 2', relic3: 'Relic 3'
 });
 const ACCESSORY_SLOTS = ['accessory', 'accessory2'];
-// Items whose category fits more than one slot. Every character starts with both relic slots.
-export const RELIC_SLOTS = Object.freeze(['relic', 'relic2']);
+// Items whose category fits more than one slot. Every character starts with two relic slots; relic3 unlocks via Becoming Real.
+export const RELIC_SLOTS = Object.freeze(['relic', 'relic2', 'relic3']);
+export function relic3Unlocked(s) {
+  return Array.isArray(s?.realnessChoices) && s.realnessChoices.includes('relic3');
+}
 const MULTI_SLOTS = Object.freeze({ accessory: ACCESSORY_SLOTS, relic: RELIC_SLOTS });
-const slotsFor = item => item ? (MULTI_SLOTS[item.slot] || [item.slot]) : [];
+const slotsFor = (item, s) => {
+  if (!item) return [];
+  if (item.slot === 'relic') return relic3Unlocked(s) ? [...RELIC_SLOTS] : ['relic', 'relic2'];
+  return MULTI_SLOTS[item.slot] || [item.slot];
+};
 const SLOT_KEYS = Object.keys(SLOTS);
 
 export const ITEMS = Object.freeze({
@@ -497,7 +504,8 @@ function canFit(item,slot,s){
     return true;
   }
   if (slot === 'offhand' && item.kind === 'mender') return true;
-  return slotsFor(item).includes(slot);
+  if (slot === 'relic3' && !relic3Unlocked(s)) return false;
+  return slotsFor(item, s).includes(slot);
 }
 function owned(s,id){return Array.isArray(s?.bag)&&s.bag.includes(id);}
 function costAffordable(s,cost){return (s.coins||0)>=(cost.coins||0)&&Object.entries(cost.materials||{}).every(([m,n])=>(s.materials?.[m]||0)>=n);}
@@ -541,7 +549,7 @@ export function isStrictWeaponDowngrade(s,candidateId,currentId=s?.gear?.weapon)
 export function resolveItem(s,id){const item=effectiveItem(s,id);return item?{...item,owned:owned(s,id),levelRequired:null,usable:true}:null;}
 export function slotChoices(s,id){
   const item=getItem(s,id);if(!item||!owned(s,id))return [];
-  let slots=slotsFor(item);
+  let slots=slotsFor(item,s);
   if(item.slot==='weapon'&&!item.twoHanded&&item.family!=='spears'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   if(item.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   return slots.filter(slot=>!(slot==='offhand'&&getItem(s,s.gear?.weapon)?.twoHanded));
@@ -576,7 +584,7 @@ export function buyItem(s,id){
 }
 export function buyAndEquipPreview(s,id,targetSlot){
   const purchase=buyPreview(s,id), item=getItem(s,id);
-  let slots=slotsFor(item);
+  let slots=slotsFor(item,s);
   if(item?.slot==='weapon'&&!item?.twoHanded&&item?.family!=='spears'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   if(item?.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   slots=slots.filter(slot=>!(slot==='offhand'&&getItem(s,s?.gear?.weapon)?.twoHanded));
@@ -657,7 +665,7 @@ export function normalizeGearState(s){
   const old=s.gear&&typeof s.gear==='object'?s.gear:{};const gear=Object.fromEntries(SLOT_KEYS.map(k=>[k,null]));
   // Preserve legacy equipment absent from the bag, then accept only a single valid slot per id.
   for(const slot of SLOT_KEYS){const id=old[slot];if(ITEMS[id]&&!s.bag.includes(id))s.bag.push(id);}
-  for(const slot of SLOT_KEYS){const id=old[slot],item=ITEMS[id];if(!item||!s.bag.includes(id)||!canFit(item,slot)||Object.values(gear).includes(id))continue;if(slot==='offhand'&&ITEMS[old.weapon]?.twoHanded)continue;if(item.twoHanded&&slot==='weapon')gear.offhand=null;gear[slot]=id;}
+  for(const slot of SLOT_KEYS){const id=old[slot],item=ITEMS[id];if(!item||!s.bag.includes(id)||!canFit(item,slot,s)||Object.values(gear).includes(id))continue;if(slot==='offhand'&&ITEMS[old.weapon]?.twoHanded)continue;if(item.twoHanded&&slot==='weapon')gear.offhand=null;gear[slot]=id;}
   s.gear=gear;
   const mods={};for(const id of s.bag){const m=s.itemMods?.[id];if(!m||typeof m!=='object')continue;const next={upgrade:Number.isInteger(m.upgrade)?Math.max(0,Math.min(3,m.upgrade)):0};for(const kind of ['prefix','suffix']){const aff=(kind==='prefix'?PREFIXES:SUFFIXES)[m[kind]];if(aff&&aff.slots.includes(ITEMS[id].slot))next[kind]=m[kind];}mods[id]=next;}
   s.itemMods=mods;return s;
