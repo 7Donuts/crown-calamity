@@ -332,3 +332,170 @@ export function postStoryWeaponBase(tier) {
   if (t <= 25) return 14 + (t - 1) * 2.5;
   return 74 + 2.5 * (t - 25);
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// Post-story gear: Tempering (design 50, "Post-story gear: Tempering").
+// The catalog stops at tier 25, but post-story enemies scale with effective level E forever. Tempering raises an
+// owned weapon or armor piece to a post-story tier T >= 26, stored as itemMods[id].temper = T (no new item IDs or
+// art). Stats follow the reference gear the CP4 enemy curves were fitted against (scripts/sim-g3-3-post-story.mjs,
+// makePostStoryFixture). Pure module: every number here is a tunable starting value, in this one place.
+// ---------------------------------------------------------------------------------------------------------------
+
+/** First post-story tier, and the Realness needed before anything can be tempered. */
+export const TEMPER_MIN_TIER = 26;
+export const TEMPER_MIN_REALNESS = 1;
+/** Slots that can be tempered. A weapon in the second hand is still a weapon item and follows the weapon rules. */
+export const TEMPER_SLOTS = Object.freeze(['weapon', 'offhand', 'head', 'body', 'hands', 'feet']);
+export const isTemperSlot = slot => TEMPER_SLOTS.includes(slot);
+
+/** Armor and ward are shares of the reference totals 20 + 3.4E and 16 + 2.8E (the fixture's slot split). */
+export const TEMPER_DEFENSE_SHARE = Object.freeze({
+  offhand: Object.freeze({ armor: 0.30, ward: 0.25 }),
+  body: Object.freeze({ armor: 0.40, ward: 0.40 }),
+  head: Object.freeze({ armor: 0.15, ward: 0.15 }),
+  hands: Object.freeze({ armor: 0.08, ward: 0.10 }),
+  feet: Object.freeze({ armor: 0.07, ward: 0.10 })
+});
+
+/**
+ * Per-item weapon factor. The campaign's late catalog (tiers 11 to 25) puts every family and every handedness exactly
+ * on one base-damage line per channel (measured spread 0%), so family never changes the factor. The only handedness
+ * premium the campaign has is one extra primary attribute on two-handed weapons (about +2.4% to +3.5% of weapon rank
+ * score) and the doubled workbench upgrade step; both are kept: a two-handed weapon's base is 4% above the curve, and
+ * its upgrades still add +2 base per level. The factor is clamped so the spec 47 spread (8% inside a channel) holds.
+ */
+export const TEMPER_TWO_HANDED_FACTOR = 1.04;
+export const TEMPER_FACTOR_BOUNDS = Object.freeze([0.96, 1.04]);
+export function temperWeaponFactor(item) {
+  const raw = item && item.twoHanded ? TEMPER_TWO_HANDED_FACTOR : 1;
+  return Math.max(TEMPER_FACTOR_BOUNDS[0], Math.min(TEMPER_FACTOR_BOUNDS[1], raw));
+}
+
+/** Reference primary attribute per damage channel. */
+const TEMPER_CHANNEL_ATTRIBUTE = Object.freeze({ heavy: 'mig', precision: 'fin', spell: 'int' });
+/** Focus-tagged second-hand items get a spell base of this share of the tier's weapon base (the fixture's 0.15). */
+export const TEMPER_FOCUS_SPELL_SHARE = 0.15;
+
+/** The lowest effective level at which tier T (T >= 26) becomes available: E_T = 4 * (T - 25) + 47. */
+export function temperReferenceLevel(tier) {
+  const t = Math.max(TEMPER_MIN_TIER, Math.floor(Number(tier) || TEMPER_MIN_TIER));
+  return 4 * (t - 25) + 47;
+}
+
+/** Highest tier the character may temper to: postStoryWeaponTier(E) at Realness >= 1, otherwise 0 (nothing). */
+export function temperMaxTier(s) {
+  if (!s || typeof s !== 'object' || (Number(s.realness) || 0) < TEMPER_MIN_REALNESS) return 0;
+  const tier = postStoryWeaponTier(effectiveLevel(s));
+  return tier >= TEMPER_MIN_TIER ? tier : 0;
+}
+
+/** A stored temper is valid when it is a safe integer of at least 26. Anything else means untempered (0). */
+export function normalizeTemperTier(value) {
+  return Number.isSafeInteger(value) && value >= TEMPER_MIN_TIER ? value : 0;
+}
+
+/** Stored temper for a catalog item: 0 unless the value is valid and the item's slot can be tempered. */
+export function validTemper(item, value) {
+  return item && isTemperSlot(item.slot) && !item.keepsake ? normalizeTemperTier(value) : 0;
+}
+
+const round1 = n => Math.round(n * 10) / 10;
+const mergeMax = (own, ref) => {
+  const out = { ...(own || {}) };
+  for (const [k, v] of Object.entries(ref)) out[k] = Math.max(out[k] || 0, v);
+  return out;
+};
+
+/** The reference armor and ward totals at effective level E (the fixture's totalArmor and totalWard). */
+export function temperDefenseTotals(effectiveLevelInput) {
+  const E = effectiveLevel(effectiveLevelInput);
+  return { armor: Math.round(20 + 3.4 * E), ward: Math.round(16 + 2.8 * E) };
+}
+
+/**
+ * Stat fields of an item at tempered tier T, to be spread over the catalog item. Identity is preserved by the
+ * caller (channel, family, twoHanded, focus, mend, kind stay on the item). No field is ever lowered: every number is
+ * the larger of the item's own and the reference, so tempering is never a downgrade.
+ */
+export function temperFields(item, tier) {
+  const T = normalizeTemperTier(tier);
+  if (!T || !item || !isTemperSlot(item.slot)) return {};
+  const E = temperReferenceLevel(T);
+  if (item.slot === 'weapon') {
+    const primary = TEMPER_CHANNEL_ATTRIBUTE[item.channel];
+    const base = round1(postStoryWeaponBase(T) * temperWeaponFactor(item));
+    return {
+      base: Math.max(item.base || 0, base),
+      stats: primary ? mergeMax(item.stats, { [primary]: Math.round(T * 0.4) }) : { ...(item.stats || {}) }
+    };
+  }
+  const totals = temperDefenseTotals(E);
+  const share = TEMPER_DEFENSE_SHARE[item.slot];
+  const out = {
+    armor: Math.max(item.armor || 0, Math.round(totals.armor * share.armor)),
+    ward: Math.max(item.ward || 0, Math.round(totals.ward * share.ward))
+  };
+  let stat;
+  if (item.slot === 'offhand') {
+    stat = { vit: Math.max(2, Math.round(E * 0.08)) };
+    if ((item.spellBase || 0) > 0) out.spellBase = Math.max(item.spellBase, Math.round(postStoryWeaponBase(T) * TEMPER_FOCUS_SPELL_SHARE));
+  } else if (item.slot === 'body') {
+    stat = { vit: Math.max(2, Math.round(E * 0.12)), wil: Math.max(1, Math.round(E * 0.06)) };
+  } else if (item.slot === 'head') {
+    stat = { ins: Math.max(1, Math.round(E * 0.06)) };
+  } else if (item.slot === 'hands') {
+    // The glove keeps its own attack attribute (so choosing the glove is a build choice); plain gloves train Might.
+    const key = Object.keys(item.stats || {}).find(k => ['mig', 'fin', 'int'].includes(k)) || 'mig';
+    stat = { [key]: Math.max(1, Math.round(E * 0.06)) };
+  } else {
+    stat = { fin: Math.max(1, Math.round(E * 0.05)) };
+  }
+  out.stats = mergeMax(item.stats, stat);
+  return out;
+}
+
+// Pricing. The weapon's entry price is the post-story "entry gear" price at the tier's reference level (1,100 wins
+// of on-level income; 61,600 coins for tier 26). Armor and second-hand entry prices keep the campaign's ratio between
+// a chapter's best weapon and each armor category: the campaign prices body armor tier 10 at 25% of the tier 25
+// weapon, and the other categories by CATEGORY_BASE / 24 of that, i.e. CATEGORY_BASE / 96 of the weapon price.
+export const TEMPER_PRICE_RATIO = Object.freeze({
+  weapon: 1, offhand: 16 / 96, head: 18 / 96, body: 24 / 96, hands: 14 / 96, feet: 14 / 96
+});
+/**
+ * Each tier gained on an already-tempered item costs TEMPER_STEP_K * ratio * round(1.1 * E_T) coins (K is in wins of
+ * on-level income). Chosen so a full kit (weapon, second hand and four armor pieces, ratio sum 91/48) kept on-level
+ * costs about half of on-level coin income at Realness 1. Measured tier by tier at R1 (the step priced at the new tier's
+ * level against the coins won over the four levels before it) the share is 50.3% at tier 26 falling to 48.5% by tier 38
+ * (design 50); K = 105 is also the wins per level at Realness 1.
+ */
+export const TEMPER_STEP_K = 105;
+/** Wins per level at Realness 1 is 105, so one tier (four levels) is 420 on-level wins. */
+export const TEMPER_WINS_PER_TIER_R1 = 420;
+
+export function temperEntryPrice(slot, tier) {
+  const ratio = TEMPER_PRICE_RATIO[slot];
+  if (!ratio) return 0;
+  const E = temperReferenceLevel(tier);
+  return slot === 'weapon' ? postStoryGearPrice(E, 'entry') : Math.round(postStoryGearPrice(E, 'entry') * ratio);
+}
+
+export function temperStepPrice(slot, tier) {
+  const ratio = TEMPER_PRICE_RATIO[slot];
+  if (!ratio) return 0;
+  return Math.round(TEMPER_STEP_K * ratio * Math.round(1.1 * temperReferenceLevel(tier)));
+}
+
+/**
+ * Coins to take an item of this slot from its current tempered tier (0 when untempered) to `toTier`. The first temper
+ * costs the entry price at the target tier; each later tier costs its step price, summed tier by tier so that raising
+ * in several actions never costs less than one action.
+ */
+export function temperCost(slot, fromTier, toTier) {
+  const from = normalizeTemperTier(fromTier);
+  const to = Math.floor(Number(toTier) || 0);
+  if (!isTemperSlot(slot) || to < TEMPER_MIN_TIER || to <= from) return 0;
+  if (!from) return temperEntryPrice(slot, to);
+  let coins = 0;
+  for (let t = from + 1; t <= to; t++) coins += temperStepPrice(slot, t);
+  return coins;
+}

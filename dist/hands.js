@@ -29,7 +29,9 @@ export function classifySecondHand(item) {
     return obj.channel === 'spell' ? 'focus' : 'weapon';
   }
   if (obj.slot === 'offhand') {
-    if ((obj.armor || 0) > 0 || obj.shield === true) return 'shield';
+    // A tempered item (design 50) gains armor from the post-story offhand share without becoming a shield: only the
+    // catalog's shield flag counts for it, so a tempered charm or focus keeps its role.
+    if (obj.shield === true || ((obj.armor || 0) > 0 && !obj.temper)) return 'shield';
     return 'none';
   }
   return 'none';

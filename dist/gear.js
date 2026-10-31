@@ -1,5 +1,6 @@
 // Pure equipment and crafting rules. Item ids are save-format identifiers.
 import { currentChapter, chapterUnlocked } from './campaign.js';
+import { temperMaxTier, temperFields, temperCost, temperReferenceLevel, validTemper, isTemperSlot, TEMPER_MIN_TIER, TEMPER_MIN_REALNESS } from './growth.js';
 export const SLOTS = Object.freeze({
   weapon: 'Main hand', offhand: 'Second hand', head: 'Head', body: 'Body', hands: 'Hands',
   feet: 'Feet', accessory: 'Accessory', accessory2: 'Accessory 2', relic: 'Relic', relic2: 'Relic 2', relic3: 'Relic 3'
@@ -513,8 +514,12 @@ function spend(s,cost){s.coins-=cost.coins||0;for(const [m,n]of Object.entries(c
 function makeCost(coins=0,materials={}){return {coins,materials:{...materials}};}
 
 export function effectiveItem(s,id){
-  const base=getItem(s,id);if(!base)return null;
-  const item=clone(base),mod=s?.itemMods?.[id]||{};
+  const catalog=getItem(s,id);if(!catalog)return null;
+  const mod=s?.itemMods?.[id]||{};
+  // Tempering (design 50) replaces the stat fields with the post-story tier's values before upgrades and affixes stack on top.
+  const temper=validTemper(catalog,mod.temper);
+  const base=temper?{...catalog,...temperFields(catalog,temper)}:catalog;
+  const item=clone(base);
   const up=Math.max(0,Math.min(3,Number.isInteger(mod.upgrade)?mod.upgrade:0));
   const inc={base:0,armor:0,ward:0,spellBase:0};
   let upgradeStat=null;
@@ -530,7 +535,8 @@ export function effectiveItem(s,id){
   for(const kind of ['prefix','suffix']){const aff=(kind==='prefix'?PREFIXES:SUFFIXES)[mod[kind]];if(aff&&aff.slots.includes(base.slot)){bonuses.push(aff.bonus);affixIds[kind]=mod[kind];}}
   for(const bonus of bonuses){for(const key of ['base','armor','ward','spellBase'])item[key]=(item[key]||0)+(bonus[key]||0);for(const [stat,n]of Object.entries(bonus.stats||{})){item.stats={...item.stats,[stat]:(item.stats?.[stat]||0)+n};}}
   item.upgrade=up;item.prefix=affixIds.prefix;item.suffix=affixIds.suffix;
-  item.name=`${affixIds.prefix?`${PREFIXES[affixIds.prefix].name} `:''}${base.name}${affixIds.suffix?` ${SUFFIXES[affixIds.suffix].name}`:''}${up?` +${up}`:''}`;
+  if(temper)item.temper=temper;
+  item.name=`${affixIds.prefix?`${PREFIXES[affixIds.prefix].name} `:''}${base.name}${affixIds.suffix?` ${SUFFIXES[affixIds.suffix].name}`:''}${up?` +${up}`:''}${temper?` · Real T${temper}`:''}`;
   return item;
 }
 
@@ -614,7 +620,8 @@ function resaleValue(s,id){
   const item=getItem(s,id);if(!item)return 0;
   const base=baseResaleValue(item),up=Math.max(0,Math.min(3,Number.isInteger(s.itemMods?.[id]?.upgrade)?s.itemMods[id].upgrade:0));
   // Regional salvage receipts track local coin rewards, not exponential sticker prices.
-  // Upgrades return at most three extra coins, and affixes return no material value.
+  // Upgrades return at most three extra coins, and affixes and tempering (design 50) return nothing: the
+  // temper tier is deliberately not read here, so a tempered item sells for what its catalog item sells for.
   const craftCap=Object.hasOwn(CRAFT_SALE_CAPS,id)?CRAFT_SALE_CAPS[id]:Infinity;
   return Math.max(1,Math.min(base+up,craftCap));
 }
@@ -649,6 +656,29 @@ export function upgradePreview(s,id){
  return {allowed:!reason,reason,cost,before:pair.before,after:pair.after,level,cap:3};
 }
 export function upgradeItem(s,id){const p=upgradePreview(s,id);if(!p.allowed)return false;spend(s,p.cost);s.itemMods??={};s.itemMods[id]={...(s.itemMods[id]||{}),upgrade:p.level+1};return {id,upgrade:p.level+1};}
+/**
+ * Tempering (design 50): the workbench raises an owned weapon or armor piece to a post-story tier (26 and up) at
+ * Realness 1 or more. `targetTier` defaults to the highest tier the character's effective level allows; any tier from
+ * the next one up to that maximum can be chosen in one action. Coins only; the tempering is stored as itemMods[id].temper.
+ */
+export function temperPreview(s,id,targetTier=null){
+ const item=getItem(s,id),mod=s?.itemMods?.[id]||{},current=validTemper(item,mod.temper);
+ const maxTier=temperMaxTier(s),nextTier=Math.max(TEMPER_MIN_TIER,current+1);
+ const requested=targetTier==null?Math.max(maxTier,nextTier):targetTier,whole=Number.isSafeInteger(requested);
+ const target=whole?requested:nextTier;
+ // Cost is computed only up to the allowed tier so a huge requested tier cannot loop.
+ const costTarget=Math.min(target,Math.max(maxTier,nextTier));
+ const cost=makeCost(item&&isTemperSlot(item.slot)?temperCost(item.slot,current,costTarget):0);
+ const reason=!item?'Unknown item.':LOCKED(s)?'Equipment cannot be changed during a fight or delve.':!owned(s,id)?'You do not own this item.':(Number(s?.realness)||0)<TEMPER_MIN_REALNESS?'Tempering opens at Realness 1, after Becoming Real.':(!isTemperSlot(item.slot)||item.keepsake)?'Only weapons and armor can be tempered.':!whole?'Choose a whole tier.':target<TEMPER_MIN_TIER?`Tempering starts at Real T${TEMPER_MIN_TIER}.`:target<=current?`Already tempered to Real T${current}.`:target>maxTier?`Your effective level allows up to Real T${maxTier}. Real T${target} opens at effective level ${temperReferenceLevel(target)}.`:!costAffordable(s,cost)?'You cannot afford this tempering.':null;
+ const shown=target>current?target:nextTier;
+ const pair=item?statPreview(s,id,{...mod,temper:shown}):{before:null,after:null};
+ return {allowed:!reason,reason,cost,before:pair.before,after:pair.after,slot:item?.slot||null,current,target,maxTier,nextTier,firstTemper:current===0};
+}
+export function temperItem(s,id,targetTier=null){
+ const p=temperPreview(s,id,targetTier);if(!p.allowed)return false;
+ spend(s,p.cost);s.itemMods??={};s.itemMods[id]={...(s.itemMods[id]||{}),temper:p.target};
+ return {id,temper:p.target,from:p.current,coins:p.cost.coins};
+}
 function affixPreviewBase(s,id,kind,affixId){
  const item=ITEMS[id],list=kind==='prefix'?PREFIXES:kind==='suffix'?SUFFIXES:null,affix=list?.[affixId],mod=s?.itemMods?.[id]||{},slot=item?.slot;
  const cost=affixCost(item,affix);
@@ -667,6 +697,6 @@ export function normalizeGearState(s){
   for(const slot of SLOT_KEYS){const id=old[slot];if(ITEMS[id]&&!s.bag.includes(id))s.bag.push(id);}
   for(const slot of SLOT_KEYS){const id=old[slot],item=ITEMS[id];if(!item||!s.bag.includes(id)||!canFit(item,slot,s)||Object.values(gear).includes(id))continue;if(slot==='offhand'&&ITEMS[old.weapon]?.twoHanded)continue;if(item.twoHanded&&slot==='weapon')gear.offhand=null;gear[slot]=id;}
   s.gear=gear;
-  const mods={};for(const id of s.bag){const m=s.itemMods?.[id];if(!m||typeof m!=='object')continue;const next={upgrade:Number.isInteger(m.upgrade)?Math.max(0,Math.min(3,m.upgrade)):0};for(const kind of ['prefix','suffix']){const aff=(kind==='prefix'?PREFIXES:SUFFIXES)[m[kind]];if(aff&&aff.slots.includes(ITEMS[id].slot))next[kind]=m[kind];}mods[id]=next;}
+  const mods={};for(const id of s.bag){const m=s.itemMods?.[id];if(!m||typeof m!=='object')continue;const next={upgrade:Number.isInteger(m.upgrade)?Math.max(0,Math.min(3,m.upgrade)):0};/* A valid temper is never lowered, even above the current maximum; invalid or non-temperable values are dropped. */const temper=validTemper(ITEMS[id],m.temper);if(temper)next.temper=temper;for(const kind of ['prefix','suffix']){const aff=(kind==='prefix'?PREFIXES:SUFFIXES)[m[kind]];if(aff&&aff.slots.includes(ITEMS[id].slot))next[kind]=m[kind];}mods[id]=next;}
   s.itemMods=mods;return s;
 }
