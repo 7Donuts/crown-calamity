@@ -217,7 +217,7 @@ export function startChapterBoss(s,chapterId,now=Date.now()){
  const enemy=ENEMIES.find(row=>row.id===chapter.bossId);if(!enemy)return false;
  return beginEncounter(s,enemy,`chapterBoss:${chapterId}`,now);
 }
-export function intent(s){const f=s.fight;if(!f)return null;const e=fightEnemy(f),idx=f.round%e.pattern.length;let heavy=idx===e.heavy;let name=e.pattern[idx];if(e.id==='boss'&&f.hp/e.hp<.3){heavy=idx===2;name=heavy?'Emergency drain':idx===0?'Drum door open (armor down)':'Soap drawer open (ward down)';}if(e.id==='trial_real'&&f.hp/e.hp<.5){heavy=idx===2;name=heavy?'Final curtain':idx===0?'Second act (ward opens)':'Velvet surge';}return {name,heavy,interruptible:heavy,damage:Math.floor(e.damage*(heavy?2.15*(e.heavyMult||1):e.id==='scavenger'&&idx===0?.5:1)*RE.rattleMultiplier(f,strengthOf(s))),rattled:!!f.rattled,warded:e.id==='wisp'&&idx===0,guarded:e.id==='scavenger'&&idx===0};}
+export function intent(s){const f=s.fight;if(!f)return null;const e=fightEnemy(f),idx=f.round%e.pattern.length;let heavy=idx===e.heavy;let name=e.pattern[idx];if(e.id==='boss'&&f.hp/e.hp<.3){heavy=idx===2;name=heavy?'Emergency drain':idx===0?'Drum door open (armor down)':'Soap drawer open (ward down)';}if(e.id==='trial_real'&&f.hp/e.hp<.5){heavy=idx===2;name=heavy?'Final curtain':idx===0?'Second act (opening)':'Velvet surge';}return {name,heavy,interruptible:heavy,damage:Math.floor(e.damage*(heavy?2.15*(e.heavyMult||1):e.id==='scavenger'&&idx===0?.5:1)*RE.rattleMultiplier(f,strengthOf(s))),rattled:!!f.rattled,warded:e.id==='wisp'&&idx===0,guarded:e.id==='scavenger'&&idx===0};}
 export function hasFocus(s){return Object.values(s.gear).some(id=>effectiveItem(s,id)?.focus);}
 export function primaryActions(s){
  const weapon=effectiveItem(s,s.gear.weapon),equipped=new Set(s.equippedAbilities||[]),arcReady=equipped.has('arc')&&hasFocus(s);
@@ -463,7 +463,7 @@ export function loadSave(raw){
    const learned=new Set(s.learnedAbilities),equipped=new Set(s.equippedAbilities);
    if(learned.size!==s.learnedAbilities.length||equipped.size!==s.equippedAbilities.length||s.equippedAbilities.some(id=>!learned.has(id))||(s.passive!==null&&!learned.has(s.passive))||attunementUsed(s)>6)return null;
   }
-  const base=fresh(),out={...base,...s,version:s.version,stats,settings:{...base.settings,...s.settings}};delete out.rulesPreview;migrateLegacyProgression(out);out.version=VERSION;normalizeRecovery(out);out.points=Number.isInteger(out.points)&&out.points>=0?out.points:0;normalizeAbilities(out,{legacy:s.version<3});
+  const base=fresh(),out={...base,...s,version:s.version,stats,settings:{...base.settings,...s.settings}};delete out.rulesPreview;/* Migration decisions read the raw import: fresh() defaults must not mask absent markers. */if(!Object.hasOwn(s,'relicEchoV2'))delete out.relicEchoV2;if(!Array.isArray(s.relicSockets))delete out.relicSockets;migrateLegacyProgression(out);out.version=VERSION;normalizeRecovery(out);out.points=Number.isInteger(out.points)&&out.points>=0?out.points:0;normalizeAbilities(out,{legacy:s.version<3});
   if(attunementUsed(out)>6)return null;
   out.equipmentMisses=Number.isInteger(out.equipmentMisses)?clamp(out.equipmentMisses,0,5):0;
   if(typeof out.settings.lastHunt!=='string'||!ENEMIES.some(e=>e.id!=='boss'&&e.id===out.settings.lastHunt))delete out.settings.lastHunt;

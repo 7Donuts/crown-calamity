@@ -89,7 +89,7 @@ export function stockComparison(state,id,targetSlot=null){
   const rows=[...itemFields.map(([key,label])=>({label,before:old?.[key]||0,after:item[key]||0})),...Object.entries(G.ATTRS).map(([key,[label]])=>({label,before:old?.stats?.[key]||0,after:item.stats?.[key]||0}))].filter(row=>row.before||row.after);
   const scaling=i=>({heavy:'Might',precision:'Finesse',spell:'Intellect'})[i?.channel]||'—';
   if(item.slot==='weapon')rows.unshift({label:'Attack scaling',before:scaling(old),after:scaling(item)});
-  const target=G.ENEMIES.find(e=>e.id===(state.fight?.enemy||state.settings?.inspectTarget))||G.ENEMIES[0];
+  const target=(state.fight&&G.fightEnemy(state.fight))||G.ENEMIES.find(e=>e.id===state.settings?.inspectTarget)||G.ENEMIES[0];
   const attack=after?{target:target.name,before:G.actionProfile(state,'attack',target.id).average,after:G.actionProfile(trial,'attack',target.id).average}:null;
   return {item,old,selected,slots,blockedOffhand,changes,rows,attack,preview:G.buyPreview(state,id),removesOffhand:!!(item.twoHanded&&state.gear.offhand)};
 }

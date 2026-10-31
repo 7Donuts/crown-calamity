@@ -83,6 +83,7 @@ test('Buy & Equip charges the new catalog price as one atomic purchase', () => {
   assert.deepEqual(denied, before, 'rejected purchase changes no coins, bag, or equipment');
 });
 
+const withoutFreeMoves = sockets => sockets.map(({ freeMoves, ...rest }) => rest);
 test('current-main save keeps owned expensive gear, resources, paid mods and roster without repricing refunds', () => {
   const { base, oldPrices, save, roster } = CURRENT_MAIN_FIXTURE;
   assert.equal(base, '1e36a24d914fdf02cf3db22c7fc0aba353ff4172');
@@ -99,7 +100,9 @@ test('current-main save keeps owned expensive gear, resources, paid mods and ros
     assert.deepEqual(loaded[key], save[key], `${key} remains unchanged after import`);
   }
   assert.deepEqual(loaded.gear, { ...save.gear, relic3: null }, 'gear remains unchanged after import with locked relic3');
-  assert.deepEqual(loaded.relicSockets, save.relicSockets, 'paid relic licenses and socket state remain intact');
+  // Pre-Spec-49 saves keep every paid license and gain the one-time per-license free move (the migration now really runs).
+  assert.deepEqual(withoutFreeMoves(loaded.relicSockets), save.relicSockets, 'paid relic licenses and socket state remain intact');
+  assert.ok(loaded.relicSockets.every(socket => Object.keys(socket.copiesPaid).every(id => socket.freeMoves?.[id] === true)), 'each existing license gets one free move');
   assert.equal(loaded.coins, 42017, 'lower current catalog prices issue no refund');
 
   const loadedRoster = C.loadRoster(JSON.stringify(roster));
@@ -113,7 +116,7 @@ test('current-main save keeps owned expensive gear, resources, paid mods and ros
       assert.deepEqual(imported.state[key], original.state[key], `${original.id} ${key} remains unchanged`);
     }
     assert.deepEqual(imported.state.gear, { ...original.state.gear, relic3: null }, `${original.id} gear remains unchanged`);
-    assert.deepEqual(imported.state.relicSockets, original.state.relicSockets, `${original.id} paid licenses remain intact`);
+    assert.deepEqual(withoutFreeMoves(imported.state.relicSockets), original.state.relicSockets, `${original.id} paid licenses remain intact`);
   }
 });
 

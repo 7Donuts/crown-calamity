@@ -203,7 +203,7 @@ test('relic ranks upgrade with chapter materials and coins, capped at Rank 3, an
 test('echo dormancy and goodwill freeMove lifecycle', () => {
   const s = state({
     gear: { relic: 'signet' },
-    relicSockets: [{ unlocked: true, relicId: 'signet', copiesPaid: { signet: 1 }, freeMoveClaimed: false }]
+    relicSockets: [{ unlocked: true, relicId: 'signet', copiesPaid: { signet: 1 } }, { unlocked: true }]
   });
   assert.equal(relicSlots(s)[0].dormant, false);
   assert.equal(relicSlots(s)[0].freeMove, true);
@@ -218,13 +218,27 @@ test('echo dormancy and goodwill freeMove lifecycle', () => {
 
   s.bag.push('seal');
   s.gear.relic2 = 'seal';
+  // The goodwill flag belongs to the signet license only; it does not make a different relic free.
   const preview = attuneRelicPreview(s, 0, 'seal');
-  assert.equal(preview.freeMove, true);
-  assert.equal(preview.coinCost, 0);
-
+  assert.equal(preview.freeMove, false);
+  assert.ok(preview.coinCost > 0, 'a new seal license is paid even at a socket that holds a free-move license');
   const coinsBefore = s.coins;
   assert.equal(attuneRelic(s, 0, 'seal').ok, true);
-  assert.equal(s.coins, coinsBefore, 'free move waived fee');
+  assert.equal(s.coins, coinsBefore - preview.coinCost);
+  assert.equal(relicSlots(s)[0].freeMove, true, 'the signet license keeps its free move');
+  assert.equal(s.relicSockets[0].copiesPaid.signet, 1, 'signet license stays paid');
+
+  // Moving the signet license to the other loop is free and relocates (not duplicates) it.
+  const move = attuneRelicPreview(s, 1, 'signet');
+  assert.equal(move.freeMove, true);
+  assert.equal(move.coinCost, 0);
+  assert.equal(move.moveFrom, 0);
+  const afterSeal = s.coins;
+  assert.equal(attuneRelic(s, 1, 'signet').ok, true);
+  assert.equal(s.coins, afterSeal);
+  assert.equal(s.relicSockets[0].copiesPaid.signet, undefined, 'license left its old loop');
+  assert.equal(s.relicSockets[1].copiesPaid.signet, 1);
   assert.equal(relicSlots(s)[0].freeMove, false);
-  assert.equal(s.relicSockets[0].freeMove, undefined);
+  assert.equal(relicSlots(s)[1].freeMove, false, 'the one-time flag is spent');
+  assert.equal(s.relicSockets[0].freeMoves, undefined);
 });
