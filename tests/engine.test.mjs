@@ -177,3 +177,71 @@ test('exchange feedback describes actual player criticals and heavy incoming dam
  assert.equal(result.critical,true);assert.equal(result.heavy,true);assert.equal(result.incoming,hp-s.hp);assert.ok(result.damage>0);assert.equal(result.healed,0);assert.equal(s.totalExchanges,1);assert.equal(calls,3,'the feedback exposes existing calculations and draws no new randomness');
  const snapshot=JSON.stringify(s);const blocked=G.exchange(s,'attack',()=>{throw new Error('No roll during cooldown');},1001);assert.equal(blocked.ok,false);assert.equal(JSON.stringify(s),snapshot);
 });
+
+test('loadSave deletes rulesPreview so campaign saves can never activate lab flags (Trap 7)',()=>{
+ const s=G.createCharacter({name:'PreviewHero',kit:'breaker'});
+ const rawWithPreview=JSON.stringify({...s,rulesPreview:{twoHands:true,unapprovedFlag:true}});
+ const loaded=G.loadSave(rawWithPreview);
+ assert.ok(loaded);
+ assert.equal(loaded.rulesPreview,undefined,'loadSave must delete rulesPreview completely');
+});
+
+test('two hands equipment rules only allow offhand weapons/menders when rulesPreview.twoHands is active',()=>{
+ const s=G.createCharacter({name:'DualWielder',kit:'breaker'});
+ s.bag.push('blade','mender_kit','pike');
+ assert.equal(G.slotChoices(s,'blade').includes('offhand'),false);
+ assert.equal(G.equip(s,'blade','offhand'),false);
+ assert.equal(G.equip(s,'mender_kit','offhand'),false);
+
+ s.rulesPreview={twoHands:true};
+ assert.equal(G.slotChoices(s,'blade').includes('offhand'),true);
+ assert.equal(G.equip(s,'blade','offhand'),true);
+ assert.equal(s.gear.weapon,'sword');
+ assert.equal(s.gear.offhand,'blade');
+
+ assert.equal(G.equip(s,'mender_kit','offhand'),true);
+ assert.equal(s.gear.offhand,'mender_kit');
+
+ assert.equal(G.equip(s,'pike','weapon'),true);
+ assert.equal(s.gear.weapon,'pike');
+ assert.equal(s.gear.offhand,null,'two-handed weapon empties second hand');
+ assert.equal(G.slotChoices(s,'blade').includes('offhand'),false);
+ assert.equal(G.equip(s,'blade','offhand'),false);
+});
+
+test('two hands combat exchanges apply 35% physical offhand hit, 30% focus hit, and mender heals under rulesPreview.twoHands',()=>{
+ const s=G.createCharacter({name:'CombatPair',kit:'breaker'});
+ s.rulesPreview={twoHands:true};
+ s.bag.push('blade','rod','mender_kit','shield');
+
+ s.gear.weapon='sword';
+ s.gear.offhand='blade';
+ assert.ok(G.startFight(s,'rats'));
+ s.fight.hp=1000;
+ const attackRes=G.exchange(s,'attack',()=>0.5,1000);
+ assert.equal(attackRes.ok,true);
+ assert.ok(attackRes.damage>0,'main hand damage');
+ assert.ok(attackRes.offhandDamage>0,'second hand damage');
+ assert.ok(attackRes.offhandDamageApplied>0,'second hand applied damage');
+ assert.ok(attackRes.offhandDamage<attackRes.damage,'offhand damage is a 35% fraction');
+
+ s.gear.offhand='rod';
+ const prof=G.actionProfile(s,'attack','rats');
+ assert.equal(prof.secondHand,'focus');
+ assert.equal(prof.offhand.channel,'arcane');
+
+ s.gear.offhand='mender_kit';
+ const totals=G.totals(s);
+ s.hp=totals.hp-40;
+ const menderStrike=G.exchange(s,'attack',()=>0.5,2000);
+ assert.ok(menderStrike.mendHealed>0,'mend on strike');
+ assert.equal(menderStrike.offhandDamage,0,'mender deals no damage');
+
+ s.hp=totals.hp-40;
+ const recRes=G.exchange(s,'recover',()=>0.5,3000);
+ assert.ok(recRes.mendHealed>0,'mend on recover');
+
+ s.hp=totals.hp;
+ const fullRes=G.exchange(s,'attack',()=>0.5,4000);
+ assert.equal(fullRes.mendHealed,0,'no heal when at full health');
+});

@@ -3,8 +3,8 @@ import * as G from '../dist/engine.js';
 import * as Lab from '../dist/lab.js';
 
 {
-  assert.equal(Lab.LAB_SCENARIOS.length,9);
-  for(const id of ['fresh_intro_goal','routine_repetition','heavy_telegraph','build_equipment','return_orientation','longer_level_pacing','night_shift','level_cap_progress','bounty_board'])assert.ok(Lab.LAB_SCENARIOS.some(s=>s.id===id));
+  assert.equal(Lab.LAB_SCENARIOS.length,10);
+  for(const id of ['fresh_intro_goal','routine_repetition','heavy_telegraph','build_equipment','return_orientation','longer_level_pacing','night_shift','level_cap_progress','bounty_board','two_hands'])assert.ok(Lab.LAB_SCENARIOS.some(s=>s.id===id));
   assert.equal(Lab.createLabSession({scenarioId:'missing'}),null);
   const a=Lab.createLabSession({scenarioId:'fresh_intro_goal',seed:'same'});
   const b=Lab.createLabSession({scenarioId:'fresh_intro_goal',seed:'same'});
@@ -174,6 +174,75 @@ import * as Lab from '../dist/lab.js';
   const report=Lab.labSummary(defeat);
   assert.equal(report.counters.damageAttempted,0);
   assert.equal(report.counters.damageUnreportedActions,1);
+}
+
+{
+  const s=Lab.createLabSession({scenarioId:'two_hands',seed:42});
+  assert.ok(s,'two_hands session created');
+  assert.equal(s.character.rulesPreview?.twoHands,true,'rulesPreview.twoHands active in two_hands lab');
+  assert.equal(s.activePreset,'weapon_shield');
+  assert.equal(s.character.gear.weapon,'sword');
+  assert.equal(s.character.gear.offhand,'shield');
+
+  // Verify all four presets switch cleanly
+  assert.equal(Lab.labApplyPreset(s,'weapon_weapon').ok,true);
+  assert.equal(s.activePreset,'weapon_weapon');
+  assert.equal(s.character.gear.offhand,'blade');
+
+  assert.equal(Lab.labApplyPreset(s,'focus_shield').ok,true);
+  assert.equal(s.activePreset,'focus_shield');
+  assert.equal(s.character.gear.weapon,'rod');
+  assert.equal(s.character.gear.offhand,'shield');
+
+  assert.equal(Lab.labApplyPreset(s,'weapon_mender').ok,true);
+  assert.equal(s.activePreset,'weapon_mender');
+  assert.equal(s.character.gear.weapon,'sword');
+  assert.equal(s.character.gear.offhand,'mender_kit');
+
+  // Switch to weapon_weapon and fight
+  Lab.labApplyPreset(s,'weapon_weapon');
+  assert.equal(Lab.startLabHunt(s,'rats',0),true);
+  // Presets cannot switch during an active fight
+  assert.equal(Lab.labApplyPreset(s,'weapon_shield').ok,false);
+
+  // Attack with two weapons: main hand hit + second hand hit
+  const prof=G.actionProfile(s.character,'attack','rats');
+  assert.ok(prof.offhand,'profile includes offhand hit calculation');
+  assert.equal(prof.secondHand,'weapon');
+  assert.ok(prof.offhand.normal>0);
+
+  const res=Lab.labAction(s,'attack',0);
+  assert.equal(res.ok,true);
+  assert.ok(Number.isFinite(res.damage),'main hand damage reported');
+  assert.ok(Number.isFinite(res.offhandDamage),'second hand damage reported');
+  assert.ok(res.offhandDamage>0,'second hand weapon dealt damage');
+
+  // Switch to weapon_mender and test mending
+  const sm=Lab.createLabSession({scenarioId:'two_hands',seed:99});
+  Lab.labApplyPreset(sm,'weapon_mender');
+  const totals=G.totals(sm.character);
+  sm.character.hp=totals.hp-50; // set missing health
+
+  Lab.startLabHunt(sm,'rats',0);
+  const menderProf=G.actionProfile(sm.character,'attack','rats');
+  assert.equal(menderProf.secondHand,'mender');
+  assert.ok(menderProf.mend>0,'mend preview is positive');
+
+  const attackRes=Lab.labAction(sm,'attack',0);
+  assert.equal(attackRes.ok,true);
+  assert.ok(attackRes.mendHealed>0,'mend on strike healed player');
+  assert.equal(attackRes.offhandDamage,0,'mender deals no strike damage');
+
+  // Recover with mender: adds full mend to recovery
+  sm.character.hp=totals.hp-50;
+  const recRes=Lab.labAction(sm,'recover',650);
+  assert.equal(recRes.ok,true);
+  assert.ok(recRes.mendHealed>0,'recover with mender restored health');
+
+  // Mend cap: cannot heal above missing health or 6% max HP
+  sm.character.hp=totals.hp;
+  const fullHpRes=Lab.labAction(sm,'attack',1300);
+  assert.equal(fullHpRes.mendHealed,0,'full health character receives 0 mend');
 }
 
 console.log('playtest lab tests passed');

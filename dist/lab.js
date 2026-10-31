@@ -13,7 +13,15 @@ export const LAB_SCENARIOS=Object.freeze([
   Object.freeze({id:'longer_level_pacing',title:'Level progress · does the next reward feel clear?',question:'Does continuous progress toward the next level reward feel clear?',task:'Start midway through level 1, complete exchanges, and check whether the XP and next level reward are understandable.',kit:'bulwark',level:1,xp:150,enemy:'rats',description:'A level 1 fixture halfway to its next level, created through the production progression rules.'}),
   Object.freeze({id:'night_shift',title:'Night Shift · push your luck, then clock out',question:'Is the choice between one more hunt and clocking out clear, and does the unfiled Overtime bonus feel fair to risk?',task:'Clock in, choose each hunt yourself, watch the unfiled receipts, pick a boon at a Midnight snack check-in, then clock out or keep going.',kit:'bulwark',level:3,enemy:'scavenger',shifts:true,description:'A level 3 fixture for the opt-in Night Shift prototype (Shifts). Base rewards stay immediate; Overtime adds an unfiled bonus that a defeat forfeits. Nothing is timed and nothing accrues while you are away. Every hunt and every action is your own tap.'}),
   Object.freeze({id:'level_cap_progress',title:'Level cap · understand the final reward',question:'Is it clear that level 50 has no further XP bar or attribute-point reward?',task:'Review the capped level display, start one Chapter 5 hunt, and confirm there are no partial-level counters.',kit:'bulwark',level:50,enemy:'fair_mask',earnedChapterReceipts:['municipal_works','arcade_finale','garden_finale','attic_finale'],description:'A fresh level 50 fixture in a synthetic Chapter 5 region. Its four claimed prior finale receipts are isolated lab setup; no campaign save or campaign reward is changed.'}),
-  Object.freeze({id:'bounty_board',title:'Notice Board · pick what a bounty pays',question:'Does choosing between an experience-, coin- or material-led bounty feel like a real choice, and is the rotation clear?',task:'Read the three offers, accept one, win the hunts it names, then claim it. Try abandoning one to see that the board does not change.',kit:'duelist',level:3,enemy:'scavenger',bounties:true,description:'A level 3 fixture for the Notice Board bounty prototype. Bounties never expire and nothing accrues while you are away; only wins after you accept count, and each bounty pays its bonus once on top of normal rewards.'})
+  Object.freeze({id:'bounty_board',title:'Notice Board · pick what a bounty pays',question:'Does choosing between an experience-, coin- or material-led bounty feel like a real choice, and is the rotation clear?',task:'Read the three offers, accept one, win the hunts it names, then claim it. Try abandoning one to see that the board does not change.',kit:'duelist',level:3,enemy:'scavenger',bounties:true,description:'A level 3 fixture for the Notice Board bounty prototype. Bounties never expire and nothing accrues while you are away; only wins after you accept count, and each bounty pays its bonus once on top of normal rewards.'}),
+  Object.freeze({id:'two_hands',title:'Two hands · choose what each hand holds',question:'Is the second hand’s contribution clear before the tap, and does play stay as fast on a phone?',task:'Try the four pairings (Weapon+Shield, Weapon+Weapon, Focus+Shield, Weapon+Mender), watch the exchange feedback, and compare damage and healing.',kit:'breaker',level:1,enemy:'rats',twoHands:true,description:'A Playtest Lab prototype testing the approved two-hands, one-verb rule. Four pairings let you compare weapon and shield, dual-wielding, casting with a shield, and a mender off-hand. Every tap remains one exchange.'})
+]);
+
+export const TWO_HANDS_PRESETS = Object.freeze([
+  Object.freeze({id:'weapon_shield',name:'Weapon + Shield',desc:'Lost-Button Bonker + Pot-Lid Button Shield. Steady defense and Guardstrike.',weapon:'sword',offhand:'shield'}),
+  Object.freeze({id:'weapon_weapon',name:'Weapon + Weapon',desc:'Lost-Button Bonker + Darning-Needle Blade. 35% second-hand physical strike.',weapon:'sword',offhand:'blade'}),
+  Object.freeze({id:'focus_shield',name:'Focus + Shield',desc:'Squeaker-Glass Wand + Pot-Lid Button Shield. Spellcasting with Wardcast protection.',weapon:'rod',offhand:'shield'}),
+  Object.freeze({id:'weapon_mender',name:'Weapon + Mender',desc:'Lost-Button Bonker + Thread-and-Thimble Kit. Flat mend on strike, useful Guard, and Recover.',weapon:'sword',offhand:'mender_kit'})
 ]);
 
 const SCENARIO_BY_ID=new Map(LAB_SCENARIOS.map(s=>[s.id,s]));
@@ -53,6 +61,15 @@ function makeFixture(scenario,kit){
     G.claimContract(character,'proof_of_trouble');G.acceptContract(character,'drainage_inspection');
     recordStoryEvent(character,{type:'victory',enemy:'rats',eventId:'lab-handoff-drainage-1'});
   }
+  if(scenario.id==='two_hands'){
+    character.rulesPreview={twoHands:true};
+    character.gear.weapon='sword';
+    character.gear.offhand='shield';
+    character.bag=['sword','shield','blade','rod','mender_kit','coat'];
+    if(!character.learnedAbilities.includes('driving'))character.learnedAbilities.push('driving');
+    if(!character.equippedAbilities.includes('driving'))character.equippedAbilities.push('driving');
+    if(!character.learnedAbilities.includes('arc'))character.learnedAbilities.push('arc');
+  }
   G.restore(character);
   return character;
 }
@@ -72,9 +89,23 @@ export function createLabSession({scenarioId,kit,seed=1}={}){
   const scenario=SCENARIO_BY_ID.get(scenarioId);if(!scenario)return null;
   const selectedKit=kit||scenario.kit,selectedSeed=(typeof seed==='string'&&seed.length<=128)||(typeof seed==='number'&&Number.isFinite(seed))?seed:1,character=makeFixture(scenario,selectedKit);if(!character)return null;
   const session={scenarioId,scenario:clone(scenario),seed:selectedSeed,kit:selectedKit,character,events:[],rounds:0,playerInputs:0,deniedInputs:0,
-    encountersStarted:0,victories:0,defeats:0,withdrawals:0,damageAttempted:0,damageUnreportedActions:0,hpLost:0,hpRestored:0,manaSpent:0,staminaSpent:0,shopActions:{attempted:0,completed:0},notes:'',starting:baseMetrics(character),shift:null,shiftsStarted:0,shiftHistory:[],shiftLedger:[],bountyBoard:scenario.bounties?Bounties.freshBoard():null};
+    encountersStarted:0,victories:0,defeats:0,withdrawals:0,damageAttempted:0,damageUnreportedActions:0,hpLost:0,hpRestored:0,manaSpent:0,staminaSpent:0,shopActions:{attempted:0,completed:0},notes:'',starting:baseMetrics(character),shift:null,shiftsStarted:0,shiftHistory:[],shiftLedger:[],bountyBoard:scenario.bounties?Bounties.freshBoard():null,activePreset:scenario.id==='two_hands'?'weapon_shield':null};
   Object.defineProperty(session,'rng',{value:seededRng(selectedSeed),writable:true,enumerable:false});
   return session;
+}
+
+export function labApplyPreset(session,presetId,now){
+  if(!session?.character||session.scenarioId!=='two_hands')return {ok:false,reason:'Not a two-hands scenario'};
+  if(session.character.fight)return {ok:false,reason:'Cannot change preset during encounter'};
+  const preset=TWO_HANDS_PRESETS.find(p=>p.id===presetId);
+  if(!preset)return {ok:false,reason:'Unknown preset'};
+  input(session);const at=timestamp(session,now);
+  session.character.gear.weapon=preset.weapon;
+  session.character.gear.offhand=preset.offhand;
+  G.capResources(session.character);
+  session.activePreset=presetId;
+  event(session,{type:'preset-applied',presetId,name:preset.name,weapon:preset.weapon,offhand:preset.offhand,...(at!==undefined?{at}:{})});
+  return {ok:true,presetId,name:preset.name};
 }
 
 export function startLabHunt(session,enemyId,now){

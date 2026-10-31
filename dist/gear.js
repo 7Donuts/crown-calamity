@@ -443,17 +443,50 @@ export const SUFFIXES = Object.freeze({
   of_the_tide:{id:'of_the_tide',name:'of the Tide',slots:['body','feet','accessory','relic','offhand'],bonus:{ward:2},cost:{coins:28,materials:{'Floodglass':1}}}
 });
 
+export const LAB_MENDERS = Object.freeze({
+  mender_kit: Object.freeze({
+    id: 'mender_kit',
+    name: 'Thread-and-Thimble Kit',
+    slot: 'offhand',
+    kind: 'mender',
+    mend: 6,
+    stats: { wil: 1 },
+    level: 1,
+    price: 15,
+    desc: 'A stuffie-scale sewing kit. Restores Stuffing on strike, useful Guard, and Recover.'
+  }),
+  bandage_roll: Object.freeze({
+    id: 'bandage_roll',
+    name: 'Bandage Roll',
+    slot: 'offhand',
+    kind: 'mender',
+    mend: 10,
+    stats: { wil: 2 },
+    level: 5,
+    price: 45,
+    desc: 'Clean linen bandages for serious stuffing repairs.'
+  })
+});
+
 const LOCKED = s => !!(s?.fight || s?.delve);
 const noCost = () => ({coins:0,materials:{}});
 const clone = x => JSON.parse(JSON.stringify(x));
-function canFit(item,slot){return !!item && slotsFor(item).includes(slot);}
+function getItem(s, id) { return ITEMS[id] || (s?.rulesPreview?.twoHands ? LAB_MENDERS[id] : null) || null; }
+function canFit(item,slot,s){
+  if (!item) return false;
+  if (s?.rulesPreview?.twoHands) {
+    if (slot === 'offhand' && item.slot === 'weapon' && !item.twoHanded) return true;
+    if (slot === 'offhand' && item.kind === 'mender') return true;
+  }
+  return slotsFor(item).includes(slot);
+}
 function owned(s,id){return Array.isArray(s?.bag)&&s.bag.includes(id);}
 function costAffordable(s,cost){return (s.coins||0)>=(cost.coins||0)&&Object.entries(cost.materials||{}).every(([m,n])=>(s.materials?.[m]||0)>=n);}
 function spend(s,cost){s.coins-=cost.coins||0;for(const [m,n]of Object.entries(cost.materials||{}))s.materials[m]-=n;}
 function makeCost(coins=0,materials={}){return {coins,materials:{...materials}};}
 
 export function effectiveItem(s,id){
-  const base=ITEMS[id];if(!base)return null;
+  const base=getItem(s,id);if(!base)return null;
   const item=clone(base),mod=s?.itemMods?.[id]||{};
   const up=Math.max(0,Math.min(3,Number.isInteger(mod.upgrade)?mod.upgrade:0));
   const inc={base:0,armor:0,ward:0,spellBase:0};
@@ -481,15 +514,20 @@ export function weaponRankScore(s,id){
   return item.base+1.8*(item.stats?.[primary]||0);
 }
 export function isStrictWeaponDowngrade(s,candidateId,currentId=s?.gear?.weapon){
-  const candidate=ITEMS[candidateId],current=ITEMS[currentId];
+  const candidate=getItem(s,candidateId),current=getItem(s,currentId);
   if(!candidate||!current||candidate.slot!=='weapon'||current.slot!=='weapon'||candidate.channel!==current.channel)return false;
   return weaponRankScore(s,candidateId)<weaponRankScore(s,currentId);
 }
 
 export function resolveItem(s,id){const item=effectiveItem(s,id);return item?{...item,owned:owned(s,id),levelRequired:null,usable:true}:null;}
 export function slotChoices(s,id){
-  const item=ITEMS[id];if(!item||!owned(s,id))return [];
-  return slotsFor(item).filter(slot=>!(slot==='offhand'&&ITEMS[s.gear?.weapon]?.twoHanded));
+  const item=getItem(s,id);if(!item||!owned(s,id))return [];
+  let slots=slotsFor(item);
+  if(s?.rulesPreview?.twoHands){
+    if(item.slot==='weapon'&&!item.twoHanded&&!slots.includes('offhand'))slots=[...slots,'offhand'];
+    if(item.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
+  }
+  return slots.filter(slot=>!(slot==='offhand'&&getItem(s,s.gear?.weapon)?.twoHanded));
 }
 export function unequipReason(s,slot){
   if(LOCKED(s))return 'Equipment cannot be changed during a fight or delve.';
@@ -499,16 +537,18 @@ export function unequipReason(s,slot){
   return null;
 }
 export function equipItem(s,id,targetSlot){
-  const item=ITEMS[id];if(LOCKED(s)||!item||!owned(s,id))return false;
+  const item=getItem(s,id);if(LOCKED(s)||!item||!owned(s,id))return false;
   const slots=slotChoices(s,id);const slot=targetSlot||slots.find(x=>!s.gear?.[x])||slots[0];
-  if(!slot||!slots.includes(slot)||!canFit(item,slot))return false;
+  if(!slot||!slots.includes(slot)||!canFit(item,slot,s))return false;
   const gear={...(s.gear||{})};for(const key of SLOT_KEYS)if(gear[key]===id)gear[key]=null;
   if(item.twoHanded)gear.offhand=null;
-  gear[slot]=id;s.gear=gear;return true;
+  gear[slot]=id;
+  if(slot==='offhand'&&!gear.weapon)return false;
+  s.gear=gear;return true;
 }
 export function unequipItem(s,slot){if(unequipReason(s,slot))return false;s.gear[slot]=null;return true;}
 export function buyPreview(s,id){
-  const item=ITEMS[id],price=item?.price||0;
+  const item=getItem(s,id),price=item?.price||0;
   const chapterRequired=item?.chapter||null;
   let reason=!item?'Unknown item.':LOCKED(s)?'Shopping is unavailable during a fight or delve.':!chapterUnlocked(s,chapterRequired)?`This stock opens in Chapter ${chapterRequired}.`:!price?'This item is not stocked by the outfitter.':owned(s,id)?'You already own this item.':(s.coins||0)<price?'You cannot afford this item.':null;
   return {allowed:!reason,reason,price,item:item?clone(item):null,tier:item?.tier||null,tierLabel:item?`Tier ${item.tier}`:null,chapterRequired,chapterCurrent:currentChapter(s),levelRequired:null};
@@ -518,11 +558,16 @@ export function buyItem(s,id){
   s.coins-=p.price;s.bag.push(id);if(s.itemMods)delete s.itemMods[id];return true;
 }
 export function buyAndEquipPreview(s,id,targetSlot){
-  const purchase=buyPreview(s,id), item=ITEMS[id];
-  let slots=slotsFor(item).filter(slot=>!(slot==='offhand'&&ITEMS[s?.gear?.weapon]?.twoHanded));
+  const purchase=buyPreview(s,id), item=getItem(s,id);
+  let slots=slotsFor(item);
+  if(s?.rulesPreview?.twoHands){
+    if(item?.slot==='weapon'&&!item?.twoHanded&&!slots.includes('offhand'))slots=[...slots,'offhand'];
+    if(item?.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
+  }
+  slots=slots.filter(slot=>!(slot==='offhand'&&getItem(s,s?.gear?.weapon)?.twoHanded));
   const selectedSlot=targetSlot||slots.find(slot=>!s?.gear?.[slot])||slots[0]||null;
   let reason=purchase.reason;
-  if(!reason&&(!selectedSlot||!slots.includes(selectedSlot)||!canFit(item,selectedSlot)))reason='That item cannot be equipped in the selected slot.';
+  if(!reason&&(!selectedSlot||!slots.includes(selectedSlot)||!canFit(item,selectedSlot,s)))reason='That item cannot be equipped in the selected slot.';
   return {...purchase,allowed:!reason,reason,slotChoices:slots,selectedSlot,willReplace:selectedSlot?s?.gear?.[selectedSlot]||null:null,willClearOffhand:!!(item?.twoHanded&&s?.gear?.offhand)};
 }
 export function buyAndEquipItem(s,id,targetSlot){
@@ -530,10 +575,12 @@ export function buyAndEquipItem(s,id,targetSlot){
   if(!p.allowed||!Array.isArray(s.bag))return false;
   // Validate the eventual loadout before changing coins or ownership.
   if(LOCKED(s))return false;
+  const item=getItem(s,id);
   const gear={...(s.gear||{})};
-  if(ITEMS[id].twoHanded)gear.offhand=null;
+  if(item?.twoHanded)gear.offhand=null;
   for(const key of SLOT_KEYS)if(gear[key]===id)gear[key]=null;
   gear[p.selectedSlot]=id;
+  if(p.selectedSlot==='offhand'&&!gear.weapon)return false;
   s.coins-=p.price;s.bag.push(id);if(s.itemMods)delete s.itemMods[id];s.gear=gear;
   return {id,slot:p.selectedSlot,price:p.price,clearedOffhand:p.willClearOffhand};
 }
@@ -541,7 +588,7 @@ const CHAPTER_SALVAGE = Object.freeze([0,3,6,11,20,38]);
 function baseResaleValue(item){return CHAPTER_SALVAGE[item.chapter]||3;}
 const CRAFT_SALE_CAPS = Object.freeze({cap:8,boots:18,gateShield:24,seal:1,band:1});
 function resaleValue(s,id){
-  const item=ITEMS[id];if(!item)return 0;
+  const item=getItem(s,id);if(!item)return 0;
   const base=baseResaleValue(item),up=Math.max(0,Math.min(3,Number.isInteger(s.itemMods?.[id]?.upgrade)?s.itemMods[id].upgrade:0));
   // Regional salvage receipts track local coin rewards, not exponential sticker prices.
   // Upgrades return at most three extra coins, and affixes return no material value.
@@ -549,7 +596,7 @@ function resaleValue(s,id){
   return Math.max(1,Math.min(base+up,craftCap));
 }
 export function sellPreview(s,id){
-  const item=ITEMS[id],price=item?resaleValue(s,id):0;
+  const item=getItem(s,id),price=item?resaleValue(s,id):0;
   const equipped=Object.values(s?.gear||{}).includes(id);
   const activeEcho=s?.relicSockets?.some(socket=>socket?.unlocked&&socket.relicId===id);
   let reason=!item?'Unknown item.':LOCKED(s)?'Selling is unavailable during a fight or delve.':!owned(s,id)?'You do not own this item.':equipped?'Unequip this item before selling it.':activeEcho?'Clear all active echo sockets using this relic before selling it.':item.keepsake?'Finale keepsakes stay with you; they cannot be sold.':null;
