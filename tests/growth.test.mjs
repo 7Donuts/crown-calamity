@@ -80,7 +80,7 @@ test('advanceXP uses Realness XP curve while keeping displayed level capped at 5
 test('postStoryEnemyStats, postStoryRewards, postStoryGearPrice, and postStoryWeaponBase follow Spec 50 curves', () => {
   const e60 = postStoryEnemyStats(60, 'balanced');
   assert.equal(e60.hp, 400 + 38 * 60);
-  assert.equal(e60.damage, Math.round(40 + 2.6 * 60));
+  assert.equal(e60.damage, Math.round(40 + 2.7 * 60));
   assert.equal(e60.heavyDamage, Math.round(e60.damage * 2.15));
   assert.equal(e60.armor, Math.round((20 + 1.8 * 60) * 0.5));
   assert.equal(e60.ward, Math.round((20 + 1.8 * 60) * 0.5));

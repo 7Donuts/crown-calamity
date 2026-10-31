@@ -16,7 +16,7 @@ const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'realness', 'realnessChoices
 const NON_MEASURED = [];
 const round1 = n => Math.round(n * 10) / 10;
 
-function prepare(fixture) {
+export function prepare(fixture) {
   if (!fixture || typeof fixture !== 'object' || Array.isArray(fixture)) throw new Error('Fixture must be an object');
   for (const key of Object.keys(fixture)) {
     if (['ranks', 'weaponRanks', 'raceTraits'].includes(key)) {
@@ -234,6 +234,8 @@ function newLogRows(current, previous) {
 function restoreFixedProgression(s, fixed) {
   s.level = fixed.level; s.xp = fixed.xp; s.points = fixed.points;
   s.stats = structuredClone(fixed.stats); s.mastery = structuredClone(fixed.mastery);
+  // Weapon-family marks earned inside a chain must not lift a fixed-build row (a rank 0 build would reach rank 1 after four wins).
+  if (fixed.weaponMastery) s.weaponMastery = structuredClone(fixed.weaponMastery);
 }
 
 /** Simulate independent seeded chains. Resources and relic carry persist within each chain; only each seed begins full. */
@@ -254,7 +256,7 @@ export function runCell(options) {
   const enemyRow = postStoryEnemyObj || G.ENEMIES.find(row => row.id === enemy), isBoss = !postStoryEnemyObj && G.CHAPTERS.find(row => row.id === chapter).bossId === enemy;
   if (isBoss && chainLength > 1) throw new Error('Scripted bosses are one-time chapter encounters; set chainLength to 1');
   if (G.effectiveLevel(template) < enemyRow.level - 2) throw new Error(`Fixture level ${G.effectiveLevel(template)} is too low for ${enemy} (requires ${enemyRow.level - 2})`);
-  const fixed = { level: template.level, realness: template.realness || 0, xp: template.xp, points: template.points, stats: structuredClone(template.stats), mastery: structuredClone(template.mastery) };
+  const fixed = { level: template.level, realness: template.realness || 0, xp: template.xp, points: template.points, stats: structuredClone(template.stats), mastery: structuredClone(template.mastery), weaponMastery: template.weaponMastery ? structuredClone(template.weaponMastery) : undefined };
   const fixedTotals = G.totals(template);
   const sums = { wins: 0, defeats: 0, encounters: 0, chainsCompleted: 0, exchanges: 0, expected: 0, attempted: 0, landed: 0, overkill: 0, netLost: 0, lostShare: 0, maxLostShare: 0, mend: 0, relics: 0, menders: 0, traits: 0, starts: { hp: 0, mp: 0, sp: 0, pluck: 0 }, actions: Object.create(null) };
   for (const seed of seeds) {

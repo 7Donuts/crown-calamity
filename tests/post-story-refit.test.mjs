@@ -96,18 +96,18 @@ test('previews and the HUD show the scaled Fang rate, and overkill still never h
   assert.match(RE.ENGINE_EFFECTS.feltFang.desc, /45%/);
 });
 
-test('post-story enemy curves follow the G3-4 fit (design 50)', () => {
+test('post-story enemy curves follow the G3-4 fit (design 50), with the hit slope raised in G3-5', () => {
   assert.equal(Growth.POST_STORY_HP_BASE, 400);
   assert.equal(Growth.POST_STORY_HP_PER_E, 38);
   assert.equal(Growth.POST_STORY_HIT_BASE, 40);
-  assert.equal(Growth.POST_STORY_HIT_PER_E, 2.6);
+  assert.equal(Growth.POST_STORY_HIT_PER_E, 2.7);
   assert.equal(Growth.POST_STORY_DEFENSE_BASE, 20);
   assert.equal(Growth.POST_STORY_DEFENSE_PER_E, 1.8);
-  const expected = { 60: [196, 2680, 128], 100: [300, 4200, 200], 200: [560, 8000, 380], 500: [1340, 19400, 920] }; // hit, hp, armor + ward (20 + 1.8E)
+  const expected = { 60: [202, 2680, 128], 100: [310, 4200, 200], 200: [580, 8000, 380], 500: [1390, 19400, 920] }; // hit (40 + 2.7E), hp, armor + ward (20 + 1.8E)
   for (const [E, [damage, hp, defense]] of Object.entries(expected)) {
     const e = Growth.postStoryEnemyStats(Number(E), 'balanced');
     assert.equal(e.damage, damage, `hit at E${E}`);
-    assert.equal(e.damage, Math.round(40 + 2.6 * Number(E)));
+    assert.equal(e.damage, Math.round(40 + 2.7 * Number(E)));
     assert.equal(e.hp, hp, `hp at E${E}`);
     assert.equal(e.hp, 400 + 38 * Number(E));
     assert.equal(e.armor + e.ward, defense, `armor plus ward at E${E}`);

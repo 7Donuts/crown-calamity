@@ -85,7 +85,7 @@ function weaponMasteryPanel(){
   const needed=G.marksNeededForRank?G.marksNeededForRank(entry.rank):(4+3*entry.rank);
   const capped=entry.rank>=cap,traitName=def?.trait||f;
   const mainDesc=def?.desc||'',offDesc=def?.offhandDesc||'';
-  const summary=G.familyTraitSummary?G.familyTraitSummary(f,entry.rank):'';
+  const summary=G.familyTraitSummary?G.familyTraitSummary(f,entry.rank,state):'';
   return `<article class="ability-card ${isEq?'equipped':''}"><div class="ability-card-head"><div><span class="eyebrow">${esc(G.WEAPON_FAMILIES[f].name.toUpperCase())}${isAff?' · AFFINITY':''}</span><h3>${esc(traitName)}</h3></div><div class="ability-state">${isEq?'<span class="active-character-tag">Equipped</span> ':''}<span class="hunt-level">RANK ${entry.rank} / ${cap}</span></div></div><p>${esc(summary||mainDesc)}</p><p class="tiny muted">Second hand: ${esc(offDesc)}</p><div class="ability-meta"><span>${capped?`Rank ${entry.rank} · Cap reached`:`${entry.marks} / ${needed} marks to Rank ${entry.rank+1}`}</span>${isAff?`<small class="gold">Affinity cap ${cap}</small>`:`<small>Cap ${cap}</small>`}</div></article>`;
  }).join('')}</div></section>`;
 }
