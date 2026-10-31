@@ -135,6 +135,64 @@ export function traitEffectMultiplier(rank) {
   return 1 + 0.20 * r;
 }
 
+// ---------------- Post-story trait scaling (D18, design 47) ----------------
+// Through effective level 50 every number below is exactly the story value. Above it, a family's trait is multiplied by a
+// Realness factor so affinity and mastery stay worth building toward (D15), and each mastery rank also lends the family an
+// Edge: a bounded damage bonus on that family's strikes. The Edge exists because three traits cannot carry power by
+// themselves: armor is only about 10% of a post-story hit (Crush can add at most about 11% damage), crits add 25% (Pinpoint)
+// and Mend is never a damaging verb (Lullaby). Everything is deterministic and bounded, so Realness 1000 cannot overflow.
+export const TRAIT_STORY_LEVEL = 50;
+export const TRAIT_REALNESS_PER_RANK = 0.25;
+export const TRAIT_REALNESS_MAX = 3;
+// Edge = channel scale x MAX x rank / (rank + HALF): zero at rank 0; spell 24% at rank 4 and 28% at rank 12, heavy 70% and precision 80% of that; never above MAX.
+export const FAMILY_EDGE_MAX = 0.30;
+export const FAMILY_EDGE_HALF_RANK = 1;
+// Physical strikes already gain from ability mastery (Driving Strike, Guardstrike and Sidestep add 0.05 of weapon coefficient
+// a rank, about 9% at rank 3) while Arc Bolt's rank adds a flat 4 a rank (under 1%), so the spell channel takes the full Edge and
+// the physical channels less: heavy 70% (its Crush trait adds up to about 5% damage on top) and precision 80% (Pinpoint adds
+// about 1%). Without this a rank 3 Breaker or Duelist would sit near invulnerable beside the Caster.
+export const FAMILY_EDGE_CHANNEL_SCALE = Object.freeze({ heavy: 0.7, precision: 0.8, spell: 1 });
+// Hard ceilings for a post-story trait value (applied only once a Realness factor above 1 is in play).
+export const TRAIT_POST_STORY_CAPS = Object.freeze({
+  steady: 0.30, warding: 0.30, crush: 0.5, reach: 1, reachDisrupt: 0.15, pinpoint: 0.25,
+  riposte: 15, unpick: 0.75, quickCast: 10, lullaby: 1, sceptersBarrier: 40
+});
+
+/** Realness factor on every trait: 1 through effective level 50, then 1 + 0.25 per Realness rank up to 3. */
+export function traitRealnessMultiplier(s) {
+  if (!s || typeof s !== 'object') return 1;
+  if (!(effectiveLevel(s) > TRAIT_STORY_LEVEL)) return 1;
+  const r = Math.max(0, Math.floor(Number(s.realness) || 0));
+  return 1 + TRAIT_REALNESS_PER_RANK * Math.min(r, Math.round((TRAIT_REALNESS_MAX - 1) / TRAIT_REALNESS_PER_RANK));
+}
+
+/** Rank multiplier times the Realness factor: the number every trait function below multiplies its rank 0 value by. */
+export function traitPower(s, rank) {
+  return traitEffectMultiplier(rank) * traitRealnessMultiplier(s);
+}
+
+/** Bounds a post-story trait value; story values pass through untouched. */
+function boundTrait(s, value, cap) {
+  return traitRealnessMultiplier(s) > 1 ? Math.min(cap, value) : value;
+}
+
+/** The Edge a mastery rank earns past the story in a channel (spell by default): saturating in rank, so it is bounded by FAMILY_EDGE_MAX at any Realness. */
+export function familyEdgeForRank(rank, channel = 'spell') {
+  const r = Math.max(0, Number.isFinite(rank) ? rank : 0);
+  const scale = FAMILY_EDGE_CHANNEL_SCALE[channel] ?? 1;
+  return scale * FAMILY_EDGE_MAX * r / (r + FAMILY_EDGE_HALF_RANK);
+}
+
+/**
+ * Family Edge: a damage bonus on the main-hand family's strikes past the story, by mastery rank (Realness raises the rank cap,
+ * so deeper Realness reaches higher Edge). Rank 0 and every story fight get exactly 0, so an untrained weapon and Chapters 1
+ * to 5 are unchanged and the unconditional base damage of families at one tier is still the spec 47 within-8% figure.
+ */
+export function familyEdgeBonus(s, mainItem) {
+  if (!(traitRealnessMultiplier(s) > 1) || !mainItem?.family) return 0;
+  return familyEdgeForRank(weaponMasteryRank(s, mainItem.family), mainItem.channel || WEAPON_FAMILY_TRAITS[mainItem.family]?.channel);
+}
+
 export const RACE_AFFINITIES = Object.freeze({
   bear: 'clubs',
   wolf: 'mauls',
@@ -275,7 +333,7 @@ export function awardWeaponMasteryOnVictory(s, enemy, startLevel, fight) {
 export function steadyGuardBonus(s, mainItem, guarded) {
   if (!guarded || mainItem?.family !== 'clubs') return 0;
   const rank = weaponMasteryRank(s, 'clubs');
-  return 0.10 * traitEffectMultiplier(rank);
+  return boundTrait(s, 0.10 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.steady);
 }
 
 /**
@@ -284,7 +342,7 @@ export function steadyGuardBonus(s, mainItem, guarded) {
 export function wardingGuardBonus(s, mainItem, key) {
   if (key !== 'combo' || mainItem?.family !== 'scepters') return 0;
   const rank = weaponMasteryRank(s, 'scepters');
-  return 0.10 * traitEffectMultiplier(rank);
+  return boundTrait(s, 0.10 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.warding);
 }
 
 /**
@@ -293,7 +351,7 @@ export function wardingGuardBonus(s, mainItem, key) {
 export function crushArmorIgnore(s, mainItem) {
   if (mainItem?.family !== 'mauls') return 0;
   const rank = weaponMasteryRank(s, 'mauls');
-  return 0.15 * traitEffectMultiplier(rank);
+  return boundTrait(s, 0.15 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.crush);
 }
 
 /**
@@ -303,7 +361,7 @@ export function reachDamageBonus(s, mainItem, fight) {
   if (mainItem?.family !== 'spears') return 0;
   if (fight?.damagingActionUsed) return 0;
   const rank = weaponMasteryRank(s, 'spears');
-  return 0.20 * traitEffectMultiplier(rank);
+  return boundTrait(s, 0.20 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.reach);
 }
 
 /**
@@ -312,7 +370,7 @@ export function reachDamageBonus(s, mainItem, fight) {
 export function reachDisruptHitBonus(s, mainItem, key) {
   if (key !== 'disrupt' || mainItem?.family !== 'spears') return 0;
   const rank = weaponMasteryRank(s, 'spears');
-  return 0.05 * traitEffectMultiplier(rank);
+  return boundTrait(s, 0.05 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.reachDisrupt);
 }
 
 /**
@@ -321,7 +379,7 @@ export function reachDisruptHitBonus(s, mainItem, key) {
 export function pinpointCritBonus(s, item) {
   if (item?.family !== 'needles') return 0;
   const rank = weaponMasteryRank(s, 'needles');
-  return 0.03 * traitEffectMultiplier(rank);
+  return boundTrait(s, 0.03 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.pinpoint);
 }
 
 /**
@@ -330,7 +388,7 @@ export function pinpointCritBonus(s, item) {
 export function riposteStaminaRestore(s, mainItem, key) {
   if (key !== 'sidestep' || mainItem?.family !== 'foils') return 0;
   const rank = weaponMasteryRank(s, 'foils');
-  return Math.floor(3 * traitEffectMultiplier(rank));
+  return Math.floor(boundTrait(s, 3 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.riposte));
 }
 
 /**
@@ -339,7 +397,7 @@ export function riposteStaminaRestore(s, mainItem, key) {
 export function unpickDamageBonus(s, mainItem, isExposedOrOpening) {
   if (!isExposedOrOpening || mainItem?.family !== 'stilettos') return 0;
   const rank = weaponMasteryRank(s, 'stilettos');
-  return 0.10 * traitEffectMultiplier(rank);
+  return boundTrait(s, 0.10 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.unpick);
 }
 
 /**
@@ -348,7 +406,7 @@ export function unpickDamageBonus(s, mainItem, isExposedOrOpening) {
 export function quickCastCostReduction(s, mainItem, key) {
   if (key !== 'cast' || mainItem?.family !== 'wands') return 0;
   const rank = weaponMasteryRank(s, 'wands');
-  return Math.max(1, Math.floor(2 * traitEffectMultiplier(rank)));
+  return Math.max(1, Math.floor(boundTrait(s, 2 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.quickCast)));
 }
 
 /**
@@ -357,7 +415,7 @@ export function quickCastCostReduction(s, mainItem, key) {
 export function lullabyMendBonus(s, mainItem) {
   if (mainItem?.family !== 'batons') return 0;
   const rank = weaponMasteryRank(s, 'batons');
-  return 0.15 * traitEffectMultiplier(rank);
+  return boundTrait(s, 0.15 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.lullaby);
 }
 
 /**
@@ -366,7 +424,7 @@ export function lullabyMendBonus(s, mainItem) {
 export function sceptersSecondHandBarrier(s, offItem) {
   if (offItem?.family !== 'scepters') return 0;
   const rank = weaponMasteryRank(s, 'scepters');
-  return Math.floor(4 * traitEffectMultiplier(rank));
+  return Math.floor(boundTrait(s, 4 * traitPower(s, rank), TRAIT_POST_STORY_CAPS.sceptersBarrier));
 }
 
 /**
@@ -380,7 +438,7 @@ export function batonsSecondHandMend(s, offItem, mode = 'strike', t = null) {
   if (offItem?.family !== 'batons') return 0;
   const rank = weaponMasteryRank(s, 'batons');
   const wil = t?.wil ?? s?.stats?.wil ?? 8;
-  const mult = traitEffectMultiplier(rank);
+  const mult = traitPower(s, rank);
   const rawMend = Math.floor(0.5 * wil * 1.25 * mult);
   const el = effectiveLevel(s);
   const maxHp = t?.hp ?? s?.totals?.hp ?? Math.floor(200 + 12 * el + 10 * (s?.stats?.vit || 8) + 4 * wil);
@@ -440,22 +498,32 @@ export function foilsRiposteProfile(s, offItem, enemy, t, intent, extraMultiplie
 export const weaponMasteryMultiplier = traitEffectMultiplier;
 export const marksForNextRank = marksNeededForRank;
 
-export function familyTraitSummary(familyOrItem, rankOrState = 0) {
+/**
+ * One-line trait text. `stateForScale` (optional) is the character: when it is past the story the line shows the real,
+ * Realness-scaled numbers (and the Edge), the same values the exchange and the build inspector use.
+ */
+export function familyTraitSummary(familyOrItem, rankOrState = 0, stateForScale = null) {
   const familyId = typeof familyOrItem === 'string' ? familyOrItem : familyOrItem?.family;
   const rank = typeof rankOrState === 'number' ? rankOrState : (rankOrState ? weaponMasteryRank(rankOrState, familyId) : 0);
+  const scaleState = stateForScale || (rankOrState && typeof rankOrState === 'object' ? rankOrState : null);
   const meta = WEAPON_FAMILY_TRAITS[familyId];
   if (!meta) return '';
-  const mult = traitEffectMultiplier(rank);
+  const realness = traitRealnessMultiplier(scaleState);
+  const mult = traitEffectMultiplier(rank) * realness;
+  const cap = key => (realness > 1 ? TRAIT_POST_STORY_CAPS[key] : Infinity);
+  const pct = (base, key) => Math.round(Math.min(cap(key), base * mult) * 100);
+  const edge = realness > 1 ? Math.round(familyEdgeForRank(rank, meta.channel) * 100) : 0;
+  const tail = edge > 0 ? `; Edge +${edge}% damage` : '';
   switch (familyId) {
-    case 'clubs': return `${meta.trait}: Guard prevents +${Math.round(meta.baseEffect * mult * 100)}%`;
-    case 'mauls': return `${meta.trait}: ignores ${Math.round(meta.baseEffect * mult * 100)}% armor`;
-    case 'spears': return `${meta.trait}: first strike +${Math.round(meta.baseEffect * mult * 100)}%, Disrupt +${Math.round(meta.disruptHitBonus * mult * 100)}pp`;
-    case 'needles': return `${meta.trait}: +${Math.round(meta.baseEffect * mult * 100)}pp crit`;
-    case 'foils': return `${meta.trait}: Sidestep +${Math.floor(meta.baseEffect * mult)} Bounce`;
-    case 'stilettos': return `${meta.trait}: exposed/Opening +${Math.round(meta.baseEffect * mult * 100)}%`;
-    case 'wands': return `${meta.trait}: Arc Bolt -${Math.max(1, Math.floor(meta.baseEffect * mult))} Sparkle`;
-    case 'scepters': return `${meta.trait}: Wardcast prevents +${Math.round(meta.baseEffect * mult * 100)}%`;
-    case 'batons': return `${meta.trait}: Mend +${Math.round(meta.baseEffect * mult * 100)}%`;
+    case 'clubs': return `${meta.trait}: Guard prevents +${pct(meta.baseEffect, 'steady')}%${tail}`;
+    case 'mauls': return `${meta.trait}: ignores ${pct(meta.baseEffect, 'crush')}% armor${tail}`;
+    case 'spears': return `${meta.trait}: first strike +${pct(meta.baseEffect, 'reach')}%, Disrupt +${pct(meta.disruptHitBonus, 'reachDisrupt')}pp${tail}`;
+    case 'needles': return `${meta.trait}: +${pct(meta.baseEffect, 'pinpoint')}pp crit${tail}`;
+    case 'foils': return `${meta.trait}: Sidestep +${Math.floor(Math.min(cap('riposte'), meta.baseEffect * mult))} Bounce${tail}`;
+    case 'stilettos': return `${meta.trait}: exposed/Opening +${pct(meta.baseEffect, 'unpick')}%${tail}`;
+    case 'wands': return `${meta.trait}: Arc Bolt -${Math.max(1, Math.floor(Math.min(cap('quickCast'), meta.baseEffect * mult)))} Sparkle${tail}`;
+    case 'scepters': return `${meta.trait}: Wardcast prevents +${pct(meta.baseEffect, 'warding')}%${tail}`;
+    case 'batons': return `${meta.trait}: Mend +${pct(meta.baseEffect, 'lullaby')}%${tail}`;
     default: return `${meta.trait}: ${meta.summary}`;
   }
 }
@@ -465,5 +533,5 @@ export function familyTraitLine(item, state = null) {
   const rank = state ? weaponMasteryRank(state, item.family) : 0;
   const meta = WEAPON_FAMILY_TRAITS[item.family];
   if (!meta) return '';
-  return `${meta.name} · ${familyTraitSummary(item.family, rank)}`;
+  return `${meta.name} · ${familyTraitSummary(item.family, rank, state)}`;
 }

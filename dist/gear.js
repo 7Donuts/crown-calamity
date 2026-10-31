@@ -34,7 +34,7 @@ export const ITEMS = Object.freeze({
   floodrod:{id:'floodrod',name:'Squeaker-Core Scepter',slot:'weapon',base:26,channel:'spell',focus:true,stats:{int:2},level:6,price:95,desc:'26 weapon base, +2 Intellect. Focus-tagged; works with a shield.'},
   ironsword:{id:'ironsword',name:'Toy-Guard Club',slot:'weapon',base:30,channel:'heavy',stats:{mig:2},level:6,price:95,desc:'30 weapon base, +2 Might. A persuasive argument.'},
   glassblade:{id:'glassblade',name:'Squeaker-Glass Stiletto',slot:'weapon',base:30,channel:'precision',stats:{fin:2},level:6,price:95,desc:'30 weapon base, +2 Finesse. Precision has its rewards.'},
-  seal:{id:'seal',name:'Keeper’s Brass Button',slot:'relic',relicEffect:'seal',level:8,desc:'First useful Guard each fight grants a barrier of 4% of maximum Stuffing and gains 1 Pluck.'},
+  seal:{id:'seal',name:'Keeper’s Brass Button',slot:'relic',relicEffect:'seal',level:8,desc:'First useful Guard each fight grants a barrier of 4% of maximum Stuffing and gains 1 Pluck. Past the story (effective level above 50) it gains 7 more Pluck.'},
   penny:{id:'penny',name:'Lucky Copper Button',slot:'accessory',stats:{lck:4},level:1,price:25,desc:'+4 Luck. A little fortune, worn on purpose. Improves critical and equipment-drop chances.'},
   band:{id:'band',name:'Squeaker-Glass Ring',slot:'accessory',ward:8,stats:{int:2},level:8,desc:'+2 Intellect, +8 ward. Quietly, reliably magical.'},
   cap:{id:'cap',name:'Ledger-Scrap Bonnet',slot:'head',armor:4,stats:{ins:1},level:1,price:22,desc:'+1 Insight, +4 armor. Keeps the paperwork out of your eyes.'},
@@ -124,7 +124,7 @@ export const ITEMS = Object.freeze({
   // Relic engine pieces (design 43). Effects and numbers live in relic-engine.js.
   feltFang:{id:'feltFang',name:'Felt Vampire Fang',slot:'relic',relicEffect:'feltFang',stats:{vit:1},desc:'Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held. Past the story (effective level above 50) it restores 45% as much.'},
   darnedPatch:{id:'darnedPatch',name:'Darned-Elbow Patch',slot:'relic',relicEffect:'darnedPatch',armor:4,desc:'Each enemy attack that hurts you gains 1 Pluck, or 2 from a heavy.'},
-  cocoaThimble:{id:'cocoaThimble',name:'Hot-Cocoa Thimble',slot:'relic',relicEffect:'cocoaThimble',stats:{wil:1},desc:'When you win, each Pluck you still hold restores 4% of maximum Stuffing (health).'},
+  cocoaThimble:{id:'cocoaThimble',name:'Hot-Cocoa Thimble',slot:'relic',relicEffect:'cocoaThimble',stats:{wil:1},desc:'When you win, each Pluck you still hold restores 4% of maximum Stuffing (health). Past the story (effective level above 50) it restores 2.4% per Pluck.'},
   picnicTin:{id:'picnicTin',name:'Picnic-Tin Keepsake',slot:'relic',relicEffect:'picnicTin',stats:{ins:1},desc:'When you win, up to 3 Pluck carry into your next fight. Resting, defeat or Go still empties the tin.'},
   // Finale keepsakes: granted once by each chapter's finale claim, never stocked or sold.
   lintLocket:{id:'lintLocket',name:'Lint-Trap Locket',slot:'relic',relicEffect:'lintLocket',keepsake:true,finale:1,stats:{vit:2},desc:'Each useful Guard gains 2 Pluck, or 3 against a heavy. The first heavy you guard each fight sends 25% of the damage you prevented back at the enemy.'},

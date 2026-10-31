@@ -61,6 +61,36 @@ Traits never add an exchange, never act outside the chosen exchange, and use no 
 
 Mastery is deterministic: no random mastery rolls (Shimlar's random rolls are not copied). Marks are never lost.
 
+## Post-story scaling (D18, G3-5)
+
+Status: owner decision D18, 31 October 2026, implemented in `dist/weapon-families.js` (pure functions of the character), with the numbers fitted in G3-5 (`handoffs/reports/g3-5-build-power.md`, `scripts/sim-g3-5-build-power.mjs`). **Through effective level 50 every number in this spec is unchanged**; the rules below apply only above it, so Chapters 1 to 5 and the Becoming Real trials at the story's top behave exactly as before.
+
+**Why.** Past the story the enemy curves grow with effective level while a trait stays a small fixed percentage. G3-4 measured weapon mastery (rank 3 plus Realness) worth only 0 to 4 points of lost Stuffing per fight, so affinity and mastery did not feel powerful (D15). Two of the traits cannot carry power on their own however large their number: enemy armor is only about 10% of a post-story hit (`mitigation` is `armor / (armor + 100 + 8 × level)`, flat in level), so Crush can add at most about 11% damage even if it ignored all of it; Pinpoint's critical hit adds 25% damage and the crit chance is clamped at 25%; and Lullaby improves Mend, a verb that is not a damaging action.
+
+**Rule 1: the Realness factor.** Every trait value in the traits table is multiplied by `1 + 0.25 × R`, capped at 3 (reached at Realness 8), on top of the rank multiplier (`traitRealnessMultiplier`, `traitPower`). The rank 0 value scales too, so an untrained weapon is a little better at Realness 2; a rank 12 trait at Realness 9 is 3.4 × 3 = 10.2 times its rank 0 value before the caps below. Foil Bounce, Quick-cast Sparkle and the Scepter barrier are floored to whole numbers as before.
+
+**Rule 2: hard caps.** Each post-story trait value is capped, so no Realness or rank can trivialize a fight or overflow (`TRAIT_POST_STORY_CAPS`; checked at Realness 20 with ranks up to 10^6):
+
+| Trait | Cap past the story | Why |
+| --- | --- | --- |
+| Steady, Warding | +30 percentage points of prevention | Heavy guard 65% plus 30 points exceeds the 85% prevention ceiling, which still decides (`TELEGRAPH.preventionCeiling`, unchanged) |
+| Crush | 50% of armor | Worth at most about +5.5% damage at a balanced enemy |
+| Reach | +100% first strike; Disrupt hit +15 points | The hit chance clamp of 98% still applies |
+| Pinpoint | +25 points of crit | The critical chance clamp is 25% |
+| Riposte | +15 Bounce per Sidestep | |
+| Unpick | +75% | |
+| Quick-cast | 10 less Sparkle | A cost never goes below 0 |
+| Lullaby | +100% Mend | |
+| Scepter barrier (second hand) | +40 barrier | The 30% of maximum Stuffing barrier cap still applies |
+
+**Rule 3: the Edge.** Above effective level 50 the family in the main hand also gives its strikes (and the spell, for a spell weapon) a damage Edge by mastery rank: `0.30 × rank / (rank + 1)`, so +15% at rank 1, +24% at rank 4 and +28% at rank 12, and at most +30% at any rank (`familyEdgeForRank`, `familyEdgeBonus`). Heavy weapons take 70% of it (+17% at rank 4) and precision weapons 80% (+19%) because Driving Strike, Guardstrike and Sidestep already gain 0.05 of coefficient a rank from ability mastery (about 9% at rank 3), Crush adds up to about 5% damage on top for the heavy channel and Pinpoint about 1% for precision, while Arc Bolt's rank adds a flat 4 a rank (under 1%) and Lullaby adds no damage (`FAMILY_EDGE_CHANNEL_SCALE`). Rank 0 gets exactly 0, so an untrained weapon is unchanged, and the Edge is a multiplier on raw damage inside `actionProfile`, so combat and the build inspector read the same number. It rewards the rank cap (affinity reaches rank 5 + R, others 3 + R), so deeper Realness and the race affinity both lead to a higher Edge. It adds no exchange, rolls nothing and acts only inside the chosen exchange.
+
+**Spec 47 within-8% check.** The Edge is the same function of rank for every family in a channel and is zero at rank 0, so the unconditional base damage of families at one tier is untouched. Measured with real tempered weapons at one tier, trait conditions unmet (Reach's first strike used): the largest spread inside a channel is 5.3% for the heavy channel at Realness 9 and 20 (Crush's capped +5.5% over Clubs and Spears, and the two-handed spear premium), 3.5% for precision and 0% for spell; `tests/post-story-build-power.test.mjs` checks Realness 1, 9 and 20 at ranks 0, 4, 12 and 25.
+
+**UI.** The shop row, bag card and mastery panel show the scaled trait line and the Edge ("Crush: ignores 34% armor; Edge +17% damage"), from the same functions as the exchange.
+
+**Balance gates (G3-5).** Strong build without relics (affinity family at rank 3 + R, rank 3 primary ability, tempered on-level) against the ordinary build: at least 25% less lost Stuffing or 20% fewer exchanges in a fresh fight, at E60, E100, E200 and E500 for the Breaker, Duelist and Caster (design 50 gate 3).
+
 ## Data and saves
 
 - Item field: `family` on every weapon (catalog data, not saved).

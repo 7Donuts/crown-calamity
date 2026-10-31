@@ -27,7 +27,7 @@ Each keeps its current effect, rescaled under rule 3, and gains one hook. Every 
 | Relic | Current effect, rescaled | Pluck hook | Role | Limit and ceiling |
 | --- | --- | --- | --- | --- |
 | Brass-Stamp Ring (signet) | Recover restores 3% of maximum Sparkle extra | Recover while holding 0 Pluck gains 1 Pluck | Generator (starter) | Every Recover |
-| Keeper's Brass Button (seal) | First useful Guard each fight: barrier of 4% of maximum Stuffing | +1 Pluck when it triggers | Generator | Once per fight |
+| Keeper's Brass Button (seal) | First useful Guard each fight: barrier of 4% of maximum Stuffing | +1 Pluck when it triggers (+8 past the story, D20) | Generator | Once per fight |
 | Thread Spool of Second Chances | First useful Guard each fight restores 5% of maximum Bounce | +1 Pluck when it triggers | Generator | Once per fight |
 | Patchwork Heart | Victory restores 5% of missing Stuffing | +1% of missing Stuffing per Pluck held | Payoff | Once per fight; +8% at 8 Pluck |
 | Lucky Button | Victory grants 5% extra coins (existing minimum and cap) | +5% more when winning with 4 or more Pluck | Payoff | Once per fight; total bonus never above the existing 25% cap |
@@ -67,6 +67,8 @@ Rank 3 refinements for the engine relics:
 | Encore Ribbon | Damage ceiling +30% instead of +24% |
 
 The Fang past the story (D16): above effective level 50 its rate and per-exchange cap are multiplied by 0.45 (`FANG_POST_STORY_SCALE`, `fangScale`); through effective level 50 it is unchanged. Rank 3 raises the cap as before and the scale applies on top (13% becomes 5.85%). Design 43 has the evidence.
+
+The Hot-Cocoa Thimble and the Keeper's Brass Button past the story (D19, D20): above effective level 50 the Cocoa heals 0.6 times its rate per Pluck (`COCOA_POST_STORY_SCALE`, `cocoaScale`; rank 3 becomes 3% instead of 5%), and the Seal gains 7 more Pluck on its single first-useful-Guard trigger (`SEAL_POST_STORY_EXTRA_PLUCK`, `sealPluck`; rank 3 gives 2 + 7); through effective level 50 both are unchanged. The Seal stays once per fight, and echoes scale the trigger rather than repeat it. Design 43 has the evidence and the story-era barrier finding.
 
 The ten older relics use a generic refinement at rank 3: generators gain 1 more Pluck on their trigger; payoffs raise their ceiling by 25%.
 
@@ -108,7 +110,7 @@ One input, one exchange; no timers; deterministic; no profit loops (rank costs a
 
 - Re-run the design 43 sustain simulation with ranks 1 and 3: a rank 3 pair may cut net Stuffing lost per fight by up to a further 25% relative to rank 1, not more.
 - No single relic appears in the best pair for every enemy pattern.
-- Post-story: with real tempered gear, a planned pair that includes the Fang loses at least 8% of maximum Stuffing per won fight and takes 5 to 8 exchanges (design 50 balance gates; `scripts/sim-g3-4-refit.mjs`).
+- Post-story: with real tempered gear, every planned pair (Seal + Cocoa, Patch + Cocoa, Fang + Patch) loses 8% to 25% of maximum Stuffing per won fight in 5 to 8 exchanges for the Breaker, Duelist and Caster, and a strong build with its best pair loses at least 8% (design 50 balance gates; `scripts/sim-g3-5-build-power.mjs`).
 - Economy report: rank costs at each chapter take between one and three hours of that chapter's play at the documented input pace.
 
 ## Documents to update when shipped

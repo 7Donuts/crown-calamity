@@ -226,11 +226,25 @@ export function xpNeeded(level, realness = 0) {
 export const POST_STORY_HP_BASE = 400;
 export const POST_STORY_HP_PER_E = 38;
 export const POST_STORY_HIT_BASE = 40;
-export const POST_STORY_HIT_PER_E = 2.6;
+export const POST_STORY_HIT_PER_E = 2.7;
 export const POST_STORY_DEFENSE_BASE = 20;
 export const POST_STORY_DEFENSE_PER_E = 1.8;
 // Heavy hits are 2.15 times the ordinary hit (the engine telegraph applies the same factor itself; this feeds `heavyDamage`).
 export const POST_STORY_HEAVY_MULTIPLIER = 2.15;
+// A post-story victory returns this much Bounce (stamina), resolved inside the final exchange and capped at the maximum
+// (D21, design 32 and 50). Bounce costs are flat (Driving Strike 10, Guardstrike 12; about 65 to 70 a fight), so the restore
+// is a flat amount too, about one fight's worth: a share of the pool would refill a Realness 5 pool many times over and a
+// Realness 1 Breaker's 177-point pool far too little. Nothing happens through effective level 50.
+export const POST_STORY_VICTORY_BOUNCE = 60;
+export const POST_STORY_BOUNCE_LEVEL = 50;
+
+/** Bounce a victory restores before the cap at maximum: 0 through effective level 50, else POST_STORY_VICTORY_BOUNCE. */
+export function postStoryVictoryBounce(effectiveLevelInput, maxStamina) {
+  const E = Number(effectiveLevelInput);
+  const max = Math.floor(Number(maxStamina));
+  if (!(E > POST_STORY_BOUNCE_LEVEL) || !(max > 0)) return 0;
+  return POST_STORY_VICTORY_BOUNCE;
+}
 
 /**
  * Post-story enemy stat curve (Spec 50 curves table; fitted by the G3-4 simulation against real tempered gear).

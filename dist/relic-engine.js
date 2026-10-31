@@ -16,7 +16,16 @@ export const FANG_EXCHANGE_CAP = 0.10;
 // Past the story (effective level above 50) the Fang's rate and per-exchange cap are multiplied by this (D16, design 49).
 export const FANG_STORY_LEVEL = 50;
 export const FANG_POST_STORY_SCALE = 0.45;
+// Story and post-story boundary shared by the Fang, Cocoa and Seal rules below.
+export const RELIC_STORY_LEVEL = FANG_STORY_LEVEL;
 export const COCOA_PER_PLUCK = 0.04;
+// Past the story the Hot-Cocoa Thimble heals this share as much per Pluck (D19, design 43 and 49): 4% becomes 3%.
+export const COCOA_POST_STORY_SCALE = 0.6;
+// The Keeper's Brass Button past the story (D20, design 43 and 49). Through effective level 50 it is unchanged: a barrier of
+// 4% of maximum Stuffing and 1 Pluck (2 at rank 3), once per fight. Above it the same single trigger gains this many more
+// Pluck, which is what a kit without its own Pluck sources (the Caster, whose focus cannot block) needs to feed a payoff.
+export const SEAL_BASE_BARRIER = 0.04;
+export const SEAL_POST_STORY_EXTRA_PLUCK = 7;
 export const LOCKET_REFLECT = 0.25;
 export const RATTLE_REDUCTION = 0.30;
 export const RATTLE_REDUCTION_CAP = 0.45;
@@ -31,8 +40,8 @@ export const ENGINE_EFFECTS = Object.freeze({
     desc: 'Recover restores 3% of maximum Sparkle extra. Recover while holding 0 Pluck gains 1 Pluck.',
     trigger: 'Recover.', limit: 'Every Recover.', ceiling: '3% maximum Sparkle extra; 1 Pluck at 0 Pluck.' }),
   seal: Object.freeze({ name: 'Keeper’s Brass Button', role: 'generator', source: 'shop',
-    desc: 'First useful Guard each fight grants a barrier of 4% of maximum Stuffing and gains 1 Pluck.',
-    trigger: 'First useful Guard each fight.', limit: 'Once per fight.', ceiling: 'Within 30% maximum Stuffing barrier cap.' }),
+    desc: `First useful Guard each fight grants a barrier of 4% of maximum Stuffing and gains 1 Pluck. Past the story (effective level above ${FANG_STORY_LEVEL}) it gains ${SEAL_POST_STORY_EXTRA_PLUCK} more Pluck.`,
+    trigger: 'First useful Guard each fight.', limit: 'Once per fight.', ceiling: `Within 30% maximum Stuffing barrier cap; ${1 + SEAL_POST_STORY_EXTRA_PLUCK} Pluck past the story (${2 + SEAL_POST_STORY_EXTRA_PLUCK} at rank 3).` }),
   threadSpool: Object.freeze({ name: 'Thread Spool of Second Chances', role: 'generator', source: 'shop',
     desc: 'First useful Guard each fight restores 5% of maximum Bounce and gains 1 Pluck.',
     trigger: 'First useful Guard each fight.', limit: 'Once per fight.', ceiling: '5% of maximum Bounce.' }),
@@ -65,8 +74,8 @@ export const ENGINE_EFFECTS = Object.freeze({
     desc: 'Each enemy attack that hurts you gains 1 Pluck, or 2 from a heavy.',
     trigger: 'An enemy attack deals damage to you.', limit: 'Once per enemy response.', ceiling: '2 Pluck per exchange.' }),
   cocoaThimble: Object.freeze({ name: 'Hot-Cocoa Thimble', role: 'payoff', source: 'shop',
-    desc: 'When you win, each Pluck you still hold restores 4% of maximum Stuffing (health).',
-    trigger: 'Victory.', limit: 'Once per fight.', ceiling: `${Math.round(COCOA_PER_PLUCK * PLUCK_CAP * 100)}% of maximum Stuffing at ${PLUCK_CAP} Pluck.` }),
+    desc: `When you win, each Pluck you still hold restores 4% of maximum Stuffing (health). Past the story (effective level above ${FANG_STORY_LEVEL}) it restores ${Math.round(COCOA_PER_PLUCK * COCOA_POST_STORY_SCALE * 1000) / 10}% per Pluck.`,
+    trigger: 'Victory.', limit: 'Once per fight.', ceiling: `${Math.round(COCOA_PER_PLUCK * PLUCK_CAP * 100)}% of maximum Stuffing at ${PLUCK_CAP} Pluck (${Math.round(COCOA_PER_PLUCK * COCOA_POST_STORY_SCALE * PLUCK_CAP * 100)}% past the story).` }),
   picnicTin: Object.freeze({ name: 'Picnic-Tin Keepsake', role: 'payoff', source: 'shop',
     desc: `When you win, up to ${PLUCK_CARRY_CAP} Pluck carry into your next fight. Resting, defeat or Go still empties the tin.`,
     trigger: 'Victory; the carried Pluck arrives when you start your next fight.', limit: 'Once per fight.',
@@ -141,6 +150,22 @@ export function damageMultiplier(f, strength, rank) {
 /** Multiplier on the Fang's rate and per-exchange cap: 1 through the story (effective level 50), reduced past it (D16). */
 export function fangScale(effectiveLevel) {
   return Number(effectiveLevel) > FANG_STORY_LEVEL ? FANG_POST_STORY_SCALE : 1;
+}
+
+/** Multiplier on the Hot-Cocoa Thimble's heal per Pluck: 1 through the story (effective level 50), reduced past it (D19). */
+export function cocoaScale(effectiveLevel) {
+  return Number(effectiveLevel) > RELIC_STORY_LEVEL ? COCOA_POST_STORY_SCALE : 1;
+}
+
+/**
+ * The Pluck the Keeper's Brass Button gains on its first useful Guard of a fight: 1 (2 at rank 3) through effective level 50,
+ * SEAL_POST_STORY_EXTRA_PLUCK more past it. The barrier is not touched. Echoes scale the Pluck as they always did.
+ */
+export function sealPluck(strength, rank, effectiveLevel) {
+  const k = strength('seal');
+  if (!(k > 0)) return 0;
+  const past = Number(effectiveLevel) > RELIC_STORY_LEVEL;
+  return scaled((safeRank(rank, 'seal') >= 3 ? 2 : 1) + (past ? SEAL_POST_STORY_EXTRA_PLUCK : 0), k);
 }
 
 /** Fang lifesteal rate before the per-exchange cap, for previews and the hit hook. `effectiveLevel` is optional (story when absent). */
@@ -236,12 +261,12 @@ export function afterEnemyResponse(f, ctx, strength, notes, rank) {
   return { heal };
 }
 
-/** Victory: Cocoa heals from held Pluck, the Picnic Tin keeps some for the next fight. Neither spends Pluck. */
+/** Victory: Cocoa heals from held Pluck, the Picnic Tin keeps some for the next fight. Neither spends Pluck. `ctx`: { maxHp, effectiveLevel }. */
 export function onVictory(s, f, ctx, strength, notes, rank) {
   const cap = pluckCapFor(f);
   const pluck = clampInt(f?.pluck, 0, cap);
   const cocoa = strength('cocoaThimble');
-  const cocoaRate = safeRank(rank, 'cocoaThimble') >= 3 ? 0.05 : COCOA_PER_PLUCK;
+  const cocoaRate = (safeRank(rank, 'cocoaThimble') >= 3 ? 0.05 : COCOA_PER_PLUCK) * cocoaScale(ctx.effectiveLevel);
   const heal = cocoa > 0 && pluck > 0 ? Math.floor(ctx.maxHp * cocoaRate * pluck * cocoa) : 0;
   const tin = strength('picnicTin');
   const carryCap = safeRank(rank, 'picnicTin') >= 3 ? 4 : PLUCK_CARRY_CAP;
