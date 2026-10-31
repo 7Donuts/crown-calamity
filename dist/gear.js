@@ -1,7 +1,7 @@
 // Pure equipment and crafting rules. Item ids are save-format identifiers.
 import { currentChapter, chapterUnlocked } from './campaign.js';
 export const SLOTS = Object.freeze({
-  weapon: 'Weapon', offhand: 'Offhand', head: 'Head', body: 'Body', hands: 'Hands',
+  weapon: 'Main hand', offhand: 'Second hand', head: 'Head', body: 'Body', hands: 'Hands',
   feet: 'Feet', accessory: 'Accessory', accessory2: 'Accessory 2', relic: 'Relic', relic2: 'Relic 2'
 });
 const ACCESSORY_SLOTS = ['accessory', 'accessory2'];
@@ -26,7 +26,7 @@ export const ITEMS = Object.freeze({
   floodrod:{id:'floodrod',name:'Squeaker-Core Scepter',slot:'weapon',base:26,channel:'spell',focus:true,stats:{int:2},level:6,price:95,desc:'26 weapon base, +2 Intellect. Focus-tagged; works with a shield.'},
   ironsword:{id:'ironsword',name:'Toy-Guard Club',slot:'weapon',base:30,channel:'heavy',stats:{mig:2},level:6,price:95,desc:'30 weapon base, +2 Might. A persuasive argument.'},
   glassblade:{id:'glassblade',name:'Squeaker-Glass Stiletto',slot:'weapon',base:30,channel:'precision',stats:{fin:2},level:6,price:95,desc:'30 weapon base, +2 Finesse. Precision has its rewards.'},
-  seal:{id:'seal',name:'Keeper’s Brass Button',slot:'relic',relicEffect:'seal',level:8,desc:'The first useful Guard each fight grants 15 barrier.'},
+  seal:{id:'seal',name:'Keeper’s Brass Button',slot:'relic',relicEffect:'seal',level:8,desc:'First useful Guard each fight grants a barrier of 4% of maximum Stuffing and gains 1 Pluck.'},
   penny:{id:'penny',name:'Lucky Copper Button',slot:'accessory',stats:{lck:4},level:1,price:25,desc:'+4 Luck. A little fortune, worn on purpose. Improves critical and equipment-drop chances.'},
   band:{id:'band',name:'Squeaker-Glass Ring',slot:'accessory',ward:8,stats:{int:2},level:8,desc:'+2 Intellect, +8 ward. Quietly, reliably magical.'},
   cap:{id:'cap',name:'Ledger-Scrap Bonnet',slot:'head',armor:4,stats:{ins:1},level:1,price:22,desc:'+1 Insight, +4 armor. Keeps the paperwork out of your eyes.'},
@@ -35,7 +35,7 @@ export const ITEMS = Object.freeze({
   wornboots:{id:'wornboots',name:'Canal-Step Slippers',slot:'feet',armor:1,stats:{fin:1},level:1,price:16,desc:'+1 Finesse, +1 armor. Better than bare feet on wet stone.'},
   rivethelm:{id:'rivethelm',name:'Button-Stud Bonnet',slot:'head',armor:11,stats:{vit:1},level:5,price:68,desc:'+1 Vitality, +11 armor. A hard answer to a hard shell.'},
   waders:{id:'waders',name:'Floodgate Welly-Socks',slot:'feet',armor:7,ward:5,stats:{wil:1},level:6,price:78,desc:'+1 Will, +7 armor, +5 ward. Rated for municipal flooding.'},
-  signet:{id:'signet',name:'Brass-Stamp Ring',slot:'relic',relicEffect:'signet',stats:{wil:1},ward:8,level:4,price:58,desc:'+1 Will, +8 ward. Recover restores 2 extra Sparkle (mana).'},
+  signet:{id:'signet',name:'Brass-Stamp Ring',slot:'relic',relicEffect:'signet',stats:{wil:1},ward:8,level:4,price:58,desc:'+1 Will, +8 ward. Recover restores 3% of maximum Sparkle extra.'},
   pike:{id:'pike',name:'Gate-Latch Needle Pike',slot:'weapon',base:40,channel:'heavy',twoHanded:true,stats:{mig:2},level:7,price:125,desc:'A two-handed needle pike with +2 Might; its long reach trades away the offhand.'},
   // Additional catalog pieces use existing generated item-art families.
   spoolblade:{id:'spoolblade',name:'Bobbin-Thread Needleblade',slot:'weapon',base:20,channel:'precision',stats:{fin:1},level:2,desc:'A small sewing blade with a jaunty thread tassel.'},
@@ -105,14 +105,14 @@ export const ITEMS = Object.freeze({
   buttonLocket:{id:'buttonLocket',name:'Grand Button Locket',slot:'accessory',ward:4,stats:{vit:1},level:6,desc:'Contains a smaller, more sentimental button.'},
   bellPendant:{id:'bellPendant',name:'Bedtime Bell Pendant',slot:'accessory',stats:{int:1},level:7,desc:'Rings only when a nap is overdue.'},
   ribbonBrooch:{id:'ribbonBrooch',name:'Ribbon-Knot Brooch',slot:'accessory',stats:{mig:1,fin:1},level:8,desc:'A neat bow conceals a stubborn knot.'},
-  threadSpool:{id:'threadSpool',name:'Thread Spool of Second Chances',slot:'relic',relicEffect:'threadSpool',stats:{vit:1},level:3,desc:'The first useful Guard each fight restores 2 Bounce (stamina).'},
-  patchworkHeart:{id:'patchworkHeart',name:'Patchwork Heart',slot:'relic',relicEffect:'patchworkHeart',stats:{wil:1},level:3,desc:'Victory restores 5% of missing Stuffing (health).'},
-  luckyButton:{id:'luckyButton',name:'Lucky Button',slot:'relic',relicEffect:'luckyButton',stats:{lck:2},level:4,desc:'Victory grants 5% extra coins, with a small minimum bonus.'},
-  dreamBell:{id:'dreamBell',name:'Dream Bell',slot:'relic',relicEffect:'dreamBell',stats:{int:1},level:4,desc:'Victory restores 2 Sparkle (mana).'},
-  thimbleGuard:{id:'thimbleGuard',name:'Thimble Guard',slot:'relic',relicEffect:'thimbleGuard',armor:5,level:5,desc:'The first useful Guard each fight adds 4 barrier.'},
-  amberMarble:{id:'amberMarble',name:'Amber Marble',slot:'relic',relicEffect:'amberMarble',ward:5,level:5,desc:'Your first damaging action each fight deals 3 extra damage.'},
-  ribbonKnot:{id:'ribbonKnot',name:'Ribbon Knot of Resolve',slot:'relic',relicEffect:'ribbonKnot',stats:{mig:1},level:6,desc:'A free physical strike restores 1 Sparkle (mana).'},
-  stuffingSatchel:{id:'stuffingSatchel',name:'Emergency Stuffing Satchel',slot:'relic',relicEffect:'stuffingSatchel',stats:{vit:1},level:7,desc:'Mend restores 10% more Stuffing (health).'},
+  threadSpool:{id:'threadSpool',name:'Thread Spool of Second Chances',slot:'relic',relicEffect:'threadSpool',stats:{vit:1},level:3,desc:'First useful Guard each fight restores 5% of maximum Bounce and gains 1 Pluck.'},
+  patchworkHeart:{id:'patchworkHeart',name:'Patchwork Heart',slot:'relic',relicEffect:'patchworkHeart',stats:{wil:1},level:3,desc:'Victory restores 5% of missing Stuffing, plus 1% of missing Stuffing per Pluck held.'},
+  luckyButton:{id:'luckyButton',name:'Lucky Button',slot:'relic',relicEffect:'luckyButton',stats:{lck:2},level:4,desc:'Victory grants 5% extra coins, plus 5% more when winning with 4 or more Pluck.'},
+  dreamBell:{id:'dreamBell',name:'Dream Bell',slot:'relic',relicEffect:'dreamBell',stats:{int:1},level:4,desc:'Victory restores 3% of maximum Sparkle, plus 1% of maximum Sparkle per Pluck held.'},
+  thimbleGuard:{id:'thimbleGuard',name:'Thimble Guard',slot:'relic',relicEffect:'thimbleGuard',armor:5,level:5,desc:'First useful Guard each fight adds a barrier of 2% of maximum Stuffing, plus 0.5% of maximum per Pluck held.'},
+  amberMarble:{id:'amberMarble',name:'Amber Marble',slot:'relic',relicEffect:'amberMarble',ward:5,level:5,desc:'First damaging action each fight deals 8% more and gains 1 Pluck.'},
+  ribbonKnot:{id:'ribbonKnot',name:'Ribbon Knot of Resolve',slot:'relic',relicEffect:'ribbonKnot',stats:{mig:1},level:6,desc:'A free physical strike restores 2% of maximum Sparkle, doubled while holding 4 or more Pluck.'},
+  stuffingSatchel:{id:'stuffingSatchel',name:'Emergency Stuffing Satchel',slot:'relic',relicEffect:'stuffingSatchel',stats:{vit:1},level:7,desc:'Mend heals 10% more. A Mend that heals gains 1 Pluck.'},
   // Relic engine pieces (design 43). Effects and numbers live in relic-engine.js.
   feltFang:{id:'feltFang',name:'Felt Vampire Fang',slot:'relic',relicEffect:'feltFang',stats:{vit:1},desc:'Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held.'},
   darnedPatch:{id:'darnedPatch',name:'Darned-Elbow Patch',slot:'relic',relicEffect:'darnedPatch',armor:4,desc:'Each enemy attack that hurts you gains 1 Pluck, or 2 from a heavy.'},
@@ -172,7 +172,17 @@ export const ITEMS = Object.freeze({
   carouselMoon:{id:'carouselMoon',name:'Carousel-Moon Scepter',slot:'weapon',base:56,channel:'spell',focus:true,stats:{int:3},desc:'A tiny carousel moon spins up a steady spell.'},
   velvetCometRod:{id:'velvetCometRod',name:'Velvet-Comet Rod',slot:'weapon',base:58,channel:'spell',focus:true,stats:{int:3},desc:'A plush comet tail weaves a trail of light.'},
   ticketStarWand:{id:'ticketStarWand',name:'Golden Ticket Star Wand',slot:'weapon',base:60,channel:'spell',focus:true,stats:{int:3},desc:'A golden ticket folds into a bright spell focus.'},
-  midnightCarousel:{id:'midnightCarousel',name:'Midnight Carousel Baton',slot:'weapon',base:62,channel:'spell',focus:true,stats:{int:4},desc:'A little carousel horse circles a deep, velvet spell.'}
+  midnightCarousel:{id:'midnightCarousel',name:'Midnight Carousel Baton',slot:'weapon',base:62,channel:'spell',focus:true,stats:{int:4},desc:'A little carousel horse circles a deep, velvet spell.'},
+  threadThimbleKit:{id:'threadThimbleKit',name:'Thread-and-Thimble Kit',slot:'offhand',kind:'mender',mend:6,stats:{wil:1},desc:'A stuffie-scale sewing kit. Restores Stuffing on strike, useful Guard, and Recover.'},
+  bandageRoll:{id:'bandageRoll',name:'Bandage Roll',slot:'offhand',kind:'mender',mend:10,stats:{vit:1},desc:'Clean linen bandages for serious stuffing repairs.'},
+  patchSatchel:{id:'patchSatchel',name:'Patch Satchel',slot:'offhand',kind:'mender',mend:14,stats:{wil:1,vit:1},desc:'A snug felt pouch packed with emergency patches.'},
+  darningEgg:{id:'darningEgg',name:'Darning Egg',slot:'offhand',kind:'mender',mend:18,ward:4,stats:{wil:2},desc:'Smooth polished wood to hold frayed seams steady against trouble.'},
+  sewingTin:{id:'sewingTin',name:'Sewing Tin',slot:'offhand',kind:'mender',mend:22,ward:6,stats:{wil:2,vit:1},desc:'A painted tin with extra needles, strong thread, and quiet determination.'},
+  buttonPouch:{id:'buttonPouch',name:'Button Pouch',slot:'offhand',kind:'mender',mend:26,ward:8,stats:{wil:3},desc:'A velvet drawstring pouch of replacement buttons and sturdy backing stitch.'},
+  secondChancesSpool:{id:'secondChancesSpool',name:'Spool of Second Chances',slot:'offhand',kind:'mender',mend:30,ward:10,stats:{wil:3,vit:1},desc:'High-tensile municipal thread for mending seams under extreme pressure.'},
+  feltPatchBook:{id:'feltPatchBook',name:'Felt Patch Book',slot:'offhand',kind:'mender',mend:34,ward:12,stats:{wil:4},desc:'A bound collection of wool felt swatches ready to reinforce any tear.'},
+  mendingHoop:{id:'mendingHoop',name:'Mending Hoop',slot:'offhand',kind:'mender',mend:38,ward:14,stats:{wil:4,vit:2},desc:'Keeps delicate stuffing taut and secure while working under fire.'},
+  goldenNeedleCase:{id:'goldenNeedleCase',name:'Golden Needle Case',slot:'offhand',kind:'mender',mend:42,ward:16,stats:{wil:5,vit:2},desc:'The finest golden needles, honed to repair even the deepest seams.'}
 });
 
 // Content tiers describe regional stock and stay separate from character levels.
@@ -193,6 +203,10 @@ const CATEGORY_TIERS = Object.freeze({
   feet:['wornboots','boots','slipperBoots','rainGaloshes','sockSkates','buttonClogs','waders','cloudSlippers','paradeBoots','stargazerShoes'],
   accessory:['penny','thimblePendant','spoolBracelet','teaCharm','toyCompass','lantern','buttonLocket','bellPendant','band','ribbonBrooch']
 });
+export const MENDER_TIERS = Object.freeze([
+  'threadThimbleKit','bandageRoll','patchSatchel','darningEgg','sewingTin',
+  'buttonPouch','secondChancesSpool','feltPatchBook','mendingHoop','goldenNeedleCase'
+]);
 export const WEAPON_FAMILIES = Object.freeze({
   clubs: Object.freeze({
     name: 'Clubs and bonkers',
@@ -267,6 +281,7 @@ for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) {
   if (ids.length !== 10) throw new Error(`Expected ten ${slot} catalog tiers`);
   ids.forEach((id,index)=>{ const item=ITEMS[id]; item.tier=index+1; item.chapter=Math.ceil((index+1)/2); });
 }
+MENDER_TIERS.forEach((id,index)=>{ const item=ITEMS[id]; item.tier=index+1; item.chapter=Math.ceil((index+1)/2); });
 for (const [id,tier] of Object.entries(WEAPON_TIERS)) {
   const item=ITEMS[id]; if(!item) throw new Error(`Missing weapon catalog item ${id}`);
   item.tier=tier; item.chapter=weaponChapter(tier);
@@ -292,6 +307,9 @@ for (const [id,row] of Object.entries(RELIC_CATALOG)) {
 if (Object.values(ITEMS).some(item=>item.slot==='relic'&&!Object.hasOwn(RELIC_CATALOG,item.id))) throw new Error('Every relic needs a RELIC_CATALOG row');
 for (const [slot,ids] of Object.entries(CATEGORY_TIERS)) for (const id of ids) {
   const item=ITEMS[id]; item.price=Math.round(CATEGORY_BASE[slot]*armorTierMultiplier(item.tier));
+}
+for (const id of MENDER_TIERS) {
+  const item=ITEMS[id]; item.price=Math.round(CATEGORY_BASE.offhand*armorTierMultiplier(item.tier));
 }
 for (const item of Object.values(ITEMS)) {
   delete item.level;
@@ -471,13 +489,14 @@ export const LAB_MENDERS = Object.freeze({
 const LOCKED = s => !!(s?.fight || s?.delve);
 const noCost = () => ({coins:0,materials:{}});
 const clone = x => JSON.parse(JSON.stringify(x));
-function getItem(s, id) { return ITEMS[id] || (s?.rulesPreview?.twoHands ? LAB_MENDERS[id] : null) || null; }
+function getItem(s, id) { return ITEMS[id] || (s?.rulesPreview?.twoHands ? LAB_MENDERS[id] : null) || LAB_MENDERS[id] || null; }
 function canFit(item,slot,s){
   if (!item) return false;
-  if (s?.rulesPreview?.twoHands) {
-    if (slot === 'offhand' && item.slot === 'weapon' && !item.twoHanded) return true;
-    if (slot === 'offhand' && item.kind === 'mender') return true;
+  if (slot === 'offhand' && item.slot === 'weapon' && !item.twoHanded) {
+    if (item.family === 'spears') return false;
+    return true;
   }
+  if (slot === 'offhand' && item.kind === 'mender') return true;
   return slotsFor(item).includes(slot);
 }
 function owned(s,id){return Array.isArray(s?.bag)&&s.bag.includes(id);}
@@ -523,10 +542,8 @@ export function resolveItem(s,id){const item=effectiveItem(s,id);return item?{..
 export function slotChoices(s,id){
   const item=getItem(s,id);if(!item||!owned(s,id))return [];
   let slots=slotsFor(item);
-  if(s?.rulesPreview?.twoHands){
-    if(item.slot==='weapon'&&!item.twoHanded&&!slots.includes('offhand'))slots=[...slots,'offhand'];
-    if(item.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
-  }
+  if(item.slot==='weapon'&&!item.twoHanded&&item.family!=='spears'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
+  if(item.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   return slots.filter(slot=>!(slot==='offhand'&&getItem(s,s.gear?.weapon)?.twoHanded));
 }
 export function unequipReason(s,slot){
@@ -560,10 +577,8 @@ export function buyItem(s,id){
 export function buyAndEquipPreview(s,id,targetSlot){
   const purchase=buyPreview(s,id), item=getItem(s,id);
   let slots=slotsFor(item);
-  if(s?.rulesPreview?.twoHands){
-    if(item?.slot==='weapon'&&!item?.twoHanded&&!slots.includes('offhand'))slots=[...slots,'offhand'];
-    if(item?.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
-  }
+  if(item?.slot==='weapon'&&!item?.twoHanded&&item?.family!=='spears'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
+  if(item?.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   slots=slots.filter(slot=>!(slot==='offhand'&&getItem(s,s?.gear?.weapon)?.twoHanded));
   const selectedSlot=targetSlot||slots.find(slot=>!s?.gear?.[slot])||slots[0]||null;
   let reason=purchase.reason;
@@ -604,7 +619,7 @@ export function sellPreview(s,id){
 }
 export function sellItem(s,id){
   const p=sellPreview(s,id);if(!p.allowed||!Array.isArray(s.bag))return false;
-  s.bag=s.bag.filter(ownedId=>ownedId!==id);if(s.itemMods)delete s.itemMods[id];s.coins+=p.price;
+  s.bag=s.bag.filter(ownedId=>ownedId!==id);if(s.itemMods)delete s.itemMods[id];if(s.relicRanks)delete s.relicRanks[id];s.coins+=p.price;
   return {id,coins:p.price};
 }
 export function exchangeMaterials(s,recipeId){

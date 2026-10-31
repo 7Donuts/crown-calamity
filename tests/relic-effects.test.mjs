@@ -33,7 +33,8 @@ test('Amber Marble adds its bounded bonus to only the first damaging action in a
   const nextProfile=actionProfile(s,'attack');
   const next=exchange(s,'attack',()=>0,2000);
   assert.equal(next.damage,nextProfile.critical);
-  assert.equal(firstProfile.normal-nextProfile.normal,3);
+  assert.equal(firstProfile.normal-nextProfile.normal,2);
+  assert.equal(s.fight.pluck, 1, 'Amber Marble generates 1 Pluck on first damaging action');
 });
 
 test('recovery and Mend previews include their relic effects and live results use those shared profiles', () => {
@@ -70,14 +71,16 @@ test('Seal echoes increase one useful-Guard barrier grant without granting anoth
 test('Thread Spool and Thimble Guard trigger once on a useful Guard and respect resource and barrier caps',()=>{
   const s=fresh();s.passive=null;s.gear.relic='threadSpool';s.bag.push('threadSpool');
   assert.equal(startFight(s,'rats'),true);s.fight.round=2;s.sp=0;
-  exchange(s,'guard',()=>0,1000);assert.equal(s.sp,4,'2 relic Bounce and 2 Guard Bounce');
+  exchange(s,'guard',()=>0,1000);assert.equal(s.sp,5,'3 relic Bounce (5% of 65) and 2 Guard Bounce');
+  assert.equal(s.fight.pluck,1,'Thread Spool generates 1 Pluck on useful Guard');
   s.sp=0;s.fight.round=2;exchange(s,'guard',()=>0,2000);assert.equal(s.sp,2,'the relic effect is once per fight');
 
   const t=fresh();t.passive=null;t.gear.relic='thimbleGuard';t.bag.push('thimbleGuard');
   t.relicSockets=Array.from({length:3},()=>({unlocked:true,relicId:'thimbleGuard',copiesPaid:{thimbleGuard:1}}));
   assert.equal(startFight(t,'rats'),true);t.fight.round=2;
   exchange(t,'guard',()=>0,1000);
-  assert.ok(t.log.some(x=>x.text.includes('Thimble Guard added 7 barrier')));
+  assert.ok(t.log.some(x=>x.text.includes('Thimble Guard added 14 barrier')));
+  assert.equal(t.fight.pluck,0,'Thimble Guard is a payoff relic and does not generate Pluck');
   t.fight.round=2;exchange(t,'guard',()=>0,2000);
   assert.equal(t.log.filter(x=>x.text.includes('Thimble Guard added')).length,1);
 });

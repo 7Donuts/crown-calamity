@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile, mkdtemp, rm, mkdir, copyFile} from 'node:fs/promises';
+import {readFile, mkdtemp, rm, mkdir, copyFile, cp as copyDir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import vm from 'node:vm';
@@ -209,11 +209,11 @@ test('the package generator produces standalone code with all module exports and
     // Run against an isolated source copy so generated deliverables never overwrite the working tree.
     const copy = path.join(temp,'repo');
     await mkdir(copy,{recursive:true});
-    const cp = spawnSync('cp',['-a',path.join(root,'dist'),copy],{encoding:'utf8'});
-    assert.equal(cp.status,0,cp.stderr);
+    await copyDir(path.join(root,'dist'),path.join(copy,'dist'),{recursive:true});
     await copyFile(path.join(root,'scripts-package.py'),path.join(copy,'scripts-package.py'));
     await copyFile(path.join(root,'package.json'),path.join(copy,'package.json'));
-    const run = spawnSync('python3',['scripts-package.py'],{cwd:copy,encoding:'utf8'});
+    const py = process.platform === 'win32' ? 'python' : 'python3';
+    const run = spawnSync(py,['-X','utf8','scripts-package.py'],{cwd:copy,encoding:'utf8',env:{...process.env,PYTHONUTF8:'1'}});
     assert.equal(run.status,0,run.stderr || run.stdout);
     const copiedPackage = JSON.parse(await readJSON(path.join(copy,'package.json'),'utf8'));
     const html = await readFile(path.join(copy,`Crown-and-Calamity-v${copiedPackage.version}.html`),'utf8');
@@ -263,7 +263,7 @@ test('the package generator produces standalone code with all module exports and
     assert.equal(labBoot.context.__labTest.getSession().rounds,1,'bundled lab executes a real synthetic exchange');
     assert.equal(/\b(?:undefined|NaN)\b/.test(labApp()),false);
     assert.deepEqual(labBoot.storageOps,{reads:0,writes:0},'offline lab never reads or writes the real roster');
-    const zip = spawnSync('unzip',['-Z1',`Crown-and-Calamity-v${copiedPackage.version}.zip`],{cwd:copy,encoding:'utf8'});
+    const zip = spawnSync(py,['-c','import zipfile, sys; sys.stdout.buffer.write(("\\n".join(zipfile.ZipFile(sys.argv[1]).namelist()) + "\\n").encode("utf-8"))',`Crown-and-Calamity-v${copiedPackage.version}.zip`],{cwd:copy,encoding:'utf8'});
     assert.equal(zip.status,0,zip.stderr);
     for (const entry of ['dist/engine.js','dist/gear.js','dist/abilities.js','dist/lab.js','dist/balance.js','dist/lab-ui.js','Crown-and-Calamity-Playtest-Lab.html','dist/assets/enemies/enemy-atlas.png']) assert.ok(zip.stdout.split('\n').includes(entry),`source archive contains ${entry}`);
   } finally { await rm(temp,{recursive:true,force:true}); }

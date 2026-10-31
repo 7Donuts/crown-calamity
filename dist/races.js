@@ -327,9 +327,12 @@ export function racePluckHook(raceId) {
   return race?.pluckHook || null;
 }
 
-export function raceAffinity(raceId) {
+export function raceAffinity(raceOrState, familyId = null) {
+  if (!raceOrState) return familyId ? false : null;
+  const raceId = typeof raceOrState === 'object' ? (raceOrState.raceId || raceOrState.race) : raceOrState;
   const race = RACES[raceId] || resolveRace(raceId);
-  return race?.affinity || null;
+  const aff = race?.affinity || null;
+  return familyId ? aff === familyId : aff;
 }
 
 export function raceHomeLayer(raceId) {

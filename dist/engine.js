@@ -1,13 +1,15 @@
 import {RACES,resolveRace,normalizeAppearance,isHomeLayerActive,raceCombatTrait,racePluckHook,raceAffinity,raceHomeLayer} from './races.js';
 export {RACES,isHomeLayerActive,raceCombatTrait,racePluckHook,raceAffinity,raceHomeLayer};
-import {normalizeRelics,relicBonuses,relicEffectStrength,relicSlots,unlockRelicPreview,unlockRelic,attuneRelicPreview,attuneRelic,clearRelic} from './relics.js';
-export {relicSlots,unlockRelicPreview,unlockRelic,attuneRelicPreview,attuneRelic,clearRelic};
+import {normalizeRelics,relicBonuses,relicEffectStrength,relicSlots,unlockRelicPreview,unlockRelic,attuneRelicPreview,attuneRelic,clearRelic,relicRank,relicRankCost,upgradeRelicPreview,upgradeRelic,RELIC_RANK_MATERIALS,RELIC_EFFECTS} from './relics.js';
+export {normalizeRelics,relicBonuses,relicEffectStrength,relicSlots,unlockRelicPreview,unlockRelic,attuneRelicPreview,attuneRelic,clearRelic,relicRank,relicRankCost,upgradeRelicPreview,upgradeRelic,RELIC_RANK_MATERIALS,RELIC_EFFECTS};
 import {STORY_CONTRACTS,storyState,contractStatus,activeContracts,availableContracts,contractHuntTarget,acceptContract,recordStoryEvent,storyAction as performStoryAction,claimContract as performContractClaim,normalizeStory,availableStoryActions} from './story.js';
 export {STORY_CONTRACTS,storyState,contractStatus,activeContracts,availableContracts,contractHuntTarget,acceptContract,availableStoryActions};
 import {ITEMS,SLOTS,EXCHANGES,PREFIXES,SUFFIXES,resolveItem,effectiveItem,slotChoices,unequipReason,upgradePreview,affixPreview,normalizeGearState,equipItem,unequipItem,buyItem,buyPreview,buyAndEquipPreview as previewPurchaseAndEquip,buyAndEquipItem as purchaseAndEquipItem,sellPreview,sellItem as performSale,exchangeMaterials as performMaterialExchange,upgradeItem as performUpgrade,applyAffix as performAffix,materialLabel,MATERIAL_LABELS,familyLabel,MATERIAL_CHAPTER,recipeRegion,WEAPON_FAMILIES,LAB_MENDERS} from './gear.js';
 export {materialLabel,MATERIAL_LABELS,familyLabel,MATERIAL_CHAPTER,recipeRegion,WEAPON_FAMILIES,ITEMS,SLOTS,EXCHANGES,PREFIXES,SUFFIXES,resolveItem,effectiveItem,slotChoices,unequipReason,upgradePreview,affixPreview,buyPreview,sellPreview,LAB_MENDERS};
 import {classifySecondHand,secondHandProfile,secondHandVerbContribution,menderMendAmount,secondHandActionHint} from './hands.js';
 export {classifySecondHand,secondHandProfile,secondHandVerbContribution,menderMendAmount,secondHandActionHint};
+import {WEAPON_FAMILY_IDS,WEAPON_FAMILY_TRAITS,marksNeededForRank,traitEffectMultiplier,weaponMasteryCap,weaponMasteryRank,weaponMasteryMarks,secondHandStrikeShare,normalizeWeaponMastery,recordDamagingFamily,awardWeaponMasteryOnVictory,steadyGuardBonus,wardingGuardBonus,crushArmorIgnore,reachDamageBonus,reachDisruptHitBonus,pinpointCritBonus,riposteStaminaRestore,unpickDamageBonus,quickCastCostReduction,lullabyMendBonus,sceptersSecondHandBarrier,batonsSecondHandMend,foilsRiposteProfile,familyTraitSummary,familyTraitLine} from './weapon-families.js';
+export {WEAPON_FAMILY_IDS,WEAPON_FAMILY_TRAITS,marksNeededForRank,traitEffectMultiplier,weaponMasteryCap,weaponMasteryRank,weaponMasteryMarks,secondHandStrikeShare,normalizeWeaponMastery,recordDamagingFamily,awardWeaponMasteryOnVictory,steadyGuardBonus,wardingGuardBonus,crushArmorIgnore,reachDamageBonus,reachDisruptHitBonus,pinpointCritBonus,riposteStaminaRestore,unpickDamageBonus,quickCastCostReduction,lullabyMendBonus,sceptersSecondHandBarrier,batonsSecondHandMend,foilsRiposteProfile,familyTraitSummary,familyTraitLine};
 import {ABILITIES,MASTERY_CHOICES,abilityCost,costLabel} from './abilities.js';
 export {ABILITIES,abilityCost,costLabel};
 import {TELEGRAPH,GUARD_ACTIONS,DAMAGING_ACTIONS,isShield,guardRate,sidestepEligible,strikeBonus,resolveHit,openingPercent,telegraphText,openingLabel} from './telegraph.js';
@@ -29,8 +31,9 @@ import {PLUCK_CAP,PLUCK_CARRY_CAP,ENGINE_EFFECTS,ENGINE_RELIC_IDS,RELIC_ENGINE_V
 export {PLUCK_CAP,PLUCK_CARRY_CAP,ENGINE_EFFECTS,ENGINE_RELIC_IDS,RELIC_ENGINE_VERSION};
 // Relic engine strength getter: 1 per core relic slot plus echo strength (relics.js).
 const strengthOf=s=>id=>relicEffectStrength(s,id);
+const rankOf=s=>id=>relicRank(s,id);
 /** HUD view of the relic engine: Pluck only shows when an engine relic is equipped or echoed. */
-export function pluckStatus(s){const rs=strengthOf(s);return {active:RE.engineActive(rs,s?.raceId),pluck:s?.fight?.pluck||0,cap:RE.PLUCK_CAP,carry:s?.pluckCarry||0,rattled:!!s?.fight?.rattled,lifesteal:RE.lifestealRate(s?.fight,rs),damageBonus:RE.damageMultiplier(s?.fight,rs)-1};}
+export function pluckStatus(s){const rs=strengthOf(s),rk=rankOf(s);return {active:RE.engineActive(rs,s?.raceId),pluck:s?.fight?.pluck||0,cap:RE.PLUCK_CAP,carry:s?.pluckCarry||0,rattled:!!s?.fight?.rattled,lifesteal:RE.lifestealRate(s?.fight,rs,rk),damageBonus:RE.damageMultiplier(s?.fight,rs,rk)-1};}
 // Finale keepsakes are granted exactly once per chapter finale claim; older saves receive any they earned.
 const KEEPSAKE_BY_FINALE=Object.freeze(Object.fromEntries(CHAPTERS.map(chapter=>[chapter.finale,Object.values(ITEMS).find(item=>item.keepsake&&item.finale===chapter.id)?.id]).filter(([,id])=>id)));
 function grantKeepsake(s,finaleId){const id=KEEPSAKE_BY_FINALE[finaleId];if(!id)return null;s.signatureRelics=Array.isArray(s.signatureRelics)?s.signatureRelics:[];if(s.signatureRelics.includes(id))return null;s.signatureRelics.push(id);if(!s.bag.includes(id))s.bag.push(id);return id;}
@@ -63,7 +66,7 @@ export const QUESTS=[
 {title:'Tagged for Sale',text:'An appraiser guards the missing crew’s records. Recover them before the next rinse cycle.',target:'inspector',xp:180},
 {title:'The Laundry Works',text:'Reach level 6 and enter the Laundry Works. Find out why the washer has turned against the town.',target:'boss',xp:250}
 ];
-export function fresh(){return normalizeRelics(normalizeStory(normalizeRecovery(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',raceId:null,appearance:normalizeAppearance('bear'),relicSockets:[],origin:'Former Gutter Canal surveyor',level:1,xp:0,levelPointsPaid:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:66,sp:65,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,variantMeters:{},variantOffers:{},materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional stuffie',text:'Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,restReadyAt:0,woundedUntil:0,visited:['rats'],caseFiles:{},settings:{details:false},pluckCarry:0,signatureRelics:[]}))));}
+export function fresh(){return normalizeWeaponMastery(normalizeRelics(normalizeStory(normalizeRecovery(normalizeGearState({version:VERSION,name:'Sera Vale',race:'Human',raceId:null,appearance:normalizeAppearance('bear'),relicSockets:[],origin:'Former Gutter Canal surveyor',level:1,xp:0,levelPointsPaid:0,points:0,stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8},hp:380,mp:66,sp:65,coins:0,gear:{weapon:'rod',offhand:'shield',body:'coat'},bag:['rod','sword','blade','shield','focus','charm','coat'],passive:'prepared',learnedAbilities:['arc','prepared'],equippedAbilities:['arc'],mastery:{arc:{rank:1,marks:0}},quest:0,pending:null,kills:{},equipmentMisses:0,variantMeters:{},variantOffers:{},materials:{},achievements:[],discoveries:[],journal:[{title:'A provisional stuffie',text:'Welcome to the Underfoot, the stuffie-sized world beneath, behind and between the Big Things. Fluffington Quay, a town of lost odds and ends on the Gutter Canal behind the Suds & Duds laundromat, is staying dry. The Seam Crew who keep it that way have gone missing. You have volunteered to investigate.',kind:'story'}],log:[],fight:null,last:null,delve:null,clears:0,guardCount:0,totalExchanges:0,nextActionAt:0,restReadyAt:0,woundedUntil:0,visited:['rats'],caseFiles:{},settings:{details:false},pluckCarry:0,signatureRelics:[]})))));}
 export const STARTER_KITS={
  bulwark:{gear:['rod','shield'],starterAbility:'arc',stats:{mig:8,fin:8,int:12,vit:12,wil:12,ins:8,lck:8}},
  caster:{gear:['rod','focus'],starterAbility:'arc',stats:{mig:8,fin:8,int:16,vit:8,wil:12,ins:8,lck:8}},
@@ -111,21 +114,27 @@ export function totals(s){
  const bonusLuck=Math.max(0,a.lck-8),fortune=bonusLuck/(bonusLuck+40);
  const rank=id=>s.mastery?.[id]?.rank||1;
  const satchelMultiplier=1+.10*relicEffectStrength(s,'stuffingSatchel');
+ const mainWeapon=effectiveItem(s,s.gear?.weapon);
+ const lullabyMult=1+lullabyMendBonus(s,mainWeapon);
  const unicornMendMult=s.raceId==='unicorn'?(homeActive?1.15:1.10):1;
  return {...a,gearBonuses,hp:Math.floor(200+12*s.level+10*a.vit+4*a.wil+Math.floor((passive.hp||0)*passiveMult)),mp:Math.floor(30+2*a.wil+a.int+Math.floor((passive.mp||0)*passiveMult)),sp:Math.floor(35+1.5*a.vit+1.5*a.fin+Math.floor((passive.sp||0)*passiveMult)),armor,ward,spellBase,racePassive:ancestry?{name:ancestry.passiveName,...passive,homeActive}:null,echoBonuses:echoes,
  physicalAcc:2*a.fin+a.ins+2*s.level,spellAcc:2*a.ins+a.wil+2*s.level,evasion:a.fin+2*a.ins+2*s.level+(s.passive==='footing'?8:0)+(passive.evasion||0)*passiveMult,
  heavyPower:2*a.mig+s.level,precisionPower:2*a.fin+s.level,spellPower:2*a.int+s.level,
  critChance:clamp(.05+.15*a.fin/(a.fin+208)+.10*fortune,.05,.25),critMultiplier:1.25,equipmentDropChance:.20+.15*fortune,
- mendHealing:Math.floor((40+1.4*a.int+.8*a.wil+5*rank('mend'))*(s.mastery?.mend?.choice==='healing'?1.15:1)*satchelMultiplier*unicornMendMult)};
+ mendHealing:Math.floor((40+1.4*a.int+.8*a.wil+5*rank('mend'))*(s.mastery?.mend?.choice==='healing'?1.15:1)*satchelMultiplier*lullabyMult*unicornMendMult)};
 }
 export function recoverProfile(s){
-  const base={mana:RECOVER_MANA_RESTORE+Math.floor(2*relicEffectStrength(s,'signet')),stamina:10,passiveMana:MANA_REGEN_PER_EXCHANGE};
-  if(s?.rulesPreview?.twoHands){
-    const offItem=effectiveItem(s,s.gear?.offhand);
-    const mend=menderMendAmount(s,offItem,'recover');
-    return {...base,mend};
+  const t=totals(s),rs=strengthOf(s);
+  const signetBonus=rs('signet')>0?Math.max(1,Math.floor(t.mp*.03*rs('signet'))):0;
+  const base={mana:RECOVER_MANA_RESTORE+signetBonus,stamina:10,passiveMana:MANA_REGEN_PER_EXCHANGE};
+  const mainItem=effectiveItem(s,s.gear?.weapon);
+  if(mainItem?.twoHanded)return base;
+  const offItem=effectiveItem(s,s.gear?.offhand);
+  let mend=menderMendAmount(s,offItem,'recover');
+  if(!mend&&offItem?.family==='batons'){
+    mend=batonsSecondHandMend(s,offItem,'recover');
   }
-  return base;
+  return mend>0?{...base,mend}:base;
 }
 export function attributePreview(s,key){
  if(!Object.hasOwn(ATTRS,key))return null;
@@ -143,33 +152,40 @@ export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
  let raw=channel==='arcane'?(w.base+t.spellBase+.9*t.spellPower+4*rank)*coeff:(w.base+.9*power+4)*coeff;
  if(f?.charge&&channel==='arcane')raw*=1.1;
  const bonus=strikeBonus({exposed:f?.exposed,exposeRank:s.mastery?.expose?.rank,opening:f?.opening});raw*=1+bonus.bonus;
- const rs=strengthOf(s);raw*=RE.damageMultiplier(f,rs);const boxNoGlance=!!f?.exposed&&rs('musicBox')>0,bunnyNoGlance=!!f?.shuffleNoGlance;
+ if(w?.family==='stilettos'&&(bonus.bonus>0||f?.exposed||f?.opening))raw*=1+unpickDamageBonus(s,w,true);
+ if(w?.family==='spears'&&!f?.damagingActionUsed)raw*=1+reachDamageBonus(s,w,f);
+ const rs=strengthOf(s),rk=rankOf(s);raw*=RE.damageMultiplier(f,rs,rk);const boxNoGlance=!!f?.exposed&&rs('musicBox')>0,bunnyNoGlance=!!f?.shuffleNoGlance;
  const isWolfHeavy=s.raceId==='wolf'&&w.channel==='heavy'&&s.hp<t.hp*0.5;
  if(isWolfHeavy)raw*=1+(isHomeLayerActive(s)?0.15:0.10);
  let defense=channel==='arcane'?e.ward:e.armor;
  if(i?.warded&&channel==='arcane')defense+=25;
+ if(channel==='physical'&&w?.family==='mauls'){
+  const ignore=crushArmorIgnore(s,w);
+  defense=Math.round(defense*(1-ignore));
+ }
  if(i?.guarded&&channel==='physical')raw*=.65;
  if(e.id==='hound'&&f?.streak>=3&&f.channel===channel)raw*=.85;
  if(e.id==='boss'&&f&&f.hp/e.hp<.3&&((f.round%3===0&&channel==='physical')||(f.round%3===1&&channel==='arcane')))raw*=1.2;
- const reduced=raw*(1-mitigation(defense,s.level)),solidHit=bonus.noGlance||boxNoGlance||bunnyNoGlance?1:hitChance(accuracy,18+e.level*3);
- const amberBonus=!f?.amberMarbleUsed?Math.floor(3*relicEffectStrength(s,'amberMarble')):0;
+ let critChance=t.critChance;
+ if(w?.family==='needles')critChance=clamp(critChance+pinpointCritBonus(s,w),.05,.25);
+ const reduced=raw*(1-mitigation(defense,s.level));
+ let solidHit=bonus.noGlance||boxNoGlance||bunnyNoGlance?1:hitChance(accuracy,18+e.level*3);
+ if(w?.family==='spears'&&key==='disrupt'&&!bonus.noGlance&&!boxNoGlance&&!bunnyNoGlance)solidHit=clamp(solidHit+reachDisruptHitBonus(s,w,key),.65,.98);
+ const amberBonus=!f?.amberMarbleUsed&&rs('amberMarble')>0?Math.floor(reduced*.08*rs('amberMarble')):0;
  const normal=Math.max(1,Math.floor(reduced))+amberBonus,critical=Math.max(1,Math.floor(reduced*t.critMultiplier))+amberBonus,glance=Math.max(1,Math.floor(reduced*.55))+amberBonus;
  const available=channel!=='arcane'||hasFocus(s);
- const baseProfile={channel,raw,defense,opening:bonus.source==='opening',openingBonus:bonus.source==='opening'?bonus.bonus:0,noGlance:bonus.noGlance||boxNoGlance||bunnyNoGlance,lifesteal:RE.lifestealRate(f,rs),hitChance:solidHit,critChance:t.critChance,normal,critical,glance,
- average:solidHit*((1-t.critChance)*normal+t.critChance*critical)+(1-solidHit)*glance,
+ const baseProfile={channel,raw,defense,opening:bonus.source==='opening',openingBonus:bonus.source==='opening'?bonus.bonus:0,noGlance:bonus.noGlance||boxNoGlance||bunnyNoGlance,lifesteal:RE.lifestealRate(f,rs,rk),hitChance:solidHit,critChance,normal,critical,glance,
+ average:solidHit*((1-critChance)*normal+critChance*critical)+(1-solidHit)*glance,
  available:available&&(!['combo','guardstrike'].includes(key)||isShield(s.gear.offhand))&&(key!=='sidestep'||sidestepEligible(w.channel,s.gear.offhand)),live:!!f,variantBarrier:f?.variantState?.barrier||0};
- if(s?.rulesPreview?.twoHands){
-  const contrib=secondHandVerbContribution(s,key,e,t,i,RE.damageMultiplier(f,rs));
-  return {...baseProfile,secondHand:contrib.kind,offhand:contrib.offhand,offhandDamage:contrib.offhand?.average||0,mend:contrib.mend,totalAverage:baseProfile.average+(contrib.offhand?.average||0)};
- }
- return baseProfile;
+ const contrib=secondHandVerbContribution(s,key,e,t,i,RE.damageMultiplier(f,rs,rk));
+ return {...baseProfile,secondHand:contrib.kind,offhand:contrib.offhand,offhandDamage:contrib.offhand?.average||0,mend:contrib.mend,totalAverage:baseProfile.average+(contrib.offhand?.average||0)};
 }
 export function restore(s){if(s.fight||s.delve)return false;let t=totals(s);s.hp=t.hp;s.mp=t.mp;s.sp=t.sp;s.restReadyAt=0;RE.clearCarry(s);return true;}
 export function restStatus(s,now=Date.now()){return recoveryStatus(s,now);}
 export function beginRest(s,now=Date.now()){const status=restStatus(s,now),t=totals(s);if(s.fight||s.delve||status.active||(s.hp>=t.hp&&s.mp>=t.mp&&s.sp>=t.sp))return false;s.restReadyAt=Math.max(now+REST_DURATION_MS,s.woundedUntil||0);RE.clearCarry(s);return {readyAt:s.restReadyAt};}
 export function finishRest(s,now=Date.now()){return completeRest(s,now,totals(s));}
 export function cancelRest(s){return abandonRest(s);}
-function beginEncounter(s,e,source,now,opts={}){if(s.fight||s.hp<=0||restStatus(s,now).active||restStatus(s,now).wounded)return false;const variant=opts?.special===true?(source==='hunt'?startVariant(s,e.id):null):null;if(opts?.special===true&&!variant)return false;const fe=applyVariant(e,variant);if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+3);}s.fight={enemy:e.id,hp:fe.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,opening:false,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false,cuddleReserveUsed:false,nineLivesUsed:false,shuffleNoGlance:false,shuffleNoGlanceRound:null,...(variant?{variant,variantState:initialVariantState(variant)}:{})};if(source==='hunt')(s.settings??={}).lastHunt=e.id;s.last=null;s.log=[];{const notes=[];RE.startFightHook(s,s.fight,strengthOf(s),notes);if(notes.length)addLog(s,`Relics · ${notes.join(' · ')}.`,'special');}if(variant)addLog(s,`Special Edition · ${AFFIXES[variant.id].name}: ${AFFIXES[variant.id].effect}`,'special');if(!s.visited.includes(e.id))s.visited.push(e.id);return true;}
+function beginEncounter(s,e,source,now,opts={}){if(s.fight||s.hp<=0||restStatus(s,now).active||restStatus(s,now).wounded)return false;const variant=opts?.special===true?(source==='hunt'?startVariant(s,e.id):null):null;if(opts?.special===true&&!variant)return false;const fe=applyVariant(e,variant);if(s.passive==='prepared'){const t=totals(s);s.mp=Math.min(t.mp,s.mp+3);s.sp=Math.min(t.sp,s.sp+3);}s.fight={enemy:e.id,hp:fe.hp,round:0,startLevel:s.level,charge:0,used:[],cooldowns:{},barrier:0,barrierTurns:0,exposed:false,exposedRound:null,opening:false,healDeficit:0,sealUsed:false,source,dropChance:totals(s).equipmentDropChance,channel:null,streak:0,interruptImmune:0,vented:false,cuddleReserveUsed:false,nineLivesUsed:false,shuffleNoGlance:false,shuffleNoGlanceRound:null,...(variant?{variant,variantState:initialVariantState(variant)}:{})};if(source==='hunt')(s.settings??={}).lastHunt=e.id;s.last=null;s.log=[];{const notes=[];RE.startFightHook(s,s.fight,strengthOf(s),notes,rankOf(s));if(notes.length)addLog(s,`Relics · ${notes.join(' · ')}.`,'special');}if(variant)addLog(s,`Special Edition · ${AFFIXES[variant.id].name}: ${AFFIXES[variant.id].effect}`,'special');if(!s.visited.includes(e.id))s.visited.push(e.id);return true;}
 export function enemyAccess(s,id){const chapter=enemyChapter(id),e=ENEMIES.find(enemy=>enemy.id===id);if(!s||!e||chapter===null)return {allowed:false,reason:'Unknown encounter.',chapter:null};const meta=CHAPTERS.find(row=>row.id===chapter),boss=id===meta.bossId;if(!chapterUnlocked(s,chapter))return {allowed:false,reason:`Complete ${CHAPTERS[chapter-2]?.finale||'the previous chapter finale'} first.`,chapter};if(boss)return {allowed:false,reason:'This boss is fought through its active finale contract.',chapter};if(s.level<meta.minLevel)return {allowed:false,reason:`Requires level ${meta.minLevel}.`,chapter};if(e.level>s.level+2)return {allowed:false,reason:`Requires level ${Math.max(1,e.level-2)}.`,chapter};return {allowed:true,reason:null,chapter};}
 export function unlockedEnemies(s,chapter=currentChapter(s)){const meta=CHAPTERS.find(row=>row.id===chapter);if(!meta||!chapterUnlocked(s,chapter))return [];return meta.enemyIds.map(id=>ENEMIES.find(enemy=>enemy.id===id)).filter(Boolean).filter(enemy=>enemyAccess(s,enemy.id).allowed);}
 export function startFight(s,id,source='hunt',now=Date.now(),opts={}){const e=ENEMIES.find(enemy=>enemy.id===id);if(!e)return false;if(source==='hunt'){if(!enemyAccess(s,id).allowed)return false;return beginEncounter(s,e,'hunt',now,opts);}if(source==='delve'){
@@ -198,20 +214,26 @@ export function primaryActions(s){
 }
 export const mainActionKeys=primaryActions;
 export function actionInfo(s,key){let f=s.fight;const cd=f?.cooldowns[key]||0,cost=(id,variant)=>{const c=abilityCost(id,s.mastery,variant);return {mp:c.mp,sp:c.sp,cost:costLabel(c)};},recover=recoverProfile(s);const defs={attack:{label:'Attack',cost:'Free',mp:0,sp:0,desc:'Strike with your equipped weapon.'},cast:{label:'Arc Bolt',...cost('arc'),ability:'arc',desc:'1.25× spell damage. Requires a focus.'},combo:{label:'Wardcast',...cost('arc','wardcast'),ability:'arc',desc:`0.85× spell damage and Guard in one exchange. Requires a focus and shield. ${telegraphText.guardNote()}`},guard:{label:'Hunker down',std:'Defend',cost:'Free',mp:0,sp:0,desc:`${telegraphText.guardNote()} Restore 2 Bounce (stamina) after the response. A useful Guard can charge Reservoir.`},recover:{label:'Shake it off',std:'Recover',cost:'One exchange',mp:0,sp:0,desc:`Restore ${recover.mana} Sparkle (mana) and ${recover.stamina} Bounce (stamina); regain up to ${recover.passiveMana} additional Sparkle after your action, for ${recover.mana+recover.passiveMana} total. The enemy still responds.`},brace:{label:'Brace',...cost('brace'),ability:'brace',desc:`Guard and a barrier this exchange. 2-round cooldown. ${telegraphText.guardNote()}`},disrupt:{label:'Disrupt',...cost('disrupt'),ability:'disrupt',desc:'Weapon strike; interrupts a heavy wind-up on hit. 3-round cooldown.'},mend:{label:'Mend',...cost('mend'),ability:'mend',desc:'Restore health before the enemy acts. 2-round cooldown.'},driving:{label:'Driving Strike',...cost('driving'),ability:'driving',desc:'A committed 1.15× physical strike using equipped weapon power. No focus required.'},guardstrike:{label:'Guardstrike',...cost('driving','guardstrike'),ability:'driving',desc:`Deal 0.80× physical weapon damage and Guard in one exchange. Requires a shield. ${telegraphText.guardNote()}`},sidestep:{label:'Sidestep',...cost('driving','sidestep'),ability:'driving',desc:`Deal 0.80× precision weapon damage and Guard in one exchange. Requires a precision weapon and no shield. ${telegraphText.guardNote()}`},aegis:{label:'Aegis',...cost('aegis'),ability:'aegis',desc:'Raise a barrier for two enemy responses.'},expose:{label:'Expose',...cost('expose'),ability:'expose',desc:'Your next damaging action in the following exchange deals extra damage.'},withdraw:{label:'Go still',std:'Withdraw',cost:'Half enemy damage',mp:0,sp:0,desc:'Freeze until nobody is looking, then exit after one enemy response at half damage. Forfeit this encounter’s rewards.'},vent:{label:'Pop the lid',std:'Vent pressure',cost:'One exchange',mp:0,sp:0,desc:'Reduce The Spin Cycle’s pressure attacks by 30% for this fight.'}};
-const d={...defs[key]};if(!d.label)return null;if(key==='sidestep'&&s.raceId==='bunny'){const discount=isHomeLayerActive(s)?6:4;d.sp=Math.max(0,d.sp-discount);d.cost=`${d.sp} Bounce`;}if(d.mp===0&&key!=='recover')d.desc+=` Recover ${MANA_REGEN_PER_EXCHANGE} Sparkle (mana) after this accepted action.`;let unavailable=null;if(d.ability&&!s.equippedAbilities?.includes(d.ability))unavailable=(s.learnedAbilities||[]).includes(d.ability)?`${ABILITIES[d.ability].name} is not equipped.`:`${ABILITIES[d.ability].name} has not been learned.`;d.reason=!f?'Choose a hunt to begin.':unavailable?unavailable:s.mp<d.mp?'Not enough Sparkle (mana)':s.sp<d.sp?'Not enough Bounce (stamina)':cd>f.round?`Available in ${cd-f.round} exchange${cd-f.round===1?'':'s'}`:['cast','combo'].includes(key)&&!hasFocus(s)?'Equip a focus-tagged item':['combo','guardstrike'].includes(key)&&!isShield(s.gear.offhand)?'Equip a shield':key==='sidestep'&&!sidestepEligible(effectiveItem(s,s.gear.weapon)?.channel,s.gear.offhand)?'Needs a precision weapon and no shield':key==='vent'&&(f.enemy!=='boss'||f.hp>620*.65||f.vented)?'No lid to pop yet':key==='expose'&&f.exposed?'The enemy is already exposed.':null;return d;}
+const d={...defs[key]};if(!d.label)return null;if(key==='sidestep'&&s.raceId==='bunny'){const discount=isHomeLayerActive(s)?6:4;d.sp=Math.max(0,d.sp-discount);d.cost=`${d.sp} Bounce`;}if(d.mp===0&&key!=='recover')d.desc+=` Recover ${MANA_REGEN_PER_EXCHANGE} Sparkle (mana) after this accepted action.`;const mainWeapon=effectiveItem(s,s.gear.weapon);if(mainWeapon?.family==='wands'&&key==='cast'){const reduction=quickCastCostReduction(s,mainWeapon,key);d.mp=Math.max(0,d.mp-reduction);d.cost=costLabel({mp:d.mp,sp:d.sp});}let unavailable=null;if(d.ability&&!s.equippedAbilities?.includes(d.ability))unavailable=(s.learnedAbilities||[]).includes(d.ability)?`${ABILITIES[d.ability].name} is not equipped.`:`${ABILITIES[d.ability].name} has not been learned.`;d.reason=!f?'Choose a hunt to begin.':unavailable?unavailable:s.mp<d.mp?'Not enough Sparkle (mana)':s.sp<d.sp?'Not enough Bounce (stamina)':cd>f.round?`Available in ${cd-f.round} exchange${cd-f.round===1?'':'s'}`:['cast','combo'].includes(key)&&!hasFocus(s)?'Equip a focus-tagged item':['combo','guardstrike'].includes(key)&&!isShield(s.gear.offhand)?'Equip a shield':key==='sidestep'&&!sidestepEligible(effectiveItem(s,s.gear.weapon)?.channel,s.gear.offhand)?'Needs a precision weapon and no shield':key==='vent'&&(f.enemy!=='boss'||f.hp>620*.65||f.vented)?'No lid to pop yet':key==='expose'&&f.exposed?'The enemy is already exposed.':null;return d;}
 function addLog(s,text,kind='normal'){s.log.unshift({text,kind,round:s.fight?.round??0});s.log=s.log.slice(0,60);}
 export function journal(s,title,text,kind='story'){s.journal.unshift({title,text,kind});}
 function achievement(s,id,title,text,coins=0){if(s.achievements.some(a=>a.id===id))return;s.achievements.push({id,title,text});s.coins+=coins;journal(s,title,text,'achievement');addLog(s,`Merit badge earned: ${title}. ${text}`,'special');}
 function gainXP(s,amount){const gained=advanceXP(s,amount);if(gained.levels){const label=`${gained.points} attribute point${gained.points===1?'':'s'} earned`;journal(s,`${label} · Level ${s.level}`,`You reached level ${s.level} and received ${gained.points} attribute points. Allocate them whenever you are ready.`,'growth');}return gained.levels;}
 export function awardXP(s,n){return gainXP(s,n);}
-function victory(s,e,rng){const f=s.fight,dropChance=f.dropChance??totals(s).equipmentDropChance,diff=e.level-f.startLevel,factor=diff<=-6?.25:diff<=-3?.6:diff>=6?1.25:diff>=3?1.2:1;let xp=Math.floor((20+12*e.level)*(BOSS_IDS.has(e.id)?2:1)*factor);const rw=variantReward(f.variant,{xp,coins:e.coins,materials:1});xp=rw.xp;const leveled=gainXP(s,xp),luckStrength=relicEffectStrength(s,'luckyButton'),coinBonus=luckStrength>0?Math.min(Math.max(1,Math.floor(rw.coins*.25)),Math.max(1,Math.floor(rw.coins*.05*luckStrength))):0;s.coins+=rw.coins+coinBonus;s.materials[e.material]=(s.materials[e.material]||0)+rw.materials;
-const t=totals(s),missingHealth=Math.max(0,t.hp-s.hp),missingMana=Math.max(0,t.mp-s.mp),heartHeal=Math.min(missingHealth,Math.floor(missingHealth*.05*relicEffectStrength(s,'patchworkHeart'))),bellMana=Math.min(missingMana,Math.floor(2*relicEffectStrength(s,'dreamBell')));s.hp+=heartHeal;s.mp+=bellMana;
-const victoryNotes=[],engineVictory=RE.onVictory(s,f,{maxHp:t.hp},strengthOf(s),victoryNotes),cocoaHeal=Math.min(engineVictory.heal,Math.max(0,t.hp-s.hp));s.hp+=cocoaHeal;if(cocoaHeal>0)victoryNotes.unshift(`Hot-Cocoa Thimble restored ${cocoaHeal} Stuffing`);
+function victory(s,e,rng){const f=s.fight,dropChance=f.dropChance??totals(s).equipmentDropChance,diff=e.level-f.startLevel,factor=diff<=-6?.25:diff<=-3?.6:diff>=6?1.25:diff>=3?1.2:1;let xp=Math.floor((20+12*e.level)*(BOSS_IDS.has(e.id)?2:1)*factor);const rw=variantReward(f.variant,{xp,coins:e.coins,materials:1});xp=rw.xp;const leveled=gainXP(s,xp),rs=strengthOf(s),rk=rankOf(s);
+const luckStrength=rs('luckyButton');let coinBonus=0;if(luckStrength>0){const pluck=f?RE.clampInt(f.pluck,0,RE.PLUCK_CAP):0,pluckBonus=pluck>=4?.05:0,coinRate=(.05+pluckBonus)*luckStrength,maxRate=rk('luckyButton')>=3?.3125:.25,coinCap=Math.max(1,Math.floor(rw.coins*maxRate));coinBonus=Math.min(coinCap,Math.max(1,Math.floor(rw.coins*coinRate)));}s.coins+=rw.coins+coinBonus;s.materials[e.material]=(s.materials[e.material]||0)+rw.materials;
+const t=totals(s),missingHealth=Math.max(0,t.hp-s.hp),missingMana=Math.max(0,t.mp-s.mp),pluck=f?RE.clampInt(f.pluck,0,RE.PLUCK_CAP):0;
+const heartRate=(.05+(rk('patchworkHeart')>=3?.0125:.01)*pluck)*rs('patchworkHeart'),heartHeal=Math.min(missingHealth,Math.floor(missingHealth*heartRate));
+const bellRate=(.03+(rk('dreamBell')>=3?.0125:.01)*pluck)*rs('dreamBell'),bellMana=Math.min(missingMana,Math.floor(t.mp*bellRate));s.hp+=heartHeal;s.mp+=bellMana;
+const victoryNotes=[],engineVictory=RE.onVictory(s,f,{maxHp:t.hp},rs,victoryNotes,rk),cocoaHeal=Math.min(engineVictory.heal,Math.max(0,t.hp-s.hp));s.hp+=cocoaHeal;if(cocoaHeal>0)victoryNotes.unshift(`Hot-Cocoa Thimble restored ${cocoaHeal} Stuffing`);
 s.kills[e.id]=(s.kills[e.id]||0)+1;const vv=variantVictory(s,e.id,f);
 const misses=Number.isInteger(s.equipmentMisses)?clamp(s.equipmentMisses,0,5):0;
 const rolled=rollLoot(e,rng,dropChance,misses,id=>s.bag.includes(id));let {loot,salvaged,dropProtected}=rolled;s.equipmentMisses=rolled.misses;
 if(loot)s.bag.push(loot);if(salvaged)s.materials['Salvaged fittings']=(s.materials['Salvaged fittings']||0)+1;
-if(diff>=-2){for(const key of f.used.slice(0,3)){const m=s.mastery[key];if(!m||m.rank>=3)continue;m.marks++;if(m.marks>=3+2*m.rank){m.marks-=3+2*m.rank;m.rank++;journal(s,`${ABILITIES[key]?.name||key} · rank ${m.rank}`,'Practice has become something rather more useful.','growth');}}}
+if(diff>=-2){for(const key of f.used.slice(0,3)){const m=s.mastery[key];if(!m||m.rank>=3)continue;m.marks++;if(m.marks>=3+2*m.rank){m.marks-=3+2*m.rank;m.rank++;journal(s,`${ABILITIES[key]?.name||key} · rank ${m.rank}`,'Practice has become something rather more useful.','growth');}}
+const weaponAwards=awardWeaponMasteryOnVictory(s,e,f.startLevel,f);
+for(const a of weaponAwards){if(a.leveled){journal(s,`${WEAPON_FAMILY_TRAITS[a.family]?.name||a.family} · rank ${a.rank}`,'Your skill with this weapon family has grown.','growth');}}
+}
 recordStoryEvent(s,{type:'victory',enemy:e.id,eventId:'victory:'+e.id+':'+s.kills[e.id]});
 if(BOSS_IDS.has(e.id)){s.clears++;if(e.id==='boss'&&s.clears===1){s.pending='bossLoot';journal(s,'The Quay will stay dry','The Spin Cycle’s corrupted directive is suspended. Fluffington Quay’s barriers hold. The missing Seam Crew are fluffy, damp and safe in the upper maintenance tunnels.');}if(s.delve&&!s.delve.campUsed)achievement(s,'budget','Budget Emergency','“Fluff conserved. Therapist not included.”');}
 s.last={type:'victory',enemy:e.id,xp,coins:rw.coins+coinBonus,material:e.material,loot,salvaged,dropChance,dropProtected,leveled,...(rw.bonus?{variant:f.variant,materials:rw.materials,bonus:rw.bonus}:{}),...(vv.granted?{variantOffer:vv.granted}:{})};addLog(s,`${e.name} defeated. +${xp} XP · +${rw.coins+coinBonus} coins · ${rw.materials>1?rw.materials+' × ':''}${materialLabel(e.material)}.`,'reward');if(victoryNotes.length)addLog(s,`Relics · ${victoryNotes.join(' · ')}.`,'heal');if(heartHeal||bellMana)addLog(s,`Relic resonance: +${heartHeal} Stuffing (health), +${bellMana} Sparkle (mana).`,'heal');s.fight=null;
@@ -222,48 +244,53 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  const info=actionInfo(s,key);if(!info||info.reason)return {ok:false,reason:info?.reason||'Unknown action'};
  const retryAfterMs=actionDelayRemaining(s,now);if(retryAfterMs)return {ok:false,reason:'Brief action delay. Tap again when ready.',retryAfterMs};
  s.nextActionAt=now+ACTION_DELAY_MS;countExchange(f);
- const relicNotes=[],rs=strengthOf(s),flushRelics=()=>{if(relicNotes.length)addLog(s,(s.raceId?'Relics and traits · ':'Relics · ')+relicNotes.splice(0).join(' · ')+'.','special');};let relicHealed=0;
+ const relicNotes=[],rs=strengthOf(s),rk=rankOf(s),flushRelics=()=>{if(relicNotes.length)addLog(s,(s.raceId?'Relics and traits · ':'Relics · ')+relicNotes.splice(0).join(' · ')+'.','special');};let relicHealed=0;
  const e=fightEnemy(f),t=totals(s),i=intent(s),w=effectiveItem(s,s.gear.weapon),oldCharge=f.charge||0,profile=actionProfile(s,key,e.id);
  f.charge=0;const opening=f.opening===true;f.opening=false;s.mp-=info.mp;s.sp-=info.sp;
  let guarded=GUARD_ACTIONS.includes(key),interrupted=false,damage=0,damageApplied=0,overkill=0,channel=null,critical=false,healed=0,traitHealed=0;
  let offhandDamage=0,offhandDamageApplied=0,offhandOverkill=0,mendHealed=0;
  if(DAMAGING_ACTIONS.includes(key)){
-  channel=profile.channel;let glance=rng()>profile.hitChance;if(f.shuffleNoGlance){glance=false;f.shuffleNoGlance=false;}critical=!glance&&rng()<t.critChance;damage=glance?profile.glance:critical?profile.critical:profile.normal;
+  f.damagingActionUsed=true;
+  channel=profile.channel;let glance=rng()>profile.hitChance;if(f.shuffleNoGlance){glance=false;f.shuffleNoGlance=false;}critical=!glance&&rng()<profile.critChance;damage=glance?profile.glance:critical?profile.critical:profile.normal;
   if(critical&&s.raceId==='cat')RE.gainPluck(f,1,'Nine Lives',relicNotes);
   if(channel==='arcane'&&critical&&s.raceId==='unicorn'){const manaGain=Math.min(t.mp-s.mp,isHomeLayerActive(s)?6:4);if(manaGain>0){s.mp+=manaGain;addLog(s,`Night-Light restored ${manaGain} Sparkle (mana).`,'heal');}RE.gainPluck(f,1,'Night-Light',relicNotes);}
-  if(!f.amberMarbleUsed&&Math.floor(3*relicEffectStrength(s,'amberMarble'))>0)f.amberMarbleUsed=true;
+  if(!f.amberMarbleUsed&&rs('amberMarble')>0){f.amberMarbleUsed=true;RE.gainPluck(f,RE.scaled(rk('amberMarble')>=3?2:1,rs('amberMarble')),'amberMarble',relicNotes);}
   const soaked=variantSoak(f,damage),hpBefore=f.hp;f.hp=Math.max(0,f.hp-(damage-soaked));damageApplied=hpBefore-f.hp;overkill=f.hp===0?Math.max(0,damage-soaked-hpBefore):0;addLog(s,`${info.label}${critical?' · critical':''}${glance?' · glancing hit':''}: ${damage} ${channel} damage${oldCharge&&channel==='arcane'?' · Reservoir +10%':''}${f.exposed?' · exposed':''}${opening?profile.opening?` · Opening ${openingPercent()}`:' · Opening (no glance)':''}${overkill?` · only ${damageApplied} needed`:''}.`,'attack');if(soaked>0)addLog(s,`Static-charged barrier soaked ${soaked} of that.`,'special');
-  if(s?.rulesPreview?.twoHands){
-   const offItem=effectiveItem(s,s.gear?.offhand);
-   const kind=classifySecondHand(offItem);
-   if((kind==='weapon'||kind==='focus')&&profile?.offhand){
-    if(f.hp>0){
-     const offP=profile.offhand;
-     const offGlance=rng()>offP.hitChance;
-     const offCrit=!offGlance&&rng()<t.critChance;
-     const offDmg=offGlance?offP.glance:offCrit?offP.critical:offP.normal;
-     const offSoaked=variantSoak(f,offDmg);
-     const offHpBefore=f.hp;
-     f.hp=Math.max(0,f.hp-(offDmg-offSoaked));
-     offhandDamageApplied=offHpBefore-f.hp;
-     offhandOverkill=f.hp===0?Math.max(0,offDmg-offSoaked-offHpBefore):0;
-     offhandDamage=offDmg;
-     addLog(s,`Second hand (${offItem.name})${offCrit?' · critical':''}${offGlance?' · glancing hit':''}: ${offDmg} ${offP.channel} damage${offhandOverkill?` · only ${offhandDamageApplied} needed`:''}.`,'attack');
-     if(offSoaked>0)addLog(s,`Static-charged barrier soaked ${offSoaked} of that.`,'special');
-    }
-   }else if(kind==='mender'){
-    const rawMend=menderMendAmount(s,offItem,'strike');
+  if(damageApplied>0&&w?.family)recordDamagingFamily(f,w.family);
+  if(key==='sidestep'&&w?.family==='foils'){const spGain=riposteStaminaRestore(s,w,key);if(spGain>0){s.sp=Math.min(t.sp,s.sp+spGain);addLog(s,`Riposte restored ${spGain} Bounce (stamina).`,'heal');}}
+  const offItem=effectiveItem(s,s.gear?.offhand);
+  const kind=classifySecondHand(offItem);
+  if((kind==='weapon'||kind==='focus')&&profile?.offhand){
+   if(f.hp>0){
+    const offP=profile.offhand;
+    const offGlance=rng()>offP.hitChance;
+    const offCrit=!offGlance&&rng()<offP.critChance;
+    const offDmg=offGlance?offP.glance:offCrit?offP.critical:offP.normal;
+    const offSoaked=variantSoak(f,offDmg);
+    const offHpBefore=f.hp;
+    f.hp=Math.max(0,f.hp-(offDmg-offSoaked));
+    offhandDamageApplied=offHpBefore-f.hp;
+    offhandOverkill=f.hp===0?Math.max(0,offDmg-offSoaked-offHpBefore):0;
+    offhandDamage=offDmg;if(offhandDamageApplied>0&&offItem?.family)recordDamagingFamily(f,offItem.family);
+    addLog(s,`Second hand (${offItem.name})${offCrit?' · critical':''}${offGlance?' · glancing hit':''}: ${offDmg} ${offP.channel} damage${offhandOverkill?` · only ${offhandDamageApplied} needed`:''}.`,'attack');
+    if(offSoaked>0)addLog(s,`Static-charged barrier soaked ${offSoaked} of that.`,'special');
+   }
+   if(offItem?.family==='batons'&&!w?.twoHanded){
+    const rawMend=batonsSecondHandMend(s,offItem,'strike');
     const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
     if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
    }
+  }else if(kind==='mender'){
+   const rawMend=menderMendAmount(s,offItem,'strike');
+   const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
+   if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
   }
   if(damage>0){const mark=['driving','guardstrike','sidestep'].includes(key)?'driving':channel==='arcane'?'arc':null;if(mark&&!f.used.includes(mark))f.used.push(mark);if(f.exposed&&!profile.opening&&!f.used.includes('expose'))f.used.push('expose');if(f.exposed){f.exposed=false;f.exposedRound=null;}}
-  if(key==='disrupt'&&i.interruptible&&!glance&&f.interruptImmune<=f.round){if(!f.used.includes('disrupt'))f.used.push('disrupt');interrupted=true;f.interruptImmune=f.round+(s.mastery?.disrupt?.choice==='immunity'?3:4);addLog(s,`${i.name} interrupted. The enemy loses its response.`,'special');RE.onInterrupt(f,rs,relicNotes);if(e.id==='boss')achievement(s,'maintenance','Percussive Maintenance','“The approved shutdown procedure was unavailable. Apparently you were available.”',20);}
+  if(key==='disrupt'&&i.interruptible&&!glance&&f.interruptImmune<=f.round){if(!f.used.includes('disrupt'))f.used.push('disrupt');interrupted=true;f.interruptImmune=f.round+(s.mastery?.disrupt?.choice==='immunity'?3:4);addLog(s,`${i.name} interrupted. The enemy loses its response.`,'special');RE.onInterrupt(f,rs,relicNotes,rk);if(e.id==='boss')achievement(s,'maintenance','Percussive Maintenance','“The approved shutdown procedure was unavailable. Apparently you were available.”',20);}
   if(f.channel===channel)f.streak++;else{f.channel=channel;f.streak=1;}
-  if(channel==='physical'&&info.mp===0&&relicEffectStrength(s,'ribbonKnot')>0){const gain=Math.min(t.mp-s.mp,Math.floor(relicEffectStrength(s,'ribbonKnot')));s.mp+=gain;if(gain)addLog(s,`Ribbon Knot restored ${gain} Sparkle (mana).`,'heal');}
+  if(channel==='physical'&&info.mp===0&&rs('ribbonKnot')>0){const mult=(f?.pluck||0)>=4?(rk('ribbonKnot')>=3?2.5:2):1;const gain=Math.min(t.mp-s.mp,Math.max(1,Math.floor(t.mp*.02*rs('ribbonKnot')*mult)));s.mp+=gain;if(gain)addLog(s,`Ribbon Knot restored ${gain} Sparkle (mana).`,'heal');}
  }else if(key==='mend'){
-  const heal=Math.min(t.hp-s.hp,t.mendHealing);healed=heal;s.hp+=heal;const usefulHeal=Math.min(heal,f.healDeficit||0);f.healDeficit=Math.max(0,(f.healDeficit||0)-usefulHeal);if(usefulHeal>0&&!f.used.includes('mend'))f.used.push('mend');addLog(s,`Mend restored ${heal} Stuffing (health).`,'heal');
-  if(s.raceId==='unicorn'&&heal>0)RE.gainPluck(f,1,'Night-Light',relicNotes);
+  const heal=Math.min(t.hp-s.hp,t.mendHealing);healed=heal;s.hp+=heal;const usefulHeal=Math.min(heal,f.healDeficit||0);f.healDeficit=Math.max(0,(f.healDeficit||0)-usefulHeal);if(usefulHeal>0&&!f.used.includes('mend'))f.used.push('mend');if(usefulHeal>0&&rs('stuffingSatchel')>0){RE.gainPluck(f,RE.scaled(rk('stuffingSatchel')>=3?2:1,rs('stuffingSatchel')),'stuffingSatchel',relicNotes);}if(s.raceId==='unicorn'&&heal>0)RE.gainPluck(f,1,'Night-Light',relicNotes);addLog(s,`Mend restored ${heal} Stuffing (health).`,'heal');
  }else if(key==='aegis'){
   const cap=Math.floor(t.hp*.3),base=Math.floor(55+8*(s.mastery?.aegis?.rank||1));f.barrier=Math.min(cap,Math.max(f.barrier,base));f.barrierTurns=2;f.cooldowns.aegis=f.round+4;f.streak=0;addLog(s,`Aegis raised a ${f.barrier}-point barrier for two enemy responses.`,'defend');
  }else if(key==='expose'){
@@ -271,18 +298,16 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  }else if(key==='recover'){
   const recover=recoverProfile(s),manaRecovered=Math.min(recover.mana,Math.max(0,t.mp-s.mp)),staminaRecovered=Math.min(recover.stamina,Math.max(0,t.sp-s.sp));s.mp+=manaRecovered;s.sp+=staminaRecovered;f.streak=0;addLog(s,`Shake it off · recovered ${manaRecovered} Sparkle (mana) and ${staminaRecovered} Bounce (stamina).`,'heal');
   if(s.raceId==='bear'){const bearRate=isHomeLayerActive(s)?0.075:0.05,bearHeal=Math.min(t.hp-s.hp,Math.floor(t.hp*bearRate));if(bearHeal>0){s.hp+=bearHeal;healed+=bearHeal;traitHealed+=bearHeal;addLog(s,`Well Loved restored ${bearHeal} Stuffing (health).`,'heal');}RE.gainPluck(f,1,'Well Loved',relicNotes);}
-  if(s?.rulesPreview?.twoHands){
-   const offItem=effectiveItem(s,s.gear?.offhand);
-   if(classifySecondHand(offItem)==='mender'){
-    const rawMend=menderMendAmount(s,offItem,'recover');
-    const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
-    if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
-   }
+  const offItem=effectiveItem(s,s.gear?.offhand);
+  if(!w?.twoHanded){
+   const rawMend=classifySecondHand(offItem)==='mender'?menderMendAmount(s,offItem,'recover'):offItem?.family==='batons'?batonsSecondHandMend(s,offItem,'recover'):0;
+   const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
+   if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
   }
  }else if(key==='vent'){
   f.vented=true;addLog(s,'Lid popped. The Spin Cycle’s pressure damage reduced by 30%.','special');journal(s,'A little less pressure','You popped the lid by hand. The pressure system is contained, and the suds are only mildly offended.');
  }else{f.streak=0;addLog(s,key==='withdraw'?'You go very still and look for a safe way out.':'You hunker down.','defend');}
- {const after=RE.afterPlayerAction(f,{key,damaging:DAMAGING_ACTIONS.includes(key),damageApplied:damageApplied+offhandDamageApplied,streak:f.streak,maxHp:t.hp},rs,relicNotes);const heal=Math.min(after.heal,Math.max(0,t.hp-s.hp));if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Fang restored ${heal} Stuffing`);}}
+ {const after=RE.afterPlayerAction(f,{key,damaging:DAMAGING_ACTIONS.includes(key),damageApplied:damageApplied+offhandDamageApplied,streak:f.streak,maxHp:t.hp},rs,relicNotes,rk);const heal=Math.min(after.heal,Math.max(0,t.hp-s.hp));if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Fang restored ${heal} Stuffing`);}}
  const actualManaRegenerated=info.mp===0?Math.min(MANA_REGEN_PER_EXCHANGE,Math.max(0,t.mp-s.mp)):0;
  if(actualManaRegenerated>0){s.mp+=actualManaRegenerated;addLog(s,`Caught your breath · +${actualManaRegenerated} Sparkle (mana).`,'heal');}
  if(opening&&!DAMAGING_ACTIONS.includes(key))addLog(s,'Opening closed unused. It only lasts for one exchange and needs a damaging action.','special');
@@ -293,27 +318,27 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  }
  if(key==='disrupt')f.cooldowns.disrupt=f.round+4;
  if(key==='mend')f.cooldowns.mend=f.round+(s.mastery?.mend?.choice==='recovery'?2:3);
- s.totalExchanges++;if(f.hp<=0){flushRelics();victory(s,e,rng);return {ok:true,victory:true,relicHealed,damage,damageApplied,overkill,critical,incoming:0,heavy:false,absorbed:0,prevented:0,healed,traitHealed,manaRegenerated:actualManaRegenerated,openingUsed:opening,...(s.rulesPreview?.twoHands?{offhandDamage,offhandDamageApplied,mendHealed}:{})};}
+ s.totalExchanges++;if(f.hp<=0){flushRelics();victory(s,e,rng);return {ok:true,victory:true,relicHealed,damage,damageApplied,overkill,critical,incoming:0,heavy:false,absorbed:0,prevented:0,healed,traitHealed,manaRegenerated:actualManaRegenerated,openingUsed:opening,offhandDamage,offhandDamageApplied,mendHealed};}
  const enemyAcc=25+4*e.level,playerEvasion=t.evasion,enemyHit=clamp(.85+.3*(enemyAcc-playerEvasion)/(enemyAcc+playerEvasion+40),.65,.98),enemyGlance=!interrupted&&rng()>enemyHit;
  if(enemyGlance&&s.raceId==='bunny'){f.shuffleNoGlance=true;f.shuffleNoGlanceRound=f.round+1;RE.gainPluck(f,1,'Pellet Shuffle',relicNotes);}
  let incoming=interrupted?0:Math.floor(i.damage*(enemyGlance?.55:1)*(1-clamp((e.id==='wisp'?t.ward:t.armor)/((e.id==='wisp'?t.ward:t.armor)+100+8*e.level),0,.65))*(f.vented&&e.id==='boss'?.7:1));
- const declared=i.damage*(enemyGlance?.55:1)*(f.vented&&e.id==='boss'?.7:1),afterArmor=incoming,hitInput={declared,afterArmor,guardRate:guarded?guardRate(i.heavy):0,withdraw:key==='withdraw'};
+ const declared=i.damage*(enemyGlance?.55:1)*(f.vented&&e.id==='boss'?.7:1),afterArmor=incoming,steadyBonus=steadyGuardBonus(s,w,guarded),wardingBonus=wardingGuardBonus(s,w,key),totalGuardRate=guarded?Math.min(TELEGRAPH.preventionCeiling,guardRate(i.heavy)+steadyBonus+wardingBonus):0,hitInput={declared,afterArmor,guardRate:totalGuardRate,withdraw:key==='withdraw'};
  let hit=resolveHit({...hitInput,barrier:f.barrier}),prevented=hit.prevented;
- if(guarded&&prevented>=20){s.usefulGuards=(s.usefulGuards||0)+1;if(s?.rulesPreview?.twoHands){const offItem=effectiveItem(s,s.gear?.offhand);if(classifySecondHand(offItem)==='mender'){const rawMend=menderMendAmount(s,offItem,'guard');const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}}}{const lock=RE.onUsefulGuard(f,{heavy:i.heavy,prevented,enemyHp:f.hp},rs,relicNotes);if(lock.reflect>0){f.hp-=lock.reflect;relicNotes.push(`Locket sent back ${lock.reflect} damage`);}}if(i.heavy)s.guardCount++;if(s.passive==='reservoir'){f.charge=1;if(!s.discoveries.includes('reservoir')){s.discoveries.push('reservoir');journal(s,'Interaction discovered · Stored Pressure','A useful Guard stores one charge. Your next Arc Bolt or Wardcast gains 10% raw spell damage. One charge, expires after the next exchange. “The shield is not an approved charging station. Procurement has been informed.”','discovery');}addLog(s,'Reservoir charged. Next spell +10% (expires next exchange).','special');}if(relicEffectStrength(s,'seal')>0&&!f.sealUsed){const barrier=Math.floor(15*relicEffectStrength(s,'seal'));f.barrier=Math.max(f.barrier,Math.min(Math.floor(t.hp*.3),barrier));f.barrierTurns=Math.max(f.barrierTurns,1);f.sealUsed=true;addLog(s,`${ITEMS.seal.name} grants ${Math.min(Math.floor(t.hp*.3),barrier)} barrier.`,'defend');}if(!f.threadSpoolUsed&&relicEffectStrength(s,'threadSpool')>0){const gain=Math.min(t.sp-s.sp,Math.floor(2*relicEffectStrength(s,'threadSpool')));s.sp+=gain;f.threadSpoolUsed=true;if(gain)addLog(s,`Spare Thread restored ${gain} Bounce (stamina).`,'heal');}if(!f.thimbleUsed&&relicEffectStrength(s,'thimbleGuard')>0){const barrier=Math.floor(4*relicEffectStrength(s,'thimbleGuard')),added=Math.max(0,Math.min(Math.floor(t.hp*.3)-f.barrier,barrier));f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,1);f.thimbleUsed=true;if(added)addLog(s,`Thimble Guard added ${added} barrier.`,'defend');}if(s.guardCount>=3)achievement(s,'citizen','Load-Bearing Citizen','“You have discovered the tactical applications of remaining upright. Engineering has been informed.”',15);}
- hit=resolveHit({...hitInput,barrier:f.barrier});prevented=hit.prevented;incoming=hit.incoming;const absorbed=hit.absorbed;f.barrier-=absorbed;
+ if(guarded&&prevented>=20){s.usefulGuards=(s.usefulGuards||0)+1;if(!w?.twoHanded){const offItem=effectiveItem(s,s.gear?.offhand);const rawMend=classifySecondHand(offItem)==='mender'?menderMendAmount(s,offItem,'guard'):offItem?.family==='batons'?batonsSecondHandMend(s,offItem,'guard'):0;if(rawMend>0){const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}}if(offItem?.family==='scepters'){const barrierAdd=sceptersSecondHandBarrier(s,offItem);if(barrierAdd>0){const cap=Math.floor(t.hp*.3);f.barrier=Math.min(cap,f.barrier+barrierAdd);f.barrierTurns=Math.max(f.barrierTurns,1);addLog(s,`Second hand (${offItem.name}) raised ${barrierAdd} barrier.`,'defend');}}if(offItem?.family==='foils'){const ripProfile=foilsRiposteProfile(s,offItem,e,t,i,RE.damageMultiplier(f,rs,rk));if(ripProfile&&f.hp>0){const ripGlance=rng()>ripProfile.hitChance,ripCrit=!ripGlance&&rng()<ripProfile.critChance,ripDmg=ripGlance?ripProfile.glance:ripCrit?ripProfile.critical:ripProfile.normal,ripSoaked=variantSoak(f,ripDmg),ripBefore=f.hp;f.hp=Math.max(0,f.hp-(ripDmg-ripSoaked));const ripApplied=ripBefore-f.hp;addLog(s,`Second hand (${offItem.name}) riposte${ripCrit?' · critical':''}${ripGlance?' · glancing hit':''}: ${ripDmg} physical damage${f.hp===0?` · only ${ripApplied} needed`:''}.`,'attack');if(ripApplied>0)recordDamagingFamily(f,'foils');}}}{const lock=RE.onUsefulGuard(f,{heavy:i.heavy,prevented,enemyHp:f.hp},rs,relicNotes,rk);if(lock.reflect>0){f.hp-=lock.reflect;relicNotes.push(`Locket sent back ${lock.reflect} damage`);}}if(i.heavy)s.guardCount++;if(s.passive==='reservoir'){f.charge=1;if(!s.discoveries.includes('reservoir')){s.discoveries.push('reservoir');journal(s,'Interaction discovered · Stored Pressure','A useful Guard stores one charge. Your next Arc Bolt or Wardcast gains 10% raw spell damage. One charge, expires after the next exchange. “The shield is not an approved charging station. Procurement has been informed.”','discovery');}addLog(s,'Reservoir charged. Next spell +10% (expires next exchange).','special');}if(rs('seal')>0&&!f.sealUsed){const barrier=Math.floor(t.hp*.04*rs('seal')),cap=Math.floor(t.hp*.3);f.barrier=Math.max(f.barrier,Math.min(cap,barrier));f.barrierTurns=Math.max(f.barrierTurns,1);f.sealUsed=true;RE.gainPluck(f,RE.scaled(rk('seal')>=3?2:1,rs('seal')),'seal',relicNotes);addLog(s,`${ITEMS.seal.name} grants ${Math.min(cap,barrier)} barrier.`,'defend');}if(!f.threadSpoolUsed&&rs('threadSpool')>0){const gain=Math.min(t.sp-s.sp,Math.floor(t.sp*.05*rs('threadSpool')));s.sp+=gain;f.threadSpoolUsed=true;RE.gainPluck(f,RE.scaled(rk('threadSpool')>=3?2:1,rs('threadSpool')),'threadSpool',relicNotes);if(gain)addLog(s,`Spare Thread restored ${gain} Bounce (stamina).`,'heal');}if(!f.thimbleUsed&&rs('thimbleGuard')>0){const pluck=RE.clampInt(f.pluck,0,RE.PLUCK_CAP),rate=(.02+(rk('thimbleGuard')>=3?.00625:.005)*pluck)*rs('thimbleGuard'),barrier=Math.floor(t.hp*rate),added=Math.max(0,Math.min(Math.floor(t.hp*.3)-f.barrier,barrier));f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,1);f.thimbleUsed=true;if(added)addLog(s,`Thimble Guard added ${added} barrier.`,'defend');}if(s.guardCount>=3)achievement(s,'citizen','Load-Bearing Citizen','“You have discovered the tactical applications of remaining upright. Engineering has been informed.”',15);}
+ hit=resolveHit({...hitInput,barrier:f.barrier});prevented=hit.prevented;incoming=hit.incoming;const absorbed=hit.absorbed;f.barrier-=absorbed;if(f.hp<=0){flushRelics();victory(s,e,rng);return {ok:true,victory:true,relicHealed,damage,damageApplied,overkill,critical,incoming:0,heavy:false,absorbed,prevented,healed,traitHealed,manaRegenerated:actualManaRegenerated,openingUsed:opening,offhandDamage,offhandDamageApplied,mendHealed};}
  if(absorbed>0){if(key==='brace'&&!f.used.includes('brace'))f.used.push('brace');if(key==='aegis'&&!f.used.includes('aegis'))f.used.push('aegis');}
  const playerHPBefore=s.hp;countDamageTaken(f,incoming);s.hp=Math.max(0,s.hp-incoming);const incomingApplied=playerHPBefore-s.hp,incomingOverkill=s.hp===0?Math.max(0,incoming-playerHPBefore):0;f.healDeficit=(f.healDeficit||0)+incoming;if(!interrupted)addLog(s,`${i.name}${enemyGlance?' · glancing hit':''}: ${incoming} damage${prevented?` · ${prevented} guarded`:''}${absorbed?` · ${absorbed} absorbed`:''}${incomingOverkill?` · only ${incomingApplied} needed`:''}.`,'enemy');
  if(s.raceId==='wolf'&&incoming>0)RE.gainPluck(f,1,'Reinforced Seams',relicNotes);
  if(s.raceId==='cat'&&!f.nineLivesUsed&&s.hp<=0&&incomingApplied>0){f.nineLivesUsed=true;s.hp=1;const catPluck=isHomeLayerActive(s)?3:2;RE.gainPluck(f,catPluck,'Nine Lives',relicNotes);addLog(s,'Nine Lives: Cheated defeat and stayed at 1 Stuffing.','special');}
  if(s.raceId==='bear'&&!f.cuddleReserveUsed&&s.hp>0&&s.hp<t.hp*0.3){f.cuddleReserveUsed=true;const barrierRate=isHomeLayerActive(s)?0.15:0.10,barrierAmt=Math.floor(t.hp*barrierRate),cap=Math.floor(t.hp*0.3);const added=Math.max(0,Math.min(cap-f.barrier,barrierAmt));if(added>0){f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,2);addLog(s,`Cuddle Reserve granted a ${added}-point barrier for the next response.`,'defend');}}
- {const after=RE.afterEnemyResponse(f,{key,hurt:incoming>0,heavy:i.heavy&&!interrupted,interrupted,alive:s.hp>0,maxHp:t.hp},rs,relicNotes);const heal=s.hp>0?Math.min(after.heal,Math.max(0,t.hp-s.hp)):0;if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Seed-Packet Heart restored ${heal} Stuffing`);}}
+ {const after=RE.afterEnemyResponse(f,{key,hurt:incoming>0,heavy:i.heavy&&!interrupted,interrupted,alive:s.hp>0,maxHp:t.hp},rs,relicNotes,rk);const heal=s.hp>0?Math.min(after.heal,Math.max(0,t.hp-s.hp)):0;if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Seed-Packet Heart restored ${heal} Stuffing`);}}
  flushRelics();
  const variantNote=variantResponse(f,i,interrupted);if(variantNote)addLog(s,variantNote,'special');
  let openingGranted=false;if(guarded&&i.heavy&&!interrupted&&s.hp>0){f.opening=true;openingGranted=true;addLog(s,`Opening: ${i.name} overreached. Your next damaging action cannot glance and deals ${openingPercent()} damage.`,'special');}
  if(key==='guard')s.sp=Math.min(t.sp,s.sp+2);if(f.barrierTurns>0&&--f.barrierTurns===0)f.barrier=0;if(f.exposed&&(f.exposedRound??f.round)<=f.round){f.exposed=false;f.exposedRound=null;}if(f.shuffleNoGlance&&(f.shuffleNoGlanceRound??f.round)<=f.round){f.shuffleNoGlance=false;f.shuffleNoGlanceRound=null;}f.round++;
- if(s.hp<=0){s.fight=null;s.delve=null;RE.clearCarry(s);const penalty=applyDeathPenalty(s,now);s.last={type:'defeat',enemy:e.id,...penalty};journal(s,'Back on the shelf',`A kind paw put you back on the shelf. ${penalty.coinsLost} coins covered the call-out. Your levels and gear are safe. Fluff up at the Quay (Rest) once you have finished drying off.`);return {ok:true,defeat:true,relicHealed,critical,incoming,incomingApplied,incomingOverkill,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,traitHealed,manaRegenerated:actualManaRegenerated,...penalty,...(s.rulesPreview?.twoHands?{offhandDamage,offhandDamageApplied,mendHealed}:{})};}
- if(key==='withdraw'){s.fight=null;RE.clearCarry(s);s.last={type:'withdraw',enemy:e.id};if(s.delve)s.delve=null;return {ok:true,withdraw:true,relicHealed,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,traitHealed,manaRegenerated:actualManaRegenerated,...(s.rulesPreview?.twoHands?{offhandDamage,offhandDamageApplied,mendHealed}:{})};}
- return {ok:true,damage,damageApplied,relicHealed,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,traitHealed,interrupted,manaRegenerated:actualManaRegenerated,opening:openingGranted,openingUsed:opening&&DAMAGING_ACTIONS.includes(key),...(s.rulesPreview?.twoHands?{offhandDamage,offhandDamageApplied,mendHealed}:{})};
+ if(s.hp<=0){s.fight=null;s.delve=null;RE.clearCarry(s);const penalty=applyDeathPenalty(s,now);s.last={type:'defeat',enemy:e.id,...penalty};journal(s,'Back on the shelf',`A kind paw put you back on the shelf. ${penalty.coinsLost} coins covered the call-out. Your levels and gear are safe. Fluff up at the Quay (Rest) once you have finished drying off.`);return {ok:true,defeat:true,relicHealed,critical,incoming,incomingApplied,incomingOverkill,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,traitHealed,manaRegenerated:actualManaRegenerated,...penalty,offhandDamage,offhandDamageApplied,mendHealed};}
+ if(key==='withdraw'){s.fight=null;RE.clearCarry(s);s.last={type:'withdraw',enemy:e.id};if(s.delve)s.delve=null;return {ok:true,withdraw:true,relicHealed,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,traitHealed,manaRegenerated:actualManaRegenerated,offhandDamage,offhandDamageApplied,mendHealed};}
+ return {ok:true,damage,damageApplied,relicHealed,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,traitHealed,interrupted,manaRegenerated:actualManaRegenerated,opening:openingGranted,openingUsed:opening&&DAMAGING_ACTIONS.includes(key),offhandDamage,offhandDamageApplied,mendHealed};
 }
 export function allocate(s,k){if(s.fight||s.delve||s.points<1||!Object.hasOwn(ATTRS,k))return false;s.stats[k]++;s.points--;capResources(s);return true;}
 export function capResources(s){const t=totals(s);s.hp=Math.min(s.hp,t.hp);s.mp=Math.min(s.mp,t.mp);s.sp=Math.min(s.sp,t.sp);}
@@ -372,7 +397,7 @@ export function loadSave(raw){
   if(attunementUsed(out)>6)return null;
   out.equipmentMisses=Number.isInteger(out.equipmentMisses)?clamp(out.equipmentMisses,0,5):0;
   if(typeof out.settings.lastHunt!=='string'||!ENEMIES.some(e=>e.id!=='boss'&&e.id===out.settings.lastHunt))delete out.settings.lastHunt;
-  normalizeGearState(out);normalizeRelics(out);normalizeRecovery(out);normalizeRecords(out);
+  normalizeGearState(out);normalizeWeaponMastery(out);normalizeRelics(out);normalizeRecovery(out);normalizeRecords(out);
   const ancestry=out.raceId?(resolveRace(out.raceId)||resolveRace(out.race)):null;out.raceId=ancestry?.id||null;out.appearance=normalizeAppearance(ancestry?.id||resolveRace(out.race)?.id||'bear',out.appearance);if(ancestry)out.race=ancestry.name;
   const resourceCaps=totals(out);out.hp=Math.min(out.hp,resourceCaps.hp);out.mp=Math.min(out.mp,resourceCaps.mp);out.sp=Math.min(out.sp,resourceCaps.sp);if(!out.gear.weapon||!ITEMS[out.gear.weapon])return null;
   normalizeVariants(out);

@@ -24,7 +24,10 @@ function hero(kit, level, { race } = {}) {
 const strikeKey = s => { const p = G.primaryActions(s); return G.actionInfo(s, p.skill).reason ? 'attack' : p.skill; };
 const respondKey = s => { const p = G.primaryActions(s); return G.actionInfo(s, p.combined).reason ? 'guard' : p.combined; };
 // A player who can finish the enemy this exchange strikes instead of guarding: the heavy never lands.
-const canFinish = s => G.actionProfile(s, strikeKey(s))?.normal >= s.fight.hp;
+const canFinish = s => {
+  const p = G.actionProfile(s, strikeKey(s));
+  return ((p?.normal || 0) + (p?.offhand?.normal || 0)) >= s.fight.hp;
+};
 const POLICIES = {
   strike: strikeKey,
   respond: s => G.intent(s).heavy && !canFinish(s) ? respondKey(s) : strikeKey(s),
@@ -115,14 +118,17 @@ test('guarding a declared heavy prevents about 65%, a normal hit stays at 35%', 
   for (const [kit, enemy, key] of [['breaker', 'crab', 'guard'], ['breaker', 'crab', 'brace'], ['breaker', 'crab', 'guardstrike'], ['caster', 'crab', 'guard']]) {
     const h = stage(kit, enemy); if (key === 'brace') { h.learnedAbilities.push('brace'); h.equippedAbilities.push('brace'); }
     toHeavy(h);
+    const steadyBonus = (kit === 'breaker') ? 0.10 : 0;
+    const expectedHeavy = TELEGRAPH.guardHeavy + steadyBonus;
+    const expectedNormal = TELEGRAPH.guardNormal + steadyBonus;
     const r = step(h, key), landed = r.incoming + r.prevented + r.absorbed;
-    assert.ok(r.prevented / landed >= TELEGRAPH.guardHeavy - .001 && r.prevented / landed <= TELEGRAPH.guardHeavy + .02, `${kit} ${key} heavy ${r.prevented}/${landed}`);
+    assert.ok(r.prevented / landed >= expectedHeavy - .001 && r.prevented / landed <= expectedHeavy + .02, `${kit} ${key} heavy ${r.prevented}/${landed}`);
     assert.equal(h.fight.opening, true, `${key} on a heavy grants Opening`);
     assert.equal(r.opening, true);
     const n = stage(kit, enemy); if (key === 'brace') { n.learnedAbilities.push('brace'); n.equippedAbilities.push('brace'); }
     toNormal(n);
     const q = step(n, key), nl = q.incoming + q.prevented + q.absorbed;
-    assert.ok(q.prevented / nl >= TELEGRAPH.guardNormal - .001 && q.prevented / nl <= TELEGRAPH.guardNormal + .02, `${kit} ${key} normal ${q.prevented}/${nl}`);
+    assert.ok(q.prevented / nl >= expectedNormal - .001 && q.prevented / nl <= expectedNormal + .02, `${kit} ${key} normal ${q.prevented}/${nl}`);
     assert.equal(n.fight.opening, false, `${key} on a normal hit grants no Opening`);
     assert.equal(q.opening, false);
   }
