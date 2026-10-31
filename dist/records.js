@@ -6,6 +6,9 @@ import { CAMPAIGN_ENEMIES } from './campaign-enemies.js';
 //
 // Save shapes (all additive, defaulted when absent, no save version change):
 //   caseFiles: { [enemyId]: { wins, fewestExchanges?, leastLost?, noDamage? } }   victories counted from zero, no backfill
+//              Echoes of the Underfoot wins use the distinct key `echo:<enemyId>` (same entry shape, no Hazard-note milestones),
+//              so a scaled echo win never touches the base enemy's own record.
+//   echoKills: { [enemyId]: positive integer }   echo wins by base enemy id; separate from kills, which counts only normal hunts
 //   titleId:   achievement id the player chose to show, or absent
 //   fight.rec: { ex, lost }  transient per-fight counters (accepted exchanges, Stuffing lost); lost is null when unknown
 //   last.case: { wins, exchanges, lost, personalBest: [...], unlocked: [...] }  copied into the victory report only
@@ -82,6 +85,10 @@ export const CASE_LORE = Object.freeze({
 });
 export const CASE_ENEMY_IDS = Object.freeze(Object.keys(CASE_LORE));
 export const CASE_STAMP = 'FILED · 100';
+export const ECHO_CASE_PREFIX = 'echo:';
+export const echoCaseKey = id => ECHO_CASE_PREFIX + id;
+/** True for an Echoes of the Underfoot fight or enemy record (the scaled enemy keeps its base id). */
+export const isEchoFight = (e, f) => e?.echoUnderfoot === true || f?.source === 'echo';
 
 // Under 30% Stuffing the boss swaps its pattern (engine intent()). Listed here only so the 30-win page tells the whole truth.
 export const BOSS_LOW_PATTERN = Object.freeze({ moves: Object.freeze(['Drum door open (armor down)', 'Soap drawer open (ward down)', 'Emergency drain']), heavy: 2 });
@@ -94,7 +101,7 @@ const isPlain = v => !!v && typeof v === 'object' && !Array.isArray(v);
 export function normalizeRecords(s) {
   if (!isPlain(s)) return s;
   const src = isPlain(s.caseFiles) ? s.caseFiles : {}, out = {};
-  for (const id of CASE_ENEMY_IDS) {
+  for (const id of [...CASE_ENEMY_IDS, ...CASE_ENEMY_IDS.map(echoCaseKey)]) {
     if (!Object.hasOwn(src, id) || !isPlain(src[id]) || !posInt(src[id].wins)) continue;
     const entry = { wins: Math.min(src[id].wins, CASE_MAX_WINS) }, raw = src[id];
     if (posInt(raw.fewestExchanges) && raw.fewestExchanges <= CASE_MAX_EXCHANGES) entry.fewestExchanges = raw.fewestExchanges;
@@ -105,6 +112,17 @@ export function normalizeRecords(s) {
   }
   s.caseFiles = out;
   if (s.titleId !== undefined && !currentTitle(s)) delete s.titleId;
+  return s;
+}
+
+/** Normalize s.echoKills in place: an object of positive integers keyed by valid enemy ids; junk is dropped. Safe on any save shape. */
+export function normalizeEchoKills(s) {
+  if (!isPlain(s)) return s;
+  const src = isPlain(s.echoKills) ? s.echoKills : {}, out = {};
+  for (const id of CASE_ENEMY_IDS) {
+    if (Object.hasOwn(src, id) && posInt(src[id])) out[id] = Math.min(src[id], CASE_MAX_WINS);
+  }
+  s.echoKills = out;
   return s;
 }
 
@@ -144,10 +162,25 @@ const UNLOCK_TEXT = {
  * Writes the summary to s.last.case when s.last is the victory receipt. Returns the summary, or null when nothing counted.
  */
 export function recordVictory(s, e, f) {
-  if (!isPlain(s) || !isPlain(e) || !CASE_ENEMY_IDS.includes(e.id) || !isPlain(f) || f.source === 'practice') return null;
+  if (!isPlain(s) || !isPlain(e) || !CASE_ENEMY_IDS.includes(e.id) || !isPlain(f) || f.source === 'practice' || isEchoFight(e, f)) return null;
+  return fileVictory(s, e, f, e.id, true);
+}
+
+/**
+ * Record one Echoes of the Underfoot victory under `echo:<enemyId>` and bump s.echoKills[enemyId]. Never touches the base
+ * enemy's case file, kill count, Hazard-note milestones or Special Edition state, and writes no milestone notices or s.last.case.
+ */
+export function recordEchoVictory(s, e, f) {
+  if (!isPlain(s) || !isPlain(e) || !CASE_ENEMY_IDS.includes(e.id) || !isPlain(f) || !isEchoFight(e, f)) return null;
+  normalizeEchoKills(s);
+  s.echoKills[e.id] = Math.min(CASE_MAX_WINS, (s.echoKills[e.id] || 0) + 1);
+  return fileVictory(s, e, f, echoCaseKey(e.id), false);
+}
+
+function fileVictory(s, e, f, key, milestones) {
   if (!isPlain(s.caseFiles)) s.caseFiles = {};
   normalizeRecords(s);
-  const entry = s.caseFiles[e.id] || (s.caseFiles[e.id] = { wins: 0 }), before = entry.wins;
+  const entry = s.caseFiles[key] || (s.caseFiles[key] = { wins: 0 }), before = entry.wins;
   entry.wins = Math.min(CASE_MAX_WINS, before + 1);
   const rec = isPlain(f.rec) ? f.rec : null;
   const exchanges = rec && posInt(rec.ex) ? Math.min(rec.ex, CASE_MAX_EXCHANGES) : null;
@@ -162,10 +195,10 @@ export function recordVictory(s, e, f) {
     else if (lost < entry.leastLost) { entry.leastLost = lost; personalBest.push('lost'); }
     if (lost === 0 && !entry.noDamage) { entry.noDamage = true; personalBest.push('noDamage'); }
   }
-  const unlocked = CASE_MILESTONES.filter(m => before < m && entry.wins >= m);
+  const unlocked = milestones ? CASE_MILESTONES.filter(m => before < m && entry.wins >= m) : [];
   for (const m of unlocked) note(s, ...UNLOCK_TEXT[m](e.name));
-  const summary = { wins: entry.wins, exchanges, lost, personalBest, unlocked };
-  if (isPlain(s.last) && s.last.type === 'victory') s.last.case = summary;
+  const summary = { wins: entry.wins, exchanges, lost, personalBest: milestones ? personalBest : [], unlocked };
+  if (milestones && isPlain(s.last) && s.last.type === 'victory') s.last.case = summary;
   return summary;
 }
 
