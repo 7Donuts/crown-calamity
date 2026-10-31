@@ -26,7 +26,7 @@ export const ITEMS = Object.freeze({
   floodrod:{id:'floodrod',name:'Squeaker-Core Scepter',slot:'weapon',base:26,channel:'spell',focus:true,stats:{int:2},level:6,price:95,desc:'26 weapon base, +2 Intellect. Focus-tagged; works with a shield.'},
   ironsword:{id:'ironsword',name:'Toy-Guard Club',slot:'weapon',base:30,channel:'heavy',stats:{mig:2},level:6,price:95,desc:'30 weapon base, +2 Might. A persuasive argument.'},
   glassblade:{id:'glassblade',name:'Squeaker-Glass Stiletto',slot:'weapon',base:30,channel:'precision',stats:{fin:2},level:6,price:95,desc:'30 weapon base, +2 Finesse. Precision has its rewards.'},
-  seal:{id:'seal',name:'Keeper’s Brass Button',slot:'relic',relicEffect:'seal',level:8,desc:'The first useful Guard each fight grants 15 barrier.'},
+  seal:{id:'seal',name:'Keeper’s Brass Button',slot:'relic',relicEffect:'seal',level:8,desc:'First useful Guard each fight grants a barrier of 4% of maximum Stuffing and gains 1 Pluck.'},
   penny:{id:'penny',name:'Lucky Copper Button',slot:'accessory',stats:{lck:4},level:1,price:25,desc:'+4 Luck. A little fortune, worn on purpose. Improves critical and equipment-drop chances.'},
   band:{id:'band',name:'Squeaker-Glass Ring',slot:'accessory',ward:8,stats:{int:2},level:8,desc:'+2 Intellect, +8 ward. Quietly, reliably magical.'},
   cap:{id:'cap',name:'Ledger-Scrap Bonnet',slot:'head',armor:4,stats:{ins:1},level:1,price:22,desc:'+1 Insight, +4 armor. Keeps the paperwork out of your eyes.'},
@@ -35,7 +35,7 @@ export const ITEMS = Object.freeze({
   wornboots:{id:'wornboots',name:'Canal-Step Slippers',slot:'feet',armor:1,stats:{fin:1},level:1,price:16,desc:'+1 Finesse, +1 armor. Better than bare feet on wet stone.'},
   rivethelm:{id:'rivethelm',name:'Button-Stud Bonnet',slot:'head',armor:11,stats:{vit:1},level:5,price:68,desc:'+1 Vitality, +11 armor. A hard answer to a hard shell.'},
   waders:{id:'waders',name:'Floodgate Welly-Socks',slot:'feet',armor:7,ward:5,stats:{wil:1},level:6,price:78,desc:'+1 Will, +7 armor, +5 ward. Rated for municipal flooding.'},
-  signet:{id:'signet',name:'Brass-Stamp Ring',slot:'relic',relicEffect:'signet',stats:{wil:1},ward:8,level:4,price:58,desc:'+1 Will, +8 ward. Recover restores 2 extra Sparkle (mana).'},
+  signet:{id:'signet',name:'Brass-Stamp Ring',slot:'relic',relicEffect:'signet',stats:{wil:1},ward:8,level:4,price:58,desc:'+1 Will, +8 ward. Recover restores 3% of maximum Sparkle extra.'},
   pike:{id:'pike',name:'Gate-Latch Needle Pike',slot:'weapon',base:40,channel:'heavy',twoHanded:true,stats:{mig:2},level:7,price:125,desc:'A two-handed needle pike with +2 Might; its long reach trades away the offhand.'},
   // Additional catalog pieces use existing generated item-art families.
   spoolblade:{id:'spoolblade',name:'Bobbin-Thread Needleblade',slot:'weapon',base:20,channel:'precision',stats:{fin:1},level:2,desc:'A small sewing blade with a jaunty thread tassel.'},
@@ -105,14 +105,14 @@ export const ITEMS = Object.freeze({
   buttonLocket:{id:'buttonLocket',name:'Grand Button Locket',slot:'accessory',ward:4,stats:{vit:1},level:6,desc:'Contains a smaller, more sentimental button.'},
   bellPendant:{id:'bellPendant',name:'Bedtime Bell Pendant',slot:'accessory',stats:{int:1},level:7,desc:'Rings only when a nap is overdue.'},
   ribbonBrooch:{id:'ribbonBrooch',name:'Ribbon-Knot Brooch',slot:'accessory',stats:{mig:1,fin:1},level:8,desc:'A neat bow conceals a stubborn knot.'},
-  threadSpool:{id:'threadSpool',name:'Thread Spool of Second Chances',slot:'relic',relicEffect:'threadSpool',stats:{vit:1},level:3,desc:'The first useful Guard each fight restores 2 Bounce (stamina).'},
-  patchworkHeart:{id:'patchworkHeart',name:'Patchwork Heart',slot:'relic',relicEffect:'patchworkHeart',stats:{wil:1},level:3,desc:'Victory restores 5% of missing Stuffing (health).'},
-  luckyButton:{id:'luckyButton',name:'Lucky Button',slot:'relic',relicEffect:'luckyButton',stats:{lck:2},level:4,desc:'Victory grants 5% extra coins, with a small minimum bonus.'},
-  dreamBell:{id:'dreamBell',name:'Dream Bell',slot:'relic',relicEffect:'dreamBell',stats:{int:1},level:4,desc:'Victory restores 2 Sparkle (mana).'},
-  thimbleGuard:{id:'thimbleGuard',name:'Thimble Guard',slot:'relic',relicEffect:'thimbleGuard',armor:5,level:5,desc:'The first useful Guard each fight adds 4 barrier.'},
-  amberMarble:{id:'amberMarble',name:'Amber Marble',slot:'relic',relicEffect:'amberMarble',ward:5,level:5,desc:'Your first damaging action each fight deals 3 extra damage.'},
-  ribbonKnot:{id:'ribbonKnot',name:'Ribbon Knot of Resolve',slot:'relic',relicEffect:'ribbonKnot',stats:{mig:1},level:6,desc:'A free physical strike restores 1 Sparkle (mana).'},
-  stuffingSatchel:{id:'stuffingSatchel',name:'Emergency Stuffing Satchel',slot:'relic',relicEffect:'stuffingSatchel',stats:{vit:1},level:7,desc:'Mend restores 10% more Stuffing (health).'},
+  threadSpool:{id:'threadSpool',name:'Thread Spool of Second Chances',slot:'relic',relicEffect:'threadSpool',stats:{vit:1},level:3,desc:'First useful Guard each fight restores 5% of maximum Bounce and gains 1 Pluck.'},
+  patchworkHeart:{id:'patchworkHeart',name:'Patchwork Heart',slot:'relic',relicEffect:'patchworkHeart',stats:{wil:1},level:3,desc:'Victory restores 5% of missing Stuffing, plus 1% of missing Stuffing per Pluck held.'},
+  luckyButton:{id:'luckyButton',name:'Lucky Button',slot:'relic',relicEffect:'luckyButton',stats:{lck:2},level:4,desc:'Victory grants 5% extra coins, plus 5% more when winning with 4 or more Pluck.'},
+  dreamBell:{id:'dreamBell',name:'Dream Bell',slot:'relic',relicEffect:'dreamBell',stats:{int:1},level:4,desc:'Victory restores 3% of maximum Sparkle, plus 1% of maximum Sparkle per Pluck held.'},
+  thimbleGuard:{id:'thimbleGuard',name:'Thimble Guard',slot:'relic',relicEffect:'thimbleGuard',armor:5,level:5,desc:'First useful Guard each fight adds a barrier of 2% of maximum Stuffing, plus 0.5% of maximum per Pluck held.'},
+  amberMarble:{id:'amberMarble',name:'Amber Marble',slot:'relic',relicEffect:'amberMarble',ward:5,level:5,desc:'First damaging action each fight deals 8% more and gains 1 Pluck.'},
+  ribbonKnot:{id:'ribbonKnot',name:'Ribbon Knot of Resolve',slot:'relic',relicEffect:'ribbonKnot',stats:{mig:1},level:6,desc:'A free physical strike restores 2% of maximum Sparkle, doubled while holding 4 or more Pluck.'},
+  stuffingSatchel:{id:'stuffingSatchel',name:'Emergency Stuffing Satchel',slot:'relic',relicEffect:'stuffingSatchel',stats:{vit:1},level:7,desc:'Mend heals 10% more. A Mend that heals gains 1 Pluck.'},
   // Relic engine pieces (design 43). Effects and numbers live in relic-engine.js.
   feltFang:{id:'feltFang',name:'Felt Vampire Fang',slot:'relic',relicEffect:'feltFang',stats:{vit:1},desc:'Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held.'},
   darnedPatch:{id:'darnedPatch',name:'Darned-Elbow Patch',slot:'relic',relicEffect:'darnedPatch',armor:4,desc:'Each enemy attack that hurts you gains 1 Pluck, or 2 from a heavy.'},
@@ -604,7 +604,7 @@ export function sellPreview(s,id){
 }
 export function sellItem(s,id){
   const p=sellPreview(s,id);if(!p.allowed||!Array.isArray(s.bag))return false;
-  s.bag=s.bag.filter(ownedId=>ownedId!==id);if(s.itemMods)delete s.itemMods[id];s.coins+=p.price;
+  s.bag=s.bag.filter(ownedId=>ownedId!==id);if(s.itemMods)delete s.itemMods[id];if(s.relicRanks)delete s.relicRanks[id];s.coins+=p.price;
   return {id,coins:p.price};
 }
 export function exchangeMaterials(s,recipeId){

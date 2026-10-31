@@ -97,7 +97,7 @@ test('three core-matching relic echoes add fractional attributes while saved res
   for(const key of ['hp','mp','sp'])assert.ok(Number.isInteger(loaded[key]));
 });
 
-test('Seal echoes scale one barrier proc per fight, with or without the core Seal equipped',()=>{
+test('Seal echoes scale one barrier proc per fight, and unequipping core makes echoes dormant',()=>{
   const s=G.createCharacter({race:'wolf',kit:'breaker'});
   s.coins=1_200_000;s.bag.push('seal');s.gear.relic='seal';s.itemMods={seal:{upgrade:1}};
   const unlockReceipts=['municipal_works','arcade_finale','garden_finale'];
@@ -112,7 +112,7 @@ test('Seal echoes scale one barrier proc per fight, with or without the core Sea
   s.fight.round=1;
   const first=G.exchange(s,'guard',()=>.5,1000);
   assert.equal(first.ok,true);assert.ok(first.absorbed>0,'the useful Guard triggers the Seal barrier');
-  assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants 28 barrier`)).length,1,'the core and three echoes scale one proc instead of repeating it');
+  assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants 30 barrier`)).length,1,'the core and three echoes scale one proc instead of repeating it');
   const second=G.exchange(s,'guard',()=>.5,1000+G.ACTION_DELAY_MS);
   assert.equal(second.ok,true);
   assert.equal(s.fight.sealUsed,true);
@@ -120,19 +120,20 @@ test('Seal echoes scale one barrier proc per fight, with or without the core Sea
   assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants`)).length,1,'later useful Guards do not trigger another Seal proc');
 
   const echoOnly=G.createCharacter({race:'wolf',kit:'breaker'});
-  echoOnly.coins=1_200_000;echoOnly.bag.push('seal','signet');echoOnly.gear.relic='signet';echoOnly.itemMods={seal:{upgrade:1}};
+  echoOnly.coins=1_200_000;echoOnly.bag.push('seal','signet');echoOnly.gear.relic='seal';echoOnly.itemMods={seal:{upgrade:1}};
   for(let slot=0;slot<3;slot++){
     echoOnly.story.completed.push(unlockReceipts[slot]);
     assert.equal(G.unlockRelic(echoOnly,slot).ok,true);
     assert.equal(G.attuneRelic(echoOnly,slot,'seal').ok,true);
   }
+  // Unequip core Seal to make echoes dormant
+  echoOnly.gear.relic='signet';
+  assert.equal(G.relicSlots(echoOnly)[0].dormant,true,'echo is dormant when core is not equipped');
   echoOnly.delve={node:0,path:'records'};
   assert.equal(G.startFight(echoOnly,'crab','delve',1000),true);
   echoOnly.fight.round=1;
   G.exchange(echoOnly,'guard',()=>.5,1000);
   G.exchange(echoOnly,'guard',()=>.5,1000+G.ACTION_DELAY_MS);
-  assert.equal(echoOnly.fight.sealUsed,true,'a licensed Seal echo can use its scaled effect with another core relic');
-  assert.equal(echoOnly.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants 26 barrier`)).length,1,'three echoes scale the barrier effect without duplicating its trigger');
-  G.exchange(echoOnly,'guard',()=>.5,1000+2*G.ACTION_DELAY_MS);
-  assert.equal(echoOnly.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants`)).length,1);
+  assert.equal(echoOnly.fight.sealUsed,false,'dormant Seal echoes do not trigger barrier');
+  assert.equal(echoOnly.log.filter(entry=>entry.text.includes(G.ITEMS.seal.name)).length,0,'dormant echoes contribute nothing');
 });
