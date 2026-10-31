@@ -13,6 +13,9 @@ export const PLUCK_CARRY_CAP = 3;
 export const FANG_BASE = 0.20;
 export const FANG_PER_PLUCK = 0.03;
 export const FANG_EXCHANGE_CAP = 0.10;
+// Past the story (effective level above 50) the Fang's rate and per-exchange cap are multiplied by this (D16, design 49).
+export const FANG_STORY_LEVEL = 50;
+export const FANG_POST_STORY_SCALE = 0.45;
 export const COCOA_PER_PLUCK = 0.04;
 export const LOCKET_REFLECT = 0.25;
 export const RATTLE_REDUCTION = 0.30;
@@ -55,9 +58,9 @@ export const ENGINE_EFFECTS = Object.freeze({
     desc: 'Mend heals 10% more. A Mend that heals gains 1 Pluck.',
     trigger: 'A Mend that heals.', limit: 'Every useful Mend.', ceiling: '+10% Mend healing; +1 Pluck.' }),
   feltFang: Object.freeze({ name: 'Felt Vampire Fang', role: 'payoff', source: 'shop',
-    desc: 'Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held.',
+    desc: `Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held. Past the story (effective level above ${FANG_STORY_LEVEL}) it restores ${Math.round(FANG_POST_STORY_SCALE * 100)}% as much.`,
     trigger: 'A damaging action that lands. Overkill never heals.', limit: 'Every damaging action.',
-    ceiling: 'At most 10% of maximum Stuffing per exchange.' }),
+    ceiling: `At most 10% of maximum Stuffing per exchange (${Math.round(FANG_EXCHANGE_CAP * FANG_POST_STORY_SCALE * 1000) / 10}% past the story).` }),
   darnedPatch: Object.freeze({ name: 'Darned-Elbow Patch', role: 'generator', source: 'shop',
     desc: 'Each enemy attack that hurts you gains 1 Pluck, or 2 from a heavy.',
     trigger: 'An enemy attack deals damage to you.', limit: 'Once per enemy response.', ceiling: '2 Pluck per exchange.' }),
@@ -135,16 +138,21 @@ export function damageMultiplier(f, strength, rank) {
   return 1 + Math.min(cap, ENCORE_PER_PLUCK * clampInt(f.pluck, 0, pluckCapFor(f)) * k);
 }
 
-/** Fang lifesteal rate before the per-exchange cap, for previews and the hit hook. */
-export function lifestealRate(f, strength, rank) {
+/** Multiplier on the Fang's rate and per-exchange cap: 1 through the story (effective level 50), reduced past it (D16). */
+export function fangScale(effectiveLevel) {
+  return Number(effectiveLevel) > FANG_STORY_LEVEL ? FANG_POST_STORY_SCALE : 1;
+}
+
+/** Fang lifesteal rate before the per-exchange cap, for previews and the hit hook. `effectiveLevel` is optional (story when absent). */
+export function lifestealRate(f, strength, rank, effectiveLevel = 0) {
   const k = strength('feltFang');
   if (!(k > 0)) return 0;
-  return (FANG_BASE + FANG_PER_PLUCK * clampInt(f?.pluck, 0, pluckCapFor(f))) * k;
+  return (FANG_BASE + FANG_PER_PLUCK * clampInt(f?.pluck, 0, pluckCapFor(f))) * k * fangScale(effectiveLevel);
 }
 
 /**
  * After the player's own action resolves, before any victory or enemy response.
- * `ctx`: { key, damaging, damageApplied, streak, exposed (Expose was taken), maxHp, pluckAtStart }.
+ * `ctx`: { key, damaging, damageApplied, streak, exposed (Expose was taken), maxHp, pluckAtStart, effectiveLevel }.
  * `pluckAtStart` is the Pluck held when the exchange began; the Brass-Stamp Ring judges "holding 0 Pluck" on it, so a
  * race hook that adds Pluck earlier in the same Recover (Well Loved) cannot cost the Ring its trigger.
  * Returns the Stuffing to restore now (the engine caps it at missing health), plus the Fang's `rate` and per-exchange
@@ -161,8 +169,8 @@ export function afterPlayerAction(f, ctx, strength, notes, rank) {
     gainPluck(f, scaled(2, strength('seedHeart')), 'seedHeart', notes);
   }
   let heal = 0;
-  const rate = lifestealRate(f, strength, rank);
-  const capRate = safeRank(rank, 'feltFang') >= 3 ? 0.13 : FANG_EXCHANGE_CAP;
+  const rate = lifestealRate(f, strength, rank, ctx.effectiveLevel);
+  const capRate = (safeRank(rank, 'feltFang') >= 3 ? 0.13 : FANG_EXCHANGE_CAP) * fangScale(ctx.effectiveLevel);
   const cap = rate > 0 ? Math.floor(ctx.maxHp * capRate * Math.min(1.5, strength('feltFang'))) : 0;
   if (rate > 0 && ctx.damageApplied > 0) heal = Math.min(cap, Math.floor(ctx.damageApplied * rate));
   return { heal, rate, cap };

@@ -35,7 +35,7 @@ export {PLUCK_CAP,PLUCK_CARRY_CAP,ENGINE_EFFECTS,ENGINE_RELIC_IDS,RELIC_ENGINE_V
 const strengthOf=s=>id=>relicEffectStrength(s,id);
 const rankOf=s=>id=>relicRank(s,id);
 /** HUD view of the relic engine: Pluck only shows when an engine relic is equipped or echoed. */
-export function pluckStatus(s){const rs=strengthOf(s),rk=rankOf(s);return {active:RE.engineActive(rs,s?.raceId),pluck:s?.fight?.pluck||0,cap:effectivePluckCap(s),carry:s?.pluckCarry||0,rattled:!!s?.fight?.rattled,lifesteal:RE.lifestealRate(s?.fight,rs,rk),damageBonus:RE.damageMultiplier(s?.fight,rs,rk)-1};}
+export function pluckStatus(s){const rs=strengthOf(s),rk=rankOf(s);return {active:RE.engineActive(rs,s?.raceId),pluck:s?.fight?.pluck||0,cap:effectivePluckCap(s),carry:s?.pluckCarry||0,rattled:!!s?.fight?.rattled,lifesteal:RE.lifestealRate(s?.fight,rs,rk,effectiveLevel(s)),damageBonus:RE.damageMultiplier(s?.fight,rs,rk)-1};}
 // Finale keepsakes are granted exactly once per chapter finale claim; older saves receive any they earned.
 const KEEPSAKE_BY_FINALE=Object.freeze(Object.fromEntries(CHAPTERS.map(chapter=>[chapter.finale,Object.values(ITEMS).find(item=>item.keepsake&&item.finale===chapter.id)?.id]).filter(([,id])=>id)));
 function grantKeepsake(s,finaleId){const id=KEEPSAKE_BY_FINALE[finaleId];if(!id)return null;s.signatureRelics=Array.isArray(s.signatureRelics)?s.signatureRelics:[];if(s.signatureRelics.includes(id))return null;s.signatureRelics.push(id);if(!s.bag.includes(id))s.bag.push(id);return id;}
@@ -178,7 +178,7 @@ export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
  const amberBonus=!f?.amberMarbleUsed&&rs('amberMarble')>0?Math.floor(reduced*.08*rs('amberMarble')):0;
  const normal=Math.max(1,Math.floor(reduced))+amberBonus,critical=Math.max(1,Math.floor(reduced*t.critMultiplier))+amberBonus,glance=Math.max(1,Math.floor(reduced*.55))+amberBonus;
  const available=channel!=='arcane'||hasFocus(s);
- const baseProfile={channel,raw,defense,opening:bonus.source==='opening',openingBonus:bonus.source==='opening'?bonus.bonus:0,noGlance:bonus.noGlance||boxNoGlance||bunnyNoGlance,lifesteal:RE.lifestealRate(f,rs,rk),hitChance:solidHit,critChance,normal,critical,glance,
+ const baseProfile={channel,raw,defense,opening:bonus.source==='opening',openingBonus:bonus.source==='opening'?bonus.bonus:0,noGlance:bonus.noGlance||boxNoGlance||bunnyNoGlance,lifesteal:RE.lifestealRate(f,rs,rk,effectiveLevel(s)),hitChance:solidHit,critChance,normal,critical,glance,
  average:solidHit*((1-critChance)*normal+critChance*critical)+(1-solidHit)*glance,
  available:available&&(!['combo','guardstrike'].includes(key)||isShield(s.gear.offhand))&&(key!=='sidestep'||sidestepEligible(w.channel,s.gear.offhand)),live:!!f,variantBarrier:f?.variantState?.barrier||0};
  const contrib=secondHandVerbContribution(s,key,e,t,i,RE.damageMultiplier(f,rs,rk));
@@ -323,7 +323,7 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  }else if(key==='vent'){
   f.vented=true;addLog(s,'Lid popped. The Spin Cycle’s pressure damage reduced by 30%.','special');journal(s,'A little less pressure','You popped the lid by hand. The pressure system is contained, and the suds are only mildly offended.');
  }else{f.streak=0;addLog(s,key==='withdraw'?'You go very still and look for a safe way out.':'You hunker down.','defend');}
- {const after=RE.afterPlayerAction(f,{key,damaging:DAMAGING_ACTIONS.includes(key),damageApplied:damageApplied+offhandDamageApplied,streak:f.streak,maxHp:t.hp,pluckAtStart},rs,relicNotes,rk);fang=after;const heal=Math.min(after.heal,Math.max(0,t.hp-s.hp));if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Fang restored ${heal} Stuffing`);}}
+ {const after=RE.afterPlayerAction(f,{key,damaging:DAMAGING_ACTIONS.includes(key),damageApplied:damageApplied+offhandDamageApplied,streak:f.streak,maxHp:t.hp,pluckAtStart,effectiveLevel:effectiveLevel(s)},rs,relicNotes,rk);fang=after;const heal=Math.min(after.heal,Math.max(0,t.hp-s.hp));if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Fang restored ${heal} Stuffing`);}}
  const actualManaRegenerated=info.mp===0?Math.min(MANA_REGEN_PER_EXCHANGE,Math.max(0,t.mp-s.mp)):0;
  if(actualManaRegenerated>0){s.mp+=actualManaRegenerated;addLog(s,`Caught your breath · +${actualManaRegenerated} Sparkle (mana).`,'heal');}
  if(opening&&!DAMAGING_ACTIONS.includes(key))addLog(s,'Opening closed unused. It only lasts for one exchange and needs a damaging action.','special');

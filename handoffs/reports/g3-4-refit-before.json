@@ -1,0 +1,4903 @@
+{
+  "generatedAt": "2026-10-31T13:52:05.567Z",
+  "seedCount": 40,
+  "chainLength": 10,
+  "settings": {
+    "fang": {
+      "base": 0.2,
+      "perPluck": 0.03,
+      "exchangeCap": 0.1,
+      "postStoryScale": 1,
+      "storyLevel": 50
+    },
+    "enemyCurve": {
+      "hp": "100 + 42E",
+      "hit": "round(35 + 2.6E)",
+      "armorPlusWard": "20 + 1.8E"
+    },
+    "enemyAt": {
+      "E60": {
+        "effectiveLevel": 60,
+        "archetype": "balanced",
+        "hp": 2620,
+        "damage": 191,
+        "heavyDamage": 411,
+        "armor": 64,
+        "ward": 64,
+        "accuracy": 265,
+        "evasion": 198,
+        "xp": 740,
+        "coins": 66
+      },
+      "E100": {
+        "effectiveLevel": 100,
+        "archetype": "balanced",
+        "hp": 4300,
+        "damage": 295,
+        "heavyDamage": 634,
+        "armor": 100,
+        "ward": 100,
+        "accuracy": 425,
+        "evasion": 318,
+        "xp": 1220,
+        "coins": 110
+      },
+      "E200": {
+        "effectiveLevel": 200,
+        "archetype": "balanced",
+        "hp": 8500,
+        "damage": 555,
+        "heavyDamage": 1193,
+        "armor": 190,
+        "ward": 190,
+        "accuracy": 825,
+        "evasion": 618,
+        "xp": 2420,
+        "coins": 220
+      },
+      "E500": {
+        "effectiveLevel": 500,
+        "archetype": "balanced",
+        "hp": 21100,
+        "damage": 1335,
+        "heavyDamage": 2870,
+        "armor": 460,
+        "ward": 460,
+        "accuracy": 2025,
+        "evasion": 1518,
+        "xp": 6020,
+        "coins": 550
+      }
+    },
+    "xpNeeded": "(100 + 5R)(20 + 12E)"
+  },
+  "matrix": {
+    "E60": {
+      "breaker": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.1,
+            "lostSharePct": 33.3,
+            "winRatePct": 71.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 139
+          },
+          "sealCocoa": {
+            "exchanges": 7,
+            "lostSharePct": 9.9,
+            "winRatePct": 86.6,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 298
+          },
+          "patchCocoa": {
+            "exchanges": 7.1,
+            "lostSharePct": 8.9,
+            "winRatePct": 87.4,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 317
+          },
+          "fangPatch": {
+            "exchanges": 7.7,
+            "lostSharePct": 1.7,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.3,
+            "lostSharePct": 34.7,
+            "winRatePct": 69.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 130
+          },
+          "sealCocoa": {
+            "exchanges": 7,
+            "lostSharePct": 10.7,
+            "winRatePct": 85,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 267
+          },
+          "patchCocoa": {
+            "exchanges": 7.1,
+            "lostSharePct": 9.8,
+            "winRatePct": 86.1,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 287
+          },
+          "fangPatch": {
+            "exchanges": 7.8,
+            "lostSharePct": 2.8,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      },
+      "duelist": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5,
+            "lostSharePct": 32.4,
+            "winRatePct": 74.7,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 158
+          },
+          "sealCocoa": {
+            "exchanges": 5.5,
+            "lostSharePct": 20.8,
+            "winRatePct": 80.1,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 201
+          },
+          "patchCocoa": {
+            "exchanges": 6.5,
+            "lostSharePct": 6.9,
+            "winRatePct": 95.4,
+            "chainsCompletedPct": 55,
+            "defeats": 18,
+            "encounters": 394
+          },
+          "fangPatch": {
+            "exchanges": 6.5,
+            "lostSharePct": 1.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5,
+            "lostSharePct": 33.1,
+            "winRatePct": 74.4,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 156
+          },
+          "sealCocoa": {
+            "exchanges": 5.6,
+            "lostSharePct": 22.6,
+            "winRatePct": 78.4,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 185
+          },
+          "patchCocoa": {
+            "exchanges": 6.5,
+            "lostSharePct": 7.4,
+            "winRatePct": 91.4,
+            "chainsCompletedPct": 17.5,
+            "defeats": 33,
+            "encounters": 385
+          },
+          "fangPatch": {
+            "exchanges": 6.6,
+            "lostSharePct": 1.2,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      },
+      "caster": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.7,
+            "lostSharePct": 37.2,
+            "winRatePct": 66.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 121
+          },
+          "sealCocoa": {
+            "exchanges": 5.5,
+            "lostSharePct": 29.9,
+            "winRatePct": 73.5,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 151
+          },
+          "patchCocoa": {
+            "exchanges": 7,
+            "lostSharePct": 11.2,
+            "winRatePct": 84,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 250
+          },
+          "fangPatch": {
+            "exchanges": 7.7,
+            "lostSharePct": 4.4,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.6,
+            "lostSharePct": 38.2,
+            "winRatePct": 66.7,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 120
+          },
+          "sealCocoa": {
+            "exchanges": 5.6,
+            "lostSharePct": 30.5,
+            "winRatePct": 72.4,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 145
+          },
+          "patchCocoa": {
+            "exchanges": 6.9,
+            "lostSharePct": 11.9,
+            "winRatePct": 83.1,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 237
+          },
+          "fangPatch": {
+            "exchanges": 7.8,
+            "lostSharePct": 5,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      }
+    },
+    "E100": {
+      "breaker": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.6,
+            "lostSharePct": 35.5,
+            "winRatePct": 68.3,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 126
+          },
+          "sealCocoa": {
+            "exchanges": 7.1,
+            "lostSharePct": 10.1,
+            "winRatePct": 85.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 284
+          },
+          "patchCocoa": {
+            "exchanges": 7.2,
+            "lostSharePct": 9.2,
+            "winRatePct": 87,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 307
+          },
+          "fangPatch": {
+            "exchanges": 7.9,
+            "lostSharePct": 1.2,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.5,
+            "lostSharePct": 36.2,
+            "winRatePct": 68,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 125
+          },
+          "sealCocoa": {
+            "exchanges": 7,
+            "lostSharePct": 10.5,
+            "winRatePct": 85.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 270
+          },
+          "patchCocoa": {
+            "exchanges": 7.1,
+            "lostSharePct": 9.3,
+            "winRatePct": 86.5,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 296
+          },
+          "fangPatch": {
+            "exchanges": 8,
+            "lostSharePct": 1.7,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      },
+      "duelist": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.1,
+            "lostSharePct": 32.8,
+            "winRatePct": 74.7,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 158
+          },
+          "sealCocoa": {
+            "exchanges": 5.6,
+            "lostSharePct": 21.4,
+            "winRatePct": 79.7,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 197
+          },
+          "patchCocoa": {
+            "exchanges": 6.1,
+            "lostSharePct": 4.6,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6.1,
+            "lostSharePct": 0.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.1,
+            "lostSharePct": 33.1,
+            "winRatePct": 74.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 155
+          },
+          "sealCocoa": {
+            "exchanges": 5.6,
+            "lostSharePct": 21.9,
+            "winRatePct": 79.3,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 193
+          },
+          "patchCocoa": {
+            "exchanges": 6.1,
+            "lostSharePct": 5.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6.1,
+            "lostSharePct": 0.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      },
+      "caster": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.9,
+            "lostSharePct": 40.6,
+            "winRatePct": 66.7,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 120
+          },
+          "sealCocoa": {
+            "exchanges": 6.2,
+            "lostSharePct": 33.1,
+            "winRatePct": 70.1,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 134
+          },
+          "patchCocoa": {
+            "exchanges": 7.3,
+            "lostSharePct": 10.2,
+            "winRatePct": 84.8,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 264
+          },
+          "fangPatch": {
+            "exchanges": 8,
+            "lostSharePct": 2.8,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.8,
+            "lostSharePct": 41.2,
+            "winRatePct": 66.7,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 120
+          },
+          "sealCocoa": {
+            "exchanges": 6.2,
+            "lostSharePct": 33.6,
+            "winRatePct": 69.5,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 131
+          },
+          "patchCocoa": {
+            "exchanges": 7.2,
+            "lostSharePct": 10.7,
+            "winRatePct": 84.6,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 259
+          },
+          "fangPatch": {
+            "exchanges": 8,
+            "lostSharePct": 3.2,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      }
+    },
+    "E200": {
+      "breaker": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.8,
+            "lostSharePct": 37.6,
+            "winRatePct": 67.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 122
+          },
+          "sealCocoa": {
+            "exchanges": 6.8,
+            "lostSharePct": 8.9,
+            "winRatePct": 87.4,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 318
+          },
+          "patchCocoa": {
+            "exchanges": 7.1,
+            "lostSharePct": 7.6,
+            "winRatePct": 89,
+            "chainsCompletedPct": 2.5,
+            "defeats": 39,
+            "encounters": 354
+          },
+          "fangPatch": {
+            "exchanges": 7.8,
+            "lostSharePct": 1.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.8,
+            "lostSharePct": 37.9,
+            "winRatePct": 67.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 122
+          },
+          "sealCocoa": {
+            "exchanges": 6.8,
+            "lostSharePct": 9.1,
+            "winRatePct": 87.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 313
+          },
+          "patchCocoa": {
+            "exchanges": 7,
+            "lostSharePct": 7.7,
+            "winRatePct": 88.9,
+            "chainsCompletedPct": 2.5,
+            "defeats": 39,
+            "encounters": 350
+          },
+          "fangPatch": {
+            "exchanges": 7.8,
+            "lostSharePct": 1.2,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      },
+      "duelist": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.5,
+            "lostSharePct": 33.8,
+            "winRatePct": 72.8,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 147
+          },
+          "sealCocoa": {
+            "exchanges": 5.9,
+            "lostSharePct": 21.7,
+            "winRatePct": 79.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 192
+          },
+          "patchCocoa": {
+            "exchanges": 6.4,
+            "lostSharePct": 3.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6.4,
+            "lostSharePct": 0.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.5,
+            "lostSharePct": 34.1,
+            "winRatePct": 72,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 143
+          },
+          "sealCocoa": {
+            "exchanges": 5.9,
+            "lostSharePct": 21.9,
+            "winRatePct": 78.8,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 189
+          },
+          "patchCocoa": {
+            "exchanges": 6.4,
+            "lostSharePct": 3.6,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6.4,
+            "lostSharePct": 0.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      },
+      "caster": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 6,
+            "lostSharePct": 45,
+            "winRatePct": 66.7,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 120
+          },
+          "sealCocoa": {
+            "exchanges": 6.7,
+            "lostSharePct": 37.6,
+            "winRatePct": 66.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 121
+          },
+          "patchCocoa": {
+            "exchanges": 7.6,
+            "lostSharePct": 12.5,
+            "winRatePct": 82.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 234
+          },
+          "fangPatch": {
+            "exchanges": 8.1,
+            "lostSharePct": 2.5,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.9,
+            "lostSharePct": 45.3,
+            "winRatePct": 66.7,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 120
+          },
+          "sealCocoa": {
+            "exchanges": 6.7,
+            "lostSharePct": 37.9,
+            "winRatePct": 66.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 121
+          },
+          "patchCocoa": {
+            "exchanges": 7.6,
+            "lostSharePct": 12.9,
+            "winRatePct": 82.5,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 229
+          },
+          "fangPatch": {
+            "exchanges": 8.1,
+            "lostSharePct": 2.7,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      }
+    },
+    "E500": {
+      "breaker": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.8,
+            "lostSharePct": 38.3,
+            "winRatePct": 67.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 122
+          },
+          "sealCocoa": {
+            "exchanges": 6.6,
+            "lostSharePct": 8.3,
+            "winRatePct": 90.6,
+            "chainsCompletedPct": 15,
+            "defeats": 34,
+            "encounters": 362
+          },
+          "patchCocoa": {
+            "exchanges": 6.8,
+            "lostSharePct": 5.7,
+            "winRatePct": 98.2,
+            "chainsCompletedPct": 82.5,
+            "defeats": 7,
+            "encounters": 393
+          },
+          "fangPatch": {
+            "exchanges": 7.1,
+            "lostSharePct": 0.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.8,
+            "lostSharePct": 38.5,
+            "winRatePct": 66.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 121
+          },
+          "sealCocoa": {
+            "exchanges": 6.6,
+            "lostSharePct": 8.6,
+            "winRatePct": 89.1,
+            "chainsCompletedPct": 2.5,
+            "defeats": 39,
+            "encounters": 358
+          },
+          "patchCocoa": {
+            "exchanges": 6.8,
+            "lostSharePct": 5.8,
+            "winRatePct": 97.7,
+            "chainsCompletedPct": 77.5,
+            "defeats": 9,
+            "encounters": 394
+          },
+          "fangPatch": {
+            "exchanges": 7.1,
+            "lostSharePct": 0.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      },
+      "duelist": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 5.8,
+            "lostSharePct": 34.6,
+            "winRatePct": 71,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 138
+          },
+          "sealCocoa": {
+            "exchanges": 6.2,
+            "lostSharePct": 22.2,
+            "winRatePct": 78.5,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 186
+          },
+          "patchCocoa": {
+            "exchanges": 6.6,
+            "lostSharePct": 3.4,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6.6,
+            "lostSharePct": 0.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 5.8,
+            "lostSharePct": 34.8,
+            "winRatePct": 71,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 138
+          },
+          "sealCocoa": {
+            "exchanges": 6.2,
+            "lostSharePct": 22.5,
+            "winRatePct": 78.4,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 185
+          },
+          "patchCocoa": {
+            "exchanges": 6.6,
+            "lostSharePct": 3.5,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6.6,
+            "lostSharePct": 0.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      },
+      "caster": {
+        "onLevel": {
+          "ordinary": {
+            "exchanges": 6,
+            "lostSharePct": 45.3,
+            "winRatePct": 66.4,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 119
+          },
+          "sealCocoa": {
+            "exchanges": 6.8,
+            "lostSharePct": 37.7,
+            "winRatePct": 67.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 122
+          },
+          "patchCocoa": {
+            "exchanges": 7.7,
+            "lostSharePct": 13.1,
+            "winRatePct": 82.3,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 226
+          },
+          "fangPatch": {
+            "exchanges": 8,
+            "lostSharePct": 0.9,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "oneBehind": {
+          "ordinary": {
+            "exchanges": 6,
+            "lostSharePct": 45.4,
+            "winRatePct": 66.4,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 119
+          },
+          "sealCocoa": {
+            "exchanges": 6.7,
+            "lostSharePct": 38,
+            "winRatePct": 66.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 121
+          },
+          "patchCocoa": {
+            "exchanges": 7.7,
+            "lostSharePct": 13.3,
+            "winRatePct": 82.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 225
+          },
+          "fangPatch": {
+            "exchanges": 8,
+            "lostSharePct": 0.9,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        }
+      }
+    }
+  },
+  "strong": {
+    "E60": {
+      "breaker": {
+        "masteryRank": 4,
+        "pair": "sealCocoa",
+        "relics": [
+          "seal",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 6.7,
+          "lostSharePct": 8.8,
+          "winRatePct": 88.1,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 336
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 6.7,
+            "lostSharePct": 8.8,
+            "winRatePct": 88.1,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 336
+          },
+          "patchCocoa": {
+            "exchanges": 6.9,
+            "lostSharePct": 7.7,
+            "winRatePct": 89.8,
+            "chainsCompletedPct": 7.5,
+            "defeats": 37,
+            "encounters": 362
+          },
+          "fangPatch": {
+            "exchanges": 7.3,
+            "lostSharePct": 1.5,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 4.7,
+          "lostSharePct": 29.1,
+          "winRatePct": 74.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 158
+        },
+        "pairOnly": {
+          "exchanges": 7,
+          "lostSharePct": 9.9,
+          "winRatePct": 86.6,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 298
+        },
+        "ordinary": {
+          "exchanges": 5.1,
+          "lostSharePct": 33.3,
+          "winRatePct": 71.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 139
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 6.2,
+            "lostSharePct": 35.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 5.4,
+            "lostSharePct": 6.2,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      },
+      "duelist": {
+        "masteryRank": 4,
+        "pair": "sealCocoa",
+        "relics": [
+          "seal",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 5.1,
+          "lostSharePct": 17.1,
+          "winRatePct": 83.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 239
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 5.1,
+            "lostSharePct": 17.1,
+            "winRatePct": 83.3,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 239
+          },
+          "patchCocoa": {
+            "exchanges": 6,
+            "lostSharePct": 5.4,
+            "winRatePct": 98.8,
+            "chainsCompletedPct": 87.5,
+            "defeats": 5,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6,
+            "lostSharePct": 0.9,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 4.8,
+          "lostSharePct": 28.8,
+          "winRatePct": 75.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 166
+        },
+        "pairOnly": {
+          "exchanges": 5.5,
+          "lostSharePct": 20.8,
+          "winRatePct": 80.1,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 201
+        },
+        "ordinary": {
+          "exchanges": 5,
+          "lostSharePct": 32.4,
+          "winRatePct": 74.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 158
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 6,
+            "lostSharePct": 33.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 5.4,
+            "lostSharePct": 19.8,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      },
+      "caster": {
+        "masteryRank": 4,
+        "pair": "patchCocoa",
+        "relics": [
+          "darnedPatch",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 7,
+          "lostSharePct": 10.9,
+          "winRatePct": 84.5,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 258
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 5.5,
+            "lostSharePct": 29.9,
+            "winRatePct": 73.5,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 151
+          },
+          "patchCocoa": {
+            "exchanges": 7,
+            "lostSharePct": 10.9,
+            "winRatePct": 84.5,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 258
+          },
+          "fangPatch": {
+            "exchanges": 7.6,
+            "lostSharePct": 3.7,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 5.7,
+          "lostSharePct": 37.2,
+          "winRatePct": 66.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 121
+        },
+        "pairOnly": {
+          "exchanges": 7,
+          "lostSharePct": 11.2,
+          "winRatePct": 84,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 250
+        },
+        "ordinary": {
+          "exchanges": 5.7,
+          "lostSharePct": 37.2,
+          "winRatePct": 66.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 121
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 6.3,
+            "lostSharePct": 37.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 6.3,
+            "lostSharePct": 9.7,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      }
+    },
+    "E100": {
+      "breaker": {
+        "masteryRank": 4,
+        "pair": "patchCocoa",
+        "relics": [
+          "darnedPatch",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 7,
+          "lostSharePct": 8.1,
+          "winRatePct": 88.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 343
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 6.9,
+            "lostSharePct": 9.2,
+            "winRatePct": 86.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 305
+          },
+          "patchCocoa": {
+            "exchanges": 7,
+            "lostSharePct": 8.1,
+            "winRatePct": 88.3,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 343
+          },
+          "fangPatch": {
+            "exchanges": 7.6,
+            "lostSharePct": 1.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 4.9,
+          "lostSharePct": 32.3,
+          "winRatePct": 72.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 147
+        },
+        "pairOnly": {
+          "exchanges": 7.2,
+          "lostSharePct": 9.2,
+          "winRatePct": 87,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 307
+        },
+        "ordinary": {
+          "exchanges": 5.6,
+          "lostSharePct": 35.5,
+          "winRatePct": 68.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 126
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 6.5,
+            "lostSharePct": 37.5,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 6.1,
+            "lostSharePct": 3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      },
+      "duelist": {
+        "masteryRank": 4,
+        "pair": "sealCocoa",
+        "relics": [
+          "seal",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 5.4,
+          "lostSharePct": 19.4,
+          "winRatePct": 81.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 213
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 5.4,
+            "lostSharePct": 19.4,
+            "winRatePct": 81.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 213
+          },
+          "patchCocoa": {
+            "exchanges": 5.8,
+            "lostSharePct": 3.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 5.8,
+            "lostSharePct": 0.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 5,
+          "lostSharePct": 31,
+          "winRatePct": 75,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 160
+        },
+        "pairOnly": {
+          "exchanges": 5.6,
+          "lostSharePct": 21.4,
+          "winRatePct": 79.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 197
+        },
+        "ordinary": {
+          "exchanges": 5.1,
+          "lostSharePct": 32.8,
+          "winRatePct": 74.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 158
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 6,
+            "lostSharePct": 33.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 5.8,
+            "lostSharePct": 20.7,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      },
+      "caster": {
+        "masteryRank": 4,
+        "pair": "patchCocoa",
+        "relics": [
+          "darnedPatch",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 7.3,
+          "lostSharePct": 10,
+          "winRatePct": 84.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 264
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 6.2,
+            "lostSharePct": 33,
+            "winRatePct": 70.1,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 134
+          },
+          "patchCocoa": {
+            "exchanges": 7.3,
+            "lostSharePct": 10,
+            "winRatePct": 84.8,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 264
+          },
+          "fangPatch": {
+            "exchanges": 7.9,
+            "lostSharePct": 2.8,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 5.9,
+          "lostSharePct": 40.5,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "pairOnly": {
+          "exchanges": 7.3,
+          "lostSharePct": 10.2,
+          "winRatePct": 84.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 264
+        },
+        "ordinary": {
+          "exchanges": 5.9,
+          "lostSharePct": 40.6,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 7,
+            "lostSharePct": 40,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 7,
+            "lostSharePct": 8.4,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      }
+    },
+    "E200": {
+      "breaker": {
+        "masteryRank": 6,
+        "pair": "sealCocoa",
+        "relics": [
+          "seal",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 6.3,
+          "lostSharePct": 8,
+          "winRatePct": 89,
+          "chainsCompletedPct": 2.5,
+          "defeats": 39,
+          "encounters": 355
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 6.3,
+            "lostSharePct": 8,
+            "winRatePct": 89,
+            "chainsCompletedPct": 2.5,
+            "defeats": 39,
+            "encounters": 355
+          },
+          "patchCocoa": {
+            "exchanges": 6.8,
+            "lostSharePct": 6.1,
+            "winRatePct": 96,
+            "chainsCompletedPct": 60,
+            "defeats": 16,
+            "encounters": 398
+          },
+          "fangPatch": {
+            "exchanges": 7,
+            "lostSharePct": 0.6,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 5.1,
+          "lostSharePct": 33.1,
+          "winRatePct": 71.6,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 141
+        },
+        "pairOnly": {
+          "exchanges": 6.8,
+          "lostSharePct": 8.9,
+          "winRatePct": 87.4,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 318
+        },
+        "ordinary": {
+          "exchanges": 5.8,
+          "lostSharePct": 37.6,
+          "winRatePct": 67.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 122
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 7,
+            "lostSharePct": 39,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 6.1,
+            "lostSharePct": 8.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      },
+      "duelist": {
+        "masteryRank": 6,
+        "pair": "sealCocoa",
+        "relics": [
+          "seal",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 5.6,
+          "lostSharePct": 18.9,
+          "winRatePct": 81.6,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 217
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 5.6,
+            "lostSharePct": 18.9,
+            "winRatePct": 81.6,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 217
+          },
+          "patchCocoa": {
+            "exchanges": 5.9,
+            "lostSharePct": 2.6,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 5.9,
+            "lostSharePct": 0.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 5,
+          "lostSharePct": 31.5,
+          "winRatePct": 75,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 160
+        },
+        "pairOnly": {
+          "exchanges": 5.9,
+          "lostSharePct": 21.7,
+          "winRatePct": 79.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 192
+        },
+        "ordinary": {
+          "exchanges": 5.5,
+          "lostSharePct": 33.8,
+          "winRatePct": 72.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 147
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 6.4,
+            "lostSharePct": 34.3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 5.9,
+            "lostSharePct": 20.4,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      },
+      "caster": {
+        "masteryRank": 6,
+        "pair": "patchCocoa",
+        "relics": [
+          "darnedPatch",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 7.6,
+          "lostSharePct": 12.1,
+          "winRatePct": 83.5,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 242
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 6.7,
+            "lostSharePct": 37,
+            "winRatePct": 66.9,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 121
+          },
+          "patchCocoa": {
+            "exchanges": 7.6,
+            "lostSharePct": 12.1,
+            "winRatePct": 83.5,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 242
+          },
+          "fangPatch": {
+            "exchanges": 8,
+            "lostSharePct": 2.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 6,
+          "lostSharePct": 44.4,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "pairOnly": {
+          "exchanges": 7.6,
+          "lostSharePct": 12.5,
+          "winRatePct": 82.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 234
+        },
+        "ordinary": {
+          "exchanges": 6,
+          "lostSharePct": 45,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 7.8,
+            "lostSharePct": 44.7,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 7.8,
+            "lostSharePct": 12.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      }
+    },
+    "E500": {
+      "breaker": {
+        "masteryRank": 12,
+        "pair": "patchCocoa",
+        "relics": [
+          "darnedPatch",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 6.2,
+          "lostSharePct": 2.6,
+          "winRatePct": 100,
+          "chainsCompletedPct": 100,
+          "defeats": 0,
+          "encounters": 400
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 6,
+            "lostSharePct": 7.4,
+            "winRatePct": 95.9,
+            "chainsCompletedPct": 60,
+            "defeats": 16,
+            "encounters": 387
+          },
+          "patchCocoa": {
+            "exchanges": 6.2,
+            "lostSharePct": 2.6,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6.2,
+            "lostSharePct": 0.2,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 5.3,
+          "lostSharePct": 34,
+          "winRatePct": 69.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 133
+        },
+        "pairOnly": {
+          "exchanges": 6.8,
+          "lostSharePct": 5.7,
+          "winRatePct": 98.2,
+          "chainsCompletedPct": 82.5,
+          "defeats": 7,
+          "encounters": 393
+        },
+        "ordinary": {
+          "exchanges": 5.8,
+          "lostSharePct": 38.3,
+          "winRatePct": 67.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 122
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 7.1,
+            "lostSharePct": 39.4,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 6.2,
+            "lostSharePct": 3,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      },
+      "duelist": {
+        "masteryRank": 12,
+        "pair": "sealCocoa",
+        "relics": [
+          "seal",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 5.7,
+          "lostSharePct": 18.4,
+          "winRatePct": 81.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 220
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 5.7,
+            "lostSharePct": 18.4,
+            "winRatePct": 81.8,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 220
+          },
+          "patchCocoa": {
+            "exchanges": 6,
+            "lostSharePct": 2.4,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          },
+          "fangPatch": {
+            "exchanges": 6,
+            "lostSharePct": 0.2,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 5,
+          "lostSharePct": 31.6,
+          "winRatePct": 75.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 161
+        },
+        "pairOnly": {
+          "exchanges": 6.2,
+          "lostSharePct": 22.2,
+          "winRatePct": 78.5,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 186
+        },
+        "ordinary": {
+          "exchanges": 5.8,
+          "lostSharePct": 34.6,
+          "winRatePct": 71,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 138
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 6.7,
+            "lostSharePct": 35.6,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 6,
+            "lostSharePct": 20.1,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      },
+      "caster": {
+        "masteryRank": 12,
+        "pair": "patchCocoa",
+        "relics": [
+          "darnedPatch",
+          "cocoaThimble"
+        ],
+        "strong": {
+          "exchanges": 7.7,
+          "lostSharePct": 13.1,
+          "winRatePct": 82.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 226
+        },
+        "candidates": {
+          "sealCocoa": {
+            "exchanges": 6.8,
+            "lostSharePct": 37.7,
+            "winRatePct": 67.2,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 122
+          },
+          "patchCocoa": {
+            "exchanges": 7.7,
+            "lostSharePct": 13.1,
+            "winRatePct": 82.3,
+            "chainsCompletedPct": 0,
+            "defeats": 40,
+            "encounters": 226
+          },
+          "fangPatch": {
+            "exchanges": 8,
+            "lostSharePct": 0.9,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 400
+          }
+        },
+        "masteryOnly": {
+          "exchanges": 6,
+          "lostSharePct": 45.3,
+          "winRatePct": 66.4,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 119
+        },
+        "pairOnly": {
+          "exchanges": 7.7,
+          "lostSharePct": 13.1,
+          "winRatePct": 82.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 226
+        },
+        "ordinary": {
+          "exchanges": 6,
+          "lostSharePct": 45.3,
+          "winRatePct": 66.4,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 119
+        },
+        "freshFight": {
+          "ordinary": {
+            "exchanges": 7.9,
+            "lostSharePct": 45,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          },
+          "strong": {
+            "exchanges": 7.9,
+            "lostSharePct": 13,
+            "winRatePct": 100,
+            "chainsCompletedPct": 100,
+            "defeats": 0,
+            "encounters": 40
+          }
+        }
+      }
+    }
+  },
+  "singles": {
+    "E100": {
+      "breaker": {
+        "none": {
+          "exchanges": 5.6,
+          "lostSharePct": 35.5,
+          "winRatePct": 68.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 126
+        },
+        "feltFang": {
+          "exchanges": 7.9,
+          "lostSharePct": 3.8,
+          "winRatePct": 100,
+          "chainsCompletedPct": 100,
+          "defeats": 0,
+          "encounters": 400
+        },
+        "cocoaThimble": {
+          "exchanges": 6.5,
+          "lostSharePct": 14.8,
+          "winRatePct": 80.6,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 206
+        },
+        "patchworkHeart": {
+          "exchanges": 5.5,
+          "lostSharePct": 28.9,
+          "winRatePct": 73.5,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 151
+        },
+        "seal": {
+          "exchanges": 5.3,
+          "lostSharePct": 33.5,
+          "winRatePct": 72,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 143
+        },
+        "thimbleGuard": {
+          "exchanges": 5.3,
+          "lostSharePct": 33.5,
+          "winRatePct": 72,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 143
+        },
+        "threadSpool": {
+          "exchanges": 5.6,
+          "lostSharePct": 35.4,
+          "winRatePct": 68.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 126
+        },
+        "darnedPatch": {
+          "exchanges": 5.6,
+          "lostSharePct": 35.5,
+          "winRatePct": 68.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 126
+        },
+        "picnicTin": {
+          "exchanges": 5.6,
+          "lostSharePct": 35.5,
+          "winRatePct": 68.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 126
+        }
+      },
+      "duelist": {
+        "none": {
+          "exchanges": 5.1,
+          "lostSharePct": 32.8,
+          "winRatePct": 74.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 158
+        },
+        "feltFang": {
+          "exchanges": 6.1,
+          "lostSharePct": 1.3,
+          "winRatePct": 100,
+          "chainsCompletedPct": 100,
+          "defeats": 0,
+          "encounters": 400
+        },
+        "cocoaThimble": {
+          "exchanges": 5.4,
+          "lostSharePct": 28.5,
+          "winRatePct": 75.3,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 162
+        },
+        "patchworkHeart": {
+          "exchanges": 5.4,
+          "lostSharePct": 29.3,
+          "winRatePct": 74.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 159
+        },
+        "seal": {
+          "exchanges": 5.2,
+          "lostSharePct": 31.2,
+          "winRatePct": 74.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 159
+        },
+        "thimbleGuard": {
+          "exchanges": 5.2,
+          "lostSharePct": 31.2,
+          "winRatePct": 74.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 159
+        },
+        "threadSpool": {
+          "exchanges": 5.1,
+          "lostSharePct": 32.7,
+          "winRatePct": 74.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 158
+        },
+        "darnedPatch": {
+          "exchanges": 5.1,
+          "lostSharePct": 32.7,
+          "winRatePct": 74.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 158
+        },
+        "picnicTin": {
+          "exchanges": 5.1,
+          "lostSharePct": 32.7,
+          "winRatePct": 74.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 158
+        }
+      },
+      "caster": {
+        "none": {
+          "exchanges": 5.9,
+          "lostSharePct": 40.6,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "feltFang": {
+          "exchanges": 7.1,
+          "lostSharePct": 13.4,
+          "winRatePct": 86.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 302
+        },
+        "cocoaThimble": {
+          "exchanges": 6,
+          "lostSharePct": 39.4,
+          "winRatePct": 66.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 121
+        },
+        "patchworkHeart": {
+          "exchanges": 6.1,
+          "lostSharePct": 37.4,
+          "winRatePct": 66.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 121
+        },
+        "seal": {
+          "exchanges": 6.2,
+          "lostSharePct": 38.5,
+          "winRatePct": 66.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 121
+        },
+        "thimbleGuard": {
+          "exchanges": 6.2,
+          "lostSharePct": 38.4,
+          "winRatePct": 66.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 121
+        },
+        "threadSpool": {
+          "exchanges": 5.9,
+          "lostSharePct": 40.5,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "darnedPatch": {
+          "exchanges": 5.9,
+          "lostSharePct": 40.5,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "picnicTin": {
+          "exchanges": 5.9,
+          "lostSharePct": 40.6,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        }
+      }
+    },
+    "E500": {
+      "breaker": {
+        "none": {
+          "exchanges": 5.8,
+          "lostSharePct": 38.3,
+          "winRatePct": 67.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 122
+        },
+        "feltFang": {
+          "exchanges": 7.1,
+          "lostSharePct": 0.2,
+          "winRatePct": 100,
+          "chainsCompletedPct": 100,
+          "defeats": 0,
+          "encounters": 400
+        },
+        "cocoaThimble": {
+          "exchanges": 6.5,
+          "lostSharePct": 14.6,
+          "winRatePct": 82.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 233
+        },
+        "patchworkHeart": {
+          "exchanges": 6,
+          "lostSharePct": 31.2,
+          "winRatePct": 70.8,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 137
+        },
+        "seal": {
+          "exchanges": 5.9,
+          "lostSharePct": 36.1,
+          "winRatePct": 68.5,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 127
+        },
+        "thimbleGuard": {
+          "exchanges": 5.9,
+          "lostSharePct": 36.1,
+          "winRatePct": 68.5,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 127
+        },
+        "threadSpool": {
+          "exchanges": 5.8,
+          "lostSharePct": 38.2,
+          "winRatePct": 67.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 122
+        },
+        "darnedPatch": {
+          "exchanges": 5.8,
+          "lostSharePct": 38.3,
+          "winRatePct": 67.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 122
+        },
+        "picnicTin": {
+          "exchanges": 5.8,
+          "lostSharePct": 38.3,
+          "winRatePct": 67.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 122
+        }
+      },
+      "duelist": {
+        "none": {
+          "exchanges": 5.8,
+          "lostSharePct": 34.6,
+          "winRatePct": 71,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 138
+        },
+        "feltFang": {
+          "exchanges": 6.6,
+          "lostSharePct": 0.9,
+          "winRatePct": 100,
+          "chainsCompletedPct": 100,
+          "defeats": 0,
+          "encounters": 400
+        },
+        "cocoaThimble": {
+          "exchanges": 5.9,
+          "lostSharePct": 28.6,
+          "winRatePct": 74.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 158
+        },
+        "patchworkHeart": {
+          "exchanges": 5.8,
+          "lostSharePct": 30.4,
+          "winRatePct": 74.2,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 155
+        },
+        "seal": {
+          "exchanges": 5.6,
+          "lostSharePct": 32.9,
+          "winRatePct": 73.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 153
+        },
+        "thimbleGuard": {
+          "exchanges": 5.6,
+          "lostSharePct": 32.9,
+          "winRatePct": 73.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 153
+        },
+        "threadSpool": {
+          "exchanges": 5.8,
+          "lostSharePct": 34.6,
+          "winRatePct": 71,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 138
+        },
+        "darnedPatch": {
+          "exchanges": 5.8,
+          "lostSharePct": 34.6,
+          "winRatePct": 71,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 138
+        },
+        "picnicTin": {
+          "exchanges": 5.8,
+          "lostSharePct": 34.6,
+          "winRatePct": 71,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 138
+        }
+      },
+      "caster": {
+        "none": {
+          "exchanges": 6,
+          "lostSharePct": 45.3,
+          "winRatePct": 66.4,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 119
+        },
+        "feltFang": {
+          "exchanges": 7.6,
+          "lostSharePct": 12.4,
+          "winRatePct": 87.9,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 330
+        },
+        "cocoaThimble": {
+          "exchanges": 6.1,
+          "lostSharePct": 43.7,
+          "winRatePct": 66.4,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 119
+        },
+        "patchworkHeart": {
+          "exchanges": 6.3,
+          "lostSharePct": 41.8,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "seal": {
+          "exchanges": 6.2,
+          "lostSharePct": 43.3,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "thimbleGuard": {
+          "exchanges": 6.2,
+          "lostSharePct": 43.4,
+          "winRatePct": 66.7,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 120
+        },
+        "threadSpool": {
+          "exchanges": 6,
+          "lostSharePct": 45.2,
+          "winRatePct": 66.4,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 119
+        },
+        "darnedPatch": {
+          "exchanges": 6,
+          "lostSharePct": 45.3,
+          "winRatePct": 66.4,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 119
+        },
+        "picnicTin": {
+          "exchanges": 6,
+          "lostSharePct": 45.3,
+          "winRatePct": 66.4,
+          "chainsCompletedPct": 0,
+          "defeats": 40,
+          "encounters": 119
+        }
+      }
+    }
+  },
+  "diagnosis": {
+    "note": "Per-position cost of a 10-fight unrested chain at E100 (chains are seeded prefixes; the difference between length n and n - 1 is fight n).",
+    "breakerFangPatch": [
+      {
+        "position": 1,
+        "fights": 40,
+        "exchanges": 6.5,
+        "winPct": 100,
+        "staminaAtStart": 254,
+        "guardOnlyPerFight": 0,
+        "damagingPerFight": 6.5
+      },
+      {
+        "position": 2,
+        "fights": 40,
+        "exchanges": 6.6,
+        "winPct": 100,
+        "staminaAtStart": 189.6,
+        "guardOnlyPerFight": 0,
+        "damagingPerFight": 6.6
+      },
+      {
+        "position": 3,
+        "fights": 40,
+        "exchanges": 6.5,
+        "winPct": 100,
+        "staminaAtStart": 123.9,
+        "guardOnlyPerFight": 0,
+        "damagingPerFight": 6.5
+      },
+      {
+        "position": 4,
+        "fights": 40,
+        "exchanges": 7,
+        "winPct": 100,
+        "staminaAtStart": 59.3,
+        "guardOnlyPerFight": 0.3,
+        "damagingPerFight": 6.7
+      },
+      {
+        "position": 5,
+        "fights": 40,
+        "exchanges": 8.7,
+        "winPct": 100,
+        "staminaAtStart": 5.5,
+        "guardOnlyPerFight": 2,
+        "damagingPerFight": 6.7
+      },
+      {
+        "position": 6,
+        "fights": 40,
+        "exchanges": 8.8,
+        "winPct": 100,
+        "staminaAtStart": 6.2,
+        "guardOnlyPerFight": 2,
+        "damagingPerFight": 6.8
+      },
+      {
+        "position": 7,
+        "fights": 40,
+        "exchanges": 8.6,
+        "winPct": 100,
+        "staminaAtStart": 9.5,
+        "guardOnlyPerFight": 2,
+        "damagingPerFight": 6.6
+      },
+      {
+        "position": 8,
+        "fights": 40,
+        "exchanges": 8.7,
+        "winPct": 100,
+        "staminaAtStart": 6.5,
+        "guardOnlyPerFight": 2,
+        "damagingPerFight": 6.6
+      },
+      {
+        "position": 9,
+        "fights": 40,
+        "exchanges": 9,
+        "winPct": 100,
+        "staminaAtStart": 7,
+        "guardOnlyPerFight": 2.1,
+        "damagingPerFight": 6.9
+      },
+      {
+        "position": 10,
+        "fights": 40,
+        "exchanges": 8.7,
+        "winPct": 100,
+        "staminaAtStart": 8.9,
+        "guardOnlyPerFight": 2.1,
+        "damagingPerFight": 6.6
+      }
+    ],
+    "breakerOrdinary": [
+      {
+        "position": 1,
+        "fights": 40,
+        "exchanges": 6.5,
+        "winPct": 100,
+        "staminaAtStart": 252,
+        "guardOnlyPerFight": 0,
+        "damagingPerFight": 6.5
+      },
+      {
+        "position": 2,
+        "fights": 40,
+        "exchanges": 6.2,
+        "winPct": 100,
+        "staminaAtStart": 187.6,
+        "guardOnlyPerFight": 0,
+        "damagingPerFight": 6.2
+      },
+      {
+        "position": 3,
+        "fights": 40,
+        "exchanges": 4.7,
+        "winPct": 15,
+        "staminaAtStart": 126.3,
+        "guardOnlyPerFight": 0,
+        "damagingPerFight": 4.7
+      },
+      {
+        "position": 4,
+        "fights": 6,
+        "exchanges": 1.3,
+        "winPct": 0,
+        "staminaAtStart": 72.7,
+        "guardOnlyPerFight": 0,
+        "damagingPerFight": 1.3
+      }
+    ]
+  },
+  "verdicts": [
+    {
+      "gate": "G1 ordinary",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.1,
+      "lossPct": 33.3
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7,
+      "lossPct": 9.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7.1,
+      "lossPct": 8.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.7,
+      "lossPct": 1.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.1,
+      "lossPct": 33.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 7,
+      "lossPct": 9.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.1,
+      "lossPct": 8.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.7,
+      "lossPct": 1.7
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.3,
+      "lossPct": 34.7
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7,
+      "lossPct": 10.7
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7.1,
+      "lossPct": 9.8
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.8,
+      "lossPct": 2.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.3,
+      "lossPct": 34.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 7,
+      "lossPct": 10.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.1,
+      "lossPct": 9.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.8,
+      "lossPct": 2.8
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5,
+      "lossPct": 32.4
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 5.5,
+      "lossPct": 20.8
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.5,
+      "lossPct": 6.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.5,
+      "lossPct": 1.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5,
+      "lossPct": 32.4
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 5.5,
+      "lossPct": 20.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.5,
+      "lossPct": 6.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 6.5,
+      "lossPct": 1.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5,
+      "lossPct": 33.1
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 5.6,
+      "lossPct": 22.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.5,
+      "lossPct": 7.4
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.6,
+      "lossPct": 1.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5,
+      "lossPct": 33.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 22.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.5,
+      "lossPct": 7.4
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 6.6,
+      "lossPct": 1.2
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.7,
+      "lossPct": 37.2
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 5.5,
+      "lossPct": 29.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7,
+      "lossPct": 11.2
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.7,
+      "lossPct": 4.4
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.7,
+      "lossPct": 37.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 5.5,
+      "lossPct": 29.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7,
+      "lossPct": 11.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.7,
+      "lossPct": 4.4
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E60",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 38.2
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 5.6,
+      "lossPct": 30.5
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 6.9,
+      "lossPct": 11.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E60",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.8,
+      "lossPct": 5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 38.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 30.5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.9,
+      "lossPct": 11.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.8,
+      "lossPct": 5
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 35.5
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7.1,
+      "lossPct": 10.1
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7.2,
+      "lossPct": 9.2
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.9,
+      "lossPct": 1.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 35.5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 7.1,
+      "lossPct": 10.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.2,
+      "lossPct": 9.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.9,
+      "lossPct": 1.2
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.5,
+      "lossPct": 36.2
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7,
+      "lossPct": 10.5
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7.1,
+      "lossPct": 9.3
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 8,
+      "lossPct": 1.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.5,
+      "lossPct": 36.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 7,
+      "lossPct": 10.5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.1,
+      "lossPct": 9.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 8,
+      "lossPct": 1.7
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.1,
+      "lossPct": 32.8
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 5.6,
+      "lossPct": 21.4
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.1,
+      "lossPct": 4.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.1,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.1,
+      "lossPct": 32.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 21.4
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.1,
+      "lossPct": 4.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 6.1,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.1,
+      "lossPct": 33.1
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 5.6,
+      "lossPct": 21.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.1,
+      "lossPct": 5.1
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.1,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.1,
+      "lossPct": 33.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 21.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.1,
+      "lossPct": 5.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 6.1,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.9,
+      "lossPct": 40.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.2,
+      "lossPct": 33.1
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7.3,
+      "lossPct": 10.2
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 8,
+      "lossPct": 2.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.9,
+      "lossPct": 40.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.2,
+      "lossPct": 33.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.3,
+      "lossPct": 10.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 8,
+      "lossPct": 2.8
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E100",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 41.2
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.2,
+      "lossPct": 33.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 7.2,
+      "lossPct": 10.7
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E100",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 8,
+      "lossPct": 3.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 41.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.2,
+      "lossPct": 33.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.2,
+      "lossPct": 10.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 8,
+      "lossPct": 3.2
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 37.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 6.8,
+      "lossPct": 8.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.1,
+      "lossPct": 7.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.8,
+      "lossPct": 1.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 37.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.8,
+      "lossPct": 8.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.1,
+      "lossPct": 7.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.8,
+      "lossPct": 1.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 37.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 6.8,
+      "lossPct": 9.1
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7,
+      "lossPct": 7.7
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.8,
+      "lossPct": 1.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 37.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.8,
+      "lossPct": 9.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7,
+      "lossPct": 7.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.8,
+      "lossPct": 1.2
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.5,
+      "lossPct": 33.8
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 5.9,
+      "lossPct": 21.7
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.4,
+      "lossPct": 3.3
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.4,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.5,
+      "lossPct": 33.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 5.9,
+      "lossPct": 21.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.4,
+      "lossPct": 3.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 6.4,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.5,
+      "lossPct": 34.1
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 5.9,
+      "lossPct": 21.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.4,
+      "lossPct": 3.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.4,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.5,
+      "lossPct": 34.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 5.9,
+      "lossPct": 21.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.4,
+      "lossPct": 3.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 6.4,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 6,
+      "lossPct": 45
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.7,
+      "lossPct": 37.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 7.6,
+      "lossPct": 12.5
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 8.1,
+      "lossPct": 2.5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 6,
+      "lossPct": 45
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.7,
+      "lossPct": 37.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.6,
+      "lossPct": 12.5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "exchanges": 8.1,
+      "lossPct": 2.5
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E200",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": false,
+      "exchanges": 5.9,
+      "lossPct": 45.3
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.7,
+      "lossPct": 37.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 7.6,
+      "lossPct": 12.9
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E200",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 8.1,
+      "lossPct": 2.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.9,
+      "lossPct": 45.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.7,
+      "lossPct": 37.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.6,
+      "lossPct": 12.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "exchanges": 8.1,
+      "lossPct": 2.7
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 38.3
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 6.6,
+      "lossPct": 8.3
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.8,
+      "lossPct": 5.7
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.1,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 38.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.6,
+      "lossPct": 8.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.8,
+      "lossPct": 5.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.1,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 38.5
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": false,
+      "exchanges": 6.6,
+      "lossPct": 8.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.8,
+      "lossPct": 5.8
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 7.1,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 38.5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.6,
+      "lossPct": 8.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.8,
+      "lossPct": 5.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 7.1,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 34.6
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 6.2,
+      "lossPct": 22.2
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.6,
+      "lossPct": 3.4
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.6,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 34.6
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.2,
+      "lossPct": 22.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.6,
+      "lossPct": 3.4
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 6.6,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 34.8
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 6.2,
+      "lossPct": 22.5
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.6,
+      "lossPct": 3.5
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.6,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 5.8,
+      "lossPct": 34.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.2,
+      "lossPct": 22.5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 6.6,
+      "lossPct": 3.5
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 6.6,
+      "lossPct": 0.1
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": false,
+      "exchanges": 6,
+      "lossPct": 45.3
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.8,
+      "lossPct": 37.7
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 7.7,
+      "lossPct": 13.1
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 8,
+      "lossPct": 0.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 6,
+      "lossPct": 45.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.8,
+      "lossPct": 37.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.7,
+      "lossPct": 13.1
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 8,
+      "lossPct": 0.9
+    },
+    {
+      "gate": "G1 ordinary",
+      "E": "E500",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": false,
+      "exchanges": 6,
+      "lossPct": 45.4
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 6.7,
+      "lossPct": 38
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "inTargetBand": true,
+      "exchanges": 7.7,
+      "lossPct": 13.3
+    },
+    {
+      "gate": "G2 pair",
+      "E": "E500",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": false,
+      "inTargetBand": false,
+      "exchanges": 8,
+      "lossPct": 0.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "ordinary",
+      "pass": true,
+      "exchanges": 6,
+      "lossPct": 45.4
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "sealCocoa",
+      "pass": true,
+      "exchanges": 6.7,
+      "lossPct": 38
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "patchCocoa",
+      "pass": true,
+      "exchanges": 7.7,
+      "lossPct": 13.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "oneBehind",
+      "config": "fangPatch",
+      "pass": true,
+      "exchanges": 8,
+      "lossPct": 0.9
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": true,
+      "lossOk": true,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 6.7,
+      "lossPct": 8.8,
+      "ordinaryLossPct": 33.3,
+      "winRatePct": 88.1,
+      "ordinaryWinRatePct": 71.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": true,
+      "exchanges": 6.7,
+      "lossPct": 8.8
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": false,
+      "lossOk": false,
+      "exchangesOk": false,
+      "winOk": false,
+      "exchanges": 5.1,
+      "lossPct": 17.1,
+      "ordinaryLossPct": 32.4,
+      "winRatePct": 83.3,
+      "ordinaryWinRatePct": 74.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": true,
+      "exchanges": 5.1,
+      "lossPct": 17.1
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "lossOk": true,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 7,
+      "lossPct": 10.9,
+      "ordinaryLossPct": 37.2,
+      "winRatePct": 84.5,
+      "ordinaryWinRatePct": 66.9
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E60",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "exchanges": 7,
+      "lossPct": 10.9
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "lossOk": true,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 7,
+      "lossPct": 8.1,
+      "ordinaryLossPct": 35.5,
+      "winRatePct": 88.3,
+      "ordinaryWinRatePct": 68.3
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "exchanges": 7,
+      "lossPct": 8.1
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": false,
+      "lossOk": false,
+      "exchangesOk": false,
+      "winOk": false,
+      "exchanges": 5.4,
+      "lossPct": 19.4,
+      "ordinaryLossPct": 32.8,
+      "winRatePct": 81.2,
+      "ordinaryWinRatePct": 74.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": true,
+      "exchanges": 5.4,
+      "lossPct": 19.4
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "lossOk": true,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 7.3,
+      "lossPct": 10,
+      "ordinaryLossPct": 40.6,
+      "winRatePct": 84.8,
+      "ordinaryWinRatePct": 66.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E100",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "exchanges": 7.3,
+      "lossPct": 10
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": true,
+      "lossOk": true,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 6.3,
+      "lossPct": 8,
+      "ordinaryLossPct": 37.6,
+      "winRatePct": 89,
+      "ordinaryWinRatePct": 67.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": true,
+      "exchanges": 6.3,
+      "lossPct": 8
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": false,
+      "lossOk": false,
+      "exchangesOk": false,
+      "winOk": false,
+      "exchanges": 5.6,
+      "lossPct": 18.9,
+      "ordinaryLossPct": 33.8,
+      "winRatePct": 81.6,
+      "ordinaryWinRatePct": 72.8
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": true,
+      "exchanges": 5.6,
+      "lossPct": 18.9
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "lossOk": true,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 7.6,
+      "lossPct": 12.1,
+      "ordinaryLossPct": 45,
+      "winRatePct": 83.5,
+      "ordinaryWinRatePct": 66.7
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E200",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "exchanges": 7.6,
+      "lossPct": 12.1
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": false,
+      "lossOk": true,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 6.2,
+      "lossPct": 2.6,
+      "ordinaryLossPct": 38.3,
+      "winRatePct": 100,
+      "ordinaryWinRatePct": 67.2
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "breaker",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "exchanges": 6.2,
+      "lossPct": 2.6
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": false,
+      "lossOk": false,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 5.7,
+      "lossPct": 18.4,
+      "ordinaryLossPct": 34.6,
+      "winRatePct": 81.8,
+      "ordinaryWinRatePct": 71
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "duelist",
+      "state": "onLevel",
+      "config": "strong sealCocoa",
+      "pass": true,
+      "exchanges": 5.7,
+      "lossPct": 18.4
+    },
+    {
+      "gate": "G3 strong",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "lossOk": true,
+      "exchangesOk": false,
+      "winOk": true,
+      "exchanges": 7.7,
+      "lossPct": 13.1,
+      "ordinaryLossPct": 45.3,
+      "winRatePct": 82.3,
+      "ordinaryWinRatePct": 66.4
+    },
+    {
+      "gate": "G4 slog",
+      "E": "E500",
+      "kit": "caster",
+      "state": "onLevel",
+      "config": "strong patchCocoa",
+      "pass": true,
+      "exchanges": 7.7,
+      "lossPct": 13.1
+    }
+  ],
+  "winsPerLevel": {
+    "R1": {
+      "E": 51,
+      "xpNeeded": 66360,
+      "xpPerWin": 632,
+      "wins": 105,
+      "pass": true
+    },
+    "R2": {
+      "E": 101,
+      "xpNeeded": 135520,
+      "xpPerWin": 1232,
+      "wins": 110,
+      "pass": true
+    },
+    "R3": {
+      "E": 151,
+      "xpNeeded": 210680,
+      "xpPerWin": 1832,
+      "wins": 115,
+      "pass": true
+    },
+    "R4": {
+      "E": 201,
+      "xpNeeded": 291840,
+      "xpPerWin": 2432,
+      "wins": 120,
+      "pass": true
+    },
+    "R5": {
+      "E": 251,
+      "xpNeeded": 379000,
+      "xpPerWin": 3032,
+      "wins": 125,
+      "pass": true
+    },
+    "R6": {
+      "E": 301,
+      "xpNeeded": 472160,
+      "xpPerWin": 3632,
+      "wins": 130,
+      "pass": true
+    },
+    "R7": {
+      "E": 351,
+      "xpNeeded": 571320,
+      "xpPerWin": 4232,
+      "wins": 135,
+      "pass": true
+    },
+    "R8": {
+      "E": 401,
+      "xpNeeded": 676480,
+      "xpPerWin": 4832,
+      "wins": 140,
+      "pass": true
+    },
+    "R9": {
+      "E": 451,
+      "xpNeeded": 787640,
+      "xpPerWin": 5432,
+      "wins": 145,
+      "pass": true
+    },
+    "R10": {
+      "E": 501,
+      "xpNeeded": 904800,
+      "xpPerWin": 6032,
+      "wins": 150,
+      "pass": true
+    }
+  }
+}

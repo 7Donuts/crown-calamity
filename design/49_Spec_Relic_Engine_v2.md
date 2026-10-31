@@ -56,7 +56,7 @@ Rank 3 refinements for the engine relics:
 
 | Relic | Rank 3 refinement |
 | --- | --- |
-| Felt Vampire Fang | Per-exchange cap 10% to 13% of maximum Stuffing |
+| Felt Vampire Fang | Per-exchange cap 10% to 13% of maximum Stuffing (4.5% to 5.85% past the story, below) |
 | Darned-Elbow Patch | A heavy gains 3 Pluck instead of 2 |
 | Hot-Cocoa Thimble | 5% per Pluck instead of 4% |
 | Picnic-Tin Keepsake | Carries up to 4 Pluck |
@@ -65,6 +65,8 @@ Rank 3 refinements for the engine relics:
 | Seed-Packet Heart | Also heals at half strength when the response is a heavy |
 | Keepsake Music Box | Expose gains 3 Pluck |
 | Encore Ribbon | Damage ceiling +30% instead of +24% |
+
+The Fang past the story (D16): above effective level 50 its rate and per-exchange cap are multiplied by 0.45 (`FANG_POST_STORY_SCALE`, `fangScale`); through effective level 50 it is unchanged. Rank 3 raises the cap as before and the scale applies on top (13% becomes 5.85%). Design 43 has the evidence.
 
 The ten older relics use a generic refinement at rank 3: generators gain 1 more Pluck on their trigger; payoffs raise their ceiling by 25%.
 
@@ -106,6 +108,7 @@ One input, one exchange; no timers; deterministic; no profit loops (rank costs a
 
 - Re-run the design 43 sustain simulation with ranks 1 and 3: a rank 3 pair may cut net Stuffing lost per fight by up to a further 25% relative to rank 1, not more.
 - No single relic appears in the best pair for every enemy pattern.
+- Post-story: with real tempered gear, a planned pair that includes the Fang loses at least 8% of maximum Stuffing per won fight and takes 5 to 8 exchanges (design 50 balance gates; `scripts/sim-g3-4-refit.mjs`).
 - Economy report: rank costs at each chapter take between one and three hours of that chapter's play at the documented input pace.
 
 ## Documents to update when shipped
