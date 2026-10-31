@@ -11,19 +11,19 @@ const KITS = new Set(['breaker', 'duelist', 'caster']);
 const ACTION_MS = 700;
 const MAX_SEEDS = 10000;
 const MAX_CHAIN = 50;
-const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'race', 'gear', 'relics', 'mastery', 'abilities', 'save', 'rulesPreview']);
+const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'save', 'rulesPreview']);
 const NON_MEASURED = ['raceTraits', 'familyTraits'];
 const round1 = n => Math.round(n * 10) / 10;
 
 function prepare(fixture) {
   if (!fixture || typeof fixture !== 'object' || Array.isArray(fixture)) throw new Error('Fixture must be an object');
   for (const key of Object.keys(fixture)) {
-    if (['relicRanks', 'ranks', 'weaponRanks', 'raceTraits', 'familyTraits'].includes(key)) {
+    if (['ranks', 'weaponRanks', 'raceTraits', 'familyTraits'].includes(key)) {
       throw new Error(`${key} is not implemented; refusing to produce balance metrics for that fixture`);
     }
     if (!FIXTURE_KEYS.has(key)) throw new Error(`Unknown fixture field: ${key}`);
   }
-  const { kit = 'breaker', level, race, gear = {}, relics = [], mastery = {}, abilities = [], save, rulesPreview } = fixture;
+  const { kit = 'breaker', level, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], save, rulesPreview } = fixture;
   if (save !== undefined && Object.hasOwn(fixture, 'kit')) throw new Error('Captured-save fixtures cannot also specify kit');
   if (!KITS.has(kit) && !save) throw new Error(`Unknown kit: ${kit}`);
   if (level !== undefined && (!Number.isInteger(level) || level < 1 || level > G.LEVEL_CAP)) throw new Error(`Fixture level must be an integer from 1 to ${G.LEVEL_CAP}`);
@@ -69,6 +69,26 @@ function prepare(fixture) {
     if (s.gear.relic === id || s.gear.relic2 === id) continue;
     const slot = !s.gear.relic ? 'relic' : !s.gear.relic2 ? 'relic2' : null;
     if (!slot || !G.equip(s, id, slot)) throw new Error(`Cannot equip relic: ${id}`);
+  }
+  if (!relicRanks || typeof relicRanks !== 'object' || Array.isArray(relicRanks)) throw new Error('Fixture relicRanks must be an object');
+  for (const [id, rank] of Object.entries(relicRanks)) {
+    if (!ITEMS[id] || ITEMS[id].slot !== 'relic') throw new Error(`Unknown relic: ${id}`);
+    if (!Number.isInteger(rank) || rank < 1 || rank > 3) throw new Error(`Invalid relic rank for ${id}`);
+    s.relicRanks = s.relicRanks || {};
+    s.relicRanks[id] = rank;
+  }
+  if (!Array.isArray(echoes)) throw new Error('Fixture echoes must be an array');
+  if (echoes.length > 3) throw new Error('Fixture echoes cannot exceed 3 sockets');
+  G.normalizeRelics(s);
+  for (let i = 0; i < echoes.length; i++) {
+    const relicId = typeof echoes[i] === 'string' ? echoes[i] : echoes[i]?.id || echoes[i]?.relicId;
+    if (!relicId) continue;
+    if (!ITEMS[relicId] || ITEMS[relicId].slot !== 'relic') throw new Error(`Unknown echo relic: ${relicId}`);
+    if (!s.bag.includes(relicId)) s.bag.push(relicId);
+    s.relicSockets[i].unlocked = true;
+    s.relicSockets[i].relicId = relicId;
+    s.relicSockets[i].copiesPaid = s.relicSockets[i].copiesPaid || {};
+    s.relicSockets[i].copiesPaid[relicId] = 1;
   }
   if (!Array.isArray(abilities)) throw new Error('Fixture abilities must be an array');
   for (const id of abilities) {
