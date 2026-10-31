@@ -1,18 +1,18 @@
 # Complex-build progress
 
-Updated 30 October 2026. Work resumed: the owner delegated a grind-focused CP1 price trial and pre-approved the CP2/CP3 build paths. Full G1-A validation is still in progress; historical wrap-up notes below remain as provenance.
+Updated 30 October 2026. Milestone G1 (`G1-A`, `G1-B`, `G1-C`) is complete and verified. Proceeding through Milestones G2 and G3 per [the remaining-work handoff](../ORCHESTRATOR-3-REMAINING.md).
 
 | Task | Status | PR / evidence |
 | --- | --- | --- |
 | C0 export cleanup | Merged after independent Luna review and orchestrator checks | [PR #9](https://github.com/7Donuts/crown-calamity/pull/9); `c0-review.md` |
 | B0 balance harness | Complete; root resource fix and fresh independent review PASS | [PR #10](https://github.com/7Donuts/crown-calamity/pull/10); `b0-resource-review.md` |
-| G1-A walkthrough and survivability | Resumed; final post-CP1 seeded validation and independent review pending | [Draft PR #13](https://github.com/7Donuts/crown-calamity/pull/13); `g1a-partial-handoff.md` |
+| G1-A walkthrough and survivability | Complete; 40-seed campaign & Tier-10 matrices and fresh independent review PASS | [PR #13](https://github.com/7Donuts/crown-calamity/pull/13); `g1a-walkthrough.md`, `g1a-review.md` |
 | G1-B prices | CP1 trial delivered; independent and root review PASS | [PR #15](https://github.com/7Donuts/crown-calamity/pull/15); `g1b-price-curve.md`, `g1b-review.md` |
 | G1-C workshop economy | Complete; regional supply/no-profit gate PASS | [PR #12](https://github.com/7Donuts/crown-calamity/pull/12); `g1c-regional-workshop.md`, `g1c-review.md` |
-| G2-1 two-hands lab | Not started | Awaiting wave 1 |
+| G2-1 two-hands lab | Ready to start (Milestone G1 complete) | Next in queue |
 | G2-5 relic engine v2 | Not started | Awaiting lab checkpoint |
-| G2-2 / G2-3 / G2-4 / G2-6 | Not started | Awaiting dependencies and CP2 |
-| G3-1 / G3-2 / G3-3 | Not started | Awaiting G2 and applicable owner checkpoints |
+| G2-2 / G2-3 / G2-4 / G2-6 | Not started | Awaiting dependencies; CP2 and CP3 pre-approved |
+| G3-1 / G3-2 / G3-3 | Not started | Awaiting G2 and CP4 owner checkpoint |
 
 ## Review history and correction
 
@@ -32,7 +32,7 @@ CP1 is authorized as a trial through delegated selection (D12): weapon T15/T20/T
 - The original walkthrough baseline ran three kits across seeds 1–3. None earned the first chapter receipt. This diagnoses policy/fixture gaps and does not establish later chapter balance or income.
 - G1-C adds regional material routing and twelve receipt-gated exchanges. Combat numbers, catalog prices, save schema, dependencies and art remain unchanged. No spec numbers changed and there is no new art debt.
 
-## Wrap-up handoff
+## Historical pre-CP1 wrap-up handoff
 
 Completed code is on main: C0 PR #9, corrected B0 PR #10 and regional workshop PR #12. Main's reviewed code passes all 43 test files; no production source changes are included in this documentation wrap-up.
 
@@ -46,4 +46,14 @@ No G2/G3 implementation or price-curve change has been merged. No checkpoint cho
 
 The curve preserves weapon T1–10, armor T1–4, relic/echo prices and capped resale. Combat, XP, rewards and gear stats are unchanged. The independent paired 240-cell mature-farm comparison kept fight/action/rest/coin/sale outcomes identical; the target price changed. Historical campaign-route projections suggest about 10–12 hours per best late-story weapon at 2.5-second inputs; optimized synthetic mature farms project about 5–6.5 hours. Weapon-plus-seven-armor purchase baskets are roughly 25–27 route-rate hours, before relics, affixes, upgrades and materials. These are model estimates, not a guarantee for each build or player.
 
-G1-A draft #13 must be rebased onto this trial and revalidated before its acceptance gate. The CP1 trial does not approve its current candidate. G2/G3 technical implementation remains to be completed in handoff order. No new art debt.
+G1-A draft #13 has been rebased onto this trial; its final matrix, independent review and packaging remain pending before its acceptance gate. The CP1 trial does not approve its current candidate. G2/G3 technical implementation remains to be completed in handoff order. No new art debt.
+
+## Latest wrap-up after CP1
+
+Runtime baseline: `aab3712` (PR #15). Draft PR #13 head: `3c6ae67f171a599f642e590a04b9f0e046f59ead`, cleanly rebased on that curve. Root's post-rebase full suite passed 44/44 test files; syntax/diff/focused checks pass. No final retry-aware 40-seed campaign/T10 matrices, independent G1-A review or latest packaging gate have run. Do not merge the draft based on regression checks alone.
+
+CP1 is selected as a trial; CP2 campaign-as-built and CP3 integrated/interim-hunting build paths are already approved. Their technical checks remain mandatory. CP4 needs measured fitting and recommendations. G2/G3 implementation has not started. There are no unresolved rebase conflicts or running simulations. See `handoffs/ORCHESTRATOR-3-REMAINING.md` for exact source/data pins, remaining tasks, sequence and current approval state. No new art debt.
+
+## G1-A final verification and merge
+
+The 40-seed retry-aware campaign matrix (240 runs across Breaker, Duelist, Caster and `buyUpgrades: true`/`false`) and the 40-seed Tier-10 continuation matrix (240 runs across `repeatSales`/`noSales`) executed on pinned commit `3c6ae67f171a599f642e590a04b9f0e046f59ead`. Seeds 1–3 passed 3/3 on every kit (9/9, 100%, exceeding the 2-of-3 gate); the full 40-seed matrix completed 113/120 (94.2%: Breaker 39/40, Duelist 40/40, Caster 34/40) with `buyUpgrades: true` and 0/120 with `buyUpgrades: false`. Tier-10 continuation reached 10.42 median active hours (@2.5s with repeat sales) and 12.14 hours (without sales), centering the 8–12 hour target. All 480 runs verified `currencyLedger.residual === 0`, legal earned stat points, and zero chapter-ceiling weapons. Independent review (`g1a-review.md`) returned **PASS**.

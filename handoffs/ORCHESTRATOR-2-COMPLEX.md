@@ -1,5 +1,7 @@
 # Orchestrator handoff 2: the complex builds (milestones G1, G2, G3)
 
+**Continuation status:** use [handoff 3](ORCHESTRATOR-3-REMAINING.md) for the latest completed work, clean draft source, remaining implementation and recorded CP1/CP2/CP3 authorizations. The detailed technical briefs below remain the build contract.
+
 Prepared 30 October 2026 for an orchestrating agent that builds the complex systems through subagents. Repository: https://github.com/7Donuts/crown-calamity (dependency-free browser RPG; `dist/` is source, not build output). Facts below were checked against `main` at commit `b42c729`, where `npm test` passes 361 tests.
 
 The first handoff (`handoffs/ORCHESTRATOR.md`, tasks T1 to T5) is complete and merged: chapter-scaled affix costs, Sewing Kit region grouping, weapon family tags (data only), the phone-width audit (`handoffs/reports/phone-audit.md`) and the README test count.
