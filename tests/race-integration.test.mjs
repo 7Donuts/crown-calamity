@@ -111,11 +111,12 @@ test('Seal echoes scale one barrier proc per fight, and unequipping core makes e
   assert.equal(G.startFight(s,'crab','delve',1000),true);
   s.fight.round=1;
   const first=G.exchange(s,'guard',()=>.5,1000);
-  assert.equal(first.ok,true);assert.ok(first.absorbed>0,'the useful Guard triggers the Seal barrier');
+  assert.equal(first.ok,true);assert.equal(first.absorbed,0,'D22: the Seal barrier goes up after the guarded hit');assert.ok(s.fight.barrier>0,'the useful Guard triggers the Seal barrier for the next response');
   const expectedBarrier=Math.floor(G.totals(s).hp*0.04*G.relicEffectStrength(s,'seal'));
   assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants ${expectedBarrier} barrier`)).length,1,'the core and three echoes scale one proc instead of repeating it');
   const second=G.exchange(s,'guard',()=>.5,1000+G.ACTION_DELAY_MS);
   assert.equal(second.ok,true);
+  assert.ok(second.absorbed>0,'D22: the next response absorbs the barrier');
   assert.equal(s.fight.sealUsed,true);
   G.exchange(s,'guard',()=>.5,1000+2*G.ACTION_DELAY_MS);
   assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants`)).length,1,'later useful Guards do not trigger another Seal proc');

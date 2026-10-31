@@ -246,6 +246,20 @@ export function postStoryVictoryBounce(effectiveLevelInput, maxStamina) {
   return POST_STORY_VICTORY_BOUNCE;
 }
 
+// A post-story victory also returns this much Sparkle (mana), mirroring the Bounce restore (D23, design 32 and 50). It is flat
+// for the same reason: Arc Bolt and Wardcast cost a flat 16 Sparkle, about 80 to 100 a fight, while Sparkle pools run from about
+// 100 (a Breaker) to 1,700 (a Realness 9 Caster); a share of the pool would refill a big pool many times over. The restore
+// is resolved inside the final exchange, capped at maximum, and never a timer. Nothing happens through effective level 50.
+export const POST_STORY_VICTORY_SPARKLE = 45;
+
+/** Sparkle a victory restores before the cap at maximum: 0 through effective level 50, else POST_STORY_VICTORY_SPARKLE. */
+export function postStoryVictorySparkle(effectiveLevelInput, maxMana) {
+  const E = Number(effectiveLevelInput);
+  const max = Math.floor(Number(maxMana));
+  if (!(E > POST_STORY_BOUNCE_LEVEL) || !(max > 0)) return 0;
+  return POST_STORY_VICTORY_SPARKLE;
+}
+
 /**
  * Post-story enemy stat curve (Spec 50 curves table; fitted by the G3-4 simulation against real tempered gear).
  * Archetypes: 'balanced' (50/50 armor/ward), 'brute' (70/30), 'warded' (20/80).

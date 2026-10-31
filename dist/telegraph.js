@@ -7,16 +7,21 @@ export const TELEGRAPH=Object.freeze({
  guardHeavy:.65,       // Share of a declared heavy hit prevented by the same action.
  openingDamage:.25,    // Raw damage bonus of Opening (a heavy guarded, then your next damaging action).
  sidestepCoefficient:.8, // Sidestep is the blade-and-charm combined action; same power as Guardstrike.
- preventionCeiling:.85 // Armor or ward, guard and barrier together never prevent more than this share of one hit.
+ preventionCeiling:.85, // Armor or ward, guard and barrier together never prevent more than this share of one hit.
+ focusGuardNormal:.25, // D24: Wardcast with a focus in the second hand and no shield prevents less than a shield's Wardcast.
+ focusGuardHeavy:.5
 });
 export const GUARD_ACTIONS=Object.freeze(['guard','brace','combo','guardstrike','sidestep']);
 export const DAMAGING_ACTIONS=Object.freeze(['attack','disrupt','driving','guardstrike','sidestep','cast','combo']);
 export const SHIELD_IDS=Object.freeze(Object.keys(ITEMS).filter(id=>ITEMS[id].shield===true));
 export const isShield=id=>ITEMS[id]?.shield===true;
-export const guardRate=heavy=>heavy?TELEGRAPH.guardHeavy:TELEGRAPH.guardNormal;
+// `source` is where the Guard comes from: 'shield' (every Guard verb, the default) or 'focus' (D24: Wardcast with a focus in the
+// second hand and no shield). A shield's rates are the higher ones.
+export const guardRate=(heavy,source='shield')=>source==='focus'?(heavy?TELEGRAPH.focusGuardHeavy:TELEGRAPH.focusGuardNormal):(heavy?TELEGRAPH.guardHeavy:TELEGRAPH.guardNormal);
 export const exposeBonus=rank=>.15+.05*(rank||1);
 const pct=v=>Math.round(v*100)+'%';
 export const guardPercent=heavy=>pct(guardRate(heavy));
+export const focusGuardPercent=heavy=>pct(guardRate(heavy,'focus'));
 export const openingPercent=()=>'+'+pct(TELEGRAPH.openingDamage);
 // Sidestep replaces Guardstrike for a precision weapon with no shield, as Wardcast and Guardstrike follow weapon and offhand.
 export const sidestepEligible=(weaponChannel,offhand)=>weaponChannel==='precision'&&!isShield(offhand);
@@ -47,6 +52,7 @@ export function openingLabel(fight,exposeRank){if(!fight?.opening)return null;co
 export const telegraphText=Object.freeze({
  heavyGuard:()=>`Guarding a declared heavy attack prevents ${guardPercent(true)} of it (${guardPercent(false)} of a normal hit) and grants Opening: your next damaging action cannot glance and deals ${openingPercent()} damage.`,
  guardNote:()=>`Prevents ${guardPercent(false)} of a hit, or ${guardPercent(true)} of a declared heavy attack, which also grants Opening (${openingPercent()} damage on your next damaging action, which cannot glance).`,
+ focusGuardNote:()=>`A focus in the second hand gives Wardcast a weaker Guard: it prevents ${focusGuardPercent(false)} of a hit, or ${focusGuardPercent(true)} of a declared heavy attack (a shield prevents ${guardPercent(false)} and ${guardPercent(true)}), and a declared heavy still grants Opening.`,
  heavyHint:()=>`Heavy attack · Guard prevents ${guardPercent(true)} and opens the enemy; Disrupt can cancel it.`,
  openingShort:()=>`Guard prevents ${guardPercent(true)} of a heavy and opens the enemy (${openingPercent()} next strike).`,
  ceiling:()=>`Armor or ward, guard and barrier together never prevent more than ${pct(TELEGRAPH.preventionCeiling)} of one hit; only a successful interrupt cancels a response entirely.`

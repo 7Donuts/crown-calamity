@@ -23,9 +23,12 @@ export const COCOA_PER_PLUCK = 0.04;
 export const COCOA_POST_STORY_SCALE = 0.6;
 // The Keeper's Brass Button past the story (D20, design 43 and 49). Through effective level 50 it is unchanged: a barrier of
 // 4% of maximum Stuffing and 1 Pluck (2 at rank 3), once per fight. Above it the same single trigger gains this many more
-// Pluck, which is what a kit without its own Pluck sources (the Caster, whose focus cannot block) needs to feed a payoff.
+// Pluck, which is what a kit without its own Pluck sources (the Caster, which blocks only through a weaker Wardcast) needs to
+// feed a payoff. Its barrier (D22) goes up after the guarded hit and absorbs the next enemy response.
 export const SEAL_BASE_BARRIER = 0.04;
-export const SEAL_POST_STORY_EXTRA_PLUCK = 7;
+// G3-6: 5, down from 7. D22 made the Seal's barrier real, which supplies much of the sustain the extra Pluck was standing in for;
+// at 7 the Duelist's Seal + Cocoa fell to 9.4% lost (the floor is 8%) and the Caster's to 14.5%, at 5 they are 11.0% and 18.7%.
+export const SEAL_POST_STORY_EXTRA_PLUCK = 5;
 export const LOCKET_REFLECT = 0.25;
 export const RATTLE_REDUCTION = 0.30;
 export const RATTLE_REDUCTION_CAP = 0.45;
@@ -40,7 +43,7 @@ export const ENGINE_EFFECTS = Object.freeze({
     desc: 'Recover restores 3% of maximum Sparkle extra. Recover while holding 0 Pluck gains 1 Pluck.',
     trigger: 'Recover.', limit: 'Every Recover.', ceiling: '3% maximum Sparkle extra; 1 Pluck at 0 Pluck.' }),
   seal: Object.freeze({ name: 'Keeper’s Brass Button', role: 'generator', source: 'shop',
-    desc: `First useful Guard each fight grants a barrier of 4% of maximum Stuffing and gains 1 Pluck. Past the story (effective level above ${FANG_STORY_LEVEL}) it gains ${SEAL_POST_STORY_EXTRA_PLUCK} more Pluck.`,
+    desc: `First useful Guard each fight raises a barrier of 4% of maximum Stuffing that absorbs the next enemy response, and gains 1 Pluck. Past the story (effective level above ${FANG_STORY_LEVEL}) it gains ${SEAL_POST_STORY_EXTRA_PLUCK} more Pluck.`,
     trigger: 'First useful Guard each fight.', limit: 'Once per fight.', ceiling: `Within 30% maximum Stuffing barrier cap; ${1 + SEAL_POST_STORY_EXTRA_PLUCK} Pluck past the story (${2 + SEAL_POST_STORY_EXTRA_PLUCK} at rank 3).` }),
   threadSpool: Object.freeze({ name: 'Thread Spool of Second Chances', role: 'generator', source: 'shop',
     desc: 'First useful Guard each fight restores 5% of maximum Bounce and gains 1 Pluck.',
@@ -55,7 +58,7 @@ export const ENGINE_EFFECTS = Object.freeze({
     desc: 'Victory restores 3% of maximum Sparkle, plus 1% of maximum Sparkle per Pluck held.',
     trigger: 'Victory.', limit: 'Once per fight.', ceiling: '+8% at 8 Pluck (11% total maximum Sparkle).' }),
   thimbleGuard: Object.freeze({ name: 'Thimble Guard', role: 'payoff', source: 'shop',
-    desc: 'First useful Guard each fight adds a barrier of 2% of maximum Stuffing, plus 0.5% of maximum per Pluck held.',
+    desc: 'First useful Guard each fight raises a barrier of 2% of maximum Stuffing, plus 0.5% of maximum per Pluck held, that absorbs the next enemy response.',
     trigger: 'First useful Guard each fight.', limit: 'Once per fight.', ceiling: 'Within 30% maximum Stuffing barrier cap.' }),
   amberMarble: Object.freeze({ name: 'Amber Marble', role: 'generator', source: 'shop',
     desc: 'First damaging action each fight deals 8% more and gains 1 Pluck.',
@@ -159,7 +162,7 @@ export function cocoaScale(effectiveLevel) {
 
 /**
  * The Pluck the Keeper's Brass Button gains on its first useful Guard of a fight: 1 (2 at rank 3) through effective level 50,
- * SEAL_POST_STORY_EXTRA_PLUCK more past it. The barrier is not touched. Echoes scale the Pluck as they always did.
+ * SEAL_POST_STORY_EXTRA_PLUCK more past it. The barrier is a separate rule (the engine queues it). Echoes scale the Pluck as they always did.
  */
 export function sealPluck(strength, rank, effectiveLevel) {
   const k = strength('seal');

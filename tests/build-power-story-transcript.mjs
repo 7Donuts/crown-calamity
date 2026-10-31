@@ -1,6 +1,7 @@
 // Not a test file (node --test runs only *.test.mjs). A deterministic story-era combat transcript used by
 // tests/post-story-build-power.test.mjs to prove that effective level 50 and below behaves exactly as it did before G3-5:
-// the SHA-256 of this transcript was recorded from the code before the D18 to D21 changes and is pinned in the test.
+// the SHA-256 of this transcript was recorded from the code before the D18 to D21 changes and is pinned in the test; G3-6 re-recorded it
+// deliberately for D22 (barrier timing) and D24 (a focus enables a weaker Wardcast), see the comment in that test.
 //
 // Every scenario is a Chapter 1 to 5 character (Realness 0, level 50 at most) with a seeded RNG and an injected clock. It
 // walks fights with the `respond` policy and records every number an exchange returns plus the resources after it, the log

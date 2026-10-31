@@ -1,7 +1,7 @@
 // Pure second-hand combat and equipment rules (Spec 46: two hands, one verb).
 // No DOM, no storage, no clock. Calculations are shared between engine, inspector, and lab.
 import { ITEMS, effectiveItem } from './gear.js';
-import { DAMAGING_ACTIONS, GUARD_ACTIONS } from './telegraph.js';
+import { DAMAGING_ACTIONS, GUARD_ACTIONS, isShield, focusGuardPercent } from './telegraph.js';
 import { effectiveLevel } from './growth.js';
 import { weaponMasteryRank, secondHandStrikeShare, pinpointCritBonus, batonsSecondHandMend } from './weapon-families.js';
 
@@ -47,6 +47,19 @@ export function secondHandMode(key) {
   if (DAMAGING_ACTIONS.includes(key)) return 'strike';
   if (key === 'recover') return 'recover';
   return null;
+}
+
+/**
+ * Where the Guard of a combined Wardcast comes from (D24, design 46): 'shield' when a shield is in the second hand, 'focus'
+ * when a focus-tagged item (a focus, or a spell weapon) is in the second hand and there is no shield, otherwise null.
+ * A two-handed weapon fills both hands, so it gives neither. A shield always wins: it is the premium source.
+ */
+export function wardGuardSource(s) {
+  if (!s?.gear) return null;
+  if (effectiveItem(s, s.gear.weapon)?.twoHanded) return null;
+  if (isShield(s.gear.offhand)) return 'shield';
+  const off = effectiveItem(s, s.gear.offhand);
+  return off && off.focus === true && !off.twoHanded ? 'focus' : null;
 }
 
 /** Mend never exceeds 6% of maximum Stuffing per exchange (Spec 46), summed over every second-hand mend source. */
@@ -205,6 +218,13 @@ export function secondHandActionHint(s, key) {
   const offItem = effectiveItem(s, s.gear?.offhand);
   const kind = classifySecondHand(offItem);
   const mode = secondHandMode(key);
+  // D24: Wardcast with a focus (no shield) shows its weaker Guard first, then any family or mender line of that second hand.
+  if (key === 'combo' && wardGuardSource(s) === 'focus') {
+    const base = `+ focus guard ${focusGuardPercent(false)}/${focusGuardPercent(true)}`;
+    if (offItem.family === 'scepters') return `${base} + barrier`;
+    if (offItem.family === 'batons') return `${base} + mend`;
+    return base;
+  }
   if (kind === 'weapon') {
     if (mode === 'strike') return '+ off-hand strike';
     if (offItem.family === 'foils' && GUARD_ACTIONS.includes(key)) return '+ riposte on block';
@@ -214,7 +234,7 @@ export function secondHandActionHint(s, key) {
       if (mode === 'guard') return '+ mend on block';
       if (key === 'recover') return '+ mend';
     }
-    if (offItem.family === 'scepters' && GUARD_ACTIONS.includes(key)) return '+ barrier on block';
+    if (offItem.family === 'scepters' && GUARD_ACTIONS.includes(key)) return '+ barrier for next hit';
     if (mode === 'strike') return '+ off-hand bolt';
   } else if (kind === 'mender') {
     if (mode === 'strike') return '+ mend';

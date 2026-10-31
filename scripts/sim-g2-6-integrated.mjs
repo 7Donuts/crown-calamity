@@ -277,6 +277,7 @@ for (const cfg of CHAPTER_MATRIX) {
   }
 }
 
-const outPath = path.join(__dirname, '..', 'handoffs', 'reports', 'g2-6-simulation-output.json');
+const outArg = process.argv.indexOf('--out');
+const outPath = outArg > 0 ? path.resolve(process.argv[outArg + 1]) : path.join(__dirname, '..', 'handoffs', 'reports', 'g2-6-simulation-output.json');
 fs.writeFileSync(outPath, JSON.stringify(results, null, 2));
 console.log(`Wrote verified G2-6 simulation output to ${outPath}`);
