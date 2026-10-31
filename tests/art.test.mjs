@@ -42,7 +42,7 @@ function parsePercentStyles(html) {
 
 test('every gear item has its own generated crop renderer entry, with unknown IDs omitted', () => {
   const itemIds = Object.keys(ITEMS);
-  assert.equal(itemIds.length, 154, 'item art covers seventy-five weapons, ten items per other nonweapon category and nineteen relics');
+  assert.equal(itemIds.length, 164, 'item art covers seventy-five weapons, twenty offhands, ten items per other nonweapon category and nineteen relics');
   assert.deepEqual(Object.keys(ITEM_ART).sort(), [...itemIds].sort());
 
   for (const id of itemIds) {

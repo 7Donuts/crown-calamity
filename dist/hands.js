@@ -27,7 +27,6 @@ export function classifySecondHand(item) {
   }
   if (obj.slot === 'offhand') {
     if ((obj.armor || 0) > 0 || obj.shield === true) return 'shield';
-    if (obj.focus || (obj.spellBase || 0) > 0 || obj.channel === 'spell') return 'focus';
     return 'none';
   }
   return 'none';

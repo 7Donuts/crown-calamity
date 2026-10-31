@@ -12,17 +12,13 @@ const ACTION_MS = 700;
 const MAX_SEEDS = 10000;
 const MAX_CHAIN = 50;
 const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'save', 'rulesPreview']);
-const NON_MEASURED = ['menders', 'raceTraits', 'familyTraits'];
+const NON_MEASURED = ['raceTraits', 'familyTraits'];
 const round1 = n => Math.round(n * 10) / 10;
 
 function prepare(fixture) {
   if (!fixture || typeof fixture !== 'object' || Array.isArray(fixture)) throw new Error('Fixture must be an object');
-  const twoHandsActive = fixture?.rulesPreview?.twoHands === true;
   for (const key of Object.keys(fixture)) {
     if (['ranks', 'weaponRanks', 'raceTraits', 'familyTraits'].includes(key)) {
-      throw new Error(`${key} is not implemented; refusing to produce balance metrics for that fixture`);
-    }
-    if (!twoHandsActive && ['menders', 'secondHand'].includes(key)) {
       throw new Error(`${key} is not implemented; refusing to produce balance metrics for that fixture`);
     }
     if (!FIXTURE_KEYS.has(key)) throw new Error(`Unknown fixture field: ${key}`);
@@ -55,12 +51,12 @@ function prepare(fixture) {
       if (s.gear[slot] && !G.unequip(s, slot)) throw new Error(`Cannot clear gear slot: ${slot}`);
       continue;
     }
-    const item = ITEMS[id] || (twoHandsActive ? G.LAB_MENDERS?.[id] : null);
+    const item = ITEMS[id] || G.LAB_MENDERS?.[id];
     if (!item) throw new Error(`Unknown item: ${id}`);
-    if (rawSlot === 'secondHand' && item.slot === 'weapon' && !twoHandsActive) {
-      throw new Error('Unsupported second-hand weapon: production engine has no second-hand weapon rules');
+    if ((rawSlot === 'secondHand' || slot === 'offhand') && item.twoHanded) {
+      throw new Error(`Unsupported second-hand weapon: ${id} is two-handed`);
     }
-    const canFitInSlot = item.slot === slot || (twoHandsActive && slot === 'offhand' && (item.slot === 'weapon' || item.kind === 'mender'));
+    const canFitInSlot = item.slot === slot || (slot === 'offhand' && !item.twoHanded && (item.slot === 'weapon' || item.kind === 'mender'));
     if (!canFitInSlot) throw new Error(`${id} belongs in ${item.slot}, not ${slot}`);
     if (!s.bag.includes(id)) s.bag.push(id);
     if (!G.equip(s, id, slot)) throw new Error(`Cannot equip ${id} in ${slot}`);
@@ -297,10 +293,10 @@ export function runCell(options) {
     healingBySource: {
       mend: encounters ? sums.mend / encounters : 0,
       relics: encounters ? sums.relics / encounters : 0,
-      menders: template.rulesPreview?.twoHands ? (encounters ? sums.menders / encounters : 0) : 'not measured',
+      menders: encounters ? sums.menders / encounters : 0,
       traits: 'not measured'
     },
-    actionCounts: sums.actions, nonMeasured: template.rulesPreview?.twoHands ? ['raceTraits', 'familyTraits'] : [...NON_MEASURED]
+    actionCounts: sums.actions, nonMeasured: [...NON_MEASURED]
   };
 }
 
