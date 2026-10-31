@@ -32,7 +32,7 @@ Progress is browser-local. Export a save from Records → Field Guide before cle
 
 - **Two relic slots for everyone.** Every character, new or loaded from an older save, has two full-strength relic slots. Echo sockets are unchanged.
 - **Pluck.** A per-fight relic charge from 0 to 8. Generator relics turn guarding, interrupts, recovering, Expose, repetition or getting hurt into Pluck; payoff relics turn it into healing, damage or a head start in the next fight. It only appears when you equip an engine relic.
-- **Heal while fighting.** The Felt Vampire Fang (Chapter 1, 60 coins) restores 20% of the damage that landed, plus 3% per Pluck, up to 10% of maximum Stuffing per exchange; overkill never heals. In seeded fixtures, a planned relic pair roughly halves net Stuffing lost per fight, so you rest about half as often.
+- **Heal while fighting.** The Felt Vampire Fang (Chapter 1, 60 coins) restores 20% of the damage that landed, plus 3% per Pluck, up to 10% of maximum Stuffing per exchange; overkill never heals. Past the story (effective level above 50) it restores 45% as much. In seeded fixtures, a planned relic pair roughly halves net Stuffing lost per fight, so you rest about half as often.
 - **Finale keepsakes.** Each chapter finale grants a unique relic once: Lint-Trap Locket, Last-Token Charm, Seed-Packet Heart, Keepsake Music Box and Encore Ribbon. Saves that already cleared a finale receive it on load. Keepsakes cannot be sold.
 - **Repriced relics.** Relics now cost from 60 to 6,000 coins by chapter, instead of 500 to 1.8 million.
 

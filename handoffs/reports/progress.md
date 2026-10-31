@@ -18,6 +18,7 @@ Updated 30 October 2026. Milestone G1 (`G1-A`, `G1-B`, `G1-C`) is complete and v
 | G3-1 effective level & curves | Complete; `dist/growth.js`, `effectiveLevel(s)` audit across all scaling sites, and independent review PASS | `g3-1-effective-level.md`, `g3-1-review.md` |
 | G3-2 becoming real & relic3 | Complete; 3-stage trials (`stitch_test`, `memory_test`, `real_test`), `becomeReal` ascension, 5 `REALNESS_CHOICES`, `relic3` 11th core slot, Echoes of the Underfoot, and independent review PASS | `g3-2-becoming-real.md`, `g3-2-review.md` |
 | G3-3 post-story balance & CP4 | Complete; fitted `xpNeeded` (`100+5R`) and enemy hit (`35+2.6E`) across 40-seed E60/100/200/500 B0 matrix, CP4 package, and independent review PASS | `g3-3-post-story-balance.md`, `g3-3-review.md` |
+| G3-4 post-story re-fit against real tempered gear and Fang reduction (D13, D15, D16) | Complete; enemy Stuffing `400 + 38E`, hit `round(40 + 2.6E)`, Fang ×0.45 above effective level 50; gates 1, 3, 4, 5 pass, gate 2 passes for every Fang pair and fails for Cocoa and Caster Seal cells | `g3-4-post-story-refit.md`, `g3-4-refit-output.json`, `g3-4-refit-before.json` |
 
 ## Review history and correction
 

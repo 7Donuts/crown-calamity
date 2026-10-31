@@ -5,13 +5,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as G from '../dist/engine.js';
 import { ITEMS } from '../dist/gear.js';
+import { validTemper } from '../dist/growth.js';
 import { hero, mulberry, POLICIES, strikeKey, respondKey } from '../tests/sim-helpers.mjs';
 
 const KITS = new Set(['breaker', 'duelist', 'caster']);
 const ACTION_MS = 700;
 const MAX_SEEDS = 10000;
 const MAX_CHAIN = 50;
-const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'realness', 'realnessChoices', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'weaponMastery', 'save', 'rulesPreview', 'customItems', 'stats']);
+const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'realness', 'realnessChoices', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'weaponMastery', 'save', 'rulesPreview', 'customItems', 'itemMods', 'stats']);
 const NON_MEASURED = [];
 const round1 = n => Math.round(n * 10) / 10;
 
@@ -23,7 +24,7 @@ function prepare(fixture) {
     }
     if (!FIXTURE_KEYS.has(key)) throw new Error(`Unknown fixture field: ${key}`);
   }
-  const { kit = 'breaker', level, realness, realnessChoices, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], weaponMastery, save, rulesPreview, customItems, stats } = fixture;
+  const { kit = 'breaker', level, realness, realnessChoices, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], weaponMastery, save, rulesPreview, customItems, itemMods, stats } = fixture;
   if (save !== undefined && Object.hasOwn(fixture, 'kit')) throw new Error('Captured-save fixtures cannot also specify kit');
   if (!KITS.has(kit) && !save) throw new Error(`Unknown kit: ${kit}`);
   if (level !== undefined && (!Number.isInteger(level) || level < 1 || level > G.LEVEL_CAP)) throw new Error(`Fixture level must be an integer from 1 to ${G.LEVEL_CAP}`);
@@ -65,6 +66,25 @@ function prepare(fixture) {
     if (!canFitInSlot) throw new Error(`${id} belongs in ${item.slot}, not ${slot}`);
     if (!s.bag.includes(id)) s.bag.push(id);
     if (!G.equip(s, id, slot)) throw new Error(`Cannot equip ${id} in ${slot}`);
+  }
+  if (itemMods !== undefined) {
+    // Real catalog items improved through the workbench (upgrade and Tempering), stored exactly as a save stores them.
+    // A value the game would drop on load (a temper below 26, a non-temperable slot, an upgrade above 3) is refused here.
+    if (!itemMods || typeof itemMods !== 'object' || Array.isArray(itemMods)) throw new Error('Fixture itemMods must be an object');
+    s.itemMods = { ...(s.itemMods || {}) };
+    for (const [id, mod] of Object.entries(itemMods)) {
+      const item = ITEMS[id];
+      if (!item || !s.bag.includes(id)) throw new Error(`itemMods names an item the fixture does not own: ${id}`);
+      const upgrade = mod?.upgrade ?? 0;
+      if (!Number.isInteger(upgrade) || upgrade < 0 || upgrade > 3) throw new Error(`Invalid upgrade for ${id}`);
+      const next = { upgrade };
+      if (mod?.temper !== undefined) {
+        const temper = validTemper(item, mod.temper);
+        if (!temper) throw new Error(`Invalid temper for ${id}: ${mod.temper}`);
+        next.temper = temper;
+      }
+      s.itemMods[id] = next;
+    }
   }
   if (!Array.isArray(relics)) throw new Error('Fixture relics must be an array');
   if (new Set(relics).size !== relics.length) throw new Error('Fixture relics must be unique');

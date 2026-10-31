@@ -222,18 +222,26 @@ export function xpNeeded(level, realness = 0) {
   return Math.round((100 + 5 * r) * (20 + 12 * E));
 }
 
+// Post-story enemy curve constants (design 50, curves table): every number is a tunable starting value, in this one place.
+export const POST_STORY_HP_BASE = 400;
+export const POST_STORY_HP_PER_E = 38;
+export const POST_STORY_HIT_BASE = 40;
+export const POST_STORY_HIT_PER_E = 2.6;
+export const POST_STORY_DEFENSE_BASE = 20;
+export const POST_STORY_DEFENSE_PER_E = 1.8;
+// Heavy hits are 2.15 times the ordinary hit (the engine telegraph applies the same factor itself; this feeds `heavyDamage`).
+export const POST_STORY_HEAVY_MULTIPLIER = 2.15;
+
 /**
- * Post-story enemy stat curve (Spec 50 Section 4, fitted by G3-3 B0 simulation).
- * Fitted across E60, E100, E200, and E500 to satisfy the 5-8 exchange gate and
- * 25-45% no-relic net Stuffing loss gate (~half with a planned relic pair).
+ * Post-story enemy stat curve (Spec 50 curves table; fitted by the G3-4 simulation against real tempered gear).
  * Archetypes: 'balanced' (50/50 armor/ward), 'brute' (70/30), 'warded' (20/80).
  */
 export function postStoryEnemyStats(effectiveLevelInput, archetype = 'balanced') {
   const E = effectiveLevel(effectiveLevelInput);
-  const hp = Math.round(100 + 42 * E);
-  const damage = Math.round(35 + 2.6 * E);
-  const heavyDamage = Math.round(damage * 2.15);
-  const totalDef = 20 + 1.8 * E;
+  const hp = Math.round(POST_STORY_HP_BASE + POST_STORY_HP_PER_E * E);
+  const damage = Math.round(POST_STORY_HIT_BASE + POST_STORY_HIT_PER_E * E);
+  const heavyDamage = Math.round(damage * POST_STORY_HEAVY_MULTIPLIER);
+  const totalDef = POST_STORY_DEFENSE_BASE + POST_STORY_DEFENSE_PER_E * E;
   let armorRatio = 0.5;
   let wardRatio = 0.5;
   if (archetype === 'brute') {

@@ -33,7 +33,7 @@ Open-ended progression (owner decision) that never takes anything away, keeps th
 
 Choices are permanent and shown on the character sheet.
 
-## Curves (D7 starting values, fitted in G3-3)
+## Curves (D7 starting values, fitted in G3-3, re-fitted against real tempered gear in G3-4)
 
 Let E be effective level and R Realness.
 
@@ -42,13 +42,13 @@ Let E be effective level and R Realness.
 | XP to next level | Existing `xpNeeded` | (100 + 5R) × (20 + 12E): 105 wins per level at R 1, rising by 5 wins per rank to 150 at R 10 (fitted from starting `100 + 10R` to satisfy the 100–150 gate across R 1–10) |
 | XP per on-level win | 20 + 12 × level (existing) | 20 + 12E |
 | Attribute points | 4 per level | 4 per level; budget 68 + 4 × (E − 1) |
-| Ordinary enemy Stuffing | Authored | 100 + 42E |
-| Ordinary enemy hit | Authored | round(35 + 2.6E) (heavies × 2.15, as today; fitted from starting `40 + 3.6E` to satisfy the 25–45% no-relic net Stuffing loss gate across E 60, 100, 200, and 500) |
-| Enemy armor plus ward | Authored | 20 + 1.8E, split by archetype (brute 70/30, warded 20/80, balanced 50/50) |
+| Ordinary enemy Stuffing | Authored | 400 + 38E (G3-4; G3-3 had 100 + 42E) |
+| Ordinary enemy hit | Authored | round(40 + 2.6E) (heavies × 2.15, as today; G3-4; G3-3 had round(35 + 2.6E), the starting value was `40 + 3.6E`) |
+| Enemy armor plus ward | Authored | 20 + 1.8E, split by archetype (brute 70/30, warded 20/80, balanced 50/50) (unchanged) |
 | Coins per win | Authored (about 2 to 49 by chapter) | round(1.1E): linear, never geometric |
 | Weapon base past tier 25 | 14 to 74 | 74 + 2.5 per tier; one tier per 4 effective levels |
 
-The enemy formulas continue the Chapter 5 values and have been fitted against the 40-seed B0 simulation matrix at E 60, 100, 200 and 500 (`handoffs/reports/g3-3-post-story-balance.md`).
+The enemy formulas continue the Chapter 5 ordinary enemies (levels 41 to 48 have 1,900 to 2,460 Stuffing and 168 to 198 damage; E51 is 2,338 and 173) and were re-fitted in G3-4 against **real catalog gear tempered to the character's tier**, not the synthetic fixture G3-3 used (`handoffs/reports/g3-4-post-story-refit.md`, `scripts/sim-g3-4-refit.mjs`). The G3-4 changes from G3-3: enemy Stuffing `100 + 42E` to `400 + 38E` (a flatter slope, because a real caster's fights ran 6.9 exchanges at E100 but 7.8 at E200 and 7.9 at E500 when enemy Stuffing grew faster than the player's damage), and enemy hit `35 + 2.6E` to `40 + 2.6E` (to keep the loss per fight where it was after the shorter fights). `xpNeeded`, XP and coins per win, and enemy defense are unchanged. The Felt Vampire Fang is reduced past effective level 50 (D16, design 43 and 49); the curves above assume that.
 
 **Prices past the story.** The story weapon curve now ends at T25=60,000 coins; it no longer continues the original `round(100 × 100^((tier − 1) / 9))` exponential schedule. From T26 onward, price is set from play time instead: CP1's authorized starting target is 1,100 wins of on-level income for entry gear and 2,000 wins for best gear, matching the Chapter 2 tier-10 aspiration of 8 to 12 active hours while keeping the story-to-post-story transition close. Under the starting linear income curve this makes T26 cost 61,600 at E51 and 64,900 at E54. This 1,100-win entry value replaces the previously approved 300-win starting value; it changes only a tunable starting number, not progression mechanics. T1=100 and T10=10,000 remain unchanged. These values are a CP1 trial, and CP4 must still test the fitted post-story curves, progression gates, and time targets before they are called balanced.
 
@@ -104,7 +104,7 @@ Every number is the larger of the tempered value and the catalog item's own valu
 | 38 | 107 / 73 / 8 | 143 / 117 / 12 / 6 | 54 / 44 / 6 | 29 / 29 / 6 | 25 / 29 / 5 |
 | 51 | 160 / 110 / 12 | 213 / 176 / 18 / 9 | 80 / 66 / 9 | 43 / 44 / 9 | 37 / 44 / 8 |
 
-These rows are the reference model, not a new fit. The enemy curves were fitted against this gear, so a character that keeps a full kit tempered on-level is the case CP4 tested; a character who does not temper falls behind by design. Re-run the post-story balance matrix with real tempered gear before calling the economy balanced.
+These rows are the reference model, not a new fit. The enemy curves were fitted against this gear, so a character that keeps a full kit tempered on-level is the case CP4 tested; a character who does not temper falls behind by design. G3-4 re-ran the post-story balance matrix with real tempered gear (it is the measurement the curves above are fitted to); the curves are still provisional until the owner approves them (D13).
 
 **Data and saves.** `itemMods[id].temper` is an integer of 26 or more; no save-format bump. `normalizeGearState` keeps a valid stored temper even when it exceeds the character's current maximum (never lowered), and drops a non-integer, unsafe, below-26, non-temperable-slot, or not-in-bag value. `loadSave` builds `{...fresh(), ...s}`, so the normalizer decides from the stored value, never from absent-field defaults. Old saves load unchanged.
 
@@ -147,11 +147,16 @@ Nothing is reset or lost. Four points per level unchanged. No timers or offline 
 
 ## Balance gates
 
-Seeded simulations with on-level gear, no relics, then with a planned relic pair, at E 60, 100, 200 and 500:
-- An ordinary on-level enemy takes 5 to 8 exchanges.
-- Net Stuffing lost per fight is 25 to 45% without relics and roughly half that with a planned relic pair (the design 43 result).
-- Wins per level stay between 100 and 150 for the first ten Realness ranks.
-- A layer's best weapon costs 8 to 12 active hours of on-level play at the documented input pace.
+Measured with **real catalog items tempered through `itemMods` (no `customItems` weapons or armor)** at effective level 60, 100, 200 and 500 for three kits (Breaker: wolf, Mauls, heavy; Duelist: cat, Needles, precision; Caster: unicorn, Batons, spell), 40 seeds, 10-fight unrested chains with resources carried, as `scripts/sim-g3-4-refit.mjs` does. Two gear states: **on-level** (every temperable slot at the highest tier the effective level allows) and **one tier behind** (that tier minus one, because purchases lag). Attributes are allocated as G3-3 did (62.5% primary, 25% Vitality, the rest Will and Insight). Loss is net Stuffing lost per won fight as a share of maximum; exchanges are per encounter. These replace the G3-3 gates wherever they differ.
+
+1. **Ordinary build** (no relics, rank 0 weapon mastery, no affinity bonus beyond what the race gives by default): 5 to 8 exchanges per fight and 25% to 45% net Stuffing lost, in both gear states.
+2. **Planned relic pairs** (Keeper's Brass Button + Hot-Cocoa Thimble, Darned-Elbow Patch + Hot-Cocoa Thimble, Felt Vampire Fang + Darned-Elbow Patch): roughly half the ordinary loss (about 12% to 25%) in 5 to 8 exchanges. No pair loses less than 8% on average (strong is not invulnerable).
+3. **Strong build (D15)**: the race's affinity family at a reasonable mastery rank for that Realness (the affinity cap is 5 + R; the rank used is 3 + R), rank 3 in the primary ability, the best-fitting planned pair, tempered on-level. It must clearly beat the ordinary build: at most half the loss or at least 20% fewer exchanges, **and** a chain win rate at least 10 points above the ordinary build, **and** still at least 8% loss. If it does not, fix it, preferring to make ordinary fights less of a slog over flattening strong builds.
+4. **No slog**: no configuration averages more than 8 exchanges.
+5. **Wins per level** between 100 and 150 for the first ten Realness ranks (`xpNeeded` unchanged).
+6. A layer's best weapon costs 8 to 12 active hours of on-level play at the documented input pace (unchanged from G3-3).
+
+**G3-4 result** (full tables: `handoffs/reports/g3-4-post-story-refit.md`): gate 1 passes in all 24 cells (loss 31.9% to 41.2%, 5.0 to 5.9 exchanges); gate 3 passes in all 12 on-level cells; gate 4 passes in all 120 configurations (and in a fresh full-resource fight no ordinary or strong build exceeds 7.0 exchanges); gate 5 passes unchanged. **Gate 2 passes in 53 of 72 cells: every Fang + Patch cell passes (12.8% to 23.9%), and all 19 failures are Hot-Cocoa Thimble or Keeper's Brass Button cells outside the Fang decision**: Patch + Cocoa loses only 3.1% to 7.5% for the Duelist at every level and for the Breaker at E200 and E500 (Duelist chains finish 100% at E100 and above), and Seal + Cocoa loses 32% to 34% for the Caster (its second hand is a focus, so it has no Wardcast; the Seal gives it one Pluck and a small barrier once per fight). The report recommends scaling the Cocoa past the story (a what-if at 3% per Pluck instead of 4% puts every Patch + Cocoa cell measured, at E100 and E500, at 10% to 18%) and giving the Caster a better Seal path; neither is applied, because D16 covered only the Fang.
 
 ## Documents to update when shipped
 

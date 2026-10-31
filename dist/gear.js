@@ -122,7 +122,7 @@ export const ITEMS = Object.freeze({
   ribbonKnot:{id:'ribbonKnot',name:'Ribbon Knot of Resolve',slot:'relic',relicEffect:'ribbonKnot',stats:{mig:1},level:6,desc:'A free physical strike restores 2% of maximum Sparkle, doubled while holding 4 or more Pluck.'},
   stuffingSatchel:{id:'stuffingSatchel',name:'Emergency Stuffing Satchel',slot:'relic',relicEffect:'stuffingSatchel',stats:{vit:1},level:7,desc:'Mend heals 10% more. A Mend that heals gains 1 Pluck.'},
   // Relic engine pieces (design 43). Effects and numbers live in relic-engine.js.
-  feltFang:{id:'feltFang',name:'Felt Vampire Fang',slot:'relic',relicEffect:'feltFang',stats:{vit:1},desc:'Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held.'},
+  feltFang:{id:'feltFang',name:'Felt Vampire Fang',slot:'relic',relicEffect:'feltFang',stats:{vit:1},desc:'Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held. Past the story (effective level above 50) it restores 45% as much.'},
   darnedPatch:{id:'darnedPatch',name:'Darned-Elbow Patch',slot:'relic',relicEffect:'darnedPatch',armor:4,desc:'Each enemy attack that hurts you gains 1 Pluck, or 2 from a heavy.'},
   cocoaThimble:{id:'cocoaThimble',name:'Hot-Cocoa Thimble',slot:'relic',relicEffect:'cocoaThimble',stats:{wil:1},desc:'When you win, each Pluck you still hold restores 4% of maximum Stuffing (health).'},
   picnicTin:{id:'picnicTin',name:'Picnic-Tin Keepsake',slot:'relic',relicEffect:'picnicTin',stats:{ins:1},desc:'When you win, up to 3 Pluck carry into your next fight. Resting, defeat or Go still empties the tin.'},

@@ -32,7 +32,7 @@ Every effect follows the design 27 rule: one named trigger, a stated limit and a
 
 | Relic | Role | Source | Effect | Limit and ceiling |
 | --- | --- | --- | --- | --- |
-| Felt Vampire Fang | Payoff (lifesteal) | Shop, Chapter 1, 60 coins | Hits restore 20% of the damage that landed, plus 3% per Pluck held | Overkill never heals; at most 10% of maximum Stuffing per exchange |
+| Felt Vampire Fang | Payoff (lifesteal) | Shop, Chapter 1, 60 coins | Hits restore 20% of the damage that landed, plus 3% per Pluck held; past the story (effective level above 50) 45% as much | Overkill never heals; at most 10% of maximum Stuffing per exchange (4.5% past the story) |
 | Darned-Elbow Patch | Generator | Shop, Chapter 1, 90 coins | Each enemy attack that hurts you gains 1 Pluck, 2 from a heavy | Once per enemy response |
 | Hot-Cocoa Thimble | Payoff (sustain) | Shop, Chapter 2, 450 coins | On victory, each Pluck held restores 4% of maximum Stuffing | Once per fight; 32% at 8 Pluck |
 | Picnic-Tin Keepsake | Payoff (preparation) | Shop, Chapter 2, 550 coins | On victory, up to 3 Pluck carry into the next fight | Rest, defeat or Go still empties it |
@@ -78,6 +78,12 @@ Method: the seeded simulator from `tests/sim-helpers.mjs` (`hero` fixture, `resp
 A single relic cuts net damage per fight by about a quarter. A planned pair roughly halves it, which about doubles the fights between rests, and the best pairing depends on the enemy. Long, low-damage fights favor Patch and Cocoa; fights against heavies favor the guard-driven Locket. A character without relics still needs to rest, so Rest stays meaningful.
 
 An earlier draft (Fang 15% plus 2% per Pluck, Cocoa 3%) cut damage by only 20 to 40% for planned pairs. The current values were raised to reward planning more heavily, as directed.
+
+### The Fang past the story (D16, G3-4)
+
+The Fang heals a share of the damage that landed, so its healing as a share of the wearer's maximum Stuffing grows with how much enemy Stuffing there is to chew through. Against the post-story enemy curve (design 50) the wearer's maximum Stuffing is smaller than the enemy's, and a Fang alone returned about as much Stuffing per fight as an ordinary fight cost: with real tempered gear and the old numbers a Fang alone lost 0.2% to 13% of maximum Stuffing per won fight against 33% to 45% with no relics, and Fang + Patch lost 0.1% to 4.4% (every chain of every kit survived all ten fights). That is the near-invulnerability the owner asked to remove.
+
+Rule (`dist/relic-engine.js`, `fangScale`): through effective level 50 nothing changes, so Chapters 1 to 5 behave exactly as before. Above effective level 50 the Fang's rate (base and per Pluck) and its per-exchange cap are both multiplied by `FANG_POST_STORY_SCALE = 0.45`: 9% of the damage that landed plus 1.35% per Pluck, at most 4.5% of maximum Stuffing per exchange (rank 3: 5.85%), times the echo strength as before. It stays deterministic, resolves inside the exchange the player chose, adds no exchange and still never heals from overkill. The rate shown in the build inspector and HUD, the preview, and the real heal all read the same scaled number. The 0.45 was chosen from the G3-4 matrix (`handoffs/reports/g3-4-post-story-refit.md`): a Fang alone now cuts net Stuffing lost per fight by 33% to 51% (17% to 27% lost against 32% to 41%) and is the strongest single sustain relic for the Duelist and the Caster and second only to the Hot-Cocoa Thimble for the Breaker, and Fang + Patch settles at 13% to 24% lost in 5.6 to 6.4 exchanges, about 0.4 to 0.6 of an ordinary build's loss.
 
 ## Save compatibility
 
