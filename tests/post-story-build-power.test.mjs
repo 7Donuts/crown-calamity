@@ -38,11 +38,18 @@ const logText = s => s.log.map(row => row.text);
 
 // ------------------------------------------------------------------------------------------ story identical
 
-test('effective level 50 and below behave exactly as they did before G3-5 (pinned transcript of 48 seeded story scenarios)', () => {
-  // The hash was recorded from the code before the D18 to D21 changes: three kits at level 20 and 50, four relic sets
-  // (none, Seal + Cocoa, Patch + Cocoa, Fang + Patch), weapon mastery rank 0 and 3, three fights each, every exchange number,
-  // resource, log line and victory receipt included.
-  assert.equal(storyTranscriptHash(), '8b093abcb4f0ca797adf9f8b5e996a247dfc442520d26cd80493a7efacba57e4');
+test('effective level 50 and below behave as they did before G3-5 except where D22 and D24 say so (pinned transcript of 48 seeded story scenarios)', () => {
+  // The hash was first recorded from the code before the D18 to D21 changes (8b093abc...): three kits at level 20 and 50, four
+  // relic sets (none, Seal + Cocoa, Patch + Cocoa, Fang + Patch), weapon mastery rank 0 and 3, three fights each, every
+  // exchange number, resource, log line and victory receipt included. G3-5 left it unchanged.
+  //
+  // G3-6 re-recorded it on purpose, because two owner decisions change story behaviour: D22 (the Seal's barrier now goes up after
+  // the guarded hit and absorbs the next response instead of the guarded hit) and D24 (a focus in the second hand enables a
+  // weaker Wardcast, so the Caster's heavy answer is a Wardcast instead of Hunker down). Of the 48 scenarios 12 changed
+  // (the 4 Seal + Cocoa Breaker and Duelist runs, and 8 of the 16 Caster runs, which never reach a heavy in the others);
+  // the 36 others, including every Fang + Patch and Patch + Cocoa Breaker and Duelist run, are byte-identical to before.
+  // Every post-story rule (D18 to D21, D23) is still keyed to effective level above 50 and cannot show in this transcript.
+  assert.equal(storyTranscriptHash(), '3453015ce3d6ffe5f6cac047a2c3662e2cb55410582758a55f278d5a1207fe7f');
 });
 
 test('the story-era numbers are untouched', () => {
@@ -99,8 +106,8 @@ test('D19: the same victory heals fully at effective level 50 and 60% as much at
 
 // ------------------------------------------------------------------------------------------ D20 Keeper's Brass Button
 
-test('D20: the Seal gains 1 Pluck (2 at rank 3) through the story and 7 more above effective level 50', () => {
-  assert.equal(RE.SEAL_POST_STORY_EXTRA_PLUCK, 7);
+test('D20: the Seal gains 1 Pluck (2 at rank 3) through the story and 5 more above effective level 50 (7 before G3-6)', () => {
+  assert.equal(RE.SEAL_POST_STORY_EXTRA_PLUCK, 5, 'retuned from 7 in G3-6 once the Seal barrier worked');
   const k = id => (id === 'seal' ? 1 : 0);
   assert.equal(RE.sealPluck(k, () => 1, 50), 1);
   assert.equal(RE.sealPluck(k, () => 3, 50), 2);
@@ -109,8 +116,8 @@ test('D20: the Seal gains 1 Pluck (2 at rank 3) through the story and 7 more abo
   assert.equal(RE.sealPluck(k, () => 3, 500), 2 + RE.SEAL_POST_STORY_EXTRA_PLUCK);
   assert.equal(RE.sealPluck(id => 0, () => 1, 500), 0, 'no Seal, no Pluck');
   assert.equal(RE.sealPluck(id => (id === 'seal' ? 1.5 : 0), () => 1, 51), RE.scaled(1 + RE.SEAL_POST_STORY_EXTRA_PLUCK, 1.5), 'echoes scale the Pluck as before');
-  assert.match(RE.ENGINE_EFFECTS.seal.desc, /7 more Pluck/);
-  assert.match(G.ITEMS.seal.desc, /7 more Pluck/);
+  assert.match(RE.ENGINE_EFFECTS.seal.desc, /5 more Pluck/);
+  assert.match(G.ITEMS.seal.desc, /5 more Pluck/);
 });
 
 test('D20: the Seal is still one trigger per fight, in the real engine, and gains its extra Pluck only past the story', () => {
@@ -281,13 +288,15 @@ test('D18: every trait is bounded, so Realness 20 (effective level above 1,000) 
     assert.ok(WF.lullabyMendBonus(s, item('batons')) <= caps.lullaby);
     assert.ok(WF.sceptersSecondHandBarrier(s, item('scepters')) <= caps.sceptersBarrier);
     const edge = WF.familyEdgeBonus(s, item('batons'));
-    assert.ok(edge < WF.FAMILY_EDGE_MAX && edge > 0.28, `Edge ${edge} stays under its ${WF.FAMILY_EDGE_MAX} ceiling`);
+    const spellCeiling = WF.FAMILY_EDGE_MAX * WF.FAMILY_EDGE_CHANNEL_SCALE.spell;
+    assert.ok(edge < spellCeiling && edge > 0.28 * WF.FAMILY_EDGE_CHANNEL_SCALE.spell, `Edge ${edge} stays under its ${spellCeiling} ceiling`);
     for (const value of [WF.steadyGuardBonus(s, item('clubs'), true), WF.crushArmorIgnore(s, item('mauls')), WF.lullabyMendBonus(s, item('batons')), edge]) assert.ok(Number.isFinite(value));
     const summary = WF.familyTraitSummary('clubs', s);
     assert.match(summary, /Guard prevents \+30%/);
   }
   assert.equal(WF.familyEdgeForRank(0), 0);
-  assert.ok(WF.familyEdgeForRank(Number.MAX_SAFE_INTEGER) <= WF.FAMILY_EDGE_MAX);
+  assert.ok(WF.familyEdgeForRank(Number.MAX_SAFE_INTEGER) <= WF.FAMILY_EDGE_MAX * WF.FAMILY_EDGE_CHANNEL_SCALE.spell, 'the spell ceiling is MAX times its channel scale (G3-6)');
+  assert.ok(WF.familyEdgeForRank(Number.MAX_SAFE_INTEGER, 'heavy') <= WF.FAMILY_EDGE_MAX && WF.familyEdgeForRank(Number.MAX_SAFE_INTEGER, 'precision') <= WF.FAMILY_EDGE_MAX, 'the physical channels stay under MAX');
   assert.equal(WF.familyEdgeForRank(NaN), 0);
 });
 
@@ -308,10 +317,10 @@ test('D18: Steady still never pushes prevention above the 85% ceiling at the hig
 
 test('D18: the Edge is zero at rank 0 and through the story, and shows in the shared damage profile past it', () => {
   assert.equal(WF.FAMILY_EDGE_MAX, 0.30);
-  assert.ok(Math.abs(WF.familyEdgeForRank(4) - 0.24) < 1e-12, 'spell channel, rank 4');
+  assert.ok(Math.abs(WF.familyEdgeForRank(4) - 0.324) < 1e-12, 'spell channel, rank 4 (G3-6: scale 1.35, was 0.24)');
   assert.ok(Math.abs(WF.familyEdgeForRank(4, 'heavy') - 0.168) < 1e-12, 'heavy takes 70%');
   assert.ok(Math.abs(WF.familyEdgeForRank(4, 'precision') - 0.192) < 1e-12, 'precision takes 80%');
-  assert.deepEqual(WF.FAMILY_EDGE_CHANNEL_SCALE, { heavy: 0.7, precision: 0.8, spell: 1 });
+  assert.deepEqual(WF.FAMILY_EDGE_CHANNEL_SCALE, { heavy: 0.7, precision: 0.8, spell: 1.35 });
   assert.ok(WF.familyEdgeForRank(1) < WF.familyEdgeForRank(2) && WF.familyEdgeForRank(2) < WF.familyEdgeForRank(12));
   const raw = (realness, level, rank) => {
     const s = fighter({ realness, level, weapon: 'plushMaul' });

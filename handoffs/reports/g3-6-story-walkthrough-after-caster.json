@@ -1,0 +1,578 @@
+{
+  "generatedAt": "2026-10-31T16:41:30.536Z",
+  "label": "after-caster",
+  "seeds": 40,
+  "from": 1,
+  "kits": {
+    "caster": {
+      "completed": 39,
+      "of": 40,
+      "seeds1to3": 3,
+      "medianMinutes": 782.2,
+      "meanWins": 2433,
+      "meanDefeats": 0.3,
+      "meanActions": 11807.1,
+      "meanRests": 2430.7,
+      "incompleteSeeds": [
+        {
+          "seed": 21,
+          "chapter": 1,
+          "receipts": 0,
+          "error": "Defeated by boss during municipal delve; stopping immediately"
+        }
+      ],
+      "rows": [
+        {
+          "seed": 1,
+          "status": "completed",
+          "minutes": 781.8,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11786,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 2,
+          "status": "completed",
+          "minutes": 782.2,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11803,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 3,
+          "status": "completed",
+          "minutes": 783.2,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11842,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 4,
+          "status": "completed",
+          "minutes": 783.1,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11837,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 5,
+          "status": "completed",
+          "minutes": 781.1,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11757,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 6,
+          "status": "completed",
+          "minutes": 782,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11793,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 7,
+          "status": "completed",
+          "minutes": 781.3,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11768,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 8,
+          "status": "completed",
+          "minutes": 782.1,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11800,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 9,
+          "status": "completed",
+          "minutes": 781.5,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11775,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 10,
+          "status": "completed",
+          "minutes": 782.4,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11810,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 11,
+          "status": "completed",
+          "minutes": 782.1,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11800,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 12,
+          "status": "completed",
+          "minutes": 782.1,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11799,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 13,
+          "status": "completed",
+          "minutes": 782.5,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11816,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 14,
+          "status": "completed",
+          "minutes": 783.1,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11838,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 15,
+          "status": "completed",
+          "minutes": 782.8,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11828,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 16,
+          "status": "completed",
+          "minutes": 782.1,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11799,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 17,
+          "status": "completed",
+          "minutes": 781.2,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11764,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 18,
+          "status": "completed",
+          "minutes": 783.6,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11860,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 19,
+          "status": "completed",
+          "minutes": 782.7,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11821,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 20,
+          "status": "completed",
+          "minutes": 782,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11793,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 21,
+          "status": "incomplete",
+          "minutes": 27.9,
+          "wins": 92,
+          "defeats": 2,
+          "actions": 374,
+          "rests": 90,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "inspector",
+            "boss"
+          ],
+          "chapter": 1,
+          "receipts": 0,
+          "error": "Defeated by boss during municipal delve; stopping immediately"
+        },
+        {
+          "seed": 22,
+          "status": "completed",
+          "minutes": 783.3,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11848,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 23,
+          "status": "completed",
+          "minutes": 782.3,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11806,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 24,
+          "status": "completed",
+          "minutes": 782.9,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11832,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 25,
+          "status": "completed",
+          "minutes": 782.7,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11823,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 26,
+          "status": "completed",
+          "minutes": 783.2,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11842,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 27,
+          "status": "completed",
+          "minutes": 782,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11796,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 28,
+          "status": "completed",
+          "minutes": 781.9,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11792,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 29,
+          "status": "completed",
+          "minutes": 781.7,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11781,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 30,
+          "status": "completed",
+          "minutes": 781.6,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11780,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 31,
+          "status": "completed",
+          "minutes": 781.4,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11771,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 32,
+          "status": "completed",
+          "minutes": 782.7,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11824,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 33,
+          "status": "completed",
+          "minutes": 782.8,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11828,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 34,
+          "status": "completed",
+          "minutes": 781,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11755,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 35,
+          "status": "completed",
+          "minutes": 783.5,
+          "wins": 2433,
+          "defeats": 1,
+          "actions": 11854,
+          "rests": 2430,
+          "retryCount": 1,
+          "defeatEnemies": [
+            "boss"
+          ],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 36,
+          "status": "completed",
+          "minutes": 782.1,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11798,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 37,
+          "status": "completed",
+          "minutes": 782.1,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11799,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 38,
+          "status": "completed",
+          "minutes": 782.3,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11805,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 39,
+          "status": "completed",
+          "minutes": 782.6,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11818,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        },
+        {
+          "seed": 40,
+          "status": "completed",
+          "minutes": 783,
+          "wins": 2433,
+          "defeats": 0,
+          "actions": 11835,
+          "rests": 2431,
+          "retryCount": 0,
+          "defeatEnemies": [],
+          "chapter": 5,
+          "receipts": 5
+        }
+      ]
+    }
+  }
+}

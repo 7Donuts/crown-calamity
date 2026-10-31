@@ -96,7 +96,7 @@ export const WEAPON_FAMILY_TRAITS = Object.freeze({
     channel: 'spell',
     summary: 'Wardcast prevents 10% more; off-hand grants barrier on Guard',
     desc: 'Wardcast prevents 10% more of the hit, inside the 85% ceiling.',
-    offhandDesc: 'On a useful Guard, +4 barrier.',
+    offhandDesc: 'On a useful Guard, +4 barrier that absorbs the next enemy response.',
     baseEffect: 0.10,
     barrierBonus: 4
   }),
@@ -144,14 +144,20 @@ export function traitEffectMultiplier(rank) {
 export const TRAIT_STORY_LEVEL = 50;
 export const TRAIT_REALNESS_PER_RANK = 0.25;
 export const TRAIT_REALNESS_MAX = 3;
-// Edge = channel scale x MAX x rank / (rank + HALF): zero at rank 0; spell 24% at rank 4 and 28% at rank 12, heavy 70% and precision 80% of that; never above MAX.
+// Edge = channel scale x MAX x rank / (rank + HALF): zero at rank 0; spell 32% at rank 4 and 37% at rank 12 (G3-6 raised the spell scale from 1 to 1.35),
+// heavy 17% and precision 19% at rank 4 (unchanged: 70% and 80% of the former spell figure); never above MAX times the channel scale (spell 40.5%).
 export const FAMILY_EDGE_MAX = 0.30;
 export const FAMILY_EDGE_HALF_RANK = 1;
 // Physical strikes already gain from ability mastery (Driving Strike, Guardstrike and Sidestep add 0.05 of weapon coefficient
 // a rank, about 9% at rank 3) while Arc Bolt's rank adds a flat 4 a rank (under 1%), so the spell channel takes the full Edge and
 // the physical channels less: heavy 70% (its Crush trait adds up to about 5% damage on top) and precision 80% (Pinpoint adds
 // about 1%). Without this a rank 3 Breaker or Duelist would sit near invulnerable beside the Caster.
-export const FAMILY_EDGE_CHANNEL_SCALE = Object.freeze({ heavy: 0.7, precision: 0.8, spell: 1 });
+// G3-6 (D24): spell is 1.35, up from 1 (the physical channels keep 0.7 and 0.8). A focus in the second hand now lets a Caster answer
+// a heavy with Wardcast, which shortens an ordinary Caster's fights by about half an exchange (6.5 to 6.0 fresh) but barely
+// moves a rank 3 Caster whose Edge already ends fights before many heavies arrive; without this the strong Caster fell
+// under gate 3 (21% to 24% less Stuffing lost, 17% to 18% fewer fresh-fight exchanges, against 25% and 20% needed). 1.35 is the
+// smallest plateau that clears it at every milestone (loss cut 33% to 37%); 1.3 left E200 at 25.9%.
+export const FAMILY_EDGE_CHANNEL_SCALE = Object.freeze({ heavy: 0.7, precision: 0.8, spell: 1.35 });
 // Hard ceilings for a post-story trait value (applied only once a Realness factor above 1 is in play).
 export const TRAIT_POST_STORY_CAPS = Object.freeze({
   steady: 0.30, warding: 0.30, crush: 0.5, reach: 1, reachDisrupt: 0.15, pinpoint: 0.25,
@@ -419,7 +425,7 @@ export function lullabyMendBonus(s, mainItem) {
 }
 
 /**
- * Scepters (second hand): On a useful Guard, +4 barrier.
+ * Scepters (second hand): On a useful Guard, +4 barrier, raised after that hit to absorb the next enemy response (D22).
  */
 export function sceptersSecondHandBarrier(s, offItem) {
   if (offItem?.family !== 'scepters') return 0;

@@ -140,7 +140,7 @@ export function runMilestone(E, { seeds = SEEDS, log = () => {}, singles = [100,
 }
 
 /** Gate verdict rows for the merged output. */
-export function gateVerdicts(milestones) {
+export function gateVerdicts(milestones, { casterStalls = false } = {}) {
   const rows = [];
   for (const [Ek, data] of Object.entries(milestones)) {
     for (const [kit, states] of Object.entries(data.matrix)) {
@@ -185,7 +185,8 @@ export function gateVerdicts(milestones) {
       // G6: the strong build outlasts ordinary, and no Bounce user stalls into plain-Attack fights after Bounce runs dry. The
       // Caster spends Sparkle, not Bounce, on its skill (Arc Bolt), so its plain Attacks come from Sparkle starvation and are
       // reported but not judged here (D21 restores Bounce only).
-      const usesBounce = kit !== 'caster';
+      // G3-6 (D23): with Sparkle returned on a victory the Caster is judged on its plain-Attack share too (`casterStalls`).
+      const usesBounce = casterStalls || kit !== 'caster';
       const stall = c => !usesBounce || c.plainAttackSharePct <= 5;
       rows.push({
         gate: 'G6 streaks', E: Ek, kit, state: 'onLevel', config: 'strong versus ordinary',

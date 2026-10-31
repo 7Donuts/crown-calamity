@@ -58,6 +58,8 @@ test('walkthrough policy chooses Recover when the primary action is resource-blo
 
 test('walkthrough policy uses an available Disrupt to interrupt a heavy when no combined guard exists', () => {
   const s = G.createCharacter({ name: 'Interrupt policy test', race: 'unicorn', kit: 'caster' });
+  // D24: a focus in the second hand now enables Wardcast, so this Caster has an empty second hand and no combined guard.
+  assert.ok(G.unequip(s, 'offhand'));
   s.level = 3; s.quest = 2;
   assert.ok(G.learnAbility(s, 'disrupt'));
   assert.ok(G.equipAbility(s, 'disrupt'));
@@ -107,7 +109,8 @@ test('a previously failing earned Caster C1 route now reaches all receipts with 
 });
 
 test('an earned Caster C1 defeat permits one real-rest retry and preserves the loss ledger', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 6, buyUpgrades: true });
+  // G3-6: seed 4 (D24 gave the Caster Wardcast on a heavy, which changed which seeds lose the Chapter 1 delve boss; seed 6 used to).
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 4, buyUpgrades: true });
   assert.equal(result.status, 'completed', result.error);
   assert.equal(result.receipts.length, 5);
   assert.equal(result.retryCount, 1);
@@ -141,7 +144,8 @@ test('ordinary failed-hunt result overhead is added once outside wound and rest 
 });
 
 test('a second C1 delve defeat stops after the single contract retry', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 5, buyUpgrades: false });
+  // G3-6: seed 3 (D24 changed which seeds fall to the boss twice; seed 5 used to).
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 3, buyUpgrades: false });
   assert.equal(result.status, 'incomplete');
   assert.equal(result.lastEncounter.enemy, 'boss');
   assert.equal(result.defeatHistory.length, 2);

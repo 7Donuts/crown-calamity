@@ -27,12 +27,12 @@ Each keeps its current effect, rescaled under rule 3, and gains one hook. Every 
 | Relic | Current effect, rescaled | Pluck hook | Role | Limit and ceiling |
 | --- | --- | --- | --- | --- |
 | Brass-Stamp Ring (signet) | Recover restores 3% of maximum Sparkle extra | Recover while holding 0 Pluck gains 1 Pluck | Generator (starter) | Every Recover |
-| Keeper's Brass Button (seal) | First useful Guard each fight: barrier of 4% of maximum Stuffing | +1 Pluck when it triggers (+8 past the story, D20) | Generator | Once per fight |
+| Keeper's Brass Button (seal) | First useful Guard each fight: a barrier of 4% of maximum Stuffing that absorbs the next enemy response (D22) | +1 Pluck when it triggers (+6 past the story, D20) | Generator | Once per fight |
 | Thread Spool of Second Chances | First useful Guard each fight restores 5% of maximum Bounce | +1 Pluck when it triggers | Generator | Once per fight |
 | Patchwork Heart | Victory restores 5% of missing Stuffing | +1% of missing Stuffing per Pluck held | Payoff | Once per fight; +8% at 8 Pluck |
 | Lucky Button | Victory grants 5% extra coins (existing minimum and cap) | +5% more when winning with 4 or more Pluck | Payoff | Once per fight; total bonus never above the existing 25% cap |
 | Dream Bell | Victory restores 3% of maximum Sparkle | +1% of maximum Sparkle per Pluck held | Payoff | Once per fight; +8% at 8 Pluck |
-| Thimble Guard | First useful Guard each fight: barrier of 2% of maximum Stuffing | Barrier +0.5% of maximum per Pluck held | Payoff | Once per fight; within the 30% barrier cap |
+| Thimble Guard | First useful Guard each fight: a barrier of 2% of maximum Stuffing that absorbs the next enemy response (D22) | Barrier +0.5% of maximum per Pluck held | Payoff | Once per fight; within the 30% barrier cap |
 | Amber Marble | First damaging action each fight deals 8% more | +1 Pluck on that action | Generator | Once per fight |
 | Ribbon Knot of Resolve | A free physical strike restores 2% of maximum Sparkle | Doubles while holding 4 or more Pluck | Payoff | Every free physical strike |
 | Emergency Stuffing Satchel | Mend heals 10% more | A Mend that heals gains 1 Pluck | Generator | Every useful Mend |
@@ -68,7 +68,9 @@ Rank 3 refinements for the engine relics:
 
 The Fang past the story (D16): above effective level 50 its rate and per-exchange cap are multiplied by 0.45 (`FANG_POST_STORY_SCALE`, `fangScale`); through effective level 50 it is unchanged. Rank 3 raises the cap as before and the scale applies on top (13% becomes 5.85%). Design 43 has the evidence.
 
-The Hot-Cocoa Thimble and the Keeper's Brass Button past the story (D19, D20): above effective level 50 the Cocoa heals 0.6 times its rate per Pluck (`COCOA_POST_STORY_SCALE`, `cocoaScale`; rank 3 becomes 3% instead of 5%), and the Seal gains 7 more Pluck on its single first-useful-Guard trigger (`SEAL_POST_STORY_EXTRA_PLUCK`, `sealPluck`; rank 3 gives 2 + 7); through effective level 50 both are unchanged. The Seal stays once per fight, and echoes scale the trigger rather than repeat it. Design 43 has the evidence and the story-era barrier finding.
+The Hot-Cocoa Thimble and the Keeper's Brass Button past the story (D19, D20): above effective level 50 the Cocoa heals 0.6 times its rate per Pluck (`COCOA_POST_STORY_SCALE`, `cocoaScale`; rank 3 becomes 3% instead of 5%), and the Seal gains 5 more Pluck on its single first-useful-Guard trigger (`SEAL_POST_STORY_EXTRA_PLUCK`, `sealPluck`; rank 3 gives 2 + 5; it was 7 in G3-5 and was lowered in G3-6 once its barrier worked); through effective level 50 both are unchanged. The Seal stays once per fight, and echoes scale the trigger rather than repeat it. Design 43 has the evidence.
+
+**Barrier timing (D22, G3-6).** A barrier raised by a useful Guard (the Seal, Thimble Guard, a scepter in the second hand) is queued during the exchange and put up after that enemy response resolves, with one response to live: it absorbs the next enemy response and ends with it, spent or not (`guardBarriers` in `exchange`, `dist/engine.js`; the same timing as the Cuddle Reserve). It no longer absorbs the hit it guarded, which it did before, and nothing about it lasts beyond one response. The Seal and Thimble Guard stay once per fight (`f.sealUsed`, `f.thimbleUsed`; echoes scale one trigger), a scepter raises its barrier on every useful Guard, a barrier that is still standing (Aegis, Cuddle Reserve) keeps its own remaining responses and the new barrier joins it, and the pool never exceeds 30% of maximum Stuffing. The log says "grants N barrier for the next response".
 
 The ten older relics use a generic refinement at rank 3: generators gain 1 more Pluck on their trigger; payoffs raise their ceiling by 25%.
 

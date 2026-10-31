@@ -21,7 +21,7 @@ A loadout has three active slots, one passive slot, and six total attunement. Ac
 | Sure Footing | Passive | 1 | Level 2 and complete the first quest | +8 evasion |
 | Reservoir | Passive | 2 | Level 2 and either complete the first quest or make two useful Guards | A Guard that prevents at least 20 damage charges the next Arc Bolt for +10% raw damage |
 
-Arc Bolt and the combined Wardcast action use the same learned and equipped ability. Wardcast applies Arc Bolt at 0.85× damage and Guard in the same exchange; it still needs a focus and shield. It consumes one Arc Bolt slot and one player action.
+Arc Bolt and the combined Wardcast action use the same learned and equipped ability. Wardcast applies Arc Bolt at 0.85× damage and Guard in the same exchange; it needs a focus-tagged item and either a shield or, since G3-6 (D24), a focus in the second hand, whose Guard is weaker (25% of a hit and 50% of a heavy against a shield's 35% and 65%; design 46). It consumes one Arc Bolt slot and one player action.
 
 ## Combat actions and timing
 
