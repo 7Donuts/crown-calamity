@@ -1,0 +1,225 @@
+{
+  "chapter5RecurringCoinsPerOnLevelWin": 42.62342135476464,
+  "coinsPerActiveHourByChapter": {
+    "2": 785.0961261313196,
+    "3": 1777.1170006464126,
+    "4": 3661.8505045724605,
+    "5": 7720.970537261698
+  },
+  "coinsPerActiveHourAt2_5sByChapter": {
+    "2": 581.2577021518628,
+    "3": 1317.2975563009104,
+    "4": 2674.858488576101,
+    "5": 5658.580048105218
+  },
+  "coinsPerActiveHourAt4sByChapter": {
+    "2": 418.213802767751,
+    "3": 948.8179747593533,
+    "4": 1904.655291398229,
+    "5": 4040.0834648028494
+  },
+  "campaignNetCoinsPerActiveHourByChapter": {
+    "2": 1101.370193693434,
+    "3": 2170.3943115707825,
+    "4": 4165.969570502295,
+    "5": 8520.623916811091
+  },
+  "campaignNetCoinsPerActiveHourAt2_5sByChapter": {
+    "2": 815.4159556988025,
+    "3": 1608.8164829899379,
+    "4": 3043.1004911023374,
+    "5": 6244.633658474633
+  },
+  "campaignNetCoinsPerActiveHourAt4sByChapter": {
+    "2": 586.6902174505719,
+    "3": 1158.7920966288393,
+    "4": 2166.8650799242896,
+    "5": 4458.510964389838
+  },
+  "chapter2Tier10WeaponHours": 12.090833333333334,
+  "chapter2Tier10ObservedPurchases": 104,
+  "chapter2Tier10At2_5s": {
+    "noSales": {
+      "completedRows": 104,
+      "totalHoursAt2_5s": 12.090833333333334,
+      "totalHoursAt4s": 16.653333333333332,
+      "postC2HoursAt2_5s": 9.3675,
+      "medianWins": 1422,
+      "medianEncounterCoins": 8532,
+      "medianActualSaleReceipts": 0
+    },
+    "repeatSales": {
+      "completedRows": 104,
+      "totalHoursAt2_5s": 10.363333333333333,
+      "totalHoursAt4s": 14.255833333333333,
+      "postC2HoursAt2_5s": 7.631666666666666,
+      "medianWins": 1134,
+      "medianEncounterCoins": 6804,
+      "medianActualSaleReceipts": 1761
+    }
+  },
+  "evidence": "96/120 runs reached all five receipts; chapter rates use all runs that reached that chapter's earned receipt",
+  "completeRunCount": 96,
+  "totalRunCount": 120,
+  "sourceCommit": "2f04f24fb03cf524d25f70921c42900dc11f21e",
+  "tier10ToolSHA": "fd71920f42bdcb3f991f98cb7e3c167ada2720add786d29dd2c34e4815dc1cb7",
+  "seedCount": "40 seeds (1–40) per kit; 120 rows total; buyUpgrades=true only",
+  "command": "cd /workspace/worktrees/crown-g1a; timeout 600s node --input-type=module; import runCampaignWalkthrough; for kit in breaker/duelist/caster and seed 1–40, buyUpgrades:true; JSON output to /tmp/crown-g1a-analysis/g1a-earned-primary-40.json",
+  "chapterStats": {
+    "2": {
+      "sampleRunCount": 104,
+      "medianCampaignNetCoinsPerActiveHour": 1101.370193693434,
+      "medianCampaignNetCoinsPerActiveHourAt2_5s": 815.4159556988025,
+      "medianCampaignNetCoinsPerActiveHourAt4s": 586.6902174505719,
+      "medianOrdinaryOnlyCoinsPerActiveHour": 785.0961261313196,
+      "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 581.2577021518628,
+      "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 418.213802767751,
+      "medianOrdinaryCoinsPerOnLevelWin": 4.160278745644599,
+      "medianOrdinaryWins": 287,
+      "medianOrdinaryEncounterCoins": 1194,
+      "medianIntervalEncounterCoins": 1209,
+      "medianIntervalContractCoinAwards": 466,
+      "medianCumulativeUnsoldSaleValueAtReceipt": 159
+    },
+    "3": {
+      "sampleRunCount": 104,
+      "medianCampaignNetCoinsPerActiveHour": 2170.3943115707825,
+      "medianCampaignNetCoinsPerActiveHourAt2_5s": 1608.8164829899379,
+      "medianCampaignNetCoinsPerActiveHourAt4s": 1158.7920966288393,
+      "medianOrdinaryOnlyCoinsPerActiveHour": 1777.1170006464126,
+      "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 1317.2975563009104,
+      "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 948.8179747593533,
+      "medianOrdinaryCoinsPerOnLevelWin": 9.351020408163265,
+      "medianOrdinaryWins": 490,
+      "medianOrdinaryEncounterCoins": 4582,
+      "medianIntervalEncounterCoins": 4622,
+      "medianIntervalContractCoinAwards": 974,
+      "medianCumulativeUnsoldSaleValueAtReceipt": 388
+    },
+    "4": {
+      "sampleRunCount": 102,
+      "medianCampaignNetCoinsPerActiveHour": 4165.969570502295,
+      "medianCampaignNetCoinsPerActiveHourAt2_5s": 3043.1004911023374,
+      "medianCampaignNetCoinsPerActiveHourAt4s": 2166.8650799242896,
+      "medianOrdinaryOnlyCoinsPerActiveHour": 3661.8505045724605,
+      "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 2674.858488576101,
+      "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 1904.655291398229,
+      "medianOrdinaryCoinsPerOnLevelWin": 20.53701015965167,
+      "medianOrdinaryWins": 689,
+      "medianOrdinaryEncounterCoins": 14150,
+      "medianIntervalEncounterCoins": 14240,
+      "medianIntervalContractCoinAwards": 1858,
+      "medianCumulativeUnsoldSaleValueAtReceipt": 791
+    },
+    "5": {
+      "sampleRunCount": 96,
+      "medianCampaignNetCoinsPerActiveHour": 8520.623916811091,
+      "medianCampaignNetCoinsPerActiveHourAt2_5s": 6244.633658474633,
+      "medianCampaignNetCoinsPerActiveHourAt4s": 4458.510964389838,
+      "medianOrdinaryOnlyCoinsPerActiveHour": 7720.970537261698,
+      "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 5658.580048105218,
+      "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 4040.0834648028494,
+      "medianOrdinaryCoinsPerOnLevelWin": 42.62342135476464,
+      "medianOrdinaryWins": 871,
+      "medianOrdinaryEncounterCoins": 37125,
+      "medianIntervalEncounterCoins": 37305,
+      "medianIntervalContractCoinAwards": 3665,
+      "medianCumulativeUnsoldSaleValueAtReceipt": 1522
+    }
+  },
+  "chapterStatsByKit": {
+    "2": {
+      "breaker": {
+        "receiptRuns": 38,
+        "medianOrdinaryCoinsPerOnLevelWin": 4.160278745644599,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 784.6659364731654,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 580.5510534846029,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 417.72594752186586
+      },
+      "duelist": {
+        "receiptRuns": 40,
+        "medianOrdinaryCoinsPerOnLevelWin": 4.160278745644599,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 798.6622073578595,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 593.5376967688484,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 428.2127913927077
+      },
+      "caster": {
+        "receiptRuns": 26,
+        "medianOrdinaryCoinsPerOnLevelWin": 4.160278745644599,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 760.5095541401273,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 558.814352574103,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 399.6653030635009
+      }
+    },
+    "3": {
+      "breaker": {
+        "receiptRuns": 38,
+        "medianOrdinaryCoinsPerOnLevelWin": 9.351020408163265,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 1776.5429964472373,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 1316.351523855114,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 948.0001127229623
+      },
+      "duelist": {
+        "receiptRuns": 40,
+        "medianOrdinaryCoinsPerOnLevelWin": 9.351020408163265,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 1807.4950690335309,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 1345.0097847358122,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 971.963968855604
+      },
+      "caster": {
+        "receiptRuns": 26,
+        "medianOrdinaryCoinsPerOnLevelWin": 9.351020408163265,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 1686.1087142142462,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 1235.040680514422,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 881.1539366734403
+      }
+    },
+    "4": {
+      "breaker": {
+        "receiptRuns": 37,
+        "medianOrdinaryCoinsPerOnLevelWin": 20.53701015965167,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 3657.9060749676864,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 2671.491504090623,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 1901.8817204301076
+      },
+      "duelist": {
+        "receiptRuns": 40,
+        "medianOrdinaryCoinsPerOnLevelWin": 20.53701015965167,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 3876.7123287671234,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 2868.243243243243,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 2063.684978123481
+      },
+      "caster": {
+        "receiptRuns": 25,
+        "medianOrdinaryCoinsPerOnLevelWin": 20.53701015965167,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 3528.6783042394018,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 2557.2289156626507,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 1809.8486463440631
+      }
+    },
+    "5": {
+      "breaker": {
+        "receiptRuns": 33,
+        "medianOrdinaryCoinsPerOnLevelWin": 42.62342135476464,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 7715.6217526844475,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 5653.553299492386,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 4036.7886915549116
+      },
+      "duelist": {
+        "receiptRuns": 40,
+        "medianOrdinaryCoinsPerOnLevelWin": 42.62342135476464,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 7851.6038068382095,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 5775.962757534127,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 4135.722242851838
+      },
+      "caster": {
+        "receiptRuns": 23,
+        "medianOrdinaryCoinsPerOnLevelWin": 42.62342135476464,
+        "medianOrdinaryOnlyCoinsPerActiveHour": 6987.139272271016,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt2_5s": 5015.76221571718,
+        "medianOrdinaryOnlyCoinsPerActiveHourAt4s": 3523.410313192028
+      }
+    }
+  },
+  "limits": "Only completed five-receipt earned walkthroughs are summarized. Pricing coins/hour uses only ordinary hunt payouts divided by the full measured chapter active interval (a conservative recurring-only rate; time includes story/contract actions). A separate campaign net rate includes boss/delve encounter payouts and contract awards, subtracts chapter defeat coin loss, and excludes sales. Sustainable per-win rate uses only ordinary hunt payouts; scripted bosses/delves/contracts are excluded. Unsold inventory is reported separately as finite incremental resale preview value."
+}

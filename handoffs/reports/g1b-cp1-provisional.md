@@ -1,8 +1,8 @@
-# G1-B / CP1 package — PROVISIONAL
+# Historical G1-B / CP1 options — SUPERSEDED
 
 **Superseded:** The owner later delegated CP1 curve selection and authorized the 25% armor / 1,100-win entry trial recorded in [the implemented G1-B report](g1b-price-curve.md). This earlier candidate analysis is retained as history only; do not use it as the current decision package.
 
-**For review only. No curve is selected or implemented.** These candidate tables use the frozen intermediate G1-A policy matrix (`2f04f24`, exact tree also run as `40642c2`) before a later survivability-policy revision. Root has flagged that this matrix is not the final G1-A approval because Caster completed only 23/40 runs. Recompute this package from the final policy measurements before sending the owner a decision request.
+**Historical analysis only; superseded by the merged CP1 trial.** These candidate tables use the frozen intermediate G1-A policy matrix (`2f04f24`, exact tree also run as `40642c2`) before later survivability-policy revisions. They are not the current CP1 decision package and do not constitute final G1-A or CP4 approval. Keep the source and measurements as provenance; rerun G1-A against the merged trial prices before drawing campaign-balance conclusions.
 
 ## What the options test
 
@@ -10,7 +10,7 @@ All options retain weapon T1=100 and T10=10,000. They interpolate tiers 11–25 
 
 The three candidates set T25 to 300, 1,000, or 2,000 post-story wins. Their paired armor proposals price Chapter 3/4/5 body armor at 25%, 50%, or 100% of that chapter's best weapon, respectively. The rest of each armor category uses its existing base (offhand 16, head 18, body 24, hands/feet 14, accessory 22) and the same tier multiplier. Existing armor T1–4 prices stay fixed. These armor ratios are candidate values for owner choice; the current design does not specify armor purchase-time targets.
 
-The only option that meets both the 300-win T26 entry baseline and an unbroken T25-to-T26 price transition is A. B and C are still within the 300–2,000 post-story price band at T25, but keeping T26 at 300 wins creates a 3.33× or 6.67× price drop. Raising T26 entry to 1,000 or 2,000 wins would remove that drop but changes the approved ~300-win entry baseline; at 2,000 wins, entry would already cost as much as the layer's stated best gear. The owner must choose whether continuity or the 300-win entry point governs before implementation.
+At the time of this analysis, option A was the only candidate that met both a 300-win T26 entry baseline and an unbroken T25-to-T26 transition. The owner later delegated CP1 selection and chose a distinct 1,100-win entry trial; see the merged G1-B report for the current price rule.
 
 ## Earned-income evidence used for these provisional tables
 
@@ -224,10 +224,10 @@ The income inputs must come from the earned G1-A walkthrough. A synthetic region
 - The E54 baseline assumes the first post-story weapon tier is reached four effective levels after story T25/E50. If gear entry is instead at E51, use 56 coins/win and the shown 16,800-coin entry sensitivity. Confirm which effective level defines the first entry item.
 - Candidate A keeps T25 at the same price as the 300-win T26 entry. B and C preserve the broader 300–2,000-win range but conflict with the 300-win entry baseline if continuity is required.
 - Armor ratios are proposals only; no approved armor purchase-duration target exists. The tables show every category's costs and hours so the owner can select or revise the ratio.
-- The G1-A primary policy matrix is pre-revision evidence and Caster reaches only 23/40 C5 receipts. Refit options after the final policy and approval data arrive. The current CP1 tables are provisional.
+- The G1-A primary policy matrix is pre-revision evidence and Caster reaches only 23/40 C5 receipts. The options in this file are superseded and are not the current CP1 trial.
 
 The curve options do not select a price rule or authorize implementation. No repository files were changed for this analysis.
 
 ## Wrap-up status
 
-This is a provisional worksheet, not an owner decision request or an approved price curve. Work paused at the owner's request. The later seven-Vitality/no-retry diagnostic completed all five chapters in 40/40 Breaker, 40/40 Duelist and 20/40 Caster purchase-enabled runs; a subsequent bounded-retry candidate has passing regression tests but no final 40-seed matrix or independent review. Recompute before presenting CP1. Chapter-window averages include preparatory hunts and must not be relabeled dedicated on-level farm income. The measured pre-edit T10 continuation is archived at `50f20cbf7504156bfad91f1f33807b3613430886`; its actual repeated drop sales are distinct from finite checkpoint inventory. Companion one-off generators/configuration are preserved on `build/g1-a-story-balance` in draft PR #13.
+This is a historical provisional worksheet, not the current owner decision request. Work paused at the owner's request before CP1 was delegated; PR #15 later merged the CP1 trial. The later seven-Vitality/no-retry diagnostic completed all five chapters in 40/40 Breaker, 40/40 Duelist and 20/40 Caster purchase-enabled runs; a subsequent bounded-retry candidate has passing regression tests but no final 40-seed matrix or independent review. Chapter-window averages include preparatory hunts and must not be relabeled dedicated on-level farm income. The measured pre-edit T10 continuation is archived at `50f20cbf7504156bfad91f1f33807b3613430886`; its actual repeated drop sales are distinct from finite checkpoint inventory. Companion one-off generators/configuration are preserved on `build/g1-a-story-balance` in draft PR #13.

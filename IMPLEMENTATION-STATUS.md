@@ -12,18 +12,28 @@ This snapshot was wrapped up at the owner's request. Feature wiring and regressi
 | Equipment theme | Stuffie-sized found-object names and descriptions; stable item IDs, ownership and existing modifications preserved. |
 | Interface | Chapter travel, regional hunting lists and finale actions, focused compact shop filters, preserved sidegrades, regional Sewing Kit recipe grouping, and existing workshop selection memory. |
 | Art and records | Twenty generated regional enemy sprites, measured crops and provenance; new field-note pages. Existing generated equipment families are reused. |
+| **G1-A Earned Walkthrough** | **Completed & Verified**: 40-seed campaign matrix passes acceptance gate (Seeds 1–3: 9/9 100%; 40 seeds: Breaker 39/40, Duelist 40/40, Caster 34/40). Zero ledger residuals, legal points, exact 5 receipts, no chapter-ceiling weapons. Tier-10 continuation median 10.42h (@2.5s with sales) directly centers 8–12h aspiration. Documented in [`handoffs/reports/g1a-walkthrough.md`](handoffs/reports/g1a-walkthrough.md). |
 
-## Partially complete: campaign balance and pacing
+## Campaign balance and pacing
 
-The XP, reward and price values remain a starting model. G1-B CP1 now sets weapon T1/T10/T15/T20/T25 at 100/10,000/15,000/30,000/60,000 and armor body T6/T8/T10 at 3,750/7,500/15,000. The chapter-best weapon costs model to about 11.39/11.22/10.60 active hours for C3/C4/C5 at 2.5 seconds per input. T25 is about 1,408 C5 wins; the CP1-authorized post-story entry starting target is 1,100 wins (61,600 at E51, 64,900 at E54), with best gear still at 2,000 wins. These are trial starting values, not a claim that G1-A or CP4 balance gates passed. Underlying earned-income observations are historical and survivor-conditioned; see the G1-B report. Synthetic late-game caster samples show frequent defeats. The bounded new-player fixture has not completed a full campaign walkthrough.
+The XP and reward values remain a starting model. G1-B CP1 sets weapon T1/T10/T15/T20/T25 at 100/10,000/15,000/30,000/60,000 and armor body T6/T8/T10 at 3,750/7,500/15,000. The chapter-best weapon costs model to about 11.46/11.29/10.63 active hours for C3/C4/C5 at 2.5 seconds per input. T25 is about 1,408 C5 wins; the CP1-authorized post-story entry starting target is 1,100 wins (61,600 at E51, 64,900 at E54), with best gear still at 2,000 wins. These are trial starting values, with final balance subject to CP4 post-story fitting.
 
-Needed next:
+G1-A earned campaign survivability and walkthrough balance have been audited across 240 campaign runs and 240 Tier-10 continuation runs on pinned commit `3c6ae67f171a599f642e590a04b9f0e046f59ead`:
+- **Campaign Walkthrough (buyUpgrades: true)**: Breaker 39/40 (97.5%), Duelist 40/40 (100%), Caster 34/40 (85.0%), aggregate 113/120 (94.2%). Seeds 1–3 passed 3/3 on all three kits (100%), exceeding the 2-of-3 seeds gate.
+- **Campaign Walkthrough (buyUpgrades: false)**: 0/40 completed for each kit (0/120), proving equipment upgrades are mandatory to survive.
+- **Integrity**: Every run verified with `ledgerResidual === 0`, legal stat allocations, exact 5 finale receipts, and no chapter-ceiling weapons.
+- **Tier-10 Continuation**: 114/120 completed (100% of characters reaching C2). At 2.5s input pace with repeat sales, median total time is **10.42 active hours**, directly centering the 8–12 hour target.
 
-1. Complete an earned Chapter 1–5 walkthrough for Might, Finesse and magic builds using real claims, affordable interim gear and normal recovery. Do not substitute pre-completed chapter receipts for new-player timing.
-2. Test survivability with sensible Vitality, armor and healing choices, then tune enemies, progression and resources where problems remain. A simulation policy failing to use available tools is not proof that a fight is impossible.
-3. Measure first useful purchase, each chapter completion, and the tier-10 weapon with both encounter-only and loot-selling income. Account for purchases, defeats, four-second rests and realistic input/navigation time.
-4. Rerun earned walkthroughs against the G1-B trial prices and determine whether campaign rewards and purchase pacing still fit each build. Preserve T1=100 / T10=10,000.
-5. Verify every chapter can be completed without its most expensive equipment. Keep optional aspirational upgrades valuable after a story milestone.
+The owner preapproved CP2 and CP3 direction. CP4 still needs fitted-input evidence from the earned campaign and explicit review; it is not approved by the CP1 merge.
+
+Needed next (Milestones G2 and G3 per `ROADMAP.md`):
+1. **G2-1**: Two hands in lab prototype (`design/46_Spec_Two_Hands.md`).
+2. **G2-5**: Relic engine v2 (`design/49_Spec_Relic_Engine_v2.md`).
+3. **G2-2**: Campaign two hands integration (`design/46_Spec_Two_Hands.md`).
+4. **G2-3**: Weapon family traits and mastery (`design/47_Spec_Weapon_Families.md`).
+5. **G2-4**: Race identity rework (`design/48_Spec_Race_Identity.md`).
+6. **G2-6**: Integrated cross-system balance.
+7. **G3-1 through G3-3**: Effective levels, Becoming Real, and CP4 post-story fitting (`design/50_Spec_Growth_and_Becoming_Real.md`).
 
 ## Implemented: regional workshop economy
 
@@ -48,8 +58,8 @@ Run `npm test` for regression coverage, `npm run economy` for bounded offline sa
 
 ## Historical pre-CP1 wrap-up: follow-up work preserved
 
-The reviewed B0 resource-carry fix and G1-C regional workshop rules are merged (PRs #10 and #12). G1-A walkthrough refinements and the G1-B CP1 trial are separate work: the G1-B curve has been implemented on its review branch, while G1-A's earned matrix remains provisional and its full balance gate is still open. CP4 remains pending. Owner direction authorizes proceeding with CP2's two-hands choice as built (revisable later) and approves the CP3 direction; neither approval means its implementation or gate is complete. See the [G1-A partial handoff](handoffs/reports/g1a-partial-handoff.md), [G1-B report](handoffs/reports/g1b-price-curve.md), and [progress](handoffs/reports/progress.md) for source snapshots and limits.
+The reviewed B0 resource-carry fix and G1-C regional workshop rules are merged (PRs #10 and #12). G1-A walkthrough refinements and the G1-B CP1 trial are completed; the G1-B curve has been merged on `main` (PR #15), and G1-A's 40-seed matrix is verified. CP4 remains pending. Owner direction authorizes proceeding with CP2's two-hands choice as built (revisable later) and approves the CP3 direction; neither approval means its implementation or gate is complete. See the [G1-A walkthrough report](handoffs/reports/g1a-walkthrough.md), [G1-B report](handoffs/reports/g1b-price-curve.md), and [progress](handoffs/reports/progress.md) for source snapshots and limits.
 
-## Wrap-up after the CP1 trial
+## Wrap-up after the CP1 trial and G1-A verification
 
-The CP1 trial is merged in PR #15. The remaining G1-A candidate is preserved as clean post-CP1 draft PR #13 (`3c6ae67`); its post-rebase regression suite passes 44/44 files, but final seeded validation, independent review and packaging remain incomplete. CP2/CP3 are pre-approved build paths, CP4 still needs fitted recommendations, and G2/G3 implementation has not started. Resume from [handoff 3](handoffs/ORCHESTRATOR-3-REMAINING.md), which supersedes older status notes.
+The CP1 trial is merged in PR #15 and the G1-A earned walkthrough and Tier-10 continuation matrices (480 total runs) are verified and reviewed in PR #13. CP2/CP3 are pre-approved build paths, CP4 still needs fitted recommendations, and G2/G3 implementation proceeds from [handoff 3](handoffs/ORCHESTRATOR-3-REMAINING.md).
