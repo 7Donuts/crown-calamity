@@ -90,8 +90,8 @@ export function raceRefinementMultiplier(s) {
 }
 
 export function abilityMasteryCap(s) {
-  const r = Math.max(0, Math.floor(Number(s?.realness) || 0));
-  return 3 + r + realnessChoiceCount(s, 'practicedHands');
+  // Ability mastery is separate from weapon mastery (design 47): only Practiced hands raises its cap.
+  return 3 + realnessChoiceCount(s, 'practicedHands');
 }
 
 export const REALNESS_TRIAL_IDS = Object.freeze(['trial_stitch', 'trial_memory', 'trial_real']);

@@ -1,7 +1,7 @@
 # Spec: weapon families and weapon-type mastery
 
 Status: approved spec, 30 October 2026. Decisions **D3** and **D1** (option B) approved ([ROADMAP.md](../ROADMAP.md)). Proposal background: [design 45](45_Races_and_Weapons.md).
-Implementation status: data slice implemented (all 75 weapons tagged with family; family tags displayed in shop rows, item cards, and inspector). Family traits and weapon-type mastery are not yet implemented.
+Implementation status: implemented. All 75 weapons are tagged with a family (shown in shop rows, item cards and the inspector); the nine traits apply inside the exchange (`dist/weapon-families.js`, `dist/hands.js`); weapon-type mastery runs from rank 0 with the rank 0 base values, the 4 + 3 × rank cost, caps of 3 (5 for the race affinity family) plus Becoming Real additions, and the rank 3 second-hand bonus; the character sheet shows a weapon mastery panel with the real cap. A stored rank is never lowered when a cap drops. Affinity comes only from an adopted race ID.
 
 ## Goal
 
@@ -65,6 +65,7 @@ Mastery is deterministic: no random mastery rolls (Shimlar's random rolls are no
 
 - Item field: `family` on every weapon (catalog data, not saved).
 - Character field: `weaponMastery`, an object keyed by family ID with `{ rank, marks }`. Missing or malformed data loads as rank 0, marks 0. No save-format bump.
+- Saves written before the rank 0 baseline stored rank 1 as the starting rank and have no `rankBaseline` key inside `weaponMastery`. `normalizeWeaponMastery` converts them once (new rank = old rank − 1, marks kept, so trait strength is unchanged) and stamps `rankBaseline: 0` inside the object. The marker lives inside `weaponMastery`, not at the save top level, because `loadSave` spreads `fresh()` under the saved fields and a top-level default would be inherited by older saves and skip the conversion.
 - Existing ability mastery (`mastery`) is unchanged and separate.
 
 ## Modules and integration

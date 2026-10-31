@@ -175,14 +175,14 @@ test('all five REALNESS_CHOICES enforce their limits and apply exact mechanical 
   assert.equal(G.raceRefinementMultiplier(s), 1.5);
   assert.equal(G.canPickRealnessChoice(s, 'racialRefinement'), false, 'racialRefinement limit is 2');
 
-  // 4. practicedHands (repeatable): +1 weapon and +1 ability mastery cap per pick (on top of +1 per Realness rank)
+  // 4. practicedHands (repeatable): +1 weapon and +1 ability mastery cap per pick (weapon caps also gain +1 per Realness rank; ability caps do not)
   const spearCapBefore = G.weaponMasteryCap(s, 'spears');
   const abilityCapBefore = G.abilityMasteryCap(s);
   s.level = 50;
   completeAllRealnessTrials(s);
   assert.ok(G.becomeReal(s, { choice: 'practicedHands' }).ok);
   assert.equal(G.weaponMasteryCap(s, 'spears'), spearCapBefore + 2);
-  assert.equal(G.abilityMasteryCap(s), abilityCapBefore + 2);
+  assert.equal(G.abilityMasteryCap(s), abilityCapBefore + 1);
   assert.equal(G.canPickRealnessChoice(s, 'practicedHands'), true, 'practicedHands is repeatable');
 
   // 5. strongerEchoes (limit 1): [0.5, 0.25, 0.125] -> [0.6, 0.3, 0.15]

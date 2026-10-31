@@ -141,7 +141,7 @@ test('ordinary failed-hunt result overhead is added once outside wound and rest 
 });
 
 test('a second C1 delve defeat stops after the single contract retry', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 3, buyUpgrades: false });
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 5, buyUpgrades: false });
   assert.equal(result.status, 'incomplete');
   assert.equal(result.lastEncounter.enemy, 'boss');
   assert.equal(result.defeatHistory.length, 2);

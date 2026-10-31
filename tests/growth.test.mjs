@@ -112,7 +112,7 @@ test('postStoryEnemyStats, postStoryRewards, postStoryGearPrice, and postStoryWe
 });
 
 test('weaponMasteryCap increases with Realness rank and practicedHands choices', () => {
-  const base = { race: 'bear', level: 50, realness: 0, realnessChoices: [] };
+  const base = { raceId: 'bear', level: 50, realness: 0, realnessChoices: [] };
   assert.equal(weaponMasteryCap(base, 'foils'), 3);
   assert.equal(weaponMasteryCap(base, 'clubs'), 5);
   assert.equal(weaponMasteryCap({ ...base, realness: 2 }, 'foils'), 5);
