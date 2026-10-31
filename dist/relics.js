@@ -55,14 +55,21 @@ export function normalizeRelics(s) {
       }
     }
     let relicId = validRelic(raw.relicId) && owned(s, raw.relicId) && paid[raw.relicId] ? raw.relicId : null;
-    let freeMove = raw.freeMove === true;
-    // Migration to Spec 49: grant one free move per socket holding existing paid licenses or a relic, if not yet migrated
-    if (!s.relicEchoV2 && (Object.keys(paid).length > 0 || relicId) && raw.freeMove === undefined) {
-      freeMove = true;
+    // Spec 49 migration: each existing license may be moved once to another loop for free. The goodwill flag is
+    // per license (`freeMoves[relicId]`), is granted once when an older save (no relicEchoV2 marker) is imported,
+    // and is consumed by the move. A legacy socket-level `freeMove: true` is converted to per-license flags.
+    const rawMoves = raw.freeMoves && typeof raw.freeMoves === 'object' && !Array.isArray(raw.freeMoves) ? raw.freeMoves : null;
+    const moves = {};
+    if (rawMoves) {
+      for (const id of Object.keys(paid)) if (rawMoves[id] === true) moves[id] = true;
+    } else if (raw.freeMove === true) {
+      for (const id of Object.keys(paid)) moves[id] = true;
+    } else if (!s.relicEchoV2 && raw.freeMove === undefined) {
+      for (const id of Object.keys(paid)) moves[id] = true;
     }
     // A malformed locked socket cannot retain active power.
     const socketObj = { unlocked, relicId: unlocked ? relicId : null, copiesPaid: paid };
-    if (unlocked && freeMove) socketObj.freeMove = true;
+    if (Object.keys(moves).length) socketObj.freeMoves = moves;
     return socketObj;
   });
   delete s.relics;
@@ -99,7 +106,7 @@ export function relicSlots(s) {
       relicId: socket.relicId,
       copiesPaid: copy(socket.copiesPaid),
       dormant: socket.relicId ? !isEquipped : false,
-      freeMove: socket.freeMove === true
+      freeMove: Object.keys(socket.freeMoves || {}).length > 0
     };
   });
 }
@@ -129,7 +136,9 @@ function echoPreview(s, slot, baseId) {
   const sockets = ensured(s) || [], index = Number(slot), item = validRelic(baseId) ? effectiveItem(s, baseId) : null;
   const socket = sockets[index];
   const licensedHere = !!socket?.copiesPaid?.[baseId];
-  const freeMove = !licensedHere && socket?.freeMove === true;
+  // A free move relocates an existing paid license of this same relic from another loop; it never creates a license.
+  const moveFrom = licensedHere ? -1 : sockets.findIndex((x, i) => i !== index && !!x.copiesPaid?.[baseId] && x.freeMoves?.[baseId] === true);
+  const freeMove = moveFrom >= 0;
   const priorLicenses = sockets.reduce((n, x) => n + (x.copiesPaid?.[baseId] ? 1 : 0), 0) - (licensedHere ? 1 : 0);
   const duplicateCount = priorLicenses;
   const coinCost = (licensedHere || freeMove) ? 0 : echoCost(priorLicenses, item?.price || item?.echoPrice);
@@ -149,7 +158,7 @@ function echoPreview(s, slot, baseId) {
                   : (s.coins || 0) < coinCost ? 'You cannot afford this relic echo.' : null;
   const later = (licensedHere || freeMove) ? 0 : echoCost(priorLicenses + 1, item?.price || item?.echoPrice);
   return { allowed: !reason, reason, slot: index, relicId: baseId, name: item?.name || null,
-    coinCost, duplicateCount, effectScale, nextCost: later, freeMove, licensedHere,
+    coinCost, duplicateCount, effectScale, nextCost: later, freeMove, moveFrom: freeMove ? moveFrom : null, licensedHere,
     effect: item ? { stats: { ...(item.stats || {}) }, armor: item.armor || 0, ward: item.ward || 0, unique: RELIC_EFFECTS[baseId] || null } : null };
 }
 
@@ -161,11 +170,18 @@ export function attuneRelic(s, slot, baseId) {
   normalizeRelics(s);
   s.coins -= preview.coinCost;
   const socket = s.relicSockets[preview.slot];
+  if (preview.freeMove) {
+    // The license leaves its old loop (and that loop's attunement) and lands here; the one-time flag is spent.
+    const from = s.relicSockets[preview.moveFrom];
+    delete from.copiesPaid[baseId];
+    if (from.freeMoves) {
+      delete from.freeMoves[baseId];
+      if (!Object.keys(from.freeMoves).length) delete from.freeMoves;
+    }
+    if (from.relicId === baseId) from.relicId = null;
+  }
   socket.relicId = baseId;
   socket.copiesPaid[baseId] = 1;
-  if (socket.freeMove && preview.coinCost === 0 && !preview.licensedHere) {
-    delete socket.freeMove;
-  }
   return { ok: true, preview };
 }
 

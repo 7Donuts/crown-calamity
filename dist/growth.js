@@ -55,10 +55,22 @@ export function effectiveLevel(s, maybeRealness) {
 export function normalizeRealness(s) {
   if (!s || typeof s !== 'object') return s;
   s.realness = Number.isInteger(s.realness) && s.realness >= 0 ? s.realness : 0;
-  s.realnessChoices = Array.isArray(s.realnessChoices)
-    ? s.realnessChoices.filter(id => Object.hasOwn(REALNESS_CHOICES, id))
-    : [];
-  s.realnessPick = s.realnessPick ?? null;
+  // Each Becoming Real ascension grants exactly one choice, and each choice has a limit. Keep the earliest valid
+  // picks; drop unknown ids, picks beyond the number of ranks, and picks beyond a choice's own limit.
+  const kept = [];
+  const counts = {};
+  if (Array.isArray(s.realnessChoices)) {
+    for (const id of s.realnessChoices) {
+      if (kept.length >= s.realness) break;
+      if (typeof id !== 'string' || !Object.hasOwn(REALNESS_CHOICES, id)) continue;
+      if ((counts[id] || 0) >= REALNESS_CHOICES[id].limit) continue;
+      counts[id] = (counts[id] || 0) + 1;
+      kept.push(id);
+    }
+  }
+  s.realnessChoices = kept;
+  // realnessPick records the choice made at the latest ascension; it must be one of the kept choices.
+  s.realnessPick = typeof s.realnessPick === 'string' && kept.includes(s.realnessPick) ? s.realnessPick : (kept.length ? kept[kept.length - 1] : null);
   return s;
 }
 
@@ -145,7 +157,7 @@ export function trialEnemy(sOrRealness, id) {
     ward: stats.ward,
     coins: stats.coins * 2,
     material: 'Velvet star',
-    blurb: 'The final examiner of the Velvet Night Fair. Below half Stuffing, its second act shifts the ward and opens a window.',
+    blurb: 'The final examiner of the Velvet Night Fair. Below half Stuffing, its second act changes its pattern.',
     location: 'The Velvet Lantern Stage',
     pattern: ['Velvet call', 'Unmaking wave', 'Final curtain'],
     heavy: 1,
@@ -185,7 +197,7 @@ export function echoUnderfootEnemy(s, baseEnemy) {
  * Experience needed to advance from the current level.
  * At realness === 0 (campaign story levels 1..50), retains exact established values.
  * At realness >= 1 (or effective level > 50), applies the Spec 50 post-story formula:
- * (100 + 10 * R) * (20 + 12 * E).
+ * (100 + 5 * R) * (20 + 12 * E).
  */
 export function xpNeeded(level, realness = 0) {
   let l = 1;

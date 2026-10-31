@@ -21,11 +21,10 @@ Ten campaign menders have been added to the catalog (`dist/gear.js`) with placeh
 
 ## G3-2 Becoming Real Trial Enemies (Design 50, Decision D6)
 
-Three dynamic trial enemies (`trial_stitch`, `trial_memory`, `trial_real` in `dist/growth.js`) reuse existing enemy illustrations via `portraitId` until bespoke trial guardian portraits are generated following `ART-DIRECTION.md`:
+Three dynamic trial enemies (`trial_stitch`, `trial_memory`, `trial_real`, built by `trialEnemy` in `dist/growth.js`) reuse existing enemy illustrations through each enemy's `art` key until bespoke trial guardian portraits are generated following `ART-DIRECTION.md`. They set no `portraitId`:
 
-| Trial Enemy ID | Display Name | Stage | Borrowed Portrait (`portraitId`) |
+| Trial Enemy ID | Display Name | Stage | Borrowed Art (`art`) |
 |---|---|---|---|
-| `trial_stitch` | The Stitch-Tester | 1 (The Stitch-Test) | `shears_trooper` |
-| `trial_memory` | The Memory-Warden | 2 (The Memory-Test) | `heirloom_Armor` |
-| `trial_real` | The Real-Mirror | 3 (The Real-Test) | `star_stitcher` |
-
+| `trial_stitch` | The Heavy Seam-Tester | 1 (The Stitch-Test) | `crab` |
+| `trial_memory` | Unclaimed Memory Keeper | 2 (The Memory-Test) | `attic_hugger` |
+| `trial_real` | The Realness Examiner | 3 (The Real-Test) | `fair_boss` |
