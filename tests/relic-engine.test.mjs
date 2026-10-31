@@ -18,7 +18,7 @@ function fighter(...relics) {
   const t = G.totals(s); s.hp = t.hp; s.mp = t.mp; s.sp = t.sp;
   return s;
 }
-const lastRelicLine = s => s.log.find(row => row.text.startsWith('Relics ·'))?.text || '';
+const lastRelicLine = s => s.log.find(row => row.text.startsWith('Relics ·') || row.text.startsWith('Relics and traits ·'))?.text || '';
 
 test('both relic slots work at full strength from character creation, and an old save loads with an empty second slot', () => {
   const s = fighter('feltFang', 'darnedPatch');
@@ -33,10 +33,12 @@ test('both relic slots work at full strength from character creation, and an old
   assert.deepEqual(loaded.signatureRelics, []);
 });
 
-test('Pluck only shows when an engine relic is equipped or echoed', () => {
-  assert.equal(G.pluckStatus(fighter()).active, false);
-  assert.equal(G.pluckStatus(fighter('signet')).active, true);
-  assert.equal(G.pluckStatus(fighter('signet', 'feltFang')).active, true);
+test('Pluck shows when a race Pluck hook or engine relic is active', () => {
+  assert.equal(G.pluckStatus(fighter()).active, false, 'unadopted character without engine relics hides Pluck');
+  assert.equal(G.pluckStatus(fighter('signet')).active, true, 'Signet v2 Pluck hook activates Pluck');
+  assert.equal(G.pluckStatus(fighter('signet', 'feltFang')).active, true, 'engine relic activates Pluck');
+  const plush = fighter(); plush.raceId = 'bear';
+  assert.equal(G.pluckStatus(plush).active, true, 'race with innate Pluck hook activates Pluck HUD');
 });
 
 test('the Felt Vampire Fang heals from damage that landed, scales with Pluck, and never heals from overkill', () => {

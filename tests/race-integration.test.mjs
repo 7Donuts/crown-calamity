@@ -85,7 +85,7 @@ test('three core-matching relic echoes add fractional attributes while saved res
   }
   const totals=G.totals(s);
   assert.equal(totals.echoBonuses.stats.wil,.875,'three copies contribute 50%, 25%, and 12.5% of +1 Will');
-  assert.equal(totals.wil,11.875,'the full core relic and fractional echo bonuses both contribute');
+  assert.equal(totals.wil,14.875,'the full core relic and fractional echo bonuses both contribute');
   for(const key of ['hp','mp','sp'])assert.ok(Number.isInteger(totals[key]),`${key} maximum is an integer`);
   for(const key of ['hp','mp','sp'])assert.ok(Number.isInteger(s[key]),`${key} resource is an integer`);
 
@@ -93,7 +93,7 @@ test('three core-matching relic echoes add fractional attributes while saved res
   assert.ok(loaded,'version-four saves with fractional echo attributes remain valid');
   assert.equal(loaded.version,G.VERSION);
   assert.equal(G.totals(loaded).echoBonuses.stats.wil,.875);
-  assert.equal(G.totals(loaded).wil,11.875);
+  assert.equal(G.totals(loaded).wil,14.875);
   for(const key of ['hp','mp','sp'])assert.ok(Number.isInteger(loaded[key]));
 });
 
@@ -112,7 +112,8 @@ test('Seal echoes scale one barrier proc per fight, and unequipping core makes e
   s.fight.round=1;
   const first=G.exchange(s,'guard',()=>.5,1000);
   assert.equal(first.ok,true);assert.ok(first.absorbed>0,'the useful Guard triggers the Seal barrier');
-  assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants 30 barrier`)).length,1,'the core and three echoes scale one proc instead of repeating it');
+  const expectedBarrier=Math.floor(G.totals(s).hp*0.04*G.relicEffectStrength(s,'seal'));
+  assert.equal(s.log.filter(entry=>entry.text.includes(`${G.ITEMS.seal.name} grants ${expectedBarrier} barrier`)).length,1,'the core and three echoes scale one proc instead of repeating it');
   const second=G.exchange(s,'guard',()=>.5,1000+G.ACTION_DELAY_MS);
   assert.equal(second.ok,true);
   assert.equal(s.fight.sealUsed,true);

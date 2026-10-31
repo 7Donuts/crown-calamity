@@ -107,7 +107,7 @@ test('a previously failing earned Caster C1 route now reaches all receipts with 
 });
 
 test('an earned Caster C1 defeat permits one real-rest retry and preserves the loss ledger', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 4, buyUpgrades: true });
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 2, buyUpgrades: true });
   assert.equal(result.status, 'completed', result.error);
   assert.equal(result.receipts.length, 5);
   assert.equal(result.retryCount, 1);
@@ -127,7 +127,7 @@ test('an earned Caster C1 defeat permits one real-rest retry and preserves the l
 });
 
 test('ordinary failed-hunt result overhead is added once outside wound and rest timing', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 39, buyUpgrades: true });
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 15, buyUpgrades: true });
   assert.equal(result.status, 'completed', result.error);
   const defeat = result.defeatHistory.find(row => row.enemy === 'fair_carousel' && row.source === 'hunt');
   const retry = result.retryHistory.find(row => row.contract === 'fair_arrival');
@@ -141,7 +141,7 @@ test('ordinary failed-hunt result overhead is added once outside wound and rest 
 });
 
 test('a second C1 delve defeat stops after the single contract retry', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 9, buyUpgrades: true });
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 35, buyUpgrades: true });
   assert.equal(result.status, 'incomplete');
   assert.equal(result.lastEncounter.enemy, 'boss');
   assert.equal(result.defeatHistory.length, 2);

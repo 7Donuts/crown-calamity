@@ -144,8 +144,9 @@ test('expanded catalog has chapter stock, a generated art family for each item, 
   const {ITEM_ART}=await import('../dist/item-art.js');
   const expectedWeaponPrices=[100,167,278,464,774,1292,2154,3594,5995,10000,10845,11761,12754,13832,15000,17230,19793,22736,26117,30000,34461,39585,45471,52233,60000];
   const counts={};for(const item of Object.values(ITEMS))counts[item.slot]=(counts[item.slot]||0)+1;
-  assert.equal(Object.keys(ITEMS).length,154);
-  for(const slot of ['offhand','head','body','hands','feet','accessory'])assert.equal(counts[slot],10,slot);
+  assert.equal(Object.keys(ITEMS).length,164);
+  assert.equal(counts.offhand,20);
+  for(const slot of ['head','body','hands','feet','accessory'])assert.equal(counts[slot],10,slot);
   assert.equal(counts.relic,19,'fourteen stocked relics and five finale keepsakes');
   assert.equal(counts.weapon,75);
   for(const channel of ['heavy','spell','precision']){
@@ -159,11 +160,17 @@ test('expanded catalog has chapter stock, a generated art family for each item, 
   }
   assert.equal(ITEMS.sword.price,100);assert.equal(ITEMS.pike.price,10000);assert.equal(ITEMS.pike.base,40);
   assert.equal(ITEMS.sword.chapter,1);assert.equal(ITEMS.pike.chapter,2);assert.equal(ITEMS.thimblePike.chapter,3);assert.equal(ITEMS.bobbinClub.chapter,4);assert.equal(ITEMS.fairgroundMaul.chapter,5);
-  for(const slot of ['offhand','head','body','hands','feet','accessory']){
+  for(const slot of ['head','body','hands','feet','accessory']){
     const rows=Object.values(ITEMS).filter(item=>item.slot===slot).sort((a,b)=>a.tier-b.tier);
     assert.deepEqual(rows.map(item=>item.tier),Array.from({length:10},(_,i)=>i+1));
     assert.deepEqual(rows.map(item=>item.chapter),[1,1,2,2,3,3,4,4,5,5]);
   }
+  const standardOffhands=Object.values(ITEMS).filter(item=>item.slot==='offhand'&&item.kind!=='mender').sort((a,b)=>a.tier-b.tier);
+  assert.deepEqual(standardOffhands.map(item=>item.tier),Array.from({length:10},(_,i)=>i+1));
+  assert.deepEqual(standardOffhands.map(item=>item.chapter),[1,1,2,2,3,3,4,4,5,5]);
+  const menderOffhands=Object.values(ITEMS).filter(item=>item.slot==='offhand'&&item.kind==='mender').sort((a,b)=>a.tier-b.tier);
+  assert.deepEqual(menderOffhands.map(item=>item.tier),Array.from({length:10},(_,i)=>i+1));
+  assert.deepEqual(menderOffhands.map(item=>item.chapter),[1,1,2,2,3,3,4,4,5,5]);
   for(const id of Object.keys(ITEMS))assert.ok(ITEM_ART[id]?.frame,`${id} has its own generated art crop`);
   for(const id of ['signet','seal','threadSpool','patchworkHeart','luckyButton','dreamBell','thimbleGuard','amberMarble','ribbonKnot','stuffingSatchel'])assert.ok(ITEMS[id]);
   assert.ok(ITEMS.signet.relicEffect==='signet');assert.ok(ITEMS.threadSpool.relicEffect==='threadSpool');

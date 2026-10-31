@@ -13,7 +13,7 @@ function ready(key, ability, mastery) {
   const s = G.fresh();
   s.learnedAbilities = ['arc', 'prepared', ability].filter((x, i, a) => a.indexOf(x) === i);
   s.equippedAbilities = [ability];
-  s.gear.weapon = 'rod'; s.gear.offhand = 'shield';
+  s.gear.weapon = 'singalongScepter'; s.gear.offhand = 'shield';
   if (key === 'sidestep') { s.gear.weapon = 'blade'; s.gear.offhand = 'charm'; }
   if (mastery) s.mastery = { arc: { rank: 3, marks: 0, choice: 'economy' } };
   assert.ok(G.startFight(s, 'rats'));

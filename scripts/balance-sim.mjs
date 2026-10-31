@@ -11,26 +11,23 @@ const KITS = new Set(['breaker', 'duelist', 'caster']);
 const ACTION_MS = 700;
 const MAX_SEEDS = 10000;
 const MAX_CHAIN = 50;
-const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'realness', 'realnessChoices', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'save', 'rulesPreview', 'customItems', 'stats']);
-const NON_MEASURED = ['menders', 'raceTraits', 'familyTraits'];
+const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'realness', 'realnessChoices', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'weaponMastery', 'save', 'rulesPreview', 'customItems', 'stats']);
+const NON_MEASURED = [];
 const round1 = n => Math.round(n * 10) / 10;
 
 function prepare(fixture) {
   if (!fixture || typeof fixture !== 'object' || Array.isArray(fixture)) throw new Error('Fixture must be an object');
-  const twoHandsActive = fixture?.rulesPreview?.twoHands === true;
   for (const key of Object.keys(fixture)) {
-    if (['ranks', 'weaponRanks', 'raceTraits', 'familyTraits'].includes(key)) {
-      throw new Error(`${key} is not implemented; refusing to produce balance metrics for that fixture`);
-    }
-    if (!twoHandsActive && ['menders', 'secondHand'].includes(key)) {
+    if (['ranks', 'weaponRanks', 'raceTraits'].includes(key)) {
       throw new Error(`${key} is not implemented; refusing to produce balance metrics for that fixture`);
     }
     if (!FIXTURE_KEYS.has(key)) throw new Error(`Unknown fixture field: ${key}`);
   }
-  const { kit = 'breaker', level, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], save, rulesPreview } = fixture;
+  const { kit = 'breaker', level, realness, realnessChoices, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], weaponMastery, save, rulesPreview, customItems, stats } = fixture;
   if (save !== undefined && Object.hasOwn(fixture, 'kit')) throw new Error('Captured-save fixtures cannot also specify kit');
   if (!KITS.has(kit) && !save) throw new Error(`Unknown kit: ${kit}`);
   if (level !== undefined && (!Number.isInteger(level) || level < 1 || level > G.LEVEL_CAP)) throw new Error(`Fixture level must be an integer from 1 to ${G.LEVEL_CAP}`);
+  if (realness !== undefined && (!Number.isInteger(realness) || realness < 0)) throw new Error('Fixture realness must be a non-negative integer');
   if (race !== undefined && !Object.values(G.RACES).some(row => row.id === race || row.name === race)) throw new Error(`Unknown race: ${race}`);
   if (!gear || typeof gear !== 'object' || Array.isArray(gear)) throw new Error('Fixture gear must be a slot-to-item object');
   let s;
@@ -38,9 +35,13 @@ function prepare(fixture) {
     const raw = typeof save === 'string' ? save : JSON.stringify(save);
     s = G.loadSave(raw);
     if (!s || s.fight || s.delve) throw new Error('Fixture save must be a valid idle character save');
-  } else s = hero(kit, level || 1, { race: race || 'wolf' });
+  } else s = hero(kit, level || 1, { race: race || 'wolf', realness: realness || 0 });
   if (rulesPreview) s.rulesPreview = structuredClone(rulesPreview);
+  if (customItems) s.customItems = structuredClone(customItems);
   if (level !== undefined) s.level = level;
+  if (realness !== undefined) s.realness = realness;
+  if (Array.isArray(realnessChoices)) s.realnessChoices = [...realnessChoices];
+  if (stats && typeof stats === 'object') s.stats = { ...s.stats, ...stats };
   if (race !== undefined && !save) { /* hero already applied the requested race */ }
   else if (race !== undefined && save) throw new Error('Do not override race on a captured save; use its stored race');
 
@@ -55,12 +56,12 @@ function prepare(fixture) {
       if (s.gear[slot] && !G.unequip(s, slot)) throw new Error(`Cannot clear gear slot: ${slot}`);
       continue;
     }
-    const item = ITEMS[id] || (twoHandsActive ? G.LAB_MENDERS?.[id] : null);
+    const item = s.customItems?.[id] || ITEMS[id] || G.LAB_MENDERS?.[id];
     if (!item) throw new Error(`Unknown item: ${id}`);
-    if (rawSlot === 'secondHand' && item.slot === 'weapon' && !twoHandsActive) {
-      throw new Error('Unsupported second-hand weapon: production engine has no second-hand weapon rules');
+    if ((rawSlot === 'secondHand' || slot === 'offhand') && item.twoHanded) {
+      throw new Error(`Unsupported second-hand weapon: ${id} is two-handed`);
     }
-    const canFitInSlot = item.slot === slot || (twoHandsActive && slot === 'offhand' && (item.slot === 'weapon' || item.kind === 'mender'));
+    const canFitInSlot = item.slot === slot || (slot === 'offhand' && !item.twoHanded && (item.slot === 'weapon' || item.kind === 'mender'));
     if (!canFitInSlot) throw new Error(`${id} belongs in ${item.slot}, not ${slot}`);
     if (!s.bag.includes(id)) s.bag.push(id);
     if (!G.equip(s, id, slot)) throw new Error(`Cannot equip ${id} in ${slot}`);
@@ -107,6 +108,18 @@ function prepare(fixture) {
     if (!s.learnedAbilities.includes(id)) throw new Error(`Mastery ability is not learned: ${id}`);
     s.mastery[id] = { ...(s.mastery[id] || { marks: 0 }), rank };
   }
+  if (weaponMastery !== undefined) {
+    if (!weaponMastery || typeof weaponMastery !== 'object' || Array.isArray(weaponMastery)) throw new Error('Fixture weaponMastery must be an object');
+    G.normalizeWeaponMastery(s);
+    for (const [fam, val] of Object.entries(weaponMastery)) {
+      if (!G.WEAPON_FAMILY_IDS.includes(fam)) throw new Error(`Unknown weapon family: ${fam}`);
+      const rank = typeof val === 'number' ? val : val?.rank ?? 1;
+      const marks = typeof val === 'number' ? 0 : val?.marks ?? 0;
+      const cap = G.weaponMasteryCap(s, fam);
+      if (!Number.isInteger(rank) || rank < 1 || rank > cap) throw new Error(`Invalid mastery rank for ${fam}: ${rank} (cap ${cap})`);
+      s.weaponMastery[fam] = { rank, marks };
+    }
+  }
   const totals = G.totals(s);
   s.xp = 0;
   s.hp = totals.hp; s.mp = totals.mp; s.sp = totals.sp;
@@ -138,7 +151,11 @@ function selectAction(s, policy) {
   throw new Error(`Sustain policy has no available action: ${mainInfo.reason}`);
 }
 
-function syntheticContext(s, enemy, chapter) {
+function syntheticContext(s, enemy, chapter, postStoryEnemyObj = null) {
+  if (postStoryEnemyObj) {
+    s.story.completed = G.CHAPTERS.map(row => row.finale);
+    return { context: 'post-story curve hunt', start: now => G.startFight(s, postStoryEnemyObj, 'hunt', now) };
+  }
   const meta = G.CHAPTERS.find(row => row.id === chapter);
   if (enemy !== meta.bossId) {
     s.story.completed = G.CHAPTERS.slice(0, chapter - 1).map(row => row.finale);
@@ -208,16 +225,18 @@ export function runCell(options) {
   if (!Array.isArray(seeds) || !seeds.length || seeds.length > MAX_SEEDS || seeds.some(seed => !Number.isSafeInteger(seed))) throw new Error(`Seeds must be a non-empty array of at most ${MAX_SEEDS} safe integers`);
   if (new Set(seeds).size !== seeds.length) throw new Error('Seeds must be unique independent values');
   if (!Number.isInteger(chainLength) || chainLength < 1 || chainLength > MAX_CHAIN) throw new Error(`Chain length must be an integer from 1 to ${MAX_CHAIN}`);
-  if (!G.ENEMIES.some(row => row.id === enemy)) throw new Error(`Unknown enemy: ${enemy}`);
+  const postMatch = typeof enemy === 'string' ? enemy.match(/^post_story_(\d+)(?:_(balanced|brute|warded))?$/) : null;
+  const postStoryEnemyObj = postMatch ? G.postStoryEnemy(Number(postMatch[1]), postMatch[2] || 'balanced') : null;
+  if (!postStoryEnemyObj && !G.ENEMIES.some(row => row.id === enemy)) throw new Error(`Unknown enemy: ${enemy}`);
   if (!['strike', 'respond', 'disrupt', 'sustain'].includes(policy)) throw new Error(`Unknown policy: ${policy}`);
-  const template = prepare(fixture), chapter = G.enemyChapter(enemy);
+  const template = prepare(fixture), chapter = postStoryEnemyObj ? 5 : G.enemyChapter(enemy);
   if (chapter === null) throw new Error(`Enemy has no campaign chapter: ${enemy}`);
-  const enemyRow = G.ENEMIES.find(row => row.id === enemy), isBoss = G.CHAPTERS.find(row => row.id === chapter).bossId === enemy;
+  const enemyRow = postStoryEnemyObj || G.ENEMIES.find(row => row.id === enemy), isBoss = !postStoryEnemyObj && G.CHAPTERS.find(row => row.id === chapter).bossId === enemy;
   if (isBoss && chainLength > 1) throw new Error('Scripted bosses are one-time chapter encounters; set chainLength to 1');
-  if (template.level < enemyRow.level - 2) throw new Error(`Fixture level ${template.level} is too low for ${enemy} (requires ${enemyRow.level - 2})`);
-  const fixed = { level: template.level, xp: template.xp, points: template.points, stats: structuredClone(template.stats), mastery: structuredClone(template.mastery) };
+  if (G.effectiveLevel(template) < enemyRow.level - 2) throw new Error(`Fixture level ${G.effectiveLevel(template)} is too low for ${enemy} (requires ${enemyRow.level - 2})`);
+  const fixed = { level: template.level, realness: template.realness || 0, xp: template.xp, points: template.points, stats: structuredClone(template.stats), mastery: structuredClone(template.mastery) };
   const fixedTotals = G.totals(template);
-  const sums = { wins: 0, defeats: 0, encounters: 0, chainsCompleted: 0, exchanges: 0, expected: 0, attempted: 0, landed: 0, overkill: 0, netLost: 0, lostShare: 0, maxLostShare: 0, mend: 0, relics: 0, menders: 0, starts: { hp: 0, mp: 0, sp: 0, pluck: 0 }, actions: Object.create(null) };
+  const sums = { wins: 0, defeats: 0, encounters: 0, chainsCompleted: 0, exchanges: 0, expected: 0, attempted: 0, landed: 0, overkill: 0, netLost: 0, lostShare: 0, maxLostShare: 0, mend: 0, relics: 0, menders: 0, traits: 0, starts: { hp: 0, mp: 0, sp: 0, pluck: 0 }, actions: Object.create(null) };
   for (const seed of seeds) {
     const s = structuredClone(template);
     s.hp = fixedTotals.hp; s.mp = fixedTotals.mp; s.sp = fixedTotals.sp;
@@ -225,14 +244,14 @@ export function runCell(options) {
     const rng = mulberry(seed);
     const clock = { now: 1_000_000_000_000 + Math.abs(seed % 100000) * 100000 };
     for (let encounter = 0; encounter < chainLength; encounter++) {
-      const context = syntheticContext(s, enemy, chapter);
-      if (!context.start(clock.now)) throw new Error(`Cannot start valid ${context.context} fixture ${fixture.id || fixture.kit} against ${enemy} at level ${s.level}`);
+      const context = syntheticContext(s, enemy, chapter, postStoryEnemyObj);
+      if (!context.start(clock.now)) throw new Error(`Cannot start valid ${context.context} fixture ${fixture.id || fixture.kit} against ${enemy} at level ${G.effectiveLevel(s)}`);
       sums.encounters++; chainEncounters++;
       sums.starts.hp += s.hp; sums.starts.mp += s.mp; sums.starts.sp += s.sp; sums.starts.pluck += s.fight.pluck || 0;
       const encounterStartHp = s.hp;
       let count = 0;
       while (s.fight && count < 100) {
-        const key = selectAction(s, policy), profile = G.actionProfile(s, key, enemy);
+        const key = selectAction(s, policy), profile = G.actionProfile(s, key, enemyRow.id);
         const before = { hp: s.hp, enemyHp: s.fight.hp, fight: s.fight };
         const priorLogs = structuredClone(s.log);
         clock.now += ACTION_MS; count++;
@@ -247,7 +266,8 @@ export function runCell(options) {
         const loggedAttack = attackDamageFromLogs(addedLogs);
         const measuredOverkill = res.overkill ?? (res.defeat ? Math.max(0, loggedAttack - barrierSoakFromLogs(addedLogs) - Math.max(0, before.enemyHp)) : 0);
         sums.overkill += Math.max(0, measuredOverkill - Math.max(0, -before.enemyHp));
-        sums.mend += res.healed || 0;
+        sums.traits += res.traitHealed || 0;
+        sums.mend += (res.healed || 0) - (res.traitHealed || 0);
         sums.relics += res.relicHealed || 0;
         sums.menders += res.mendHealed || 0;
         sums.exchanges++;
@@ -281,7 +301,7 @@ export function runCell(options) {
   const wins = sums.wins, encounters = sums.encounters, exchanges = sums.exchanges;
   return {
     fixture: fixture.id || (fixture.save ? 'captured-save' : fixture.kit), enemy, policy,
-    context: isBoss ? syntheticContext(structuredClone(template), enemy, chapter).context : 'ordinary hunt',
+    context: postStoryEnemyObj ? 'post-story curve hunt' : isBoss ? syntheticContext(structuredClone(template), enemy, chapter).context : 'ordinary hunt',
     trials: seeds.length, seeds: [...seeds], chainLength: isBoss ? 1 : chainLength,
     encounters, wins, defeats: sums.defeats, chainsCompleted: sums.chainsCompleted,
     winRate: encounters ? wins / encounters : 0,
@@ -297,16 +317,16 @@ export function runCell(options) {
     healingBySource: {
       mend: encounters ? sums.mend / encounters : 0,
       relics: encounters ? sums.relics / encounters : 0,
-      menders: template.rulesPreview?.twoHands ? (encounters ? sums.menders / encounters : 0) : 'not measured',
-      traits: 'not measured'
+      menders: encounters ? sums.menders / encounters : 0,
+      traits: encounters ? sums.traits / encounters : 0
     },
-    actionCounts: sums.actions, nonMeasured: template.rulesPreview?.twoHands ? ['raceTraits', 'familyTraits'] : [...NON_MEASURED]
+    actionCounts: sums.actions, nonMeasured: [...NON_MEASURED]
   };
 }
 
 export function renderMarkdown(rows, { command }) {
   const fmt = n => n === null ? '—' : typeof n === 'number' ? round1(n).toString() : n;
-  const lines = ['# Balance simulation', '', `Command: \`${command}\``, '', 'Each seed starts one independent chain at full Stuffing, Sparkle and Bounce; within a chain those resources and relic Pluck carry forward. There is no rest or between-fight refill. The table shows average HP/MP/SP/Pluck at encounter start so carried resources are visible. Fixture XP is normalized to zero on the clone; any victory that levels the fixed fixture is rejected. Level, stats, points, and mastery are reset to fixture values after each victory; HP/MP/SP and Pluck carry remain as resolved by the engine. Chapter-one scripted boss fixtures use the valid municipal delve node; its production auto-rest is excluded only from the net Stuffing-loss metric. Later scripted bosses use valid synthetic finale contracts and are single encounters because the production contract cannot be farmed. Defeats end a chain. Seed lists and chain length are shown per row.', '', 'Damage columns distinguish the expected shared `actionProfile` estimate, engine-reported attempted damage, HP actually removed (including logged relic reflection), and overkill. Mend and relic values are realized engine heal values; chapter victory relic healing is read from the corresponding actual log receipt. Menders and race traits are listed as not measured because the engine has no implementation for them.', '', '| Fixture | Enemy / context | Policy | Seeds / chain | Encounters | Wins | Defeats | Completed chains | Win rate | Net Stuffing lost / won fight | Max lost | Avg HP/MP/SP/Pluck at start | Exchanges / encounter | Expected profile damage / exchange | Attempted / exchange | Landed / exchange | Overkill / exchange | Mend / encounter | Relics / encounter | Menders | Traits |', '|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|'];
+  const lines = ['# Balance simulation', '', `Command: \`${command}\``, '', 'Each seed starts one independent chain at full Stuffing, Sparkle and Bounce; within a chain those resources and relic Pluck carry forward. There is no rest or between-fight refill. The table shows average HP/MP/SP/Pluck at encounter start so carried resources are visible. Fixture XP is normalized to zero on the clone; any victory that levels the fixed fixture is rejected. Level, stats, points, and mastery are reset to fixture values after each victory; HP/MP/SP and Pluck carry remain as resolved by the engine. Chapter-one scripted boss fixtures use the valid municipal delve node; its production auto-rest is excluded only from the net Stuffing-loss metric. Later scripted bosses use valid synthetic finale contracts and are single encounters because the production contract cannot be farmed. Defeats end a chain. Seed lists and chain length are shown per row.', '', 'Damage columns distinguish the expected shared `actionProfile` estimate, engine-reported attempted damage, HP actually removed (including logged relic reflection), and overkill. Mend, relic and trait values are realized engine heal values; chapter victory relic healing is read from the corresponding actual log receipt. Menders are listed as not measured when twoHands is inactive; weapon family traits are not yet implemented.', '', '| Fixture | Enemy / context | Policy | Seeds / chain | Encounters | Wins | Defeats | Completed chains | Win rate | Net Stuffing lost / won fight | Max lost | Avg HP/MP/SP/Pluck at start | Exchanges / encounter | Expected profile damage / exchange | Attempted / exchange | Landed / exchange | Overkill / exchange | Mend / encounter | Relics / encounter | Menders | Traits |', '|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|'];
   for (const r of rows) lines.push(`| ${r.fixture} | ${r.enemy} (${r.context}) | ${r.policy} | ${r.trials} × ${r.chainLength} | ${r.encounters} | ${r.wins} | ${r.defeats} | ${r.chainsCompleted} | ${fmt(r.winRate * 100)}% of encounters | ${fmt(r.netStuffingLostShareOfMax === null ? null : r.netStuffingLostShareOfMax * 100)}% max (${fmt(r.netStuffingLostPerWonFight)}) | ${fmt(r.maxStuffingLostShareOfMax === null ? null : r.maxStuffingLostShareOfMax * 100)}% | ${['hp', 'mp', 'sp', 'pluck'].map(key => fmt(r.averageResourcesAtEncounterStart[key])).join('/')} | ${fmt(r.exchangesPerEncounter)} | ${fmt(r.expectedProfileDamagePerExchange)} | ${fmt(r.attemptedDamagePerExchange)} | ${fmt(r.landedDamagePerExchange)} | ${fmt(r.overkillPerExchange)} | ${fmt(r.healingBySource.mend)} | ${fmt(r.healingBySource.relics)} | ${r.healingBySource.menders} | ${r.healingBySource.traits} |`);
   for (const r of rows) lines.push('', `Seeds for ${r.fixture}/${r.enemy}/${r.policy}: ${r.seeds.join(', ')}`);
   return lines.join('\n') + '\n';
