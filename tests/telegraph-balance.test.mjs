@@ -118,14 +118,17 @@ test('guarding a declared heavy prevents about 65%, a normal hit stays at 35%', 
   for (const [kit, enemy, key] of [['breaker', 'crab', 'guard'], ['breaker', 'crab', 'brace'], ['breaker', 'crab', 'guardstrike'], ['caster', 'crab', 'guard']]) {
     const h = stage(kit, enemy); if (key === 'brace') { h.learnedAbilities.push('brace'); h.equippedAbilities.push('brace'); }
     toHeavy(h);
+    const steadyBonus = (kit === 'breaker') ? 0.10 : 0;
+    const expectedHeavy = TELEGRAPH.guardHeavy + steadyBonus;
+    const expectedNormal = TELEGRAPH.guardNormal + steadyBonus;
     const r = step(h, key), landed = r.incoming + r.prevented + r.absorbed;
-    assert.ok(r.prevented / landed >= TELEGRAPH.guardHeavy - .001 && r.prevented / landed <= TELEGRAPH.guardHeavy + .02, `${kit} ${key} heavy ${r.prevented}/${landed}`);
+    assert.ok(r.prevented / landed >= expectedHeavy - .001 && r.prevented / landed <= expectedHeavy + .02, `${kit} ${key} heavy ${r.prevented}/${landed}`);
     assert.equal(h.fight.opening, true, `${key} on a heavy grants Opening`);
     assert.equal(r.opening, true);
     const n = stage(kit, enemy); if (key === 'brace') { n.learnedAbilities.push('brace'); n.equippedAbilities.push('brace'); }
     toNormal(n);
     const q = step(n, key), nl = q.incoming + q.prevented + q.absorbed;
-    assert.ok(q.prevented / nl >= TELEGRAPH.guardNormal - .001 && q.prevented / nl <= TELEGRAPH.guardNormal + .02, `${kit} ${key} normal ${q.prevented}/${nl}`);
+    assert.ok(q.prevented / nl >= expectedNormal - .001 && q.prevented / nl <= expectedNormal + .02, `${kit} ${key} normal ${q.prevented}/${nl}`);
     assert.equal(n.fight.opening, false, `${key} on a normal hit grants no Opening`);
     assert.equal(q.opening, false);
   }

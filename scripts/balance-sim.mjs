@@ -11,19 +11,19 @@ const KITS = new Set(['breaker', 'duelist', 'caster']);
 const ACTION_MS = 700;
 const MAX_SEEDS = 10000;
 const MAX_CHAIN = 50;
-const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'save', 'rulesPreview']);
-const NON_MEASURED = ['raceTraits', 'familyTraits'];
+const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'weaponMastery', 'save', 'rulesPreview']);
+const NON_MEASURED = ['raceTraits'];
 const round1 = n => Math.round(n * 10) / 10;
 
 function prepare(fixture) {
   if (!fixture || typeof fixture !== 'object' || Array.isArray(fixture)) throw new Error('Fixture must be an object');
   for (const key of Object.keys(fixture)) {
-    if (['ranks', 'weaponRanks', 'raceTraits', 'familyTraits'].includes(key)) {
+    if (['ranks', 'weaponRanks', 'raceTraits'].includes(key)) {
       throw new Error(`${key} is not implemented; refusing to produce balance metrics for that fixture`);
     }
     if (!FIXTURE_KEYS.has(key)) throw new Error(`Unknown fixture field: ${key}`);
   }
-  const { kit = 'breaker', level, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], save, rulesPreview } = fixture;
+  const { kit = 'breaker', level, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], weaponMastery, save, rulesPreview } = fixture;
   if (save !== undefined && Object.hasOwn(fixture, 'kit')) throw new Error('Captured-save fixtures cannot also specify kit');
   if (!KITS.has(kit) && !save) throw new Error(`Unknown kit: ${kit}`);
   if (level !== undefined && (!Number.isInteger(level) || level < 1 || level > G.LEVEL_CAP)) throw new Error(`Fixture level must be an integer from 1 to ${G.LEVEL_CAP}`);
@@ -102,6 +102,18 @@ function prepare(fixture) {
     if (!Number.isInteger(rank) || rank < 1 || rank > 3) throw new Error(`Invalid mastery rank for ${id}`);
     if (!s.learnedAbilities.includes(id)) throw new Error(`Mastery ability is not learned: ${id}`);
     s.mastery[id] = { ...(s.mastery[id] || { marks: 0 }), rank };
+  }
+  if (weaponMastery !== undefined) {
+    if (!weaponMastery || typeof weaponMastery !== 'object' || Array.isArray(weaponMastery)) throw new Error('Fixture weaponMastery must be an object');
+    G.normalizeWeaponMastery(s);
+    for (const [fam, val] of Object.entries(weaponMastery)) {
+      if (!G.WEAPON_FAMILY_IDS.includes(fam)) throw new Error(`Unknown weapon family: ${fam}`);
+      const rank = typeof val === 'number' ? val : val?.rank ?? 1;
+      const marks = typeof val === 'number' ? 0 : val?.marks ?? 0;
+      const cap = G.weaponMasteryCap(s, fam);
+      if (!Number.isInteger(rank) || rank < 1 || rank > cap) throw new Error(`Invalid mastery rank for ${fam}: ${rank} (cap ${cap})`);
+      s.weaponMastery[fam] = { rank, marks };
+    }
   }
   const totals = G.totals(s);
   s.xp = 0;

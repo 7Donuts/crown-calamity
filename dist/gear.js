@@ -492,7 +492,10 @@ const clone = x => JSON.parse(JSON.stringify(x));
 function getItem(s, id) { return ITEMS[id] || (s?.rulesPreview?.twoHands ? LAB_MENDERS[id] : null) || LAB_MENDERS[id] || null; }
 function canFit(item,slot,s){
   if (!item) return false;
-  if (slot === 'offhand' && item.slot === 'weapon' && !item.twoHanded) return true;
+  if (slot === 'offhand' && item.slot === 'weapon' && !item.twoHanded) {
+    if (item.family === 'spears') return false;
+    return true;
+  }
   if (slot === 'offhand' && item.kind === 'mender') return true;
   return slotsFor(item).includes(slot);
 }
@@ -539,7 +542,7 @@ export function resolveItem(s,id){const item=effectiveItem(s,id);return item?{..
 export function slotChoices(s,id){
   const item=getItem(s,id);if(!item||!owned(s,id))return [];
   let slots=slotsFor(item);
-  if(item.slot==='weapon'&&!item.twoHanded&&!slots.includes('offhand'))slots=[...slots,'offhand'];
+  if(item.slot==='weapon'&&!item.twoHanded&&item.family!=='spears'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   if(item.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   return slots.filter(slot=>!(slot==='offhand'&&getItem(s,s.gear?.weapon)?.twoHanded));
 }
@@ -574,7 +577,7 @@ export function buyItem(s,id){
 export function buyAndEquipPreview(s,id,targetSlot){
   const purchase=buyPreview(s,id), item=getItem(s,id);
   let slots=slotsFor(item);
-  if(item?.slot==='weapon'&&!item?.twoHanded&&!slots.includes('offhand'))slots=[...slots,'offhand'];
+  if(item?.slot==='weapon'&&!item?.twoHanded&&item?.family!=='spears'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   if(item?.kind==='mender'&&!slots.includes('offhand'))slots=[...slots,'offhand'];
   slots=slots.filter(slot=>!(slot==='offhand'&&getItem(s,s?.gear?.weapon)?.twoHanded));
   const selectedSlot=targetSlot||slots.find(slot=>!s?.gear?.[slot])||slots[0]||null;

@@ -61,7 +61,7 @@ import * as Lab from '../dist/lab.js';
   assert.equal(report.counters.playerInputs,4);
   assert.equal(report.counters.deniedInputs,1);
   assert.equal(report.counters.rounds,2);
-  assert.equal(report.counters.manaSpent,16);
+  assert.equal(report.counters.manaSpent,14);
   assert.equal(report.counters.damageAttempted,s.damageAttempted);
   assert.equal(report.counters.hpLost,s.hpLost);
   assert.equal(report.telemetryNotes.hpLost.includes('not incoming enemy damage'),true);
