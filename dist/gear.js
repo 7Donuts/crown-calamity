@@ -475,7 +475,10 @@ function getItem(s, id) { return ITEMS[id] || (s?.rulesPreview?.twoHands ? LAB_M
 function canFit(item,slot,s){
   if (!item) return false;
   if (s?.rulesPreview?.twoHands) {
-    if (slot === 'offhand' && item.slot === 'weapon' && !item.twoHanded) return true;
+    if (slot === 'offhand' && item.slot === 'weapon' && !item.twoHanded) {
+      if (item.family === 'spears') return false;
+      return true;
+    }
     if (slot === 'offhand' && item.kind === 'mender') return true;
   }
   return slotsFor(item).includes(slot);

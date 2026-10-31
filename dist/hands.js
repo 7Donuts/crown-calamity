@@ -2,6 +2,7 @@
 // No DOM, no storage, no clock. Calculations are shared between engine, inspector, and lab.
 import { ITEMS, effectiveItem } from './gear.js';
 import { DAMAGING_ACTIONS, GUARD_ACTIONS } from './telegraph.js';
+import { weaponMasteryRank, secondHandStrikeShare, pinpointCritBonus, batonsSecondHandMend } from './weapon-families.js';
 
 export const SECOND_HAND_KINDS = Object.freeze(['weapon', 'focus', 'shield', 'mender', 'none']);
 
@@ -19,6 +20,7 @@ export function classifySecondHand(item) {
   const obj = typeof item === 'string' ? ITEMS[item] : item;
   if (!obj) return 'none';
   if (obj.twoHanded) return 'none';
+  if (obj.family === 'spears') return 'none';
   if (obj.kind === 'mender' || (typeof obj.mend === 'number' && obj.mend > 0)) {
     return 'mender';
   }
@@ -79,12 +81,14 @@ export function secondHandProfile(s, enemy, key, t = null, intent = null, extraM
   });
 
   let channel, power, accuracy, rawStandalone, raw, defense;
+  const offRank = weaponMasteryRank(s, offItem.family);
+  const share = secondHandStrikeShare(offItem.family, offRank, kind);
   if (kind === 'focus') {
     channel = 'arcane';
     power = totals.spellPower;
     accuracy = totals.spellAcc;
     rawStandalone = (offItem.base || 0) + (offItem.spellBase || 0) + 0.9 * power + 4;
-    raw = rawStandalone * 0.30;
+    raw = rawStandalone * share;
     defense = enemy.ward || 0;
     if (intent?.warded) defense += 25;
   } else {
@@ -92,7 +96,7 @@ export function secondHandProfile(s, enemy, key, t = null, intent = null, extraM
     power = offItem.channel === 'precision' ? totals.precisionPower : totals.heavyPower;
     accuracy = totals.physicalAcc;
     rawStandalone = (offItem.base || 0) + 0.9 * power + 4;
-    raw = rawStandalone * 0.35;
+    raw = rawStandalone * share;
     defense = enemy.armor || 0;
     if (intent?.guarded) raw *= 0.65;
   }
@@ -103,7 +107,10 @@ export function secondHandProfile(s, enemy, key, t = null, intent = null, extraM
   const reduced = raw * (1 - mit);
   const evasion = 18 + (enemy.level || 1) * 3;
   const solidHit = offhandHitChance(accuracy, evasion);
-  const critChance = totals.critChance ?? 0.05;
+  let critChance = totals.critChance ?? 0.05;
+  if (offItem.family === 'needles') {
+    critChance = Math.min(0.25, critChance + pinpointCritBonus(s, offItem));
+  }
   const critMultiplier = totals.critMultiplier ?? 1.25;
 
   const normal = Math.max(1, Math.floor(reduced));
@@ -143,6 +150,15 @@ export function secondHandVerbContribution(s, key, enemy, t = null, intent = nul
     if (DAMAGING_ACTIONS.includes(key)) {
       offhand = secondHandProfile(s, enemy, key, t, intent, extraMultiplier);
     }
+    if (offItem.family === 'batons') {
+      if (DAMAGING_ACTIONS.includes(key)) {
+        mend = batonsSecondHandMend(s, offItem, 'strike');
+      } else if (GUARD_ACTIONS.includes(key)) {
+        mend = batonsSecondHandMend(s, offItem, 'guard');
+      } else if (key === 'recover') {
+        mend = batonsSecondHandMend(s, offItem, 'recover');
+      }
+    }
   } else if (kind === 'mender') {
     if (DAMAGING_ACTIONS.includes(key)) {
       mend = menderMendAmount(s, offItem, 'strike');
@@ -173,7 +189,14 @@ export function secondHandActionHint(s, key) {
   const kind = classifySecondHand(offItem);
   if (kind === 'weapon') {
     if (DAMAGING_ACTIONS.includes(key)) return '+ off-hand strike';
+    if (offItem.family === 'foils' && GUARD_ACTIONS.includes(key)) return '+ riposte on block';
   } else if (kind === 'focus') {
+    if (offItem.family === 'batons') {
+      if (DAMAGING_ACTIONS.includes(key)) return '+ off-hand bolt & mend';
+      if (GUARD_ACTIONS.includes(key)) return '+ mend on block';
+      if (key === 'recover') return '+ mend';
+    }
+    if (offItem.family === 'scepters' && GUARD_ACTIONS.includes(key)) return '+ barrier on block';
     if (DAMAGING_ACTIONS.includes(key)) return '+ off-hand bolt';
   } else if (kind === 'mender') {
     if (DAMAGING_ACTIONS.includes(key)) return '+ mend';

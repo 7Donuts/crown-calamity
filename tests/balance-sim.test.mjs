@@ -98,7 +98,7 @@ test('finish heals count only realized recovery and campaign snapshots stay unch
 
 test('full-health Fang and overkill cannot create healing; victory relic heals are counted once', () => {
   const fullHealth = runCell({ fixture: { kit: 'breaker', level: 50, race: 'wolf', gear: { mainHand: 'velvetBumper' }, relics: ['feltFang'] }, enemy: 'rats', policy: 'strike', seeds: [88], chainLength: 1 });
-  assert.equal(fullHealth.overkillPerExchange, 434);
+  assert.equal(fullHealth.overkillPerExchange, 435);
   assert.equal(fullHealth.healingBySource.relics, 0);
   const heart = runCell({ fixture: { kit: 'breaker', level: 1, race: 'wolf', relics: ['darnedPatch', 'patchworkHeart'] }, enemy: 'rats', policy: 'strike', seeds: [41, 42], chainLength: 3 });
   const cocoa = runCell({ fixture: { kit: 'breaker', level: 1, race: 'wolf', relics: ['darnedPatch', 'cocoaThimble'] }, enemy: 'rats', policy: 'strike', seeds: [41, 42], chainLength: 3 });
@@ -132,6 +132,13 @@ test('scripted bosses start only through their valid chapter contract fixture', 
 test('balance simulator rejects invalid fixture and policy inputs', () => {
   assert.throws(() => runCell({ fixture: { id: 'bad', kit: 'missing', level: 1, race: 'bear' }, enemy: 'rats', policy: 'strike', seeds: [1] }), /unknown kit/i);
   assert.throws(() => runCell({ fixture: { id: 'ok', kit: 'breaker', level: 1, race: 'bear' }, enemy: 'rats', policy: 'skip', seeds: [1] }), /unknown policy/i);
+});
+
+test('balance simulator supports weaponMastery fixture and applies trait scaling', () => {
+  const rank1 = runCell({ fixture: { kit: 'breaker', level: 1, race: 'wolf', gear: { mainHand: 'teacupMace' }, weaponMastery: { mauls: 1 } }, enemy: 'rats', policy: 'strike', seeds: [1], chainLength: 1 });
+  const rank3 = runCell({ fixture: { kit: 'breaker', level: 1, race: 'wolf', gear: { mainHand: 'teacupMace' }, weaponMastery: { mauls: 3 } }, enemy: 'rats', policy: 'strike', seeds: [1], chainLength: 1 });
+  assert.ok(rank3.attemptedDamagePerExchange >= rank1.attemptedDamagePerExchange, 'higher mastery rank improves damage output');
+  assert.throws(() => runCell({ fixture: { kit: 'breaker', level: 1, race: 'bear', weaponMastery: { mauls: 4 } }, enemy: 'rats', policy: 'strike', seeds: [1] }), /invalid mastery rank/i);
 });
 
 
