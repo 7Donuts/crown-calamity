@@ -30,7 +30,11 @@ function actionButton(action, label, className = '', disabled = false) {
 }
 
 function enemyFor(state, id = state?.fight?.enemy ?? state?.last?.enemy) {
-  return G.ENEMIES.find(enemy => enemy.id === id) || null;
+  return (state?.fight?.enemyData?.id === id ? state.fight.enemyData : null)
+    || (state?.last?.enemyData?.id === id ? state.last.enemyData : null)
+    || G.ENEMIES.find(enemy => enemy.id === id)
+    || G.trialEnemy?.(state, id)
+    || null;
 }
 
 function entryMarkup(entry) {

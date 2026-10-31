@@ -95,9 +95,10 @@ test('current-main save keeps owned expensive gear, resources, paid mods and ros
 
   const loaded = G.loadSave(JSON.stringify(save));
   assert.ok(loaded);
-  for (const key of ['coins','hp','mp','sp','level','xp','levelPointsPaid','points','stats','bag','gear','itemMods','materials','story']) {
+  for (const key of ['coins','hp','mp','sp','level','xp','levelPointsPaid','points','stats','bag','itemMods','materials','story']) {
     assert.deepEqual(loaded[key], save[key], `${key} remains unchanged after import`);
   }
+  assert.deepEqual(loaded.gear, { ...save.gear, relic3: null }, 'gear remains unchanged after import with locked relic3');
   assert.deepEqual(loaded.relicSockets, save.relicSockets, 'paid relic licenses and socket state remain intact');
   assert.equal(loaded.coins, 42017, 'lower current catalog prices issue no refund');
 
@@ -108,9 +109,10 @@ test('current-main save keeps owned expensive gear, resources, paid mods and ros
   for (const original of roster.characters) {
     const imported = loadedRoster.characters.find(character => character.id === original.id);
     assert.ok(imported, `${original.id} remains in the roster`);
-    for (const key of ['name','level','xp','levelPointsPaid','points','stats','coins','hp','mp','sp','bag','gear','itemMods','materials','story']) {
+    for (const key of ['name','level','xp','levelPointsPaid','points','stats','coins','hp','mp','sp','bag','itemMods','materials','story']) {
       assert.deepEqual(imported.state[key], original.state[key], `${original.id} ${key} remains unchanged`);
     }
+    assert.deepEqual(imported.state.gear, { ...original.state.gear, relic3: null }, `${original.id} gear remains unchanged`);
     assert.deepEqual(imported.state.relicSockets, original.state.relicSockets, `${original.id} paid licenses remain intact`);
   }
 });

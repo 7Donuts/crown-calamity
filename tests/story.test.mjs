@@ -18,7 +18,7 @@ function finishDrainage(s,choice='coins'){
 
 test('catalog and overview expose a staged authored introduction',()=>{
   const s=make();normalizeStory(s);
-  assert.equal(Object.keys(STORY_CONTRACTS).length,29);
+  assert.equal(Object.keys(STORY_CONTRACTS).length,32);
   assert.equal(storyState(s).stage,0);assert.equal(storyState(s).stageLabel,'Meet Mara at the lower stair');
   assert.deepEqual(availableContracts(s),[]);
   assert.equal(storyAction(s,'meet_mara').action,'meet_mara');

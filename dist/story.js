@@ -1,9 +1,10 @@
 // Authored contract progression. The engine is responsible for calling
 // recordStoryEvent only from real victory/delve actions and granting receipt XP.
 import { CHAPTERS, chapterUnlocked, currentChapter, campaignStatus } from './campaign.js';
-import { effectiveLevel } from './growth.js';
+import { effectiveLevel, REALNESS_TRIAL_IDS } from './growth.js';
 const MAJOR_IDS=['drainage_inspection','permit_with_teeth','bent_gate','someone_expendable','municipal_works'];
-const ENEMY_IDS=new Set(CHAPTERS.flatMap(chapter=>[...chapter.enemyIds,chapter.bossId]));
+export const REALNESS_TRIAL_CONTRACTS=Object.freeze(['stitch_test','memory_test','real_test']);
+const ENEMY_IDS=new Set([...CHAPTERS.flatMap(chapter=>[...chapter.enemyIds,chapter.bossId]),...REALNESS_TRIAL_IDS]);
 const req=(type,id,label,min=1)=>({type,id,label,min});
 const win=(id,label,enemy,target=1)=>({id,label,source:'victories',enemy,target});
 const act=(id,label,action)=>({id,label,source:'actions',action,target:1});
@@ -186,6 +187,27 @@ export const STORY_CONTRACTS=Object.freeze({
     text:'The fair’s ringmaster has kept the lanterns burning long after every guest went home. Light the velvet lantern together, face the final act, and choose when this lovely night is ready to end.',
     requirements:[req('completed','fair_last_act','Prepare the final parade')],objectives:[act('velvet_lantern','Light the velvet lantern','fair_lantern_lit'),win('final_act','End the final act','fair_boss',1)],
     reward:{xp:4600,coins:1400,materials:{'Velvet tickets':5}}
+  },
+  stitch_test:{
+    id:'stitch_test',chapterId:5,kind:'trial',title:'The Stitch Test',employer:'Lulu Lanternloop',chapter:'Becoming Real',
+    text:'Stage 1 of Becoming Real (Telegraph test): prove your seams hold against The Heavy Seam-Tester’s telegraphed heavy strikes.',
+    requirements:[req('completed','fair_finale','Complete When the Last Lantern Fades'),req('displayLevel','50','Reach level 50 of your current Realness rank',50)],
+    objectives:[win('stitch_trial','Defeat The Heavy Seam-Tester','trial_stitch',1)],
+    reward:{xp:0,coins:200,materials:{}}
+  },
+  memory_test:{
+    id:'memory_test',chapterId:5,kind:'trial',title:'The Memory Test',employer:'Lulu Lanternloop',chapter:'Becoming Real',
+    text:'Stage 2 of Becoming Real (Endurance test): win two consecutive fights against the Unclaimed Memory Keeper without resting between them.',
+    requirements:[req('completed','stitch_test','Complete The Stitch Test'),req('displayLevel','50','Reach level 50 of your current Realness rank',50)],
+    objectives:[win('memory_trial','Win two consecutive Memory Test fights without resting between them','trial_memory',2)],
+    reward:{xp:0,coins:300,materials:{}}
+  },
+  real_test:{
+    id:'real_test',chapterId:5,kind:'trial',title:'The Real Test',employer:'Lulu Lanternloop',chapter:'Becoming Real',
+    text:'Stage 3 of Becoming Real (Objective test): overcome The Realness Examiner and its second-act ward shift to qualify for Becoming Real.',
+    requirements:[req('completed','memory_test','Complete The Memory Test'),req('displayLevel','50','Reach level 50 of your current Realness rank',50)],
+    objectives:[win('real_trial','Defeat The Realness Examiner','trial_real',1)],
+    reward:{xp:0,coins:500,materials:{}}
   }
 });
 
@@ -199,7 +221,7 @@ function complete(s,id){return s.story.completed.includes(id);}
 function eventMet(s,id,min=1){return count(s.story.events.actions,id)>=min;}
 function requirementRows(s,id){
  const c=STORY_CONTRACTS[id],st=s.story,legacy=st.legacyReady.includes(id),el=effectiveLevel(s);
- return c.requirements.map(r=>{let met=false;if(r.type==='completed')met=complete(s,r.id);else if(r.type==='level')met=el>=r.min;else if(r.type==='chapter')met=chapterUnlocked(s,Number(r.id));else if(r.type==='action')met=eventMet(s,r.id,r.min);if(legacy)met=true;return {id:r.id,type:r.type,label:r.label,required:r.min||1,current:r.type==='level'?el:r.type==='chapter'?(chapterUnlocked(s,Number(r.id))?1:0):r.type==='completed'?(complete(s,r.id)?1:0):count(st.events.actions,r.id),met};});
+ return c.requirements.map(r=>{let met=false;if(r.type==='completed')met=complete(s,r.id);else if(r.type==='level')met=el>=r.min;else if(r.type==='displayLevel')met=(s.level||1)>=r.min;else if(r.type==='chapter')met=chapterUnlocked(s,Number(r.id));else if(r.type==='action')met=eventMet(s,r.id,r.min);if(legacy)met=true;return {id:r.id,type:r.type,label:r.label,required:r.min||1,current:r.type==='level'?el:r.type==='displayLevel'?(s.level||1):r.type==='chapter'?(chapterUnlocked(s,Number(r.id))?1:0):r.type==='completed'?(complete(s,r.id)?1:0):count(st.events.actions,r.id),met};});
 }
 function baseline(s,id,group,key){return count(s.story.baselines?.[id]?.[group],key);}
 function objectiveValue(s,id,obj){
@@ -341,4 +363,20 @@ export function claimContract(s,id,choice){
  if(c.majorIndex!==undefined&&s.pending===c.majorIndex)s.pending=null;
  const unlockedChapter=chapter?.finale===id&&chapterId<5&&!nextWasUnlocked&&chapterUnlocked(s,chapterId+1)?chapterId+1:null;
  return {id,xp,coins,materials,choice:selectedChoice,majorIndex:c.majorIndex??null,chapterId,storyAdvance:{chapter:c.chapter,chapterId,unlockedChapter,stage:s.story.introStage,majorIndex:c.majorIndex??null,branch}};
+}
+export function resetMemoryTrialOnRest(s){
+ if(!s)return false;ensureStory(s);const st=s.story;
+ if(!st.accepted.includes('memory_test')||st.completed.includes('memory_test'))return false;
+ const obj=STORY_CONTRACTS.memory_test.objectives[0];
+ if(objectiveValue(s,'memory_test',obj)>=obj.target)return false;
+ st.baselines.memory_test=st.baselines.memory_test||{victories:{},actions:{}};
+ st.baselines.memory_test.victories={...(st.baselines.memory_test.victories||{}),trial_memory:count(st.events.victories,'trial_memory')};
+ return true;
+}
+export function resetRealnessTrials(s){
+ if(!s)return false;ensureStory(s);const st=s.story;
+ st.accepted=st.accepted.filter(id=>!REALNESS_TRIAL_CONTRACTS.includes(id));
+ st.completed=st.completed.filter(id=>!REALNESS_TRIAL_CONTRACTS.includes(id));
+ for(const id of REALNESS_TRIAL_CONTRACTS)delete st.baselines[id];
+ return true;
 }

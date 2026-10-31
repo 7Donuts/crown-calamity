@@ -90,6 +90,11 @@ export const ENGINE_EFFECTS = Object.freeze({
 export const ENGINE_RELIC_IDS = Object.freeze(Object.keys(ENGINE_EFFECTS));
 
 export const clampInt = (n, lo, hi) => Math.max(lo, Math.min(hi, Math.floor(Number.isFinite(n) ? n : 0)));
+export const effectivePluckCap = s => {
+  const picks = Array.isArray(s?.realnessChoices) ? s.realnessChoices.filter(x => x === 'pluckCap').length : 0;
+  return PLUCK_CAP + 2 * Math.min(2, picks);
+};
+export const pluckCapFor = f => Number.isInteger(f?.pluckCap) && f.pluckCap >= PLUCK_CAP ? Math.min(12, f.pluckCap) : PLUCK_CAP;
 // Echo strength rounds to whole Pluck: a half-strength echo of a 1-Pluck trigger still counts.
 export const scaled = (base, k) => k > 0 ? Math.max(0, Math.round(base * k)) : 0;
 const safeRank = (rank, id) => typeof rank === 'function' ? rank(id) : 1;
@@ -102,7 +107,8 @@ export function engineActive(strength, raceId = null) {
 /** Adds Pluck up to the cap and records the source for the exchange summary. Returns the amount added. */
 export function gainPluck(f, amount, source, notes) {
   if (!f || !(amount > 0)) return 0;
-  const before = clampInt(f.pluck, 0, PLUCK_CAP), after = Math.min(PLUCK_CAP, before + amount), added = after - before;
+  const cap = pluckCapFor(f);
+  const before = clampInt(f.pluck, 0, cap), after = Math.min(cap, before + amount), added = after - before;
   f.pluck = after;
   if (added > 0 && notes) notes.push(`+${added} Pluck (${ENGINE_EFFECTS[source]?.name || source})`);
   return added;
@@ -111,7 +117,9 @@ export function gainPluck(f, amount, source, notes) {
 /** Fight start: the Picnic Tin's carried Pluck arrives, and the tin empties. */
 export function startFightHook(s, f, strength, notes, rank) {
   f.pluck = 0; f.rattled = false; f.locketUsed = false;
-  const carried = clampInt(s.pluckCarry, 0, PLUCK_CAP);
+  const cap = effectivePluckCap(s);
+  f.pluckCap = cap;
+  const carried = clampInt(s.pluckCarry, 0, cap);
   s.pluckCarry = 0;
   if (carried > 0 && strength('picnicTin') > 0) {
     f.pluck = carried;
@@ -124,14 +132,14 @@ export function damageMultiplier(f, strength, rank) {
   const k = strength('encoreRibbon');
   if (!(k > 0) || !f) return 1;
   const cap = safeRank(rank, 'encoreRibbon') >= 3 ? 0.30 : ENCORE_CAP;
-  return 1 + Math.min(cap, ENCORE_PER_PLUCK * clampInt(f.pluck, 0, PLUCK_CAP) * k);
+  return 1 + Math.min(cap, ENCORE_PER_PLUCK * clampInt(f.pluck, 0, pluckCapFor(f)) * k);
 }
 
 /** Fang lifesteal rate before the per-exchange cap, for previews and the hit hook. */
 export function lifestealRate(f, strength, rank) {
   const k = strength('feltFang');
   if (!(k > 0)) return 0;
-  return (FANG_BASE + FANG_PER_PLUCK * clampInt(f?.pluck, 0, PLUCK_CAP)) * k;
+  return (FANG_BASE + FANG_PER_PLUCK * clampInt(f?.pluck, 0, pluckCapFor(f))) * k;
 }
 
 /**
@@ -211,13 +219,14 @@ export function afterEnemyResponse(f, ctx, strength, notes, rank) {
 
 /** Victory: Cocoa heals from held Pluck, the Picnic Tin keeps some for the next fight. Neither spends Pluck. */
 export function onVictory(s, f, ctx, strength, notes, rank) {
-  const pluck = clampInt(f?.pluck, 0, PLUCK_CAP);
+  const cap = pluckCapFor(f);
+  const pluck = clampInt(f?.pluck, 0, cap);
   const cocoa = strength('cocoaThimble');
   const cocoaRate = safeRank(rank, 'cocoaThimble') >= 3 ? 0.05 : COCOA_PER_PLUCK;
   const heal = cocoa > 0 && pluck > 0 ? Math.floor(ctx.maxHp * cocoaRate * pluck * cocoa) : 0;
   const tin = strength('picnicTin');
   const carryCap = safeRank(rank, 'picnicTin') >= 3 ? 4 : PLUCK_CARRY_CAP;
-  const carry = tin > 0 ? Math.min(pluck, scaled(carryCap, tin), PLUCK_CAP) : 0;
+  const carry = tin > 0 ? Math.min(pluck, scaled(carryCap, tin), cap) : 0;
   s.pluckCarry = carry;
   if (carry > 0) notes?.push(`Picnic tin keeps ${carry} Pluck for your next fight`);
   return { heal };
@@ -229,9 +238,11 @@ export function clearCarry(s) { if (s) s.pluckCarry = 0; }
 /** Normalizes saved engine state. Fight fields are optional; older saves load with an empty engine. */
 export function normalizeEngineState(s) {
   if (!s || typeof s !== 'object') return s;
-  s.pluckCarry = clampInt(s.pluckCarry, 0, PLUCK_CAP);
+  const cap = effectivePluckCap(s);
+  s.pluckCarry = clampInt(s.pluckCarry, 0, cap);
   if (s.fight && typeof s.fight === 'object') {
-    s.fight.pluck = clampInt(s.fight.pluck, 0, PLUCK_CAP);
+    s.fight.pluckCap = cap;
+    s.fight.pluck = clampInt(s.fight.pluck, 0, cap);
     s.fight.rattled = s.fight.rattled === true;
     s.fight.locketUsed = s.fight.locketUsed === true;
   }

@@ -55,9 +55,130 @@ export function effectiveLevel(s, maybeRealness) {
 export function normalizeRealness(s) {
   if (!s || typeof s !== 'object') return s;
   s.realness = Number.isInteger(s.realness) && s.realness >= 0 ? s.realness : 0;
-  s.realnessChoices = Array.isArray(s.realnessChoices) ? [...s.realnessChoices] : [];
+  s.realnessChoices = Array.isArray(s.realnessChoices)
+    ? s.realnessChoices.filter(id => Object.hasOwn(REALNESS_CHOICES, id))
+    : [];
   s.realnessPick = s.realnessPick ?? null;
   return s;
+}
+
+export function realnessChoiceCount(s, id) {
+  if (!s || !Array.isArray(s.realnessChoices)) return 0;
+  return s.realnessChoices.filter(c => c === id).length;
+}
+
+export function canPickRealnessChoice(s, id) {
+  const def = REALNESS_CHOICES[id];
+  if (!def) return false;
+  return realnessChoiceCount(s, id) < def.limit;
+}
+
+export function raceRefinementMultiplier(s) {
+  return 1 + 0.25 * Math.min(2, realnessChoiceCount(s, 'racialRefinement'));
+}
+
+export function abilityMasteryCap(s) {
+  const r = Math.max(0, Math.floor(Number(s?.realness) || 0));
+  return 3 + r + realnessChoiceCount(s, 'practicedHands');
+}
+
+export const REALNESS_TRIAL_IDS = Object.freeze(['trial_stitch', 'trial_memory', 'trial_real']);
+
+/**
+ * Generates one of the three Becoming Real trial enemies scaled to E = 50 * (R + 1).
+ * Reuses approved sprites ('crab', 'attic_hugger', 'fair_boss') per art debt register.
+ */
+export function trialEnemy(sOrRealness, id) {
+  if (!REALNESS_TRIAL_IDS.includes(id)) return null;
+  const r = typeof sOrRealness === 'object' && sOrRealness !== null
+    ? Math.max(0, Math.floor(Number(sOrRealness.realness) || 0))
+    : Math.max(0, Math.floor(Number(sOrRealness) || 0));
+  const E = 50 * (r + 1);
+  if (id === 'trial_stitch') {
+    const stats = postStoryEnemyStats(E, 'brute');
+    return {
+      id: 'trial_stitch',
+      name: 'The Heavy Seam-Tester',
+      level: E,
+      hp: stats.hp,
+      damage: stats.damage,
+      armor: stats.armor,
+      ward: stats.ward,
+      coins: stats.coins,
+      material: 'Velvet tickets',
+      blurb: 'A relentless pressing-frame that tests whether your stitches hold under repeated heavy blows.',
+      location: 'The Stitch Trial Ring',
+      pattern: ['Tension pull', 'Heavy stitch', 'Pasteboard press'],
+      heavy: 1,
+      art: 'crab',
+      trial: true
+    };
+  }
+  if (id === 'trial_memory') {
+    const stats = postStoryEnemyStats(E, 'balanced');
+    return {
+      id: 'trial_memory',
+      name: 'Unclaimed Memory Keeper',
+      level: E,
+      hp: stats.hp,
+      damage: stats.damage,
+      armor: stats.armor,
+      ward: stats.ward,
+      coins: stats.coins,
+      material: 'Velvet tickets',
+      blurb: 'An endurance trial: win two consecutive Memory Test fights without resting between them.',
+      location: 'The Memory Shelf',
+      pattern: ['Memory press', 'Thread hold', 'Deep crease'],
+      heavy: 2,
+      art: 'attic_hugger',
+      trial: true
+    };
+  }
+  const stats = postStoryEnemyStats(E, 'warded');
+  return {
+    id: 'trial_real',
+    name: 'The Realness Examiner',
+    level: E,
+    hp: Math.round(stats.hp * 1.35),
+    damage: Math.round(stats.damage * 1.10),
+    armor: stats.armor,
+    ward: stats.ward,
+    coins: stats.coins * 2,
+    material: 'Velvet star',
+    blurb: 'The final examiner of the Velvet Night Fair. Below half Stuffing, its second act shifts the ward and opens a window.',
+    location: 'The Velvet Lantern Stage',
+    pattern: ['Velvet call', 'Unmaking wave', 'Final curtain'],
+    heavy: 1,
+    art: 'fair_boss',
+    trial: true
+  };
+}
+
+/**
+ * Interim post-story hunting ("Echoes of the Underfoot", CP3 approved):
+ * Scales an existing Underfoot ordinary enemy to the character's effective level E.
+ */
+export function echoUnderfootEnemy(s, baseEnemy) {
+  if (!s || (s.realness || 0) < 1 || !baseEnemy) return null;
+  const E = effectiveLevel(s);
+  const archetype = baseEnemy.armor >= (baseEnemy.ward || 1) * 1.35
+    ? 'brute'
+    : (baseEnemy.ward || 0) >= (baseEnemy.armor || 1) * 1.35
+      ? 'warded'
+      : 'balanced';
+  const stats = postStoryEnemyStats(E, archetype);
+  return {
+    ...baseEnemy,
+    name: `Echo of ${baseEnemy.name}`,
+    level: E,
+    hp: stats.hp,
+    damage: stats.damage,
+    armor: stats.armor,
+    ward: stats.ward,
+    coins: stats.coins,
+    xp: stats.xp,
+    echoUnderfoot: true
+  };
 }
 
 /**
