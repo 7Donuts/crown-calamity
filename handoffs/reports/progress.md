@@ -17,7 +17,7 @@ Updated 30 October 2026. Milestone G1 (`G1-A`, `G1-B`, `G1-C`) is complete and v
 | G2-6 integrated balance | Complete; 40-seed × 10-fight cross-system B0 matrix (`design/46`–`49`) and independent review PASS | `g2-6-integrated-balance.md`, `g2-6-review.md` |
 | G3-1 effective level & curves | Complete; `dist/growth.js`, `effectiveLevel(s)` audit across all scaling sites, and independent review PASS | `g3-1-effective-level.md`, `g3-1-review.md` |
 | G3-2 becoming real & relic3 | Complete; 3-stage trials (`stitch_test`, `memory_test`, `real_test`), `becomeReal` ascension, 5 `REALNESS_CHOICES`, `relic3` 11th core slot, Echoes of the Underfoot, and independent review PASS | `g3-2-becoming-real.md`, `g3-2-review.md` |
-| G3-3 post-story balance & CP4 | In progress | Post-story balance fit at E60/100/200/500 and CP4 package (`G3-3`) |
+| G3-3 post-story balance & CP4 | Complete; fitted `xpNeeded` (`100+5R`) and enemy hit (`35+2.6E`) across 40-seed E60/100/200/500 B0 matrix, CP4 package, and independent review PASS | `g3-3-post-story-balance.md`, `g3-3-review.md` |
 
 ## Review history and correction
 

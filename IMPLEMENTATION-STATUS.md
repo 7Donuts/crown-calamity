@@ -13,6 +13,8 @@ This snapshot was wrapped up at the owner's request. Feature wiring and regressi
 | Interface | Chapter travel, regional hunting lists and finale actions, focused compact shop filters, preserved sidegrades, regional Sewing Kit recipe grouping, and existing workshop selection memory. |
 | Art and records | Twenty generated regional enemy sprites, measured crops and provenance; new field-note pages. Existing generated equipment families are reused. |
 | **G1-A Earned Walkthrough** | **Completed & Verified**: 40-seed campaign matrix passes acceptance gate (Seeds 1–3: 9/9 100%; 40 seeds: Breaker 39/40, Duelist 40/40, Caster 34/40). Zero ledger residuals, legal points, exact 5 receipts, no chapter-ceiling weapons. Tier-10 continuation median 10.42h (@2.5s with sales) directly centers 8–12h aspiration. Documented in [`handoffs/reports/g1a-walkthrough.md`](handoffs/reports/g1a-walkthrough.md). |
+| **Milestone G2 (Combat Identity)** | **Completed & Verified**: Two Hands (`design/46`, 10 campaign menders, 164 total catalog items), Weapon Families & Mastery (`design/47`, 9 families), Plush Race Identity (`design/48`, 5 races), Relic Engine v2 (`design/49`, partial echoes, 19 engine relics, ranks 1–3), and G2-6 integrated 40-seed × 10-fight B0 matrix (`handoffs/reports/g2-6-integrated-balance.md`). |
+| **Milestone G3 (Becoming Real & CP4 Fit)** | **Completed & Verified**: Effective level (`E = 50R + level`), Becoming Real 3-stage trials (`stitch_test`, `memory_test`, `real_test`), 5 permanent Realness choices including `relic3` 11th core slot, Echoes of the Underfoot scaled hunting, and fitted E60/100/200/500 post-story curves (`handoffs/reports/g3-3-post-story-balance.md`). |
 
 ## Campaign balance and pacing
 
@@ -24,16 +26,7 @@ G1-A earned campaign survivability and walkthrough balance have been audited acr
 - **Integrity**: Every run verified with `ledgerResidual === 0`, legal stat allocations, exact 5 finale receipts, and no chapter-ceiling weapons.
 - **Tier-10 Continuation**: 114/120 completed (100% of characters reaching C2). At 2.5s input pace with repeat sales, median total time is **10.42 active hours**, directly centering the 8–12 hour target.
 
-The owner preapproved CP2 and CP3 direction. CP4 still needs fitted-input evidence from the earned campaign and explicit review; it is not approved by the CP1 merge.
-
-Needed next (Milestones G2 and G3 per `ROADMAP.md`):
-1. **G2-1**: Two hands in lab prototype (`design/46_Spec_Two_Hands.md`).
-2. **G2-5**: Relic engine v2 (`design/49_Spec_Relic_Engine_v2.md`).
-3. **G2-2**: Campaign two hands integration (`design/46_Spec_Two_Hands.md`).
-4. **G2-3**: Weapon family traits and mastery (`design/47_Spec_Weapon_Families.md`).
-5. **G2-4**: Race identity rework (`design/48_Spec_Race_Identity.md`).
-6. **G2-6**: Integrated cross-system balance.
-7. **G3-1 through G3-3**: Effective levels, Becoming Real, and CP4 post-story fitting (`design/50_Spec_Growth_and_Becoming_Real.md`).
+The owner preapproved CP2 and CP3 direction. Milestones G2 (`G2-1` through `G2-6`) and G3 (`G3-1` through `G3-3`) are now complete on `main`, and the fitted **CP4** post-story balance package (`handoffs/reports/g3-3-post-story-balance.md`) is ready for owner review.
 
 ## Implemented: regional workshop economy
 

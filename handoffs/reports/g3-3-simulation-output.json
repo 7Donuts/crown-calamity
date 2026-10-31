@@ -1,0 +1,417 @@
+{
+  "generatedAt": "2026-10-31T05:09:26.943Z",
+  "seedCount": 40,
+  "chainLength": 10,
+  "milestones": {
+    "E60": {
+      "breaker": {
+        "noRelic": {
+          "exchanges": 6,
+          "lostSharePct": 38.9,
+          "winRatePct": 67.5
+        },
+        "sealCocoa": {
+          "exchanges": 7.7,
+          "lostSharePct": 9.4,
+          "winRatePct": 87.2
+        },
+        "patchCocoa": {
+          "exchanges": 7.7,
+          "lostSharePct": 9.2,
+          "winRatePct": 87.3
+        },
+        "fangPatch": {
+          "exchanges": 8.3,
+          "lostSharePct": 0.6,
+          "winRatePct": 100
+        }
+      },
+      "duelist": {
+        "noRelic": {
+          "exchanges": 5,
+          "lostSharePct": 32.2,
+          "winRatePct": 75
+        },
+        "sealCocoa": {
+          "exchanges": 5.5,
+          "lostSharePct": 21.1,
+          "winRatePct": 80
+        },
+        "patchCocoa": {
+          "exchanges": 6.5,
+          "lostSharePct": 6.7,
+          "winRatePct": 96
+        },
+        "fangPatch": {
+          "exchanges": 6.5,
+          "lostSharePct": 1.1,
+          "winRatePct": 100
+        }
+      },
+      "caster": {
+        "noRelic": {
+          "exchanges": 5.7,
+          "lostSharePct": 36.8,
+          "winRatePct": 66.9
+        },
+        "sealCocoa": {
+          "exchanges": 5.5,
+          "lostSharePct": 29.5,
+          "winRatePct": 74
+        },
+        "patchCocoa": {
+          "exchanges": 6.9,
+          "lostSharePct": 10.2,
+          "winRatePct": 85.6
+        },
+        "fangPatch": {
+          "exchanges": 7.5,
+          "lostSharePct": 3.2,
+          "winRatePct": 100
+        }
+      }
+    },
+    "E100": {
+      "breaker": {
+        "noRelic": {
+          "exchanges": 6.3,
+          "lostSharePct": 42.2,
+          "winRatePct": 66.7
+        },
+        "sealCocoa": {
+          "exchanges": 7.8,
+          "lostSharePct": 10,
+          "winRatePct": 86
+        },
+        "patchCocoa": {
+          "exchanges": 7.8,
+          "lostSharePct": 10,
+          "winRatePct": 85.9
+        },
+        "fangPatch": {
+          "exchanges": 8.6,
+          "lostSharePct": 0.5,
+          "winRatePct": 100
+        }
+      },
+      "duelist": {
+        "noRelic": {
+          "exchanges": 5.1,
+          "lostSharePct": 32.7,
+          "winRatePct": 74.7
+        },
+        "sealCocoa": {
+          "exchanges": 5.6,
+          "lostSharePct": 21.5,
+          "winRatePct": 79.7
+        },
+        "patchCocoa": {
+          "exchanges": 6.1,
+          "lostSharePct": 4.6,
+          "winRatePct": 100
+        },
+        "fangPatch": {
+          "exchanges": 6.1,
+          "lostSharePct": 0.1,
+          "winRatePct": 100
+        }
+      },
+      "caster": {
+        "noRelic": {
+          "exchanges": 5.9,
+          "lostSharePct": 40.4,
+          "winRatePct": 66.7
+        },
+        "sealCocoa": {
+          "exchanges": 6.2,
+          "lostSharePct": 32.7,
+          "winRatePct": 70.4
+        },
+        "patchCocoa": {
+          "exchanges": 7.2,
+          "lostSharePct": 9.5,
+          "winRatePct": 86.3
+        },
+        "fangPatch": {
+          "exchanges": 7.8,
+          "lostSharePct": 2.3,
+          "winRatePct": 100
+        }
+      }
+    },
+    "E200": {
+      "breaker": {
+        "noRelic": {
+          "exchanges": 6.3,
+          "lostSharePct": 43.8,
+          "winRatePct": 66.7
+        },
+        "sealCocoa": {
+          "exchanges": 7.9,
+          "lostSharePct": 10.4,
+          "winRatePct": 86
+        },
+        "patchCocoa": {
+          "exchanges": 7.9,
+          "lostSharePct": 10.6,
+          "winRatePct": 85.6
+        },
+        "fangPatch": {
+          "exchanges": 8.6,
+          "lostSharePct": 0.3,
+          "winRatePct": 100
+        }
+      },
+      "duelist": {
+        "noRelic": {
+          "exchanges": 5.5,
+          "lostSharePct": 33.8,
+          "winRatePct": 72.8
+        },
+        "sealCocoa": {
+          "exchanges": 5.9,
+          "lostSharePct": 21.7,
+          "winRatePct": 79.2
+        },
+        "patchCocoa": {
+          "exchanges": 6.4,
+          "lostSharePct": 3.3,
+          "winRatePct": 100
+        },
+        "fangPatch": {
+          "exchanges": 6.4,
+          "lostSharePct": 0.1,
+          "winRatePct": 100
+        }
+      },
+      "caster": {
+        "noRelic": {
+          "exchanges": 5.9,
+          "lostSharePct": 44.7,
+          "winRatePct": 66.7
+        },
+        "sealCocoa": {
+          "exchanges": 6.8,
+          "lostSharePct": 37.2,
+          "winRatePct": 66.7
+        },
+        "patchCocoa": {
+          "exchanges": 7.6,
+          "lostSharePct": 12.2,
+          "winRatePct": 83.3
+        },
+        "fangPatch": {
+          "exchanges": 7.8,
+          "lostSharePct": 1.8,
+          "winRatePct": 100
+        }
+      }
+    },
+    "E500": {
+      "breaker": {
+        "noRelic": {
+          "exchanges": 6.3,
+          "lostSharePct": 44.3,
+          "winRatePct": 66.7
+        },
+        "sealCocoa": {
+          "exchanges": 7.9,
+          "lostSharePct": 11.1,
+          "winRatePct": 85.1
+        },
+        "patchCocoa": {
+          "exchanges": 7.9,
+          "lostSharePct": 11.4,
+          "winRatePct": 84.4
+        },
+        "fangPatch": {
+          "exchanges": 8.5,
+          "lostSharePct": 0.3,
+          "winRatePct": 100
+        }
+      },
+      "duelist": {
+        "noRelic": {
+          "exchanges": 5.8,
+          "lostSharePct": 34.6,
+          "winRatePct": 71
+        },
+        "sealCocoa": {
+          "exchanges": 6.2,
+          "lostSharePct": 22.2,
+          "winRatePct": 78.5
+        },
+        "patchCocoa": {
+          "exchanges": 6.7,
+          "lostSharePct": 3.5,
+          "winRatePct": 100
+        },
+        "fangPatch": {
+          "exchanges": 6.7,
+          "lostSharePct": 0.1,
+          "winRatePct": 100
+        }
+      },
+      "caster": {
+        "noRelic": {
+          "exchanges": 6,
+          "lostSharePct": 44.4,
+          "winRatePct": 66.4
+        },
+        "sealCocoa": {
+          "exchanges": 6.8,
+          "lostSharePct": 36.7,
+          "winRatePct": 67.2
+        },
+        "patchCocoa": {
+          "exchanges": 7.6,
+          "lostSharePct": 12.3,
+          "winRatePct": 83
+        },
+        "fangPatch": {
+          "exchanges": 7.9,
+          "lostSharePct": 1,
+          "winRatePct": 100
+        }
+      }
+    }
+  },
+  "xpWinsPerLevel": {
+    "R1": {
+      "realness": 1,
+      "E": 51,
+      "xpReq": 66360,
+      "xpWin": 632,
+      "winsPerLevel": 105
+    },
+    "R2": {
+      "realness": 2,
+      "E": 101,
+      "xpReq": 135520,
+      "xpWin": 1232,
+      "winsPerLevel": 110
+    },
+    "R3": {
+      "realness": 3,
+      "E": 151,
+      "xpReq": 210680,
+      "xpWin": 1832,
+      "winsPerLevel": 115
+    },
+    "R4": {
+      "realness": 4,
+      "E": 201,
+      "xpReq": 291840,
+      "xpWin": 2432,
+      "winsPerLevel": 120
+    },
+    "R5": {
+      "realness": 5,
+      "E": 251,
+      "xpReq": 379000,
+      "xpWin": 3032,
+      "winsPerLevel": 125
+    },
+    "R6": {
+      "realness": 6,
+      "E": 301,
+      "xpReq": 472160,
+      "xpWin": 3632,
+      "winsPerLevel": 130
+    },
+    "R7": {
+      "realness": 7,
+      "E": 351,
+      "xpReq": 571320,
+      "xpWin": 4232,
+      "winsPerLevel": 135
+    },
+    "R8": {
+      "realness": 8,
+      "E": 401,
+      "xpReq": 676480,
+      "xpWin": 4832,
+      "winsPerLevel": 140
+    },
+    "R9": {
+      "realness": 9,
+      "E": 451,
+      "xpReq": 787640,
+      "xpWin": 5432,
+      "winsPerLevel": 145
+    },
+    "R10": {
+      "realness": 10,
+      "E": 501,
+      "xpReq": 904800,
+      "xpWin": 6032,
+      "winsPerLevel": 150
+    }
+  },
+  "purchaseHours": {
+    "E51": {
+      "E": 51,
+      "coinsPerWin": 56,
+      "entryPrice": 61600,
+      "bestPrice": 112000,
+      "exch": 5.5,
+      "entryHours": 5.1,
+      "bestHours": 9.3
+    },
+    "E60": {
+      "E": 60,
+      "coinsPerWin": 66,
+      "entryPrice": 72600,
+      "bestPrice": 132000,
+      "exch": 6,
+      "entryHours": 5.5,
+      "bestHours": 10
+    },
+    "E100": {
+      "E": 100,
+      "coinsPerWin": 110,
+      "entryPrice": 121000,
+      "bestPrice": 220000,
+      "exch": 6.3,
+      "entryHours": 5.7,
+      "bestHours": 10.4
+    },
+    "E200": {
+      "E": 200,
+      "coinsPerWin": 220,
+      "entryPrice": 242000,
+      "bestPrice": 440000,
+      "exch": 6.3,
+      "entryHours": 5.7,
+      "bestHours": 10.4
+    },
+    "E500": {
+      "E": 500,
+      "coinsPerWin": 550,
+      "entryPrice": 605000,
+      "bestPrice": 1100000,
+      "exch": 6.3,
+      "entryHours": 5.7,
+      "bestHours": 10.4
+    }
+  },
+  "e1000Check": {
+    "e1000": {
+      "effectiveLevel": 1000,
+      "archetype": "balanced",
+      "hp": 42100,
+      "damage": 2635,
+      "heavyDamage": 5665,
+      "armor": 910,
+      "ward": 910,
+      "accuracy": 4025,
+      "evasion": 3018,
+      "xp": 12020,
+      "coins": 1100
+    },
+    "wTier1000": 263,
+    "wBase1000": 669,
+    "xp1000": 2343900,
+    "allFinite": true
+  }
+}

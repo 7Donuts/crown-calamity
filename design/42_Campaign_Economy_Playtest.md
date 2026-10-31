@@ -51,3 +51,6 @@ Full metrics, logs, and purchase traces are documented in [`handoffs/reports/g1a
 
 - Complete CP4 post-story fit before treating the Chapter 3–5 prices or entry target as final balance.
 - Proceed to Milestone G2 (G2-1 Two Hands in lab, G2-5 Relic Engine v2, G2-2 Campaign Two Hands, G2-3 Weapon Families, G2-4 Race Identity) as specified in `ROADMAP.md`.
+- **Milestone G2 & G3 Completion (30–31 October 2026)**:
+  - Integrated combat systems (`design/46` through `design/49`) verified across 40-seed × 10-fight B0 chains (`handoffs/reports/g2-6-integrated-balance.md`).
+  - Post-story progression (`design/50_Spec_Growth_and_Becoming_Real.md`) fitted at `E = 60, 100, 200, 500` (`handoffs/reports/g3-3-post-story-balance.md`): XP required `(100 + 5R) × (20 + 12E)` (105 to 150 wins/level across R1–R10), ordinary enemy Stuffing `100 + 42E`, ordinary enemy hit `round(35 + 2.6E)` (5.0–6.3 exchanges/fight, 32.2%–44.7% net Stuffing lost without relics, roughly halved with a planned relic pair), and best weapon at 2,000 on-level wins (`9.6–10.6` active hours at 2.5s/input).

@@ -33,22 +33,22 @@ Open-ended progression (owner decision) that never takes anything away, keeps th
 
 Choices are permanent and shown on the character sheet.
 
-## Curves (D7 starting values, to be fitted by simulation)
+## Curves (D7 starting values, fitted in G3-3)
 
 Let E be effective level and R Realness.
 
-| Quantity | Story (E 1 to 50) | Past the story (E over 50) |
+| Quantity | Story (E 1 to 50) | Past the story (E over 50, fitted) |
 | --- | --- | --- |
-| XP to next level | Existing `xpNeeded` | (100 + 10R) × (20 + 12E): about 100 wins per level at E 50, rising slowly with each rank |
+| XP to next level | Existing `xpNeeded` | (100 + 5R) × (20 + 12E): 105 wins per level at R 1, rising by 5 wins per rank to 150 at R 10 (fitted from starting `100 + 10R` to satisfy the 100–150 gate across R 1–10) |
 | XP per on-level win | 20 + 12 × level (existing) | 20 + 12E |
 | Attribute points | 4 per level | 4 per level; budget 68 + 4 × (E − 1) |
 | Ordinary enemy Stuffing | Authored | 100 + 42E |
-| Ordinary enemy hit | Authored | 40 + 3.6E (heavies × 2.15, as today) |
+| Ordinary enemy hit | Authored | round(35 + 2.6E) (heavies × 2.15, as today; fitted from starting `40 + 3.6E` to satisfy the 25–45% no-relic net Stuffing loss gate across E 60, 100, 200, and 500) |
 | Enemy armor plus ward | Authored | 20 + 1.8E, split by archetype (brute 70/30, warded 20/80, balanced 50/50) |
 | Coins per win | Authored (about 2 to 49 by chapter) | round(1.1E): linear, never geometric |
 | Weapon base past tier 25 | 14 to 74 | 74 + 2.5 per tier; one tier per 4 effective levels |
 
-The enemy formulas continue the Chapter 5 values (at E 45: about 1,990 Stuffing and 202 per hit). They are starting points only; the balance gates below decide the final values.
+The enemy formulas continue the Chapter 5 values and have been fitted against the 40-seed B0 simulation matrix at E 60, 100, 200 and 500 (`handoffs/reports/g3-3-post-story-balance.md`).
 
 **Prices past the story.** The story weapon curve now ends at T25=60,000 coins; it no longer continues the original `round(100 × 100^((tier − 1) / 9))` exponential schedule. From T26 onward, price is set from play time instead: CP1's authorized starting target is 1,100 wins of on-level income for entry gear and 2,000 wins for best gear, matching the Chapter 2 tier-10 aspiration of 8 to 12 active hours while keeping the story-to-post-story transition close. Under the starting linear income curve this makes T26 cost 61,600 at E51 and 64,900 at E54. This 1,100-win entry value replaces the previously approved 300-win starting value; it changes only a tunable starting number, not progression mechanics. T1=100 and T10=10,000 remain unchanged. These values are a CP1 trial, and CP4 must still test the fitted post-story curves, progression gates, and time targets before they are called balanced.
 
