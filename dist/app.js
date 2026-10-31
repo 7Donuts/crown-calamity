@@ -76,17 +76,17 @@ function buildInspector(){
 function tabButton(id,label){return btn('char-tab:'+id,`${icon(id)}${label}`,charTab===id?'active':'');}
 function requirementsView(req,raw={}){if(!req)return '';const rows=[];if(req.level?.required>0)rows.push(`Level ${state.level} / ${req.level.required}`);if(raw.questOrGuards){const needQ=req.quest?.required||raw.quest||0,needG=req.usefulGuards?.required||raw.usefulGuards||0,met=!!(req.quest?.met||req.usefulGuards?.met);if(needQ||needG)rows.push(`${met?'Met · ':''}${needQ} contracts or ${needG} useful Guards`);}else if(req.quest?.required>0)rows.push(`Contracts ${state.quest} / ${req.quest.required}`);if(req.guardCount?.required>0)rows.push(`Useful Guards ${state.guardCount||0} / ${req.guardCount.required}`);if(req.usefulGuards?.required>0&&!raw.questOrGuards)rows.push(`Useful Guards ${state.usefulGuards||0} / ${req.usefulGuards.required}`);return rows.length?`<div class="requirement-list"><strong>Requirements</strong>${rows.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:'';}
 function weaponMasteryPanel(){
- const wm=state.weaponMastery||{},race=state.raceId||state.race,aff=G.raceAffinity?G.raceAffinity(race):null;
+ const wm=state.weaponMastery||{},aff=G.raceAffinity?G.raceAffinity(state):null;
  const mw=resolved(state.gear?.weapon),oh=resolved(state.gear?.offhand);
  const families=G.WEAPON_FAMILIES?Object.keys(G.WEAPON_FAMILIES):[];
- return `<section class="panel mastery-progress"><div class="panel-label">WEAPON MASTERY</div><p class="tiny muted">Win encounters with a damaging weapon to earn mastery marks (up to 2 families per victory). Higher ranks amplify family traits (+20% per rank above 1) and increase off-hand strike contribution at Rank 3+.</p><div class="mastery-grid">${families.map(f=>{
-  const entry=wm[f]||{rank:1,marks:0},cap=G.weaponMasteryCap?G.weaponMasteryCap(state,f):3,isAff=aff===f;
+ return `<section class="panel mastery-progress"><div class="panel-label">WEAPON MASTERY</div><p class="tiny muted">Win encounters with a damaging weapon to earn mastery marks (up to 2 families per victory). Higher ranks amplify family traits (+20% of the base value per rank) and increase off-hand strike contribution at Rank 3+.</p><div class="mastery-grid">${families.map(f=>{
+  const entry=wm[f]||{rank:0,marks:0},cap=G.weaponMasteryCap?G.weaponMasteryCap(state,f):3,isAff=aff===f;
   const isEq=(mw?.family===f)||(oh?.family===f),def=G.WEAPON_FAMILY_TRAITS?.[f];
   const needed=G.marksNeededForRank?G.marksNeededForRank(entry.rank):(4+3*entry.rank);
   const capped=entry.rank>=cap,traitName=def?.trait||f;
   const mainDesc=def?.desc||'',offDesc=def?.offhandDesc||'';
   const summary=G.familyTraitSummary?G.familyTraitSummary(f,entry.rank):'';
-  return `<article class="ability-card ${isEq?'equipped':''}"><div class="ability-card-head"><div><span class="eyebrow">${esc(G.WEAPON_FAMILIES[f].name.toUpperCase())}${isAff?' · AFFINITY':''}</span><h3>${esc(traitName)}</h3></div><div class="ability-state">${isEq?'<span class="active-character-tag">Equipped</span> ':''}<span class="hunt-level">RANK ${entry.rank} / ${cap}</span></div></div><p>${esc(summary||mainDesc)}</p><p class="tiny muted">Second hand: ${esc(offDesc)}</p><div class="ability-meta"><span>${capped?`Rank ${entry.rank} · Cap reached`:`${entry.marks} / ${needed} marks to Rank ${entry.rank+1}`}</span>${isAff?'<small class="gold">Affinity cap 5</small>':'<small>Cap 3</small>'}</div></article>`;
+  return `<article class="ability-card ${isEq?'equipped':''}"><div class="ability-card-head"><div><span class="eyebrow">${esc(G.WEAPON_FAMILIES[f].name.toUpperCase())}${isAff?' · AFFINITY':''}</span><h3>${esc(traitName)}</h3></div><div class="ability-state">${isEq?'<span class="active-character-tag">Equipped</span> ':''}<span class="hunt-level">RANK ${entry.rank} / ${cap}</span></div></div><p>${esc(summary||mainDesc)}</p><p class="tiny muted">Second hand: ${esc(offDesc)}</p><div class="ability-meta"><span>${capped?`Rank ${entry.rank} · Cap reached`:`${entry.marks} / ${needed} marks to Rank ${entry.rank+1}`}</span>${isAff?`<small class="gold">Affinity cap ${cap}</small>`:`<small>Cap ${cap}</small>`}</div></article>`;
  }).join('')}</div></section>`;
 }
 function abilityScreen(){

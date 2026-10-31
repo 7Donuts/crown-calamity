@@ -329,7 +329,10 @@ export function racePluckHook(raceId) {
 
 export function raceAffinity(raceOrState, familyId = null) {
   if (!raceOrState) return familyId ? false : null;
-  const raceId = typeof raceOrState === 'object' ? (raceOrState.raceId || raceOrState.race) : raceOrState;
+  // Affinity comes only from an adopted race ID (design 30 and 48: unadopted characters gain nothing).
+  // The legacy display name in state.race (for example 'Human') must never be used as a fallback.
+  const raceId = typeof raceOrState === 'object' ? raceOrState.raceId : raceOrState;
+  if (typeof raceId !== 'string' || !raceId) return familyId ? false : null;
   const race = RACES[raceId] || resolveRace(raceId);
   const aff = race?.affinity || null;
   return familyId ? aff === familyId : aff;

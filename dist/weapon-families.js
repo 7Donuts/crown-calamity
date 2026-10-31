@@ -114,24 +114,25 @@ export const WEAPON_FAMILY_TRAITS = Object.freeze({
 });
 
 /**
- * Marks required to advance from rank to rank + 1: 4 + 3 * rank.
+ * Marks required to advance from rank to rank + 1: 4 + 3 * rank (Spec 47).
+ * Rank 0 -> 1: 4 marks
  * Rank 1 -> 2: 7 marks
  * Rank 2 -> 3: 10 marks
  * Rank 3 -> 4: 13 marks
  * Rank 4 -> 5: 16 marks
  */
 export function marksNeededForRank(rank) {
-  const r = Math.max(1, Number.isInteger(rank) ? rank : 1);
+  const r = Math.max(0, Number.isInteger(rank) ? rank : 0);
   return 4 + 3 * r;
 }
 
 /**
- * Each rank above 1 increases the family's trait effect by +20%:
- * 1 + 0.20 * (rank - 1)
+ * Each rank adds +20% of the family's rank 0 trait value (Spec 47):
+ * 1 + 0.20 * rank (rank 0 = 1.0, rank 3 = 1.6)
  */
 export function traitEffectMultiplier(rank) {
-  const r = Math.max(1, Number.isInteger(rank) ? rank : 1);
-  return 1 + 0.20 * (r - 1);
+  const r = Math.max(0, Number.isInteger(rank) ? rank : 0);
+  return 1 + 0.20 * r;
 }
 
 export const RACE_AFFINITIES = Object.freeze({
@@ -154,6 +155,7 @@ export function weaponMasteryCap(arg1, arg2) {
     stateOrRace = arg2;
     familyId = arg1;
   }
+  // Affinity needs an adopted, canonical race ID (raceAffinity enforces this).
   const baseCap = raceAffinity(stateOrRace, familyId) ? 5 : 3;
   if (stateOrRace && typeof stateOrRace === 'object') {
     const r = Math.max(0, Math.floor(Number(stateOrRace.realness) || 0));
@@ -166,9 +168,9 @@ export function weaponMasteryCap(arg1, arg2) {
 }
 
 export function weaponMasteryRank(s, familyId) {
-  if (!s || !familyId) return 1;
+  if (!s || !familyId) return 0;
   const entry = s.weaponMastery?.[familyId];
-  return Number.isInteger(entry?.rank) ? Math.max(1, entry.rank) : 1;
+  return Number.isInteger(entry?.rank) ? Math.max(0, entry.rank) : 0;
 }
 
 export function weaponMasteryMarks(s, familyId) {
@@ -185,24 +187,43 @@ export function weaponMasteryMarks(s, familyId) {
 export function secondHandStrikeShare(familyId, rank, kindOrChannel = 'weapon') {
   const isSpell = kindOrChannel === 'spell' || kindOrChannel === 'focus';
   const base = isSpell ? 0.30 : 0.35;
-  const r = typeof rank === 'number' ? rank : 1;
+  const r = typeof rank === 'number' ? rank : 0;
   const bonus = (r >= 3) ? 0.05 : 0;
   return Math.round((base + bonus) * 100) / 100;
 }
 
 /**
+ * Marker stored INSIDE the weaponMastery object. It records that the stored ranks use the
+ * Spec 47 rank 0 baseline. It lives inside the object (not as a top-level save field) on purpose:
+ * loadSave builds { ...fresh(), ...save }, so a top-level default in fresh() would be inherited by
+ * older saves and the one-time conversion would be skipped. A saved weaponMastery object replaces
+ * fresh()'s object wholesale, so an older object can never carry this marker unless it was written
+ * by code that already used the rank 0 baseline.
+ */
+export const WEAPON_MASTERY_BASELINE_KEY = 'rankBaseline';
+
+/**
  * Normalizes s.weaponMastery to ensure all 9 families exist with valid { rank, marks }.
+ * - Missing or malformed data loads as rank 0, marks 0.
+ * - A stored rank is never lowered: the cap only stops further rank-ups, so Becoming Real or any
+ *   cap change never costs earned marks or ranks (Spec 47, Spec 50).
+ * - Saves written before the rank 0 baseline (no marker) stored rank 1 as the starting rank.
+ *   They convert exactly once (rank - 1, marks kept) so the player keeps the same trait strength.
  */
 export function normalizeWeaponMastery(s) {
   if (!s || typeof s !== 'object') return s;
-  s.weaponMastery = (s.weaponMastery && typeof s.weaponMastery === 'object') ? s.weaponMastery : {};
+  const stored = (s.weaponMastery && typeof s.weaponMastery === 'object' && !Array.isArray(s.weaponMastery)) ? s.weaponMastery : null;
+  const convert = !!stored && stored[WEAPON_MASTERY_BASELINE_KEY] !== 0;
+  const out = {};
   for (const family of WEAPON_FAMILY_IDS) {
-    const entry = s.weaponMastery[family];
-    const cap = weaponMasteryCap(s, family);
-    const rank = Number.isInteger(entry?.rank) ? Math.max(1, Math.min(cap, entry.rank)) : 1;
+    const entry = stored ? stored[family] : null;
+    let rank = Number.isInteger(entry?.rank) ? Math.max(0, entry.rank) : 0;
+    if (convert && Number.isInteger(entry?.rank)) rank = Math.max(0, entry.rank - 1);
     const marks = Number.isInteger(entry?.marks) ? Math.max(0, entry.marks) : 0;
-    s.weaponMastery[family] = { rank, marks };
+    out[family] = { rank, marks };
   }
+  out[WEAPON_MASTERY_BASELINE_KEY] = 0;
+  s.weaponMastery = out;
   return s;
 }
 
@@ -420,9 +441,9 @@ export function foilsRiposteProfile(s, offItem, enemy, t, intent, extraMultiplie
 export const weaponMasteryMultiplier = traitEffectMultiplier;
 export const marksForNextRank = marksNeededForRank;
 
-export function familyTraitSummary(familyOrItem, rankOrState = 1) {
+export function familyTraitSummary(familyOrItem, rankOrState = 0) {
   const familyId = typeof familyOrItem === 'string' ? familyOrItem : familyOrItem?.family;
-  const rank = typeof rankOrState === 'number' ? rankOrState : (rankOrState ? weaponMasteryRank(rankOrState, familyId) : 1);
+  const rank = typeof rankOrState === 'number' ? rankOrState : (rankOrState ? weaponMasteryRank(rankOrState, familyId) : 0);
   const meta = WEAPON_FAMILY_TRAITS[familyId];
   if (!meta) return '';
   const mult = traitEffectMultiplier(rank);
@@ -442,7 +463,7 @@ export function familyTraitSummary(familyOrItem, rankOrState = 1) {
 
 export function familyTraitLine(item, state = null) {
   if (!item || !item.family) return '';
-  const rank = state ? weaponMasteryRank(state, item.family) : 1;
+  const rank = state ? weaponMasteryRank(state, item.family) : 0;
   const meta = WEAPON_FAMILY_TRAITS[item.family];
   if (!meta) return '';
   return `${meta.name} · ${familyTraitSummary(item.family, rank)}`;

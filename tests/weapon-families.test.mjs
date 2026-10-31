@@ -30,7 +30,7 @@ test('weapon mastery initialization and save migration', () => {
   const fresh = G.fresh();
   assert.ok(fresh.weaponMastery, 'fresh state has weaponMastery');
   for (const f of G.WEAPON_FAMILY_IDS) {
-    assert.deepEqual(fresh.weaponMastery[f], { rank: 1, marks: 0 }, `${f} starts at rank 1, 0 marks`);
+    assert.deepEqual(fresh.weaponMastery[f], { rank: 0, marks: 0 }, `${f} starts at rank 0, 0 marks`);
   }
 
   // Old save without weaponMastery
@@ -39,22 +39,24 @@ test('weapon mastery initialization and save migration', () => {
   const loaded = G.loadSave(JSON.stringify(oldSave));
   assert.ok(loaded.weaponMastery, 'loadSave adds weaponMastery');
   for (const f of G.WEAPON_FAMILY_IDS) {
-    assert.deepEqual(loaded.weaponMastery[f], { rank: 1, marks: 0 }, `${f} migrated to rank 1, 0 marks`);
+    assert.deepEqual(loaded.weaponMastery[f], { rank: 0, marks: 0 }, `${f} migrated to rank 0, 0 marks`);
   }
 });
 
 test('mark progression requirement and rank caps with race affinity', () => {
+  assert.equal(G.marksNeededForRank(0), 4);
   assert.equal(G.marksNeededForRank(1), 7);
   assert.equal(G.marksNeededForRank(2), 10);
   assert.equal(G.marksNeededForRank(3), 13);
   assert.equal(G.marksNeededForRank(4), 16);
 
-  // Trait multiplier
-  assert.equal(G.traitEffectMultiplier(1), 1.0);
-  assert.equal(G.traitEffectMultiplier(2), 1.2);
-  assert.equal(G.traitEffectMultiplier(3), 1.4);
-  assert.equal(G.traitEffectMultiplier(4), 1.6);
-  assert.equal(G.traitEffectMultiplier(5), 1.8);
+  // Trait multiplier: +20% of the rank 0 value per rank (Spec 47)
+  assert.equal(G.traitEffectMultiplier(0), 1.0);
+  assert.equal(G.traitEffectMultiplier(1), 1.2);
+  assert.equal(G.traitEffectMultiplier(2), 1.4);
+  assert.equal(G.traitEffectMultiplier(3), 1.6);
+  assert.equal(G.traitEffectMultiplier(4), 1.8);
+  assert.equal(G.traitEffectMultiplier(5), 2.0);
 
   // Caps: Bear has clubs affinity (cap 5), other families cap 3
   const bearState = G.fresh();
@@ -114,7 +116,7 @@ test('victory awards mastery marks to qualifying damaging families (max 2)', () 
 
   // Advancement when reaching needed marks
   s.level = 1;
-  s.weaponMastery.clubs = { rank: 1, marks: 6 }; // 1 mark needed to reach 7
+  s.weaponMastery.clubs = { rank: 1, marks: 6 }; // 1 mark needed to reach 7 (rank 1 -> 2 costs 4 + 3 * 1)
   s.fight = { enemy: 'test_enemy', familiesUsed: ['clubs'], turns: 1 };
   const advanceAwarded = G.awardWeaponMasteryOnVictory(s, enemy, s.level, s.fight);
   assert.equal(advanceAwarded[0].rank, 2, 'ranked up to 2');
@@ -132,6 +134,7 @@ test('victory awards mastery marks to qualifying damaging families (max 2)', () 
 
 test('Rank 3+ offhand strike share bonus (+5pp: 35%->40% physical, 30%->35% focus)', () => {
   // Physical offhand
+  assert.equal(G.secondHandStrikeShare('needles', 0, 'weapon'), 0.35);
   assert.equal(G.secondHandStrikeShare('needles', 1, 'weapon'), 0.35);
   assert.equal(G.secondHandStrikeShare('needles', 2, 'weapon'), 0.35);
   assert.equal(G.secondHandStrikeShare('needles', 3, 'weapon'), 0.40);
@@ -182,8 +185,8 @@ test('Clubs (Steady) increases guardRate on guarded actions', () => {
   assert.equal(G.steadyGuardBonus(s, club, true), 0.10);
   assert.equal(G.steadyGuardBonus(s, club, false), 0);
 
-  // Rank 2: 0.10 * 1.2 = 0.12
-  s.weaponMastery.clubs = { rank: 2, marks: 0 };
+  // Rank 1: 0.10 * 1.2 = 0.12
+  s.weaponMastery.clubs = { rank: 1, marks: 0 };
   assert.equal(Math.round(G.steadyGuardBonus(s, club, true) * 100), 12);
 });
 
@@ -193,9 +196,9 @@ test('Mauls (Crush) ignores 15% enemy armor on physical strikes', () => {
   s.gear.weapon = maul.id;
   assert.equal(G.crushArmorIgnore(s, maul), 0.15);
 
-  // Rank 3: 0.15 * 1.4 = 0.21
+  // Rank 3: 0.15 * 1.6 = 0.24 (Spec 47)
   s.weaponMastery.mauls = { rank: 3, marks: 0 };
-  assert.equal(Math.round(G.crushArmorIgnore(s, maul) * 100), 21);
+  assert.equal(Math.round(G.crushArmorIgnore(s, maul) * 100), 24);
 });
 
 test('Spears (Reach) grants +20% on first damaging action and +5pp Disrupt hit', () => {
@@ -216,7 +219,7 @@ test('Needles (Pinpoint) grants +3pp crit chance', () => {
 
   assert.equal(G.pinpointCritBonus(s, needle), 0.03);
   s.weaponMastery.needles = { rank: 3, marks: 0 };
-  assert.equal(Math.round(G.pinpointCritBonus(s, needle) * 1000), 42); // 0.03 * 1.4 = 0.042
+  assert.equal(Math.round(G.pinpointCritBonus(s, needle) * 1000), 48); // 0.03 * 1.6 = 0.048
 });
 
 test('Foils (Riposte) restores Bounce on Sidestep', () => {
