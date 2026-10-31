@@ -1,6 +1,6 @@
 # Incremental Leveling and Character Creation
 
-Each completed level grants four attribute points. XP accumulates continuously within the current level; partial progress grants no points. The campaign preview level cap is 50; reaching level 50 awards 196 progression points from the 49 completed levels, and no further XP or points are awarded.
+Each completed level grants four attribute points. XP accumulates continuously within the current level; partial progress grants no points. The campaign story (Realness 0) runs from level 1 to 50; reaching level 50 awards 196 progression points from the 49 completed levels. At level 50 after completing Chapter 5 (`fair_finale`), a character can pass the three-stage **Becoming Real** trial (`design/50_Spec_Growth_and_Becoming_Real.md`) to increment `realness` (`R`), return displayed `level` to 1, advance **effective level** (`E = 50 × R + level`), keep all earned stats/gear/relics/mastery, and continue earning four attribute points per level (`68 + 4 × (E − 1)` total budget) using the fitted post-story XP curve `(100 + 5R) × (20 + 12E)`.
 
 ## XP curve
 

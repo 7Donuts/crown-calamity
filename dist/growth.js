@@ -207,18 +207,19 @@ export function xpNeeded(level, realness = 0) {
     l = ((l - 1) % 50) + 1;
   }
   const E = 50 * r + l;
-  return Math.round((100 + 10 * r) * (20 + 12 * E));
+  return Math.round((100 + 5 * r) * (20 + 12 * E));
 }
 
 /**
- * Post-story enemy stat curve (Spec 50 Section 4).
- * Continues Chapter 5 values (at E=45: ~1,990 Stuffing, 202 per hit).
+ * Post-story enemy stat curve (Spec 50 Section 4, fitted by G3-3 B0 simulation).
+ * Fitted across E60, E100, E200, and E500 to satisfy the 5-8 exchange gate and
+ * 25-45% no-relic net Stuffing loss gate (~half with a planned relic pair).
  * Archetypes: 'balanced' (50/50 armor/ward), 'brute' (70/30), 'warded' (20/80).
  */
 export function postStoryEnemyStats(effectiveLevelInput, archetype = 'balanced') {
   const E = effectiveLevel(effectiveLevelInput);
   const hp = Math.round(100 + 42 * E);
-  const damage = Math.round(40 + 3.6 * E);
+  const damage = Math.round(35 + 2.6 * E);
   const heavyDamage = Math.round(damage * 2.15);
   const totalDef = 20 + 1.8 * E;
   let armorRatio = 0.5;

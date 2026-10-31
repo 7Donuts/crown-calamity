@@ -235,3 +235,7 @@ Pending:
 - Themed resource names in the HUD (Stuffing, Sparkle, Bounce) with standard subtitles, or standard names with themed flavor text only.
 - Forms per brand (distinct silhouettes, as proposed) or every species available in every brand (more choice, more art).
 - Whether brand features (a rules change) are in scope for the theme pass.
+
+## Becoming Real (Milestone G3, Spec 50)
+
+At displayed level 50 after completing the Velvet Night Fair finale (`fair_finale`), a stuffie can undertake the three-stage **Becoming Real** trials (`stitch_test`, `memory_test`, `real_test`) to advance their **Realness** rank (`realness >= 1`, effective level `E = 50 × R + level`). Becoming Real preserves every stitch of earned attributes, gear, relics, echoes, and mastery, grants one permanent **Realness choice** (`relic3`, `pluckCap`, `racialRefinement`, `practicedHands`, or `strongerEchoes`), optionally re-stitches plush ancestry and reallocates attribute points, and unlocks **Echoes of the Underfoot** interim scaled hunting until deeper world layers open in Milestone G4.

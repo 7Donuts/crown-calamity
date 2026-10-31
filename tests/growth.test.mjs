@@ -36,14 +36,20 @@ test('xpNeeded preserves story levels 1..50 at Realness 0 and applies post-story
   assert.equal(xpNeeded(9, 0), 2796);
   assert.equal(xpNeeded(50, 0), 63804);
 
-  // Post-story XP formula: (100 + 10 * R) * (20 + 12 * E)
-  // At E51 (R=1, level=1): 110 * (20 + 12 * 51) = 110 * 632 = 69,520
-  assert.equal(xpNeeded(1, 1), 110 * (20 + 12 * 51));
-  assert.equal(xpNeeded({ level: 1, realness: 1 }), 69520);
-  // At E100 (R=1, level=50): 110 * (20 + 12 * 100) = 110 * 1220 = 134,200
-  assert.equal(xpNeeded(50, 1), 110 * (20 + 12 * 100));
-  // At E500 (R=9, level=50): 190 * (20 + 12 * 500) = 190 * 6020 = 1,143,800
-  assert.equal(xpNeeded(50, 9), 190 * (20 + 12 * 500));
+  // Post-story XP formula (fitted in G3-3): (100 + 5 * R) * (20 + 12 * E)
+  // At E51 (R=1, level=1): 105 * (20 + 12 * 51) = 105 * 632 = 66,360
+  assert.equal(xpNeeded(1, 1), 105 * (20 + 12 * 51));
+  assert.equal(xpNeeded({ level: 1, realness: 1 }), 66360);
+  // At E100 (R=1, level=50): 105 * (20 + 12 * 100) = 105 * 1220 = 128,100
+  assert.equal(xpNeeded(50, 1), 105 * (20 + 12 * 100));
+  // At E500 (R=9, level=50): 145 * (20 + 12 * 500) = 145 * 6020 = 872,900
+  assert.equal(xpNeeded(50, 9), 145 * (20 + 12 * 500));
+  // First ten Realness ranks stay within 100..150 on-level wins per level
+  for (let r = 1; r <= 10; r++) {
+    const E = 50 * r + 1;
+    const wins = xpNeeded(1, r) / postStoryRewards(E).xp;
+    assert.ok(wins >= 100 && wins <= 150, `R=${r} wins/level ${wins} in 100..150`);
+  }
 });
 
 test('pointBudget and progression follow 68 + 4 * (E - 1) for E 1, 50, 51, 100, and 500', () => {
@@ -74,7 +80,7 @@ test('advanceXP uses Realness XP curve while keeping displayed level capped at 5
 test('postStoryEnemyStats, postStoryRewards, postStoryGearPrice, and postStoryWeaponBase follow Spec 50 curves', () => {
   const e60 = postStoryEnemyStats(60, 'balanced');
   assert.equal(e60.hp, 100 + 42 * 60);
-  assert.equal(e60.damage, Math.round(40 + 3.6 * 60));
+  assert.equal(e60.damage, Math.round(35 + 2.6 * 60));
   assert.equal(e60.heavyDamage, Math.round(e60.damage * 2.15));
   assert.equal(e60.armor, Math.round((20 + 1.8 * 60) * 0.5));
   assert.equal(e60.ward, Math.round((20 + 1.8 * 60) * 0.5));
