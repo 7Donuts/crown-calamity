@@ -12,17 +12,15 @@ export const RELIC_COPY_BASE_COST = 150;
 export const RELIC_COPY_MULTIPLIER = 4;
 // Echoes may strengthen an authored effect, but never create another trigger.
 export const RELIC_EFFECTS = Object.freeze({
-  signet: { name: 'Tide-Thread Ledger', desc: 'Recover restores 2 extra Sparkle (mana).' },
-  seal: { name: 'Keeper’s Button', desc: 'The first useful Guard each fight grants 15 barrier.' },
-  threadSpool: { name: 'Spare Thread', desc: 'The first useful Guard each fight restores 2 Bounce (stamina).' },
-  patchworkHeart: { name: 'Patchwork Heart', desc: 'Victory restores 5% of missing Stuffing (health).' },
-  luckyButton: { name: 'Lucky Button', desc: 'Victory grants 5% extra coins.' },
-  dreamBell: { name: 'Dream Bell', desc: 'Victory restores 2 Sparkle (mana).' },
-  thimbleGuard: { name: 'Thimble Guard', desc: 'The first useful Guard each fight adds 4 barrier.' },
-  amberMarble: { name: 'Amber Marble', desc: 'Your first damaging action each fight deals 3 extra damage.' },
-  ribbonKnot: { name: 'Ribbon Knot', desc: 'A free physical strike restores 1 Sparkle (mana).' },
-  stuffingSatchel: { name: 'Stuffing Satchel', desc: 'Mend restores 10% more Stuffing (health).' },
   ...Object.fromEntries(Object.entries(ENGINE_EFFECTS).map(([id, effect]) => [id, { name: effect.name, desc: effect.desc }]))
+});
+
+export const RELIC_RANK_MATERIALS = Object.freeze({
+  1: Object.freeze({ common: ['Canal iron', 'Runic residue'], boss: 'Floodglass Fragment' }),
+  2: Object.freeze({ common: ['Arcade lint', 'Prize gears'], boss: 'Golden token' }),
+  3: Object.freeze({ common: ['Garden seeds', 'Bright feathers'], boss: 'Garden medallion' }),
+  4: Object.freeze({ common: ['Moth velvet', 'Soft buttons'], boss: 'Keepsake key' }),
+  5: Object.freeze({ common: ['Painted papier-mâché', 'Ringmaster ribbon'], boss: 'Velvet star' })
 });
 
 const validRelic = id => !!ITEMS[id] && ITEMS[id].slot === 'relic';
@@ -51,10 +49,30 @@ export function normalizeRelics(s) {
       }
     }
     let relicId = validRelic(raw.relicId) && owned(s, raw.relicId) && paid[raw.relicId] ? raw.relicId : null;
+    let freeMove = raw.freeMove === true;
+    // Migration to Spec 49: grant one free move per socket holding existing paid licenses or a relic, if not yet migrated
+    if (!s.relicEchoV2 && (Object.keys(paid).length > 0 || relicId) && raw.freeMove === undefined) {
+      freeMove = true;
+    }
     // A malformed locked socket cannot retain active power.
-    return { unlocked, relicId: unlocked ? relicId : null, copiesPaid: paid };
+    const socketObj = { unlocked, relicId: unlocked ? relicId : null, copiesPaid: paid };
+    if (unlocked && freeMove) socketObj.freeMove = true;
+    return socketObj;
   });
   delete s.relics;
+  s.relicEchoV2 = true;
+
+  if (s.relicRanks && typeof s.relicRanks === 'object' && !Array.isArray(s.relicRanks)) {
+    const cleaned = {};
+    for (const [id, rank] of Object.entries(s.relicRanks)) {
+      if (validRelic(id) && Number.isInteger(rank) && rank >= 1 && rank <= 3) {
+        cleaned[id] = rank;
+      }
+    }
+    s.relicRanks = cleaned;
+  } else {
+    s.relicRanks = {};
+  }
   return s;
 }
 
@@ -67,19 +85,29 @@ function ensured(s) {
 
 export function relicSlots(s) {
   const sockets = ensured(s) || Array.from({ length: RELIC_SOCKET_COUNT }, freshSocket);
-  return sockets.map((socket, index) => ({ index, unlocked: socket.unlocked, relicId: socket.relicId, copiesPaid: copy(socket.copiesPaid) }));
+  return sockets.map((socket, index) => {
+    const isEquipped = socket.relicId ? inCore(s, socket.relicId) : false;
+    return {
+      index,
+      unlocked: socket.unlocked,
+      relicId: socket.relicId,
+      copiesPaid: copy(socket.copiesPaid),
+      dormant: socket.relicId ? !isEquipped : false,
+      freeMove: socket.freeMove === true
+    };
+  });
 }
 
 export function unlockRelicPreview(s, slot) {
   const sockets = ensured(s) || [];
-  const index = Number(slot), cost = RELIC_UNLOCK_COSTS[index], chapterRequired=RELIC_UNLOCK_CHAPTERS[index];
+  const index = Number(slot), cost = RELIC_UNLOCK_COSTS[index], chapterRequired = RELIC_UNLOCK_CHAPTERS[index];
   let reason = !Number.isInteger(index) || index < 0 || index >= RELIC_SOCKET_COUNT ? 'Unknown relic socket.'
     : locked(s) ? lockReason(s)
       : sockets[index]?.unlocked ? 'That relic socket is already unlocked.'
         : index > 0 && !sockets[index - 1]?.unlocked ? 'Unlock the previous socket first.'
           : !chapterUnlocked(s, chapterRequired) ? `This keychain loop opens in Chapter ${chapterRequired}.`
             : (s.coins || 0) < cost ? 'You cannot afford this socket.' : null;
-  return { allowed: !reason, reason, slot: index, coinCost: cost ?? 0, nextCost: RELIC_UNLOCK_COSTS[index + 1] ?? null, chapterRequired:chapterRequired??null, chapterCurrent:currentChapter(s) };
+  return { allowed: !reason, reason, slot: index, coinCost: cost ?? 0, nextCost: RELIC_UNLOCK_COSTS[index + 1] ?? null, chapterRequired: chapterRequired ?? null, chapterCurrent: currentChapter(s) };
 }
 
 export function unlockRelic(s, slot) {
@@ -95,24 +123,26 @@ function echoPreview(s, slot, baseId) {
   const sockets = ensured(s) || [], index = Number(slot), item = validRelic(baseId) ? effectiveItem(s, baseId) : null;
   const socket = sockets[index];
   const licensedHere = !!socket?.copiesPaid?.[baseId];
+  const freeMove = !licensedHere && socket?.freeMove === true;
   const priorLicenses = sockets.reduce((n, x) => n + (x.copiesPaid?.[baseId] ? 1 : 0), 0) - (licensedHere ? 1 : 0);
   const duplicateCount = priorLicenses;
-  const coinCost = licensedHere ? 0 : echoCost(priorLicenses, item?.price || item?.echoPrice);
+  const coinCost = (licensedHere || freeMove) ? 0 : echoCost(priorLicenses, item?.price || item?.echoPrice);
   const coreSame = inCore(s, baseId);
-  const activeBefore = sockets.slice(0, Math.max(0, index)).filter(x => x.relicId === baseId).length;
-  const effectScale = coreSame ? RELIC_EFFECT_SCALES[activeBefore] || 0 : activeBefore === 0 ? 1 : RELIC_EFFECT_SCALES[activeBefore - 1] || 0;
+  const activeBefore = sockets.slice(0, Math.max(0, index)).filter(x => x.unlocked && x.relicId === baseId && inCore(s, baseId)).length;
+  const effectScale = RELIC_EFFECT_SCALES[activeBefore] || 0;
   const hasFlatEffect = !!item && (Object.values(item.stats || {}).some(value => value > 0) || (item.armor || 0) > 0 || (item.ward || 0) > 0);
   let reason = !Number.isInteger(index) || index < 0 || index >= RELIC_SOCKET_COUNT ? 'Unknown relic socket.'
     : locked(s) ? lockReason(s)
       : !socket?.unlocked ? 'Unlock this relic socket first.'
         : !item ? 'Choose a valid relic item.'
           : !owned(s, baseId) ? 'You must own this relic before attuning an echo.'
-        : !hasFlatEffect && !hasEchoEffect(baseId) ? 'This relic has no echoable effect.'
-              : socket.relicId === baseId ? 'That relic is already attuned here.'
-                : (s.coins || 0) < coinCost ? 'You cannot afford this relic echo.' : null;
-  const later = licensedHere ? 0 : echoCost(priorLicenses + 1, item?.price || item?.echoPrice);
+            : !coreSame ? 'Echo sockets may only attune relics currently equipped in a core slot.'
+              : !hasFlatEffect && !hasEchoEffect(baseId) ? 'This relic has no echoable effect.'
+                : socket.relicId === baseId ? 'That relic is already attuned here.'
+                  : (s.coins || 0) < coinCost ? 'You cannot afford this relic echo.' : null;
+  const later = (licensedHere || freeMove) ? 0 : echoCost(priorLicenses + 1, item?.price || item?.echoPrice);
   return { allowed: !reason, reason, slot: index, relicId: baseId, name: item?.name || null,
-    coinCost, duplicateCount, effectScale, nextCost: later,
+    coinCost, duplicateCount, effectScale, nextCost: later, freeMove, licensedHere,
     effect: item ? { stats: { ...(item.stats || {}) }, armor: item.armor || 0, ward: item.ward || 0, unique: RELIC_EFFECTS[baseId] || null } : null };
 }
 
@@ -126,6 +156,9 @@ export function attuneRelic(s, slot, baseId) {
   const socket = s.relicSockets[preview.slot];
   socket.relicId = baseId;
   socket.copiesPaid[baseId] = 1;
+  if (socket.freeMove && preview.coinCost === 0 && !preview.licensedHere) {
+    delete socket.freeMove;
+  }
   return { ok: true, preview };
 }
 
@@ -140,6 +173,72 @@ export function clearRelic(s, slot) {
   return { ok: true, slot: index };
 }
 
+export function relicRank(s, id) {
+  const r = s?.relicRanks?.[id];
+  return Number.isInteger(r) && r >= 1 && r <= 3 ? r : 1;
+}
+
+export function relicRankCost(id, nextRank) {
+  const item = ITEMS[id];
+  if (!item || item.slot !== 'relic' || nextRank < 2 || nextRank > 3) return null;
+  const ch = item.chapter || 1;
+  const mapping = RELIC_RANK_MATERIALS[ch] || RELIC_RANK_MATERIALS[1];
+  const basePrice = item.price || item.echoPrice || 0;
+  const mult = nextRank === 2 ? 1 : 2;
+  const commonCount = nextRank === 2 ? 3 : 6;
+  const bossCount = nextRank === 2 ? 1 : 3;
+  const coins = basePrice * mult;
+  const materials = {
+    [mapping.common[0]]: commonCount,
+    [mapping.common[1]]: commonCount,
+    [mapping.boss]: bossCount
+  };
+  return { coins, materials, chapter: ch };
+}
+
+export function upgradeRelicPreview(s, id) {
+  const item = ITEMS[id];
+  const currentRank = relicRank(s, id);
+  const nextRank = currentRank + 1;
+  let reason = !item || item.slot !== 'relic' ? 'Unknown relic.'
+    : locked(s) ? lockReason(s)
+      : !owned(s, id) ? 'You do not own this relic.'
+        : currentRank >= 3 ? 'This relic is already at the maximum rank.' : null;
+  const cost = nextRank <= 3 ? relicRankCost(id, nextRank) : null;
+  if (!reason && cost) {
+    if ((s.coins || 0) < cost.coins) reason = 'You cannot afford this relic rank (insufficient coins).';
+    else {
+      for (const [mat, count] of Object.entries(cost.materials)) {
+        if ((s.materials?.[mat] || 0) < count) {
+          reason = `You do not have enough ${mat} (need ${count}).`;
+          break;
+        }
+      }
+    }
+  }
+  return {
+    allowed: !reason,
+    reason,
+    id,
+    name: item?.name || null,
+    currentRank,
+    nextRank: Math.min(3, nextRank),
+    cost: cost || { coins: 0, materials: {} }
+  };
+}
+
+export function upgradeRelic(s, id) {
+  const preview = upgradeRelicPreview(s, id);
+  if (!preview.allowed) return { ok: false, reason: preview.reason, preview };
+  normalizeRelics(s);
+  s.coins -= preview.cost.coins;
+  for (const [mat, count] of Object.entries(preview.cost.materials)) {
+    s.materials[mat] = (s.materials[mat] || 0) - count;
+  }
+  s.relicRanks[id] = preview.nextRank;
+  return { ok: true, preview, rank: preview.nextRank };
+}
+
 export function relicBonuses(s) {
   const out = { stats: {}, armor: 0, ward: 0, effects: {} };
   const addEffect = (id, scale) => {
@@ -151,18 +250,26 @@ export function relicBonuses(s) {
   const used = {};
   sockets.forEach(socket => {
     if (!socket.unlocked || !socket.relicId) return;
-    const id = socket.relicId, item = effectiveItem(s, id);
+    const id = socket.relicId;
+    if (!inCore(s, id)) return; // Echoes only amplify. Unequipped is dormant!
+    const item = effectiveItem(s, id);
     if (!item) return;
     const duplicateCount = used[id] || 0;
-    const scale = inCore(s, id)
-      ? RELIC_EFFECT_SCALES[duplicateCount] || 0
-      : duplicateCount === 0 ? 1 : RELIC_EFFECT_SCALES[duplicateCount - 1] || 0;
-    addEffect(id, scale);
-    for (const [stat, value] of Object.entries(item.stats || {})) out.stats[stat] = (out.stats[stat] || 0) + value * scale;
-    out.armor += (item.armor || 0) * scale;
-    out.ward += (item.ward || 0) * scale;
-    used[id] = (used[id] || 0) + 1;
+    const scale = RELIC_EFFECT_SCALES[duplicateCount] || 0;
+    if (scale > 0) {
+      addEffect(id, scale);
+      for (const [stat, value] of Object.entries(item.stats || {})) out.stats[stat] = (out.stats[stat] || 0) + value * scale;
+      out.armor += (item.armor || 0) * scale;
+      out.ward += (item.ward || 0) * scale;
+      used[id] = duplicateCount + 1;
+    }
   });
+  for (const id of Object.keys(out.effects)) {
+    const r = s?.relicRanks?.[id];
+    if (Number.isInteger(r) && r >= 2) {
+      out.effects[id] *= 1.25;
+    }
+  }
   return out;
 }
 

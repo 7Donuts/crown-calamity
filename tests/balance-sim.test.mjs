@@ -50,7 +50,8 @@ test('each seed owns an independent continuous RNG stream, regardless of matrix 
 test('future unsupported mechanics and unknown fixture/config keys fail closed', () => {
   const base = { kit: 'breaker', level: 1, race: 'bear' };
   assert.throws(() => runCell({ fixture: { ...base, gear: { secondHand: 'rod' } }, enemy: 'rats', policy: 'strike', seeds: [1] }), /unsupported second-hand weapon/i);
-  assert.throws(() => runCell({ fixture: { ...base, relicRanks: { feltFang: 3 }, relics: ['feltFang'] }, enemy: 'rats', policy: 'strike', seeds: [1] }), /relicRanks is not implemented/i);
+  assert.throws(() => runCell({ fixture: { ...base, weaponRanks: { sword: 3 } }, enemy: 'rats', policy: 'strike', seeds: [1] }), /weaponRanks is not implemented/i);
+  assert.doesNotThrow(() => runCell({ fixture: { ...base, relicRanks: { feltFang: 3 }, relics: ['feltFang'] }, enemy: 'rats', policy: 'strike', seeds: [1] }));
   assert.throws(() => runCell({ fixture: { ...base, futureFeature: true }, enemy: 'rats', policy: 'strike', seeds: [1] }), /unknown fixture field/i);
   assert.throws(() => runCell({ fixture: base, enemy: 'rats', policy: 'strike', seeds: Array.from({ length: 10001 }, (_, i) => i) }), /at most 10000 safe integers/i);
   assert.throws(() => runCell({ fixture: base, enemy: 'rats', policy: 'strike', seeds: [1], weaponRanks: {} }), /unknown cell field/i);
@@ -102,7 +103,7 @@ test('full-health Fang and overkill cannot create healing; victory relic heals a
   assert.equal(fullHealth.healingBySource.relics, 0);
   const heart = runCell({ fixture: { kit: 'breaker', level: 1, race: 'wolf', relics: ['darnedPatch', 'patchworkHeart'] }, enemy: 'rats', policy: 'strike', seeds: [41, 42], chainLength: 3 });
   const cocoa = runCell({ fixture: { kit: 'breaker', level: 1, race: 'wolf', relics: ['darnedPatch', 'cocoaThimble'] }, enemy: 'rats', policy: 'strike', seeds: [41, 42], chainLength: 3 });
-  assert.equal(heart.healingBySource.relics, 10.333333333333334);
+  assert.equal(heart.healingBySource.relics, 17.666666666666668);
   assert.equal(cocoa.healingBySource.relics, 57.666666666666664);
 });
 
@@ -195,7 +196,7 @@ test('Dream Bell victory mana matches the direct engine over two fights', () => 
   const save = casterRelicSave(['dreamBell']);
   const options = { seeds: [41], chainLength: 2, policy: 'strike', enemy: 'rats' };
   const reference = directEngineChain(save, options);
-  assert.equal(reference.averageResourcesAtEncounterStart.mp, 104.5);
+  assert.equal(reference.averageResourcesAtEncounterStart.mp, 105);
   const actual = runCell({ fixture: { id: 'dream-bell-regression', save }, ...options });
   assert.deepEqual(actual.averageResourcesAtEncounterStart, reference.averageResourcesAtEncounterStart);
 });

@@ -7,7 +7,7 @@
 // Every effect resolves inside the exchange the player chose. Nothing adds an exchange, acts while the player
 // is away, or rolls a random number.
 
-export const RELIC_ENGINE_VERSION = 1;
+export const RELIC_ENGINE_VERSION = 2;
 export const PLUCK_CAP = 8;
 export const PLUCK_CARRY_CAP = 3;
 export const FANG_BASE = 0.20;
@@ -24,6 +24,36 @@ export const ENCORE_CAP = 0.24;
 // role: generator (makes Pluck), payoff (uses Pluck), keystone (both). source: shop or a chapter finale.
 // trigger / limit / ceiling follow the design 27 rule that every relic states all three.
 export const ENGINE_EFFECTS = Object.freeze({
+  signet: Object.freeze({ name: 'Brass-Stamp Ring', role: 'generator', source: 'shop',
+    desc: 'Recover restores 3% of maximum Sparkle extra. Recover while holding 0 Pluck gains 1 Pluck.',
+    trigger: 'Recover.', limit: 'Every Recover.', ceiling: '3% maximum Sparkle extra; 1 Pluck at 0 Pluck.' }),
+  seal: Object.freeze({ name: 'Keeper’s Brass Button', role: 'generator', source: 'shop',
+    desc: 'First useful Guard each fight grants a barrier of 4% of maximum Stuffing and gains 1 Pluck.',
+    trigger: 'First useful Guard each fight.', limit: 'Once per fight.', ceiling: 'Within 30% maximum Stuffing barrier cap.' }),
+  threadSpool: Object.freeze({ name: 'Thread Spool of Second Chances', role: 'generator', source: 'shop',
+    desc: 'First useful Guard each fight restores 5% of maximum Bounce and gains 1 Pluck.',
+    trigger: 'First useful Guard each fight.', limit: 'Once per fight.', ceiling: '5% of maximum Bounce.' }),
+  patchworkHeart: Object.freeze({ name: 'Patchwork Heart', role: 'payoff', source: 'shop',
+    desc: 'Victory restores 5% of missing Stuffing, plus 1% of missing Stuffing per Pluck held.',
+    trigger: 'Victory.', limit: 'Once per fight.', ceiling: '+8% at 8 Pluck (13% total missing Stuffing).' }),
+  luckyButton: Object.freeze({ name: 'Lucky Button', role: 'payoff', source: 'shop',
+    desc: 'Victory grants 5% extra coins, plus 5% more when winning with 4 or more Pluck.',
+    trigger: 'Victory.', limit: 'Once per fight.', ceiling: 'Total bonus never above 25% of base coins.' }),
+  dreamBell: Object.freeze({ name: 'Dream Bell', role: 'payoff', source: 'shop',
+    desc: 'Victory restores 3% of maximum Sparkle, plus 1% of maximum Sparkle per Pluck held.',
+    trigger: 'Victory.', limit: 'Once per fight.', ceiling: '+8% at 8 Pluck (11% total maximum Sparkle).' }),
+  thimbleGuard: Object.freeze({ name: 'Thimble Guard', role: 'payoff', source: 'shop',
+    desc: 'First useful Guard each fight adds a barrier of 2% of maximum Stuffing, plus 0.5% of maximum per Pluck held.',
+    trigger: 'First useful Guard each fight.', limit: 'Once per fight.', ceiling: 'Within 30% maximum Stuffing barrier cap.' }),
+  amberMarble: Object.freeze({ name: 'Amber Marble', role: 'generator', source: 'shop',
+    desc: 'First damaging action each fight deals 8% more and gains 1 Pluck.',
+    trigger: 'First damaging action each fight.', limit: 'Once per fight.', ceiling: '+8% damage; +1 Pluck.' }),
+  ribbonKnot: Object.freeze({ name: 'Ribbon Knot of Resolve', role: 'payoff', source: 'shop',
+    desc: 'A free physical strike restores 2% of maximum Sparkle, doubled while holding 4 or more Pluck.',
+    trigger: 'A free physical strike.', limit: 'Every free physical strike.', ceiling: '4% maximum Sparkle at 4 or more Pluck.' }),
+  stuffingSatchel: Object.freeze({ name: 'Emergency Stuffing Satchel', role: 'generator', source: 'shop',
+    desc: 'Mend heals 10% more. A Mend that heals gains 1 Pluck.',
+    trigger: 'A Mend that heals.', limit: 'Every useful Mend.', ceiling: '+10% Mend healing; +1 Pluck.' }),
   feltFang: Object.freeze({ name: 'Felt Vampire Fang', role: 'payoff', source: 'shop',
     desc: 'Your hits restore 20% of the damage that landed as Stuffing (health), plus 3% per Pluck held.',
     trigger: 'A damaging action that lands. Overkill never heals.', limit: 'Every damaging action.',
@@ -59,9 +89,10 @@ export const ENGINE_EFFECTS = Object.freeze({
 });
 export const ENGINE_RELIC_IDS = Object.freeze(Object.keys(ENGINE_EFFECTS));
 
-const clampInt = (n, lo, hi) => Math.max(lo, Math.min(hi, Math.floor(Number.isFinite(n) ? n : 0)));
+export const clampInt = (n, lo, hi) => Math.max(lo, Math.min(hi, Math.floor(Number.isFinite(n) ? n : 0)));
 // Echo strength rounds to whole Pluck: a half-strength echo of a 1-Pluck trigger still counts.
-const scaled = (base, k) => k > 0 ? Math.max(0, Math.round(base * k)) : 0;
+export const scaled = (base, k) => k > 0 ? Math.max(0, Math.round(base * k)) : 0;
+const safeRank = (rank, id) => typeof rank === 'function' ? rank(id) : 1;
 
 /** True when any equipped or echoed relic takes part in the engine; the HUD only shows Pluck then. */
 export function engineActive(strength) { return ENGINE_RELIC_IDS.some(id => strength(id) > 0); }
@@ -76,7 +107,7 @@ export function gainPluck(f, amount, source, notes) {
 }
 
 /** Fight start: the Picnic Tin's carried Pluck arrives, and the tin empties. */
-export function startFightHook(s, f, strength, notes) {
+export function startFightHook(s, f, strength, notes, rank) {
   f.pluck = 0; f.rattled = false; f.locketUsed = false;
   const carried = clampInt(s.pluckCarry, 0, PLUCK_CAP);
   s.pluckCarry = 0;
@@ -87,14 +118,15 @@ export function startFightHook(s, f, strength, notes) {
 }
 
 /** Damage multiplier the Encore Ribbon adds to a damaging action. Shared by actionProfile and the inspector. */
-export function damageMultiplier(f, strength) {
+export function damageMultiplier(f, strength, rank) {
   const k = strength('encoreRibbon');
   if (!(k > 0) || !f) return 1;
-  return 1 + Math.min(ENCORE_CAP, ENCORE_PER_PLUCK * clampInt(f.pluck, 0, PLUCK_CAP) * k);
+  const cap = safeRank(rank, 'encoreRibbon') >= 3 ? 0.30 : ENCORE_CAP;
+  return 1 + Math.min(cap, ENCORE_PER_PLUCK * clampInt(f.pluck, 0, PLUCK_CAP) * k);
 }
 
 /** Fang lifesteal rate before the per-exchange cap, for previews and the hit hook. */
-export function lifestealRate(f, strength) {
+export function lifestealRate(f, strength, rank) {
   const k = strength('feltFang');
   if (!(k > 0)) return 0;
   return (FANG_BASE + FANG_PER_PLUCK * clampInt(f?.pluck, 0, PLUCK_CAP)) * k;
@@ -105,21 +137,28 @@ export function lifestealRate(f, strength) {
  * `ctx`: { key, damaging, damageApplied, streak, exposed (Expose was taken), maxHp }.
  * Returns the Stuffing to restore now (the engine caps it at missing health).
  */
-export function afterPlayerAction(f, ctx, strength, notes) {
+export function afterPlayerAction(f, ctx, strength, notes, rank) {
   if (ctx.damaging && ctx.damageApplied > 0 && ctx.streak >= 2) gainPluck(f, scaled(1, strength('encoreRibbon')), 'encoreRibbon', notes);
-  if (ctx.key === 'expose') gainPluck(f, scaled(2, strength('musicBox')), 'musicBox', notes);
-  if (ctx.key === 'recover') gainPluck(f, scaled(2, strength('seedHeart')), 'seedHeart', notes);
+  if (ctx.key === 'expose') gainPluck(f, scaled(safeRank(rank, 'musicBox') >= 3 ? 3 : 2, strength('musicBox')), 'musicBox', notes);
+  if (ctx.key === 'recover') {
+    const startPluck = f?.pluck || 0;
+    if (startPluck === 0 && strength('signet') > 0) {
+      gainPluck(f, scaled(safeRank(rank, 'signet') >= 3 ? 2 : 1, strength('signet')), 'signet', notes);
+    }
+    gainPluck(f, scaled(2, strength('seedHeart')), 'seedHeart', notes);
+  }
   let heal = 0;
-  const rate = lifestealRate(f, strength);
+  const rate = lifestealRate(f, strength, rank);
   if (rate > 0 && ctx.damageApplied > 0) {
-    const cap = Math.floor(ctx.maxHp * FANG_EXCHANGE_CAP * Math.min(1.5, strength('feltFang')));
+    const capRate = safeRank(rank, 'feltFang') >= 3 ? 0.13 : FANG_EXCHANGE_CAP;
+    const cap = Math.floor(ctx.maxHp * capRate * Math.min(1.5, strength('feltFang')));
     heal = Math.min(cap, Math.floor(ctx.damageApplied * rate));
   }
   return { heal };
 }
 
 /** A successful Disrupt: Pluck and a Rattle for the enemy's next attack. */
-export function onInterrupt(f, strength, notes) {
+export function onInterrupt(f, strength, notes, rank) {
   const k = strength('lastToken');
   if (!(k > 0)) return;
   gainPluck(f, scaled(3, k), 'lastToken', notes);
@@ -128,22 +167,24 @@ export function onInterrupt(f, strength, notes) {
 }
 
 /** Damage multiplier for the enemy's next attack while Rattled (applied in the telegraph intent). */
-export function rattleMultiplier(f, strength) {
+export function rattleMultiplier(f, strength, rank) {
   if (!f?.rattled) return 1;
-  return 1 - Math.min(RATTLE_REDUCTION_CAP, RATTLE_REDUCTION * Math.max(1, strength('lastToken')));
+  const reduction = safeRank(rank, 'lastToken') >= 3 ? 0.40 : RATTLE_REDUCTION;
+  return 1 - Math.min(RATTLE_REDUCTION_CAP, reduction * Math.max(1, strength('lastToken')));
 }
 
 /**
  * A useful Guard (the engine's existing 20-prevented rule). Returns damage to send back to the enemy,
  * already limited so the enemy keeps at least 1 HP.
  */
-export function onUsefulGuard(f, ctx, strength, notes) {
+export function onUsefulGuard(f, ctx, strength, notes, rank) {
   const k = strength('lintLocket');
   if (!(k > 0)) return { reflect: 0 };
   gainPluck(f, scaled(ctx.heavy ? 3 : 2, k), 'lintLocket', notes);
   if (!ctx.heavy || f.locketUsed) return { reflect: 0 };
   f.locketUsed = true;
-  const reflect = Math.max(0, Math.min(Math.max(0, ctx.enemyHp - 1), Math.floor(ctx.prevented * LOCKET_REFLECT * k)));
+  const reflectRate = safeRank(rank, 'lintLocket') >= 3 ? 0.35 : LOCKET_REFLECT;
+  const reflect = Math.max(0, Math.min(Math.max(0, ctx.enemyHp - 1), Math.floor(ctx.prevented * reflectRate * k)));
   return { reflect };
 }
 
@@ -151,22 +192,30 @@ export function onUsefulGuard(f, ctx, strength, notes) {
  * After the enemy response resolves. `ctx`: { key, hurt (incoming > 0), heavy, interrupted, alive, maxHp }.
  * Returns the Stuffing to restore now.
  */
-export function afterEnemyResponse(f, ctx, strength, notes) {
+export function afterEnemyResponse(f, ctx, strength, notes, rank) {
   if (!ctx.interrupted) f.rattled = false;
-  if (ctx.hurt) gainPluck(f, scaled(ctx.heavy ? 2 : 1, strength('darnedPatch')), 'darnedPatch', notes);
+  if (ctx.hurt) {
+    const patchPluck = ctx.heavy ? (safeRank(rank, 'darnedPatch') >= 3 ? 3 : 2) : 1;
+    gainPluck(f, scaled(patchPluck, strength('darnedPatch')), 'darnedPatch', notes);
+  }
   let heal = 0;
   const k = strength('seedHeart');
-  if (k > 0 && ctx.key === 'recover' && !ctx.heavy && ctx.alive) heal = Math.floor(ctx.maxHp * SEED_HEAL * k);
+  if (k > 0 && ctx.key === 'recover' && ctx.alive) {
+    if (!ctx.heavy) heal = Math.floor(ctx.maxHp * SEED_HEAL * k);
+    else if (safeRank(rank, 'seedHeart') >= 3) heal = Math.floor(ctx.maxHp * SEED_HEAL * 0.5 * k);
+  }
   return { heal };
 }
 
 /** Victory: Cocoa heals from held Pluck, the Picnic Tin keeps some for the next fight. Neither spends Pluck. */
-export function onVictory(s, f, ctx, strength, notes) {
-  const pluck = clampInt(f.pluck, 0, PLUCK_CAP);
+export function onVictory(s, f, ctx, strength, notes, rank) {
+  const pluck = clampInt(f?.pluck, 0, PLUCK_CAP);
   const cocoa = strength('cocoaThimble');
-  const heal = cocoa > 0 && pluck > 0 ? Math.floor(ctx.maxHp * COCOA_PER_PLUCK * pluck * cocoa) : 0;
+  const cocoaRate = safeRank(rank, 'cocoaThimble') >= 3 ? 0.05 : COCOA_PER_PLUCK;
+  const heal = cocoa > 0 && pluck > 0 ? Math.floor(ctx.maxHp * cocoaRate * pluck * cocoa) : 0;
   const tin = strength('picnicTin');
-  const carry = tin > 0 ? Math.min(pluck, scaled(PLUCK_CARRY_CAP, tin), PLUCK_CAP) : 0;
+  const carryCap = safeRank(rank, 'picnicTin') >= 3 ? 4 : PLUCK_CARRY_CAP;
+  const carry = tin > 0 ? Math.min(pluck, scaled(carryCap, tin), PLUCK_CAP) : 0;
   s.pluckCarry = carry;
   if (carry > 0) notes?.push(`Picnic tin keeps ${carry} Pluck for your next fight`);
   return { heal };

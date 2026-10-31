@@ -85,7 +85,7 @@ def standalone(html_name, entry_name):
         css = ':root,body,#app,#modal{--bracken-scene:url("' + scene + '")}\n' + css
     for asset in sorted((source / 'assets').rglob('*')):
         if asset.is_file() and asset.suffix in ['.png','.jpg','.webp','.svg']:
-            name = str(asset.relative_to(source))
+            name = asset.relative_to(source).as_posix()
             if name in app or name in css or name in html:
                 url = data_url(asset)
                 app = app.replace(name, url)

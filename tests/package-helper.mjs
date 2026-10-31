@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, copyFile, rm, readFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, copyFile, rm, readFile, cp as copyDir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -13,11 +13,11 @@ export async function buildPackage() {
   try {
     const copy = path.join(temp, 'repo');
     await mkdir(copy, { recursive: true });
-    const cp = spawnSync('cp', ['-a', path.join(root, 'dist'), copy], { encoding: 'utf8' });
-    if (cp.status !== 0) throw new Error(cp.stderr);
+    await copyDir(path.join(root, 'dist'), path.join(copy, 'dist'), { recursive: true });
     await copyFile(path.join(root, 'scripts-package.py'), path.join(copy, 'scripts-package.py'));
     await copyFile(path.join(root, 'package.json'), path.join(copy, 'package.json'));
-    const run = spawnSync('python3', ['scripts-package.py'], { cwd: copy, encoding: 'utf8' });
+    const py = process.platform === 'win32' ? 'python' : 'python3';
+    const run = spawnSync(py, ['-X', 'utf8', 'scripts-package.py'], { cwd: copy, encoding: 'utf8', env: { ...process.env, PYTHONUTF8: '1' } });
     if (run.status !== 0) throw new Error(run.stderr || run.stdout);
     const { version } = JSON.parse(await readFile(path.join(copy, 'package.json'), 'utf8'));
     return {

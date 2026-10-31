@@ -9,9 +9,9 @@ Updated 30 October 2026. Milestone G1 (`G1-A`, `G1-B`, `G1-C`) is complete and v
 | G1-A walkthrough and survivability | Complete; 40-seed campaign & Tier-10 matrices and fresh independent review PASS | [PR #13](https://github.com/7Donuts/crown-calamity/pull/13); `g1a-walkthrough.md`, `g1a-review.md` |
 | G1-B prices | CP1 trial delivered; independent and root review PASS | [PR #15](https://github.com/7Donuts/crown-calamity/pull/15); `g1b-price-curve.md`, `g1b-review.md` |
 | G1-C workshop economy | Complete; regional supply/no-profit gate PASS | [PR #12](https://github.com/7Donuts/crown-calamity/pull/12); `g1c-regional-workshop.md`, `g1c-review.md` |
-| G2-1 two-hands lab | Complete; 40-seed lab B0 matrix and independent review PASS | `g2-1-two-hands-lab.md`, `g2-1-review.md` |
-| G2-5 relic engine v2 | Ready to start | Next in queue |
-| G2-2 / G2-3 / G2-4 / G2-6 | Not started | Awaiting dependencies; CP2 and CP3 pre-approved |
+| G2-1 two-hands lab | Complete; 40-seed lab B0 matrix and independent review PASS | [PR #17](https://github.com/7Donuts/crown-calamity/pull/17); `g2-1-two-hands-lab.md`, `g2-1-review.md` |
+| G2-5 relic engine v2 | Complete; Spec 49 sections 1–4, 40-seed B0 matrix, and independent review PASS | `g2-5-relic-engine-v2.md`, `g2-5-review.md` |
+| G2-2 / G2-3 / G2-4 / G2-6 | In progress | Building and reviewing in parallel worktrees |
 | G3-1 / G3-2 / G3-3 | Not started | Awaiting G2 and CP4 owner checkpoint |
 
 ## Review history and correction
