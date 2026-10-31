@@ -115,7 +115,7 @@ One input, one exchange: yes, both hands act inside the chosen exchange. No time
 Seeded simulations (the design 43 method) for weapon and shield, two weapons, weapon and mender, and two-handed, per channel, at levels 1, 9, 20, 35 and 50:
 - Two weapons deal at most 10% more expected damage per exchange than a two-handed weapon of the same tier, and lose more Stuffing per fight than weapon and shield.
 - Weapon and mender loses the least net Stuffing per fight without relics, and wins no faster than weapon and shield.
-- No pairing changes average exchanges per fight by more than 15% against today's equivalent build.
+- No pairing changes average exchanges per fight by more than 15% against today's equivalent build. Owner-accepted exception (31 October 2026, D24): the Caster block shortens Chapter 3 wand fights with a focus second hand by 20.5% (4.4 to 3.5 exchanges at mastery ranks 1 and 3); this is the intended effect of giving Casters a block (`handoffs/reports/g3-6-barriers-and-casters.md`).
 
 ## Documents to update when shipped
 
