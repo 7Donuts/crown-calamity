@@ -145,5 +145,5 @@ test('future chapter collections stay compact and relic descriptions retain cond
   assert.match(html,/The Lost Toy Arcade/);
   assert.doesNotMatch(html,/data-stock-id="floodrod"/);
   const relics=renderMarket(s,{vendorId:'curio',mode:'buy',filters:{showOtherStyles:true,showLowerTiers:true}});
-  assert.match(relics,/Recover restores 2 extra Sparkle/i);
+  assert.match(relics,/Recover restores 3% of maximum Sparkle extra/i);
 });

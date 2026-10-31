@@ -35,7 +35,7 @@ test('both relic slots work at full strength from character creation, and an old
 
 test('Pluck only shows when an engine relic is equipped or echoed', () => {
   assert.equal(G.pluckStatus(fighter()).active, false);
-  assert.equal(G.pluckStatus(fighter('signet')).active, false);
+  assert.equal(G.pluckStatus(fighter('signet')).active, true);
   assert.equal(G.pluckStatus(fighter('signet', 'feltFang')).active, true);
 });
 
@@ -232,4 +232,14 @@ test('an echo of a relic held in the second slot adds half strength, as for the 
   assert.equal(G.unlockRelic(s, 0).ok, true);
   assert.equal(G.attuneRelic(s, 0, 'feltFang').ok, true);
   assert.equal(relicEffectStrength(s, 'feltFang'), 1.5);
+});
+
+test('recovering at 0 Pluck triggers both signet and seedHeart without ordering conflict', () => {
+  const s = fighter('signet', 'seedHeart');
+  assert.ok(G.startFight(s, 'rats', 'hunt', clock));
+  assert.equal(s.fight.pluck, 0);
+  s.hp = 100; s.mp = 0; s.sp = 0;
+  const result = step(s, 'recover');
+  assert.ok(result.ok);
+  assert.equal(s.fight.pluck, 3, 'both signet (at 0 Pluck) and seedHeart grant Pluck on Recover');
 });

@@ -22,7 +22,10 @@ export function hero(kit, level, { race } = {}) {
 export const strikeKey = s => { const p = G.primaryActions(s); return G.actionInfo(s, p.skill).reason ? 'attack' : p.skill; };
 export const respondKey = s => { const p = G.primaryActions(s); return G.actionInfo(s, p.combined).reason ? 'guard' : p.combined; };
 // A player who can finish the enemy this exchange strikes instead of guarding: the heavy never lands.
-export const canFinish = s => G.actionProfile(s, strikeKey(s))?.normal >= s.fight.hp;
+export const canFinish = s => {
+  const p = G.actionProfile(s, strikeKey(s));
+  return ((p?.normal || 0) + (p?.offhand?.normal || 0)) >= s.fight.hp;
+};
 export const POLICIES = {
   strike: strikeKey,
   respond: s => G.intent(s).heavy && !canFinish(s) ? respondKey(s) : strikeKey(s),

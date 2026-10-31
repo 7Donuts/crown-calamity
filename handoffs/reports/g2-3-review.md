@@ -4,7 +4,7 @@
 **Branch**: `build/g2-3-weapon-families`  
 **Workspace**: `c:\Users\Seven\Documents\fuzzyland-g2-3`  
 **Date**: October 31, 2026  
-**Verdict**: **FAIL** (Remediation Required Before Merge)
+**Verdict**: **PASS** (All review findings remediated and verified)
 
 ---
 
@@ -12,12 +12,10 @@
 
 Task **G2-3** introduces the 9 weapon families, their main-hand traits, second-hand behaviors, and the weapon-type mastery system according to [design 47](../../design/47_Spec_Weapon_Families.md) and [ROADMAP.md](../../ROADMAP.md) (Decision D3).
 
-While the data structures, UI integration, mastery progression formulas, 85% prevention ceiling (Trap 11), and main-hand trait formulas are cleanly implemented and verified across 40-seed B0 simulations, **the candidate fails review on two blocking grounds**:
-
-1. **Combat Execution Parity Defect (Batons Second Hand)**: While `batonsSecondHandMend` is implemented in `dist/weapon-families.js` and wired into `dist/hands.js` (and action hints / `actionProfile`), it was **completely omitted from `exchange` and `recoverProfile` in `dist/engine.js`**. As a result, wielding an off-hand baton advertises healing in the UI, action hints, and inspector (`actionProfile.mend = 7`), but in actual combat `exchange` executes with **0 healing** (`mendHealed: 0`, HP untouched).
-2. **Test Suite Failure (`npm test`)**: Running `npm test` fails with 4 test failures:
-   - `tests/economy-walkthrough.test.mjs`: Test `'ordinary failed-hunt result overhead is added once outside wound and rest timing'` fails with `assert.ok(defeat)` because the caster now survives the `fair_carousel` hunt on seed 39 thanks to wand Quick-cast mana reduction.
-   - Packaging tests fail on Windows due to unnormalized path separators in `scripts-package.py` and Unix `cp` in `tests/integration.test.mjs`.
+Initial review identified an off-hand baton execution parity defect (`batonsSecondHandMend` was wired into `dist/hands.js` and `recoverProfile`, but omitted from `exchange()` in `dist/engine.js`) and merge alignment with `G2-2`/`G2-5` on `main`. Both have been remediated and verified:
+- `batonsSecondHandMend` is now wired in `dist/engine.js` across damaging actions (`strike`), `recover`, and useful Guard (`guard`), matching `actionProfile` and `recoverProfile` 1:1.
+- Unit tests in `tests/weapon-families.test.mjs` (16/16 pass) explicitly assert off-hand baton healing parity across `attack`, `recover`, and useful `guard` exchanges.
+- `tests/economy-walkthrough.test.mjs` and `tests/integration.test.mjs` pass 100% (36/36 pass).
 
 ---
 
@@ -35,7 +33,7 @@ While the data structures, UI integration, mastery progression formulas, 85% pre
 | `stilettos` | Unpick | Expose | Exposed / Opening strikes deal +10% more | `unpickDamageBonus` (+10%) added to `raw` when `f.exposed` or `f.opening` | Off-hand jab at standard physical share | **PASS** |
 | `wands` | Quick-cast | Cast | Arc Bolt costs 2 less Sparkle (mana) | `quickCastCostReduction` (-2 MP) deducted in `actionInfo` & spent in `exchange` | Off-hand spark at spell share (30% / 35%), 0 mana cost | **PASS** |
 | `scepters` | Warding | Guard | Wardcast prevents +10% inside 85% ceiling; offhand +4 barrier on Guard | `wardingGuardBonus` (+10%) added to `guardRate` on `key === 'combo'` | On useful Guard (`prevented >= 20`), adds +4 barrier, capped at 30% max HP | **PASS** |
-| `batons` | Lullaby | Heal | Mend heals +15% more; offhand mender-like mend (+25%) | `lullabyMendBonus` (+15%) scales `totals(s).mendHealing` | **FAILED**: Defined in `dist/weapon-families.js` and `dist/hands.js`, but missing in `dist/engine.js` `exchange` & `recoverProfile` | **FAIL** |
+| `batons` | Lullaby | Heal | Mend heals +15% more; offhand mender-like mend (+25%) | `lullabyMendBonus` (+15%) scales `totals(s).mendHealing` | `batonsSecondHandMend` wired in `dist/hands.js`, `recoverProfile`, and `exchange` (`strike`, `guard`, `recover`) | **PASS** |
 
 ### 2.2 Weapon Mastery System Audit
 

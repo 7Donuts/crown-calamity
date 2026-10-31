@@ -255,10 +255,39 @@ test('Scepters (Warding) increases Wardcast prevention by 10%', () => {
   assert.equal(G.wardingGuardBonus(s, scepter, 'attack'), 0);
 });
 
-test('Batons (Lullaby) increases Mend healing by 15%', () => {
+test('Batons (Lullaby) increases Mend healing by 15% and off-hand baton heals on strike, guard, and recover', () => {
   const s = G.fresh();
   const baton = Object.values(G.ITEMS).find(i => i.family === 'batons');
   s.gear.weapon = baton.id;
 
   assert.equal(G.lullabyMendBonus(s, baton), 0.15);
+
+  // Off-hand baton mend parity in actionProfile, recoverProfile, and exchange
+  const offBaton = Object.values(G.ITEMS).find(i => i.family === 'batons' && !i.twoHanded);
+  s.gear.weapon = 'rod';
+  s.gear.offhand = offBaton.id;
+  if (!s.bag.includes(offBaton.id)) s.bag.push(offBaton.id);
+
+  const prof = G.actionProfile(s, 'attack', 'rats');
+  assert.ok(prof.mend > 0, 'actionProfile should report off-hand baton mend');
+  const recProf = G.recoverProfile(s);
+  assert.equal(recProf.mend, prof.mend, 'recoverProfile should report off-hand baton mend');
+
+  // Combat exchange parity: strike, recover, and useful guard
+  s.level = 5;
+  s.hp = 250;
+  assert.ok(G.startFight(s, 'crab', 'hunt', 1000));
+  const strikeRes = G.exchange(s, 'attack', () => 0.5, 2000);
+  assert.equal(strikeRes.mendHealed, prof.mend, 'exchange strike should apply off-hand baton mend');
+
+  s.hp = 250;
+  const recRes = G.exchange(s, 'recover', () => 0.5, 3000);
+  assert.equal(recRes.mendHealed, recProf.mend, 'exchange recover should apply off-hand baton mend');
+
+  s.hp = 250;
+  s.fight.round = 1; // Clawback Crab heavy wind-up (damage > 100, guard prevents >= 20)
+  const guardRes = G.exchange(s, 'guard', () => 0.5, 4000);
+  const expectedGuardMend = G.batonsSecondHandMend(s, offBaton, 'guard');
+  assert.ok(expectedGuardMend > 0);
+  assert.equal(guardRes.mendHealed, expectedGuardMend, 'exchange useful guard should apply off-hand baton mend');
 });
