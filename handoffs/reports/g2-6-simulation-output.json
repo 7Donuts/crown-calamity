@@ -1,0 +1,4566 @@
+{
+  "generatedAt": "2026-10-31T03:26:50.117Z",
+  "seedCount": 40,
+  "chainLength": 10,
+  "spec46_twoHands": {
+    "chapter_1": {
+      "weapon_shield": {
+        "winRate": 66.4,
+        "wins": 79,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.8,
+        "expectedProfileDamagePerExchange": 102.9,
+        "attemptedDamagePerExchange": 103.3,
+        "landedDamagePerExchange": 96.7,
+        "netStuffingLostPerWonFight": 198.4,
+        "netStuffingLostSharePct": 41.3,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_weapons": {
+        "winRate": 73.2,
+        "wins": 109,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 2.8,
+        "expectedProfileDamagePerExchange": 145.3,
+        "attemptedDamagePerExchange": 143.9,
+        "landedDamagePerExchange": 134.1,
+        "netStuffingLostPerWonFight": 147,
+        "netStuffingLostSharePct": 30.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "weapon_mender": {
+        "winRate": 67.7,
+        "wins": 84,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.5,
+        "expectedProfileDamagePerExchange": 98.2,
+        "attemptedDamagePerExchange": 98.9,
+        "landedDamagePerExchange": 89.7,
+        "netStuffingLostPerWonFight": 173,
+        "netStuffingLostSharePct": 35.3,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 51.8,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_handed": {
+        "winRate": 65.8,
+        "wins": 77,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.5,
+        "expectedProfileDamagePerExchange": 114.2,
+        "attemptedDamagePerExchange": 113.9,
+        "landedDamagePerExchange": 108.7,
+        "netStuffingLostPerWonFight": 190.3,
+        "netStuffingLostSharePct": 39.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "duelist_two_weapons": {
+        "winRate": 74.7,
+        "wins": 118,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 2.8,
+        "expectedProfileDamagePerExchange": 149,
+        "attemptedDamagePerExchange": 148.6,
+        "landedDamagePerExchange": 140.1,
+        "netStuffingLostPerWonFight": 137.2,
+        "netStuffingLostSharePct": 28.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_focus": {
+        "winRate": 58.3,
+        "wins": 56,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4,
+        "expectedProfileDamagePerExchange": 103.2,
+        "attemptedDamagePerExchange": 104,
+        "landedDamagePerExchange": 92,
+        "netStuffingLostPerWonFight": 235.9,
+        "netStuffingLostSharePct": 49.1,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_mender": {
+        "winRate": 66.4,
+        "wins": 79,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.3,
+        "expectedProfileDamagePerExchange": 91.6,
+        "attemptedDamagePerExchange": 92.5,
+        "landedDamagePerExchange": 83.2,
+        "netStuffingLostPerWonFight": 195.3,
+        "netStuffingLostSharePct": 39.9,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 49.5,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    },
+    "chapter_2": {
+      "weapon_shield": {
+        "winRate": 68,
+        "wins": 85,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.2,
+        "expectedProfileDamagePerExchange": 190.2,
+        "attemptedDamagePerExchange": 190.2,
+        "landedDamagePerExchange": 171,
+        "netStuffingLostPerWonFight": 211.2,
+        "netStuffingLostSharePct": 35,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_weapons": {
+        "winRate": 74.4,
+        "wins": 116,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 2.9,
+        "expectedProfileDamagePerExchange": 269.2,
+        "attemptedDamagePerExchange": 262,
+        "landedDamagePerExchange": 243,
+        "netStuffingLostPerWonFight": 165.6,
+        "netStuffingLostSharePct": 27.4,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "weapon_mender": {
+        "winRate": 75.5,
+        "wins": 123,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.4,
+        "expectedProfileDamagePerExchange": 179.9,
+        "attemptedDamagePerExchange": 182.2,
+        "landedDamagePerExchange": 159.5,
+        "netStuffingLostPerWonFight": 163.8,
+        "netStuffingLostSharePct": 26.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 81.8,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_handed": {
+        "winRate": 66.7,
+        "wins": 80,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.7,
+        "expectedProfileDamagePerExchange": 194.4,
+        "attemptedDamagePerExchange": 194.5,
+        "landedDamagePerExchange": 172.5,
+        "netStuffingLostPerWonFight": 253.2,
+        "netStuffingLostSharePct": 41.9,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "duelist_two_weapons": {
+        "winRate": 78.3,
+        "wins": 144,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 2.8,
+        "expectedProfileDamagePerExchange": 271.4,
+        "attemptedDamagePerExchange": 270.7,
+        "landedDamagePerExchange": 256.8,
+        "netStuffingLostPerWonFight": 147.2,
+        "netStuffingLostSharePct": 24.4,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_focus": {
+        "winRate": 65.8,
+        "wins": 77,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.8,
+        "expectedProfileDamagePerExchange": 190.2,
+        "attemptedDamagePerExchange": 191.9,
+        "landedDamagePerExchange": 162.4,
+        "netStuffingLostPerWonFight": 267.9,
+        "netStuffingLostSharePct": 44.4,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_mender": {
+        "winRate": 74.7,
+        "wins": 118,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.3,
+        "expectedProfileDamagePerExchange": 174.4,
+        "attemptedDamagePerExchange": 176.6,
+        "landedDamagePerExchange": 157.1,
+        "netStuffingLostPerWonFight": 182.2,
+        "netStuffingLostSharePct": 29.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 79.4,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    },
+    "chapter_3": {
+      "weapon_shield": {
+        "winRate": 63.3,
+        "wins": 69,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.1,
+        "expectedProfileDamagePerExchange": 277.4,
+        "attemptedDamagePerExchange": 274.9,
+        "landedDamagePerExchange": 251.9,
+        "netStuffingLostPerWonFight": 336,
+        "netStuffingLostSharePct": 45.5,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_weapons": {
+        "winRate": 67.5,
+        "wins": 83,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.7,
+        "expectedProfileDamagePerExchange": 334,
+        "attemptedDamagePerExchange": 333.2,
+        "landedDamagePerExchange": 310,
+        "netStuffingLostPerWonFight": 279.4,
+        "netStuffingLostSharePct": 37.9,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "weapon_mender": {
+        "winRate": 69.7,
+        "wins": 92,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.6,
+        "expectedProfileDamagePerExchange": 254.5,
+        "attemptedDamagePerExchange": 253.6,
+        "landedDamagePerExchange": 236.7,
+        "netStuffingLostPerWonFight": 268.8,
+        "netStuffingLostSharePct": 35.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 112.8,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_handed": {
+        "winRate": 55.1,
+        "wins": 49,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.3,
+        "expectedProfileDamagePerExchange": 268.3,
+        "attemptedDamagePerExchange": 269.4,
+        "landedDamagePerExchange": 254.1,
+        "netStuffingLostPerWonFight": 403,
+        "netStuffingLostSharePct": 55.4,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "duelist_two_weapons": {
+        "winRate": 70.8,
+        "wins": 97,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.4,
+        "expectedProfileDamagePerExchange": 410,
+        "attemptedDamagePerExchange": 402.8,
+        "landedDamagePerExchange": 356.2,
+        "netStuffingLostPerWonFight": 238.6,
+        "netStuffingLostSharePct": 32.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_focus": {
+        "winRate": 53.5,
+        "wins": 46,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.4,
+        "expectedProfileDamagePerExchange": 255.5,
+        "attemptedDamagePerExchange": 255.9,
+        "landedDamagePerExchange": 244.8,
+        "netStuffingLostPerWonFight": 408.2,
+        "netStuffingLostSharePct": 56.1,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_mender": {
+        "winRate": 63,
+        "wins": 68,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.8,
+        "expectedProfileDamagePerExchange": 249.7,
+        "attemptedDamagePerExchange": 248.6,
+        "landedDamagePerExchange": 233.6,
+        "netStuffingLostPerWonFight": 300,
+        "netStuffingLostSharePct": 40.5,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 114.4,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    },
+    "chapter_4": {
+      "weapon_shield": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.7,
+        "expectedProfileDamagePerExchange": 347.6,
+        "attemptedDamagePerExchange": 348.2,
+        "landedDamagePerExchange": 326.1,
+        "netStuffingLostPerWonFight": 480.6,
+        "netStuffingLostSharePct": 57.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_weapons": {
+        "winRate": 54,
+        "wins": 47,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.3,
+        "expectedProfileDamagePerExchange": 430.8,
+        "attemptedDamagePerExchange": 429.8,
+        "landedDamagePerExchange": 395.2,
+        "netStuffingLostPerWonFight": 457.5,
+        "netStuffingLostSharePct": 54.3,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "weapon_mender": {
+        "winRate": 54.5,
+        "wins": 48,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.8,
+        "expectedProfileDamagePerExchange": 300.7,
+        "attemptedDamagePerExchange": 299.4,
+        "landedDamagePerExchange": 276.6,
+        "netStuffingLostPerWonFight": 440.9,
+        "netStuffingLostSharePct": 52,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 167.8,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_handed": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.2,
+        "expectedProfileDamagePerExchange": 306.4,
+        "attemptedDamagePerExchange": 304,
+        "landedDamagePerExchange": 295,
+        "netStuffingLostPerWonFight": 616.3,
+        "netStuffingLostSharePct": 74.1,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "duelist_two_weapons": {
+        "winRate": 66.7,
+        "wins": 80,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.3,
+        "expectedProfileDamagePerExchange": 510.2,
+        "attemptedDamagePerExchange": 501.7,
+        "landedDamagePerExchange": 473.1,
+        "netStuffingLostPerWonFight": 335,
+        "netStuffingLostSharePct": 40.3,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_focus": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.2,
+        "expectedProfileDamagePerExchange": 306.7,
+        "attemptedDamagePerExchange": 304.6,
+        "landedDamagePerExchange": 295.2,
+        "netStuffingLostPerWonFight": 608.8,
+        "netStuffingLostSharePct": 73.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_mender": {
+        "winRate": 50.6,
+        "wins": 41,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.5,
+        "expectedProfileDamagePerExchange": 316.3,
+        "attemptedDamagePerExchange": 315.7,
+        "landedDamagePerExchange": 291.4,
+        "netStuffingLostPerWonFight": 501.1,
+        "netStuffingLostSharePct": 59.1,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 161.6,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    },
+    "chapter_5": {
+      "weapon_shield": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.3,
+        "expectedProfileDamagePerExchange": 464,
+        "attemptedDamagePerExchange": 464.8,
+        "landedDamagePerExchange": 443.4,
+        "netStuffingLostPerWonFight": 612.6,
+        "netStuffingLostSharePct": 63.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_weapons": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.1,
+        "expectedProfileDamagePerExchange": 522.1,
+        "attemptedDamagePerExchange": 525.8,
+        "landedDamagePerExchange": 486.8,
+        "netStuffingLostPerWonFight": 632.3,
+        "netStuffingLostSharePct": 65.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "weapon_mender": {
+        "winRate": 51.2,
+        "wins": 42,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.6,
+        "expectedProfileDamagePerExchange": 393.4,
+        "attemptedDamagePerExchange": 392.2,
+        "landedDamagePerExchange": 363.6,
+        "netStuffingLostPerWonFight": 598,
+        "netStuffingLostSharePct": 59.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 198.6,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "two_handed": {
+        "winRate": 47.4,
+        "wins": 36,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.2,
+        "expectedProfileDamagePerExchange": 403.4,
+        "attemptedDamagePerExchange": 404.7,
+        "landedDamagePerExchange": 371.6,
+        "netStuffingLostPerWonFight": 866,
+        "netStuffingLostSharePct": 89.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "duelist_two_weapons": {
+        "winRate": 66.4,
+        "wins": 79,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.2,
+        "expectedProfileDamagePerExchange": 640.1,
+        "attemptedDamagePerExchange": 643.8,
+        "landedDamagePerExchange": 610.8,
+        "netStuffingLostPerWonFight": 424.2,
+        "netStuffingLostSharePct": 44,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_focus": {
+        "winRate": 47.4,
+        "wins": 36,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.2,
+        "expectedProfileDamagePerExchange": 396.1,
+        "attemptedDamagePerExchange": 397.1,
+        "landedDamagePerExchange": 367,
+        "netStuffingLostPerWonFight": 866,
+        "netStuffingLostSharePct": 89.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "caster_wand_mender": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.2,
+        "expectedProfileDamagePerExchange": 384.8,
+        "attemptedDamagePerExchange": 383.5,
+        "landedDamagePerExchange": 358.4,
+        "netStuffingLostPerWonFight": 664.8,
+        "netStuffingLostSharePct": 66.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 182,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    }
+  },
+  "spec47_weaponFamilies": {
+    "chapter_1": {
+      "clubs": {
+        "rank_1": {
+          "winRate": 66.4,
+          "wins": 79,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 102.9,
+          "attemptedDamagePerExchange": 103.3,
+          "landedDamagePerExchange": 96.7,
+          "netStuffingLostPerWonFight": 198.4,
+          "netStuffingLostSharePct": 41.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 66.4,
+          "wins": 79,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 103,
+          "attemptedDamagePerExchange": 103.4,
+          "landedDamagePerExchange": 96.8,
+          "netStuffingLostPerWonFight": 192.8,
+          "netStuffingLostSharePct": 40.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "mauls": {
+        "rank_1": {
+          "winRate": 65.2,
+          "wins": 75,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.7,
+          "expectedProfileDamagePerExchange": 108.1,
+          "attemptedDamagePerExchange": 108.5,
+          "landedDamagePerExchange": 98.9,
+          "netStuffingLostPerWonFight": 206.6,
+          "netStuffingLostSharePct": 43,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 65.2,
+          "wins": 75,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.7,
+          "expectedProfileDamagePerExchange": 109.6,
+          "attemptedDamagePerExchange": 109.9,
+          "landedDamagePerExchange": 99.2,
+          "netStuffingLostPerWonFight": 206.6,
+          "netStuffingLostSharePct": 43,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "spears": {
+        "rank_1": {
+          "winRate": 65.8,
+          "wins": 77,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.5,
+          "expectedProfileDamagePerExchange": 114.2,
+          "attemptedDamagePerExchange": 113.9,
+          "landedDamagePerExchange": 108.7,
+          "netStuffingLostPerWonFight": 190.3,
+          "netStuffingLostSharePct": 39.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 66.1,
+          "wins": 78,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.4,
+          "expectedProfileDamagePerExchange": 117.3,
+          "attemptedDamagePerExchange": 117.4,
+          "landedDamagePerExchange": 111.3,
+          "netStuffingLostPerWonFight": 186.3,
+          "netStuffingLostSharePct": 38.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "needles": {
+        "rank_1": {
+          "winRate": 65.8,
+          "wins": 77,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.7,
+          "expectedProfileDamagePerExchange": 106.3,
+          "attemptedDamagePerExchange": 106.2,
+          "landedDamagePerExchange": 95.1,
+          "netStuffingLostPerWonFight": 209.3,
+          "netStuffingLostSharePct": 43.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 65.8,
+          "wins": 77,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.7,
+          "expectedProfileDamagePerExchange": 106.6,
+          "attemptedDamagePerExchange": 106.8,
+          "landedDamagePerExchange": 95.9,
+          "netStuffingLostPerWonFight": 206.8,
+          "netStuffingLostSharePct": 43.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "foils": {
+        "rank_1": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 104.5,
+          "attemptedDamagePerExchange": 104.5,
+          "landedDamagePerExchange": 93.6,
+          "netStuffingLostPerWonFight": 213.9,
+          "netStuffingLostSharePct": 44.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 104.5,
+          "attemptedDamagePerExchange": 104.5,
+          "landedDamagePerExchange": 93.6,
+          "netStuffingLostPerWonFight": 213.9,
+          "netStuffingLostSharePct": 44.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "stilettos": {
+        "rank_1": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 104,
+          "attemptedDamagePerExchange": 104,
+          "landedDamagePerExchange": 93.3,
+          "netStuffingLostPerWonFight": 213.9,
+          "netStuffingLostSharePct": 44.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 104.7,
+          "attemptedDamagePerExchange": 104.7,
+          "landedDamagePerExchange": 93.3,
+          "netStuffingLostPerWonFight": 213.9,
+          "netStuffingLostSharePct": 44.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wands": {
+        "rank_1": {
+          "winRate": 58.3,
+          "wins": 56,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4,
+          "expectedProfileDamagePerExchange": 103.2,
+          "attemptedDamagePerExchange": 104,
+          "landedDamagePerExchange": 92,
+          "netStuffingLostPerWonFight": 235.9,
+          "netStuffingLostSharePct": 49.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 58.3,
+          "wins": 56,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4,
+          "expectedProfileDamagePerExchange": 103.2,
+          "attemptedDamagePerExchange": 104,
+          "landedDamagePerExchange": 92,
+          "netStuffingLostPerWonFight": 235.9,
+          "netStuffingLostSharePct": 49.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "scepters": {
+        "rank_1": {
+          "winRate": 56,
+          "wins": 51,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 98.1,
+          "attemptedDamagePerExchange": 99.1,
+          "landedDamagePerExchange": 88.7,
+          "netStuffingLostPerWonFight": 241.5,
+          "netStuffingLostSharePct": 50.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 56,
+          "wins": 51,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 98.1,
+          "attemptedDamagePerExchange": 99.1,
+          "landedDamagePerExchange": 88.7,
+          "netStuffingLostPerWonFight": 241.5,
+          "netStuffingLostSharePct": 50.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "batons": {
+        "rank_1": {
+          "winRate": 57,
+          "wins": 53,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 100.5,
+          "attemptedDamagePerExchange": 101.4,
+          "landedDamagePerExchange": 89.4,
+          "netStuffingLostPerWonFight": 240.2,
+          "netStuffingLostSharePct": 50,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 57,
+          "wins": 53,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 100.5,
+          "attemptedDamagePerExchange": 101.4,
+          "landedDamagePerExchange": 89.4,
+          "netStuffingLostPerWonFight": 240.2,
+          "netStuffingLostSharePct": 50,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_3": {
+      "clubs": {
+        "rank_1": {
+          "winRate": 63,
+          "wins": 68,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 279.5,
+          "attemptedDamagePerExchange": 276.3,
+          "landedDamagePerExchange": 252.3,
+          "netStuffingLostPerWonFight": 338.8,
+          "netStuffingLostSharePct": 46.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 63.6,
+          "wins": 70,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 280.1,
+          "attemptedDamagePerExchange": 277.1,
+          "landedDamagePerExchange": 253.5,
+          "netStuffingLostPerWonFight": 331.4,
+          "netStuffingLostSharePct": 45.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "mauls": {
+        "rank_1": {
+          "winRate": 55.6,
+          "wins": 50,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 274.4,
+          "attemptedDamagePerExchange": 275.6,
+          "landedDamagePerExchange": 256.8,
+          "netStuffingLostPerWonFight": 402.7,
+          "netStuffingLostSharePct": 55.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 56,
+          "wins": 51,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 276.9,
+          "attemptedDamagePerExchange": 278.2,
+          "landedDamagePerExchange": 258.3,
+          "netStuffingLostPerWonFight": 402.3,
+          "netStuffingLostSharePct": 55.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "spears": {
+        "rank_1": {
+          "winRate": 54,
+          "wins": 47,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 264.3,
+          "attemptedDamagePerExchange": 265.2,
+          "landedDamagePerExchange": 253.3,
+          "netStuffingLostPerWonFight": 406.7,
+          "netStuffingLostSharePct": 55.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 54.5,
+          "wins": 48,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 270.8,
+          "attemptedDamagePerExchange": 271.8,
+          "landedDamagePerExchange": 256.9,
+          "netStuffingLostPerWonFight": 404.3,
+          "netStuffingLostSharePct": 55.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "needles": {
+        "rank_1": {
+          "winRate": 64.3,
+          "wins": 72,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 307.3,
+          "attemptedDamagePerExchange": 307.4,
+          "landedDamagePerExchange": 273.4,
+          "netStuffingLostPerWonFight": 328.7,
+          "netStuffingLostSharePct": 45.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 64.3,
+          "wins": 72,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 308.1,
+          "attemptedDamagePerExchange": 308,
+          "landedDamagePerExchange": 273.4,
+          "netStuffingLostPerWonFight": 328.7,
+          "netStuffingLostSharePct": 45.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "foils": {
+        "rank_1": {
+          "winRate": 63.6,
+          "wins": 70,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.9,
+          "expectedProfileDamagePerExchange": 290.5,
+          "attemptedDamagePerExchange": 291,
+          "landedDamagePerExchange": 267.8,
+          "netStuffingLostPerWonFight": 334.8,
+          "netStuffingLostSharePct": 46,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 63.6,
+          "wins": 70,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.9,
+          "expectedProfileDamagePerExchange": 290.5,
+          "attemptedDamagePerExchange": 291,
+          "landedDamagePerExchange": 267.8,
+          "netStuffingLostPerWonFight": 334.8,
+          "netStuffingLostSharePct": 46,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "stilettos": {
+        "rank_1": {
+          "winRate": 64.9,
+          "wins": 74,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 309.7,
+          "attemptedDamagePerExchange": 309.8,
+          "landedDamagePerExchange": 275.1,
+          "netStuffingLostPerWonFight": 324.5,
+          "netStuffingLostSharePct": 44.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 313.1,
+          "attemptedDamagePerExchange": 313,
+          "landedDamagePerExchange": 280.6,
+          "netStuffingLostPerWonFight": 314.4,
+          "netStuffingLostSharePct": 43.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wands": {
+        "rank_1": {
+          "winRate": 53.5,
+          "wins": 46,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 260.8,
+          "attemptedDamagePerExchange": 261.2,
+          "landedDamagePerExchange": 246.6,
+          "netStuffingLostPerWonFight": 408.2,
+          "netStuffingLostSharePct": 56.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 53.5,
+          "wins": 46,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 260.8,
+          "attemptedDamagePerExchange": 261.2,
+          "landedDamagePerExchange": 246.6,
+          "netStuffingLostPerWonFight": 408.2,
+          "netStuffingLostSharePct": 56.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "scepters": {
+        "rank_1": {
+          "winRate": 53.5,
+          "wins": 46,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 255.5,
+          "attemptedDamagePerExchange": 255.9,
+          "landedDamagePerExchange": 244.8,
+          "netStuffingLostPerWonFight": 408.2,
+          "netStuffingLostSharePct": 56.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 53.5,
+          "wins": 46,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 255.5,
+          "attemptedDamagePerExchange": 255.9,
+          "landedDamagePerExchange": 244.8,
+          "netStuffingLostPerWonFight": 408.2,
+          "netStuffingLostSharePct": 56.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "batons": {
+        "rank_1": {
+          "winRate": 53.5,
+          "wins": 46,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 259,
+          "attemptedDamagePerExchange": 259.5,
+          "landedDamagePerExchange": 246,
+          "netStuffingLostPerWonFight": 408.2,
+          "netStuffingLostSharePct": 56.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 53.5,
+          "wins": 46,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 259,
+          "attemptedDamagePerExchange": 259.5,
+          "landedDamagePerExchange": 246,
+          "netStuffingLostPerWonFight": 408.2,
+          "netStuffingLostSharePct": 56.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_5": {
+      "clubs": {
+        "rank_1": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 464,
+          "attemptedDamagePerExchange": 464.8,
+          "landedDamagePerExchange": 443.4,
+          "netStuffingLostPerWonFight": 612.6,
+          "netStuffingLostSharePct": 63.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.5,
+          "expectedProfileDamagePerExchange": 461.4,
+          "attemptedDamagePerExchange": 461.6,
+          "landedDamagePerExchange": 441.5,
+          "netStuffingLostPerWonFight": 593.6,
+          "netStuffingLostSharePct": 61.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "mauls": {
+        "rank_1": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 454,
+          "attemptedDamagePerExchange": 455.9,
+          "landedDamagePerExchange": 426.7,
+          "netStuffingLostPerWonFight": 652.9,
+          "netStuffingLostSharePct": 67.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 457.6,
+          "attemptedDamagePerExchange": 459.6,
+          "landedDamagePerExchange": 427.6,
+          "netStuffingLostPerWonFight": 652.9,
+          "netStuffingLostSharePct": 67.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "spears": {
+        "rank_1": {
+          "winRate": 46.7,
+          "wins": 35,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 402.5,
+          "attemptedDamagePerExchange": 403.9,
+          "landedDamagePerExchange": 371.5,
+          "netStuffingLostPerWonFight": 900.1,
+          "netStuffingLostSharePct": 93.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 47.4,
+          "wins": 36,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 409.7,
+          "attemptedDamagePerExchange": 411.9,
+          "landedDamagePerExchange": 378.8,
+          "netStuffingLostPerWonFight": 889.3,
+          "netStuffingLostSharePct": 92.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "needles": {
+        "rank_1": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 474.8,
+          "attemptedDamagePerExchange": 473.7,
+          "landedDamagePerExchange": 436.7,
+          "netStuffingLostPerWonFight": 655.7,
+          "netStuffingLostSharePct": 68,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 476.1,
+          "attemptedDamagePerExchange": 475.7,
+          "landedDamagePerExchange": 438.1,
+          "netStuffingLostPerWonFight": 655.7,
+          "netStuffingLostSharePct": 68,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "foils": {
+        "rank_1": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 469.3,
+          "attemptedDamagePerExchange": 469.5,
+          "landedDamagePerExchange": 435.2,
+          "netStuffingLostPerWonFight": 655.7,
+          "netStuffingLostSharePct": 68,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 469.3,
+          "attemptedDamagePerExchange": 469.5,
+          "landedDamagePerExchange": 435.2,
+          "netStuffingLostPerWonFight": 655.7,
+          "netStuffingLostSharePct": 68,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "stilettos": {
+        "rank_1": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 497.1,
+          "attemptedDamagePerExchange": 496.9,
+          "landedDamagePerExchange": 453.5,
+          "netStuffingLostPerWonFight": 638.7,
+          "netStuffingLostSharePct": 66.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 504.3,
+          "attemptedDamagePerExchange": 503.7,
+          "landedDamagePerExchange": 457.1,
+          "netStuffingLostPerWonFight": 635.7,
+          "netStuffingLostSharePct": 65.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wands": {
+        "rank_1": {
+          "winRate": 47.4,
+          "wins": 36,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 396.1,
+          "attemptedDamagePerExchange": 397.1,
+          "landedDamagePerExchange": 367,
+          "netStuffingLostPerWonFight": 866,
+          "netStuffingLostSharePct": 89.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 47.4,
+          "wins": 36,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 396.1,
+          "attemptedDamagePerExchange": 397.1,
+          "landedDamagePerExchange": 367,
+          "netStuffingLostPerWonFight": 866,
+          "netStuffingLostSharePct": 89.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "scepters": {
+        "rank_1": {
+          "winRate": 47.4,
+          "wins": 36,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 394.5,
+          "attemptedDamagePerExchange": 395.4,
+          "landedDamagePerExchange": 366.6,
+          "netStuffingLostPerWonFight": 866,
+          "netStuffingLostSharePct": 89.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 47.4,
+          "wins": 36,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 394.5,
+          "attemptedDamagePerExchange": 395.4,
+          "landedDamagePerExchange": 366.6,
+          "netStuffingLostPerWonFight": 866,
+          "netStuffingLostSharePct": 89.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "batons": {
+        "rank_1": {
+          "winRate": 47.4,
+          "wins": 36,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 399.2,
+          "attemptedDamagePerExchange": 400.2,
+          "landedDamagePerExchange": 367.7,
+          "netStuffingLostPerWonFight": 866,
+          "netStuffingLostSharePct": 89.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "rank_3": {
+          "winRate": 47.4,
+          "wins": 36,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 399.2,
+          "attemptedDamagePerExchange": 400.2,
+          "landedDamagePerExchange": 367.7,
+          "netStuffingLostPerWonFight": 866,
+          "netStuffingLostSharePct": 89.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    }
+  },
+  "spec48_races": {
+    "chapter_1": {
+      "bear": {
+        "natural": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 90.9,
+          "attemptedDamagePerExchange": 91.1,
+          "landedDamagePerExchange": 83.8,
+          "netStuffingLostPerWonFight": 214.3,
+          "netStuffingLostSharePct": 43,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 90.9,
+          "attemptedDamagePerExchange": 91.1,
+          "landedDamagePerExchange": 83.8,
+          "netStuffingLostPerWonFight": 214.3,
+          "netStuffingLostSharePct": 43,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf": {
+        "natural": {
+          "winRate": 66.4,
+          "wins": 79,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 102.9,
+          "attemptedDamagePerExchange": 103.3,
+          "landedDamagePerExchange": 96.7,
+          "netStuffingLostPerWonFight": 198.4,
+          "netStuffingLostSharePct": 41.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 66.4,
+          "wins": 79,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 102.9,
+          "attemptedDamagePerExchange": 103.3,
+          "landedDamagePerExchange": 96.7,
+          "netStuffingLostPerWonFight": 198.4,
+          "netStuffingLostSharePct": 41.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat": {
+        "natural": {
+          "winRate": 77.4,
+          "wins": 137,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 2.8,
+          "expectedProfileDamagePerExchange": 159.2,
+          "attemptedDamagePerExchange": 157.6,
+          "landedDamagePerExchange": 145.7,
+          "netStuffingLostPerWonFight": 120.4,
+          "netStuffingLostSharePct": 28.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 59.2,
+          "wins": 58,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.5,
+          "expectedProfileDamagePerExchange": 91.9,
+          "attemptedDamagePerExchange": 92.7,
+          "landedDamagePerExchange": 85.7,
+          "netStuffingLostPerWonFight": 216.2,
+          "netStuffingLostSharePct": 51,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny": {
+        "natural": {
+          "winRate": 74.8,
+          "wins": 119,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 2.7,
+          "expectedProfileDamagePerExchange": 162.1,
+          "attemptedDamagePerExchange": 156.2,
+          "landedDamagePerExchange": 147.4,
+          "netStuffingLostPerWonFight": 127.8,
+          "netStuffingLostSharePct": 29.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 60,
+          "wins": 60,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 94,
+          "attemptedDamagePerExchange": 95,
+          "landedDamagePerExchange": 88,
+          "netStuffingLostPerWonFight": 214.2,
+          "netStuffingLostSharePct": 48.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn": {
+        "natural": {
+          "winRate": 66.7,
+          "wins": 80,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 104.1,
+          "attemptedDamagePerExchange": 104.9,
+          "landedDamagePerExchange": 88.7,
+          "netStuffingLostPerWonFight": 176.5,
+          "netStuffingLostSharePct": 38.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 54.7,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 52.9,
+          "wins": 45,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.6,
+          "expectedProfileDamagePerExchange": 89.5,
+          "attemptedDamagePerExchange": 90.3,
+          "landedDamagePerExchange": 84.4,
+          "netStuffingLostPerWonFight": 223,
+          "netStuffingLostSharePct": 49.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_2": {
+      "bear": {
+        "natural": {
+          "winRate": 71.4,
+          "wins": 100,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 181,
+          "attemptedDamagePerExchange": 181.4,
+          "landedDamagePerExchange": 168.1,
+          "netStuffingLostPerWonFight": 204,
+          "netStuffingLostSharePct": 32.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 71.4,
+          "wins": 100,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 181,
+          "attemptedDamagePerExchange": 181.4,
+          "landedDamagePerExchange": 168.1,
+          "netStuffingLostPerWonFight": 204,
+          "netStuffingLostSharePct": 32.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf": {
+        "natural": {
+          "winRate": 68,
+          "wins": 85,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 190.2,
+          "attemptedDamagePerExchange": 190.2,
+          "landedDamagePerExchange": 171,
+          "netStuffingLostPerWonFight": 211.2,
+          "netStuffingLostSharePct": 35,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 68,
+          "wins": 85,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 190.2,
+          "attemptedDamagePerExchange": 190.2,
+          "landedDamagePerExchange": 171,
+          "netStuffingLostPerWonFight": 211.2,
+          "netStuffingLostSharePct": 35,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat": {
+        "natural": {
+          "winRate": 79.4,
+          "wins": 154,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 2.8,
+          "expectedProfileDamagePerExchange": 281.9,
+          "attemptedDamagePerExchange": 280.4,
+          "landedDamagePerExchange": 261.6,
+          "netStuffingLostPerWonFight": 138.5,
+          "netStuffingLostSharePct": 25.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 71,
+          "wins": 98,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4,
+          "expectedProfileDamagePerExchange": 179.6,
+          "attemptedDamagePerExchange": 180.2,
+          "landedDamagePerExchange": 169.1,
+          "netStuffingLostPerWonFight": 197.2,
+          "netStuffingLostSharePct": 36,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny": {
+        "natural": {
+          "winRate": 77.8,
+          "wins": 140,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 2.7,
+          "expectedProfileDamagePerExchange": 284.3,
+          "attemptedDamagePerExchange": 282.4,
+          "landedDamagePerExchange": 263.5,
+          "netStuffingLostPerWonFight": 139.1,
+          "netStuffingLostSharePct": 24.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 68.5,
+          "wins": 87,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.9,
+          "expectedProfileDamagePerExchange": 185.1,
+          "attemptedDamagePerExchange": 186.1,
+          "landedDamagePerExchange": 173.3,
+          "netStuffingLostPerWonFight": 193.4,
+          "netStuffingLostSharePct": 34.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn": {
+        "natural": {
+          "winRate": 75,
+          "wins": 120,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 185.9,
+          "attemptedDamagePerExchange": 188.1,
+          "landedDamagePerExchange": 160.3,
+          "netStuffingLostPerWonFight": 170.5,
+          "netStuffingLostSharePct": 29.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 85.9,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 66.4,
+          "wins": 79,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 173.2,
+          "attemptedDamagePerExchange": 172.8,
+          "landedDamagePerExchange": 158.6,
+          "netStuffingLostPerWonFight": 228.9,
+          "netStuffingLostSharePct": 39.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_3": {
+      "bear": {
+        "natural": {
+          "winRate": 65.8,
+          "wins": 77,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 263.4,
+          "attemptedDamagePerExchange": 263.2,
+          "landedDamagePerExchange": 241.8,
+          "netStuffingLostPerWonFight": 316.9,
+          "netStuffingLostSharePct": 41.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 65.8,
+          "wins": 77,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 263.4,
+          "attemptedDamagePerExchange": 263.2,
+          "landedDamagePerExchange": 241.8,
+          "netStuffingLostPerWonFight": 316.9,
+          "netStuffingLostSharePct": 41.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf": {
+        "natural": {
+          "winRate": 63.3,
+          "wins": 69,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 277.4,
+          "attemptedDamagePerExchange": 274.9,
+          "landedDamagePerExchange": 251.9,
+          "netStuffingLostPerWonFight": 336,
+          "netStuffingLostSharePct": 45.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 63.3,
+          "wins": 69,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 277.4,
+          "attemptedDamagePerExchange": 274.9,
+          "landedDamagePerExchange": 251.9,
+          "netStuffingLostPerWonFight": 336,
+          "netStuffingLostSharePct": 45.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat": {
+        "natural": {
+          "winRate": 74,
+          "wins": 114,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.3,
+          "expectedProfileDamagePerExchange": 416.4,
+          "attemptedDamagePerExchange": 408.9,
+          "landedDamagePerExchange": 360,
+          "netStuffingLostPerWonFight": 220.9,
+          "netStuffingLostSharePct": 32.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 63,
+          "wins": 68,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 257.3,
+          "attemptedDamagePerExchange": 257.6,
+          "landedDamagePerExchange": 234,
+          "netStuffingLostPerWonFight": 339.2,
+          "netStuffingLostSharePct": 49.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny": {
+        "natural": {
+          "winRate": 70.8,
+          "wins": 97,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.2,
+          "expectedProfileDamagePerExchange": 421.7,
+          "attemptedDamagePerExchange": 416.4,
+          "landedDamagePerExchange": 366.7,
+          "netStuffingLostPerWonFight": 226.2,
+          "netStuffingLostSharePct": 33,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 61.9,
+          "wins": 65,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 276.5,
+          "attemptedDamagePerExchange": 276,
+          "landedDamagePerExchange": 252.9,
+          "netStuffingLostPerWonFight": 335.7,
+          "netStuffingLostSharePct": 48.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn": {
+        "natural": {
+          "winRate": 65.2,
+          "wins": 75,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.6,
+          "expectedProfileDamagePerExchange": 261.7,
+          "attemptedDamagePerExchange": 261.2,
+          "landedDamagePerExchange": 246,
+          "netStuffingLostPerWonFight": 275.3,
+          "netStuffingLostSharePct": 38.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 118.1,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 54,
+          "wins": 47,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.9,
+          "expectedProfileDamagePerExchange": 243.7,
+          "attemptedDamagePerExchange": 242.2,
+          "landedDamagePerExchange": 224.9,
+          "netStuffingLostPerWonFight": 341,
+          "netStuffingLostSharePct": 48.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_4": {
+      "bear": {
+        "natural": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5,
+          "expectedProfileDamagePerExchange": 328.6,
+          "attemptedDamagePerExchange": 329.2,
+          "landedDamagePerExchange": 314.5,
+          "netStuffingLostPerWonFight": 487.4,
+          "netStuffingLostSharePct": 57.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5,
+          "expectedProfileDamagePerExchange": 328.6,
+          "attemptedDamagePerExchange": 329.2,
+          "landedDamagePerExchange": 314.5,
+          "netStuffingLostPerWonFight": 487.4,
+          "netStuffingLostSharePct": 57.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf": {
+        "natural": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.7,
+          "expectedProfileDamagePerExchange": 347.6,
+          "attemptedDamagePerExchange": 348.2,
+          "landedDamagePerExchange": 326.1,
+          "netStuffingLostPerWonFight": 480.6,
+          "netStuffingLostSharePct": 57.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.7,
+          "expectedProfileDamagePerExchange": 347.6,
+          "attemptedDamagePerExchange": 348.2,
+          "landedDamagePerExchange": 326.1,
+          "netStuffingLostPerWonFight": 480.6,
+          "netStuffingLostSharePct": 57.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat": {
+        "natural": {
+          "winRate": 67.2,
+          "wins": 82,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.5,
+          "expectedProfileDamagePerExchange": 521.3,
+          "attemptedDamagePerExchange": 512,
+          "landedDamagePerExchange": 477.9,
+          "netStuffingLostPerWonFight": 330.8,
+          "netStuffingLostSharePct": 42.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.8,
+          "expectedProfileDamagePerExchange": 326.4,
+          "attemptedDamagePerExchange": 324.8,
+          "landedDamagePerExchange": 312.1,
+          "netStuffingLostPerWonFight": 482.5,
+          "netStuffingLostSharePct": 62.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny": {
+        "natural": {
+          "winRate": 66.4,
+          "wins": 79,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.2,
+          "expectedProfileDamagePerExchange": 525.8,
+          "attemptedDamagePerExchange": 515.5,
+          "landedDamagePerExchange": 478.5,
+          "netStuffingLostPerWonFight": 332.4,
+          "netStuffingLostSharePct": 42.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.5,
+          "expectedProfileDamagePerExchange": 350.5,
+          "attemptedDamagePerExchange": 351.3,
+          "landedDamagePerExchange": 338.9,
+          "netStuffingLostPerWonFight": 479,
+          "netStuffingLostSharePct": 60.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn": {
+        "natural": {
+          "winRate": 54.5,
+          "wins": 48,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.2,
+          "expectedProfileDamagePerExchange": 310.9,
+          "attemptedDamagePerExchange": 308.1,
+          "landedDamagePerExchange": 298.9,
+          "netStuffingLostPerWonFight": 430.8,
+          "netStuffingLostSharePct": 52.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 155.9,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.6,
+          "expectedProfileDamagePerExchange": 326,
+          "attemptedDamagePerExchange": 325.2,
+          "landedDamagePerExchange": 314.1,
+          "netStuffingLostPerWonFight": 487.4,
+          "netStuffingLostSharePct": 60.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_5": {
+      "bear": {
+        "natural": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.6,
+          "expectedProfileDamagePerExchange": 418.7,
+          "attemptedDamagePerExchange": 417.4,
+          "landedDamagePerExchange": 383.8,
+          "netStuffingLostPerWonFight": 643.9,
+          "netStuffingLostSharePct": 65.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.6,
+          "expectedProfileDamagePerExchange": 418.7,
+          "attemptedDamagePerExchange": 417.4,
+          "landedDamagePerExchange": 383.8,
+          "netStuffingLostPerWonFight": 643.9,
+          "netStuffingLostSharePct": 65.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf": {
+        "natural": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 464,
+          "attemptedDamagePerExchange": 464.8,
+          "landedDamagePerExchange": 443.4,
+          "netStuffingLostPerWonFight": 612.6,
+          "netStuffingLostSharePct": 63.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 464,
+          "attemptedDamagePerExchange": 464.8,
+          "landedDamagePerExchange": 443.4,
+          "netStuffingLostPerWonFight": 612.6,
+          "netStuffingLostSharePct": 63.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat": {
+        "natural": {
+          "winRate": 66.7,
+          "wins": 80,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.4,
+          "expectedProfileDamagePerExchange": 642.9,
+          "attemptedDamagePerExchange": 644.5,
+          "landedDamagePerExchange": 605.8,
+          "netStuffingLostPerWonFight": 419.3,
+          "netStuffingLostSharePct": 46.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.7,
+          "expectedProfileDamagePerExchange": 417.3,
+          "attemptedDamagePerExchange": 416.3,
+          "landedDamagePerExchange": 384.8,
+          "netStuffingLostPerWonFight": 641.8,
+          "netStuffingLostSharePct": 70.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny": {
+        "natural": {
+          "winRate": 63,
+          "wins": 68,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.2,
+          "expectedProfileDamagePerExchange": 655.6,
+          "attemptedDamagePerExchange": 657.6,
+          "landedDamagePerExchange": 619.1,
+          "netStuffingLostPerWonFight": 414.7,
+          "netStuffingLostSharePct": 45,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.5,
+          "expectedProfileDamagePerExchange": 428.3,
+          "attemptedDamagePerExchange": 429.6,
+          "landedDamagePerExchange": 395.7,
+          "netStuffingLostPerWonFight": 641.8,
+          "netStuffingLostSharePct": 69.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn": {
+        "natural": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.2,
+          "expectedProfileDamagePerExchange": 393.4,
+          "attemptedDamagePerExchange": 392.4,
+          "landedDamagePerExchange": 364,
+          "netStuffingLostPerWonFight": 648.9,
+          "netStuffingLostSharePct": 66.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 189.3,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "equalBreaker": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.5,
+          "expectedProfileDamagePerExchange": 409.3,
+          "attemptedDamagePerExchange": 408.5,
+          "landedDamagePerExchange": 376.5,
+          "netStuffingLostPerWonFight": 643.9,
+          "netStuffingLostSharePct": 68.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    }
+  },
+  "spec49_relicEngineV2": {
+    "chapter_1": {
+      "no_relics": {
+        "winRate": 66.4,
+        "wins": 79,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 3.8,
+        "expectedProfileDamagePerExchange": 102.9,
+        "attemptedDamagePerExchange": 103.3,
+        "landedDamagePerExchange": 96.7,
+        "netStuffingLostPerWonFight": 198.4,
+        "netStuffingLostSharePct": 41.3,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r1": {
+        "winRate": 82.6,
+        "wins": 190,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.6,
+        "expectedProfileDamagePerExchange": 96.1,
+        "attemptedDamagePerExchange": 96.8,
+        "landedDamagePerExchange": 88.5,
+        "netStuffingLostPerWonFight": 86.1,
+        "netStuffingLostSharePct": 17.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 112,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3": {
+        "winRate": 95.3,
+        "wins": 367,
+        "defeats": 18,
+        "chainsCompleted": 22,
+        "exchangesPerEncounter": 5,
+        "expectedProfileDamagePerExchange": 94.4,
+        "attemptedDamagePerExchange": 94.6,
+        "landedDamagePerExchange": 85.9,
+        "netStuffingLostPerWonFight": 44.3,
+        "netStuffingLostSharePct": 9,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 169.8,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3_echoes": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 5.2,
+        "expectedProfileDamagePerExchange": 90.1,
+        "attemptedDamagePerExchange": 90.3,
+        "landedDamagePerExchange": 84.5,
+        "netStuffingLostPerWonFight": 0.9,
+        "netStuffingLostSharePct": 0.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 221,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r1": {
+        "winRate": 81.6,
+        "wins": 177,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.9,
+        "expectedProfileDamagePerExchange": 95.8,
+        "attemptedDamagePerExchange": 96.1,
+        "landedDamagePerExchange": 87.5,
+        "netStuffingLostPerWonFight": 64.5,
+        "netStuffingLostSharePct": 13.3,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 122.9,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r3": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 5.2,
+        "expectedProfileDamagePerExchange": 91,
+        "attemptedDamagePerExchange": 91.3,
+        "landedDamagePerExchange": 84.4,
+        "netStuffingLostPerWonFight": 2.4,
+        "netStuffingLostSharePct": 0.5,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 222.8,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r1": {
+        "winRate": 66.9,
+        "wins": 81,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.2,
+        "expectedProfileDamagePerExchange": 99.8,
+        "attemptedDamagePerExchange": 100,
+        "landedDamagePerExchange": 94.1,
+        "netStuffingLostPerWonFight": 165.6,
+        "netStuffingLostSharePct": 34.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 17.7,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r3": {
+        "winRate": 67.5,
+        "wins": 83,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.4,
+        "expectedProfileDamagePerExchange": 99.3,
+        "attemptedDamagePerExchange": 99.5,
+        "landedDamagePerExchange": 93.6,
+        "netStuffingLostPerWonFight": 148,
+        "netStuffingLostSharePct": 30.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 31,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    },
+    "chapter_2": {
+      "no_relics": {
+        "winRate": 68,
+        "wins": 85,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.2,
+        "expectedProfileDamagePerExchange": 190.2,
+        "attemptedDamagePerExchange": 190.2,
+        "landedDamagePerExchange": 171,
+        "netStuffingLostPerWonFight": 211.2,
+        "netStuffingLostSharePct": 35,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r1": {
+        "winRate": 99.8,
+        "wins": 399,
+        "defeats": 1,
+        "chainsCompleted": 39,
+        "exchangesPerEncounter": 5.1,
+        "expectedProfileDamagePerExchange": 174.8,
+        "attemptedDamagePerExchange": 174.6,
+        "landedDamagePerExchange": 155.3,
+        "netStuffingLostPerWonFight": 44.2,
+        "netStuffingLostSharePct": 7.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 194,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 5.2,
+        "expectedProfileDamagePerExchange": 168.6,
+        "attemptedDamagePerExchange": 168.4,
+        "landedDamagePerExchange": 150.8,
+        "netStuffingLostPerWonFight": 3.1,
+        "netStuffingLostSharePct": 0.5,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 245,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3_echoes": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 5.2,
+        "expectedProfileDamagePerExchange": 168.6,
+        "attemptedDamagePerExchange": 168.4,
+        "landedDamagePerExchange": 150.8,
+        "netStuffingLostPerWonFight": 1.1,
+        "netStuffingLostSharePct": 0.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 243.8,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r1": {
+        "winRate": 93.3,
+        "wins": 350,
+        "defeats": 25,
+        "chainsCompleted": 15,
+        "exchangesPerEncounter": 5,
+        "expectedProfileDamagePerExchange": 177,
+        "attemptedDamagePerExchange": 176.5,
+        "landedDamagePerExchange": 158,
+        "netStuffingLostPerWonFight": 42.8,
+        "netStuffingLostSharePct": 7,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 178.2,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r3": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 5.2,
+        "expectedProfileDamagePerExchange": 170.1,
+        "attemptedDamagePerExchange": 169.8,
+        "landedDamagePerExchange": 151.1,
+        "netStuffingLostPerWonFight": 0.2,
+        "netStuffingLostSharePct": 0,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 246.9,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r1": {
+        "winRate": 73.5,
+        "wins": 111,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.1,
+        "expectedProfileDamagePerExchange": 189.9,
+        "attemptedDamagePerExchange": 189.5,
+        "landedDamagePerExchange": 168.9,
+        "netStuffingLostPerWonFight": 176.6,
+        "netStuffingLostSharePct": 29,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 26.4,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r3": {
+        "winRate": 75,
+        "wins": 120,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.3,
+        "expectedProfileDamagePerExchange": 183.8,
+        "attemptedDamagePerExchange": 183.8,
+        "landedDamagePerExchange": 163.9,
+        "netStuffingLostPerWonFight": 151.3,
+        "netStuffingLostSharePct": 24.9,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 47.3,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    },
+    "chapter_3": {
+      "no_relics": {
+        "winRate": 63.3,
+        "wins": 69,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.1,
+        "expectedProfileDamagePerExchange": 277.4,
+        "attemptedDamagePerExchange": 274.9,
+        "landedDamagePerExchange": 251.9,
+        "netStuffingLostPerWonFight": 336,
+        "netStuffingLostSharePct": 45.5,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r1": {
+        "winRate": 86.8,
+        "wins": 264,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.4,
+        "expectedProfileDamagePerExchange": 248.8,
+        "attemptedDamagePerExchange": 249.6,
+        "landedDamagePerExchange": 228.3,
+        "netStuffingLostPerWonFight": 97.4,
+        "netStuffingLostSharePct": 13,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 269,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 6.4,
+        "expectedProfileDamagePerExchange": 229.4,
+        "attemptedDamagePerExchange": 228.8,
+        "landedDamagePerExchange": 205.5,
+        "netStuffingLostPerWonFight": 10.6,
+        "netStuffingLostSharePct": 1.4,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 415.9,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3_echoes": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 6.4,
+        "expectedProfileDamagePerExchange": 229.4,
+        "attemptedDamagePerExchange": 229.1,
+        "landedDamagePerExchange": 206.8,
+        "netStuffingLostPerWonFight": 3.3,
+        "netStuffingLostSharePct": 0.4,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 418.8,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r1": {
+        "winRate": 76.5,
+        "wins": 130,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.3,
+        "expectedProfileDamagePerExchange": 254.8,
+        "attemptedDamagePerExchange": 253.7,
+        "landedDamagePerExchange": 236.5,
+        "netStuffingLostPerWonFight": 132.1,
+        "netStuffingLostSharePct": 17.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 180.9,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r3": {
+        "winRate": 96.2,
+        "wins": 352,
+        "defeats": 14,
+        "chainsCompleted": 26,
+        "exchangesPerEncounter": 6.1,
+        "expectedProfileDamagePerExchange": 235.8,
+        "attemptedDamagePerExchange": 235.9,
+        "landedDamagePerExchange": 217.2,
+        "netStuffingLostPerWonFight": 29.5,
+        "netStuffingLostSharePct": 4,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 351,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r1": {
+        "winRate": 64,
+        "wins": 71,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.6,
+        "expectedProfileDamagePerExchange": 271,
+        "attemptedDamagePerExchange": 268.6,
+        "landedDamagePerExchange": 248.9,
+        "netStuffingLostPerWonFight": 281.1,
+        "netStuffingLostSharePct": 37.9,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 29.3,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r3": {
+        "winRate": 64.9,
+        "wins": 74,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.7,
+        "expectedProfileDamagePerExchange": 270.6,
+        "attemptedDamagePerExchange": 268.4,
+        "landedDamagePerExchange": 248.9,
+        "netStuffingLostPerWonFight": 251.4,
+        "netStuffingLostSharePct": 33.9,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 51.6,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    },
+    "chapter_4": {
+      "no_relics": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.7,
+        "expectedProfileDamagePerExchange": 347.6,
+        "attemptedDamagePerExchange": 348.2,
+        "landedDamagePerExchange": 326.1,
+        "netStuffingLostPerWonFight": 480.6,
+        "netStuffingLostSharePct": 57.8,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r1": {
+        "winRate": 75.3,
+        "wins": 122,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 6,
+        "expectedProfileDamagePerExchange": 304.8,
+        "attemptedDamagePerExchange": 307,
+        "landedDamagePerExchange": 283.9,
+        "netStuffingLostPerWonFight": 209.7,
+        "netStuffingLostSharePct": 24.9,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 340.9,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3": {
+        "winRate": 99.8,
+        "wins": 399,
+        "defeats": 1,
+        "chainsCompleted": 39,
+        "exchangesPerEncounter": 7.1,
+        "expectedProfileDamagePerExchange": 289.5,
+        "attemptedDamagePerExchange": 290,
+        "landedDamagePerExchange": 268,
+        "netStuffingLostPerWonFight": 42.2,
+        "netStuffingLostSharePct": 5,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 593.3,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3_echoes": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 7.2,
+        "expectedProfileDamagePerExchange": 282.4,
+        "attemptedDamagePerExchange": 282.9,
+        "landedDamagePerExchange": 264,
+        "netStuffingLostPerWonFight": 0.9,
+        "netStuffingLostSharePct": 0.1,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 647.5,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r1": {
+        "winRate": 60.4,
+        "wins": 61,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.5,
+        "expectedProfileDamagePerExchange": 327,
+        "attemptedDamagePerExchange": 327.4,
+        "landedDamagePerExchange": 305.2,
+        "netStuffingLostPerWonFight": 252.7,
+        "netStuffingLostSharePct": 30.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 161.3,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r3": {
+        "winRate": 67.2,
+        "wins": 82,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 6.1,
+        "expectedProfileDamagePerExchange": 312.9,
+        "attemptedDamagePerExchange": 314.5,
+        "landedDamagePerExchange": 292.9,
+        "netStuffingLostPerWonFight": 142.5,
+        "netStuffingLostSharePct": 17,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 280,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r1": {
+        "winRate": 50.6,
+        "wins": 41,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.1,
+        "expectedProfileDamagePerExchange": 326.5,
+        "attemptedDamagePerExchange": 327.4,
+        "landedDamagePerExchange": 307.4,
+        "netStuffingLostPerWonFight": 414.1,
+        "netStuffingLostSharePct": 49.5,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 24.7,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r3": {
+        "winRate": 51.2,
+        "wins": 42,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.2,
+        "expectedProfileDamagePerExchange": 327.2,
+        "attemptedDamagePerExchange": 327.9,
+        "landedDamagePerExchange": 308.5,
+        "netStuffingLostPerWonFight": 376.8,
+        "netStuffingLostSharePct": 45.1,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 43.9,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    },
+    "chapter_5": {
+      "no_relics": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.3,
+        "expectedProfileDamagePerExchange": 464,
+        "attemptedDamagePerExchange": 464.8,
+        "landedDamagePerExchange": 443.4,
+        "netStuffingLostPerWonFight": 612.6,
+        "netStuffingLostSharePct": 63.6,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 0,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r1": {
+        "winRate": 71.4,
+        "wins": 100,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 6.1,
+        "expectedProfileDamagePerExchange": 387.4,
+        "attemptedDamagePerExchange": 386.8,
+        "landedDamagePerExchange": 355.1,
+        "netStuffingLostPerWonFight": 284,
+        "netStuffingLostSharePct": 29.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 414.9,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3": {
+        "winRate": 91.4,
+        "wins": 309,
+        "defeats": 29,
+        "chainsCompleted": 11,
+        "exchangesPerEncounter": 7,
+        "expectedProfileDamagePerExchange": 368.5,
+        "attemptedDamagePerExchange": 366.9,
+        "landedDamagePerExchange": 336.2,
+        "netStuffingLostPerWonFight": 104.4,
+        "netStuffingLostSharePct": 10.7,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 690.5,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "fang_patch_r3_echoes": {
+        "winRate": 100,
+        "wins": 400,
+        "defeats": 0,
+        "chainsCompleted": 40,
+        "exchangesPerEncounter": 7.7,
+        "expectedProfileDamagePerExchange": 352,
+        "attemptedDamagePerExchange": 351.1,
+        "landedDamagePerExchange": 317.5,
+        "netStuffingLostPerWonFight": 10.5,
+        "netStuffingLostSharePct": 1.1,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 892.7,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r1": {
+        "winRate": 56.5,
+        "wins": 52,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.3,
+        "expectedProfileDamagePerExchange": 420.9,
+        "attemptedDamagePerExchange": 422.4,
+        "landedDamagePerExchange": 404.3,
+        "netStuffingLostPerWonFight": 310.7,
+        "netStuffingLostSharePct": 32.1,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 174.7,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "cocoa_patch_r3": {
+        "winRate": 63,
+        "wins": 68,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 5.7,
+        "expectedProfileDamagePerExchange": 404.6,
+        "attemptedDamagePerExchange": 406.5,
+        "landedDamagePerExchange": 381.8,
+        "netStuffingLostPerWonFight": 195.8,
+        "netStuffingLostSharePct": 20.2,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 304.6,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r1": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.8,
+        "expectedProfileDamagePerExchange": 457.7,
+        "attemptedDamagePerExchange": 458.7,
+        "landedDamagePerExchange": 436.9,
+        "netStuffingLostPerWonFight": 519.9,
+        "netStuffingLostSharePct": 53.7,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 30.6,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      },
+      "older_seal_heart_r3": {
+        "winRate": 50,
+        "wins": 40,
+        "defeats": 40,
+        "chainsCompleted": 0,
+        "exchangesPerEncounter": 4.8,
+        "expectedProfileDamagePerExchange": 450,
+        "attemptedDamagePerExchange": 451.1,
+        "landedDamagePerExchange": 429.6,
+        "netStuffingLostPerWonFight": 477,
+        "netStuffingLostSharePct": 49.3,
+        "healingBySource": {
+          "mend": 0,
+          "relics": 52.1,
+          "menders": 0,
+          "traits": 0
+        },
+        "startPluckAvg": 0
+      }
+    }
+  },
+  "combinedMatrix": {
+    "chapter_1": {
+      "bear_clubs_shield": {
+        "withoutRelics": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 91.3,
+          "attemptedDamagePerExchange": 91.5,
+          "landedDamagePerExchange": 84.3,
+          "netStuffingLostPerWonFight": 210.4,
+          "netStuffingLostSharePct": 42.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 67.2,
+          "wins": 82,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.8,
+          "expectedProfileDamagePerExchange": 90.3,
+          "attemptedDamagePerExchange": 90.8,
+          "landedDamagePerExchange": 84.2,
+          "netStuffingLostPerWonFight": 174.3,
+          "netStuffingLostSharePct": 34.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 22.4,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf_spears_2h": {
+        "withoutRelics": {
+          "winRate": 66.1,
+          "wins": 78,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.4,
+          "expectedProfileDamagePerExchange": 117.3,
+          "attemptedDamagePerExchange": 117.4,
+          "landedDamagePerExchange": 111.3,
+          "netStuffingLostPerWonFight": 186.3,
+          "netStuffingLostSharePct": 38.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 89.6,
+          "wins": 300,
+          "defeats": 35,
+          "chainsCompleted": 5,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 106.5,
+          "attemptedDamagePerExchange": 106.8,
+          "landedDamagePerExchange": 96.6,
+          "netStuffingLostPerWonFight": 54.4,
+          "netStuffingLostSharePct": 11.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 148.5,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat_needles_dual": {
+        "withoutRelics": {
+          "winRate": 77.9,
+          "wins": 141,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 2.8,
+          "expectedProfileDamagePerExchange": 168.1,
+          "attemptedDamagePerExchange": 162.4,
+          "landedDamagePerExchange": 150.3,
+          "netStuffingLostPerWonFight": 116,
+          "netStuffingLostSharePct": 27.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 3.1,
+          "expectedProfileDamagePerExchange": 158.2,
+          "attemptedDamagePerExchange": 151.2,
+          "landedDamagePerExchange": 142.4,
+          "netStuffingLostPerWonFight": 12.8,
+          "netStuffingLostSharePct": 2.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 118.9,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny_foils_mender": {
+        "withoutRelics": {
+          "winRate": 75.9,
+          "wins": 126,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.6,
+          "expectedProfileDamagePerExchange": 114.6,
+          "attemptedDamagePerExchange": 114.5,
+          "landedDamagePerExchange": 109.3,
+          "netStuffingLostPerWonFight": 117.5,
+          "netStuffingLostSharePct": 26.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 52.2,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 4.7,
+          "expectedProfileDamagePerExchange": 99.6,
+          "attemptedDamagePerExchange": 99.7,
+          "landedDamagePerExchange": 94.1,
+          "netStuffingLostPerWonFight": 0.5,
+          "netStuffingLostSharePct": 0.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 161.9,
+            "menders": 52,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn_batons_mender": {
+        "withoutRelics": {
+          "winRate": 66.7,
+          "wins": 80,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 103.2,
+          "attemptedDamagePerExchange": 104.2,
+          "landedDamagePerExchange": 88.6,
+          "netStuffingLostPerWonFight": 176.5,
+          "netStuffingLostSharePct": 38.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 54.7,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 71.6,
+          "wins": 101,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.8,
+          "expectedProfileDamagePerExchange": 106,
+          "attemptedDamagePerExchange": 106.1,
+          "landedDamagePerExchange": 101.6,
+          "netStuffingLostPerWonFight": 145.2,
+          "netStuffingLostSharePct": 31.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 49.5,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_2": {
+      "bear_clubs_shield": {
+        "withoutRelics": {
+          "winRate": 71.4,
+          "wins": 100,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.1,
+          "expectedProfileDamagePerExchange": 181.4,
+          "attemptedDamagePerExchange": 181.7,
+          "landedDamagePerExchange": 168.5,
+          "netStuffingLostPerWonFight": 199.1,
+          "netStuffingLostSharePct": 32,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 75.2,
+          "wins": 121,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.5,
+          "expectedProfileDamagePerExchange": 174.5,
+          "attemptedDamagePerExchange": 175.4,
+          "landedDamagePerExchange": 162.9,
+          "netStuffingLostPerWonFight": 156.7,
+          "netStuffingLostSharePct": 25,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 29.9,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf_spears_2h": {
+        "withoutRelics": {
+          "winRate": 66.7,
+          "wins": 80,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.7,
+          "expectedProfileDamagePerExchange": 199.1,
+          "attemptedDamagePerExchange": 198.5,
+          "landedDamagePerExchange": 176.9,
+          "netStuffingLostPerWonFight": 245.9,
+          "netStuffingLostSharePct": 40.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 5.1,
+          "expectedProfileDamagePerExchange": 176.2,
+          "attemptedDamagePerExchange": 176.6,
+          "landedDamagePerExchange": 153.9,
+          "netStuffingLostPerWonFight": 16.7,
+          "netStuffingLostSharePct": 2.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 260.8,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat_needles_dual": {
+        "withoutRelics": {
+          "winRate": 79.2,
+          "wins": 152,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 2.8,
+          "expectedProfileDamagePerExchange": 278.7,
+          "attemptedDamagePerExchange": 275.7,
+          "landedDamagePerExchange": 260.3,
+          "netStuffingLostPerWonFight": 139,
+          "netStuffingLostSharePct": 25.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 3.4,
+          "expectedProfileDamagePerExchange": 246.4,
+          "attemptedDamagePerExchange": 238.1,
+          "landedDamagePerExchange": 230.3,
+          "netStuffingLostPerWonFight": 4,
+          "netStuffingLostSharePct": 0.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 156.2,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny_foils_mender": {
+        "withoutRelics": {
+          "winRate": 83.5,
+          "wins": 203,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.7,
+          "expectedProfileDamagePerExchange": 213.4,
+          "attemptedDamagePerExchange": 213.2,
+          "landedDamagePerExchange": 196.9,
+          "netStuffingLostPerWonFight": 99.6,
+          "netStuffingLostSharePct": 17.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 86.3,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 193.2,
+          "attemptedDamagePerExchange": 192.8,
+          "landedDamagePerExchange": 178.9,
+          "netStuffingLostPerWonFight": 0,
+          "netStuffingLostSharePct": 0,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 138.6,
+            "menders": 79.5,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn_batons_mender": {
+        "withoutRelics": {
+          "winRate": 75,
+          "wins": 120,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 187.5,
+          "attemptedDamagePerExchange": 189.6,
+          "landedDamagePerExchange": 160.4,
+          "netStuffingLostPerWonFight": 170.1,
+          "netStuffingLostSharePct": 29.2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 85.9,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 77.7,
+          "wins": 139,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.9,
+          "expectedProfileDamagePerExchange": 190.1,
+          "attemptedDamagePerExchange": 189.4,
+          "landedDamagePerExchange": 179.8,
+          "netStuffingLostPerWonFight": 139.2,
+          "netStuffingLostSharePct": 23.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 79.2,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_3": {
+      "bear_clubs_shield": {
+        "withoutRelics": {
+          "winRate": 66.1,
+          "wins": 78,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 263.9,
+          "attemptedDamagePerExchange": 263.6,
+          "landedDamagePerExchange": 241.4,
+          "netStuffingLostPerWonFight": 309.4,
+          "netStuffingLostSharePct": 41.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 66.4,
+          "wins": 79,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.7,
+          "expectedProfileDamagePerExchange": 261.8,
+          "attemptedDamagePerExchange": 261.5,
+          "landedDamagePerExchange": 240.4,
+          "netStuffingLostPerWonFight": 265.8,
+          "netStuffingLostSharePct": 35.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 32.9,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf_spears_2h": {
+        "withoutRelics": {
+          "winRate": 54.5,
+          "wins": 48,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 270.8,
+          "attemptedDamagePerExchange": 271.8,
+          "landedDamagePerExchange": 256.9,
+          "netStuffingLostPerWonFight": 404.3,
+          "netStuffingLostSharePct": 55.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 99.7,
+          "wins": 396,
+          "defeats": 1,
+          "chainsCompleted": 39,
+          "exchangesPerEncounter": 6.1,
+          "expectedProfileDamagePerExchange": 231.9,
+          "attemptedDamagePerExchange": 232.2,
+          "landedDamagePerExchange": 215.5,
+          "netStuffingLostPerWonFight": 32.3,
+          "netStuffingLostSharePct": 4.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 432.7,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat_needles_dual": {
+        "withoutRelics": {
+          "winRate": 73,
+          "wins": 108,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.4,
+          "expectedProfileDamagePerExchange": 415,
+          "attemptedDamagePerExchange": 407.1,
+          "landedDamagePerExchange": 354.8,
+          "netStuffingLostPerWonFight": 228.3,
+          "netStuffingLostSharePct": 34,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 377.6,
+          "attemptedDamagePerExchange": 358.2,
+          "landedDamagePerExchange": 310.6,
+          "netStuffingLostPerWonFight": 10.3,
+          "netStuffingLostSharePct": 1.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 269,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny_foils_mender": {
+        "withoutRelics": {
+          "winRate": 75.2,
+          "wins": 121,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.4,
+          "expectedProfileDamagePerExchange": 301.8,
+          "attemptedDamagePerExchange": 302.1,
+          "landedDamagePerExchange": 271,
+          "netStuffingLostPerWonFight": 191.9,
+          "netStuffingLostSharePct": 27.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 138.6,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 5.4,
+          "expectedProfileDamagePerExchange": 273.1,
+          "attemptedDamagePerExchange": 273.2,
+          "landedDamagePerExchange": 246.3,
+          "netStuffingLostPerWonFight": 0,
+          "netStuffingLostSharePct": 0,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 231.6,
+            "menders": 140.4,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn_batons_mender": {
+        "withoutRelics": {
+          "winRate": 65.2,
+          "wins": 75,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.6,
+          "expectedProfileDamagePerExchange": 265.1,
+          "attemptedDamagePerExchange": 264.7,
+          "landedDamagePerExchange": 246.8,
+          "netStuffingLostPerWonFight": 275.3,
+          "netStuffingLostSharePct": 38.8,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 118.1,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 65.5,
+          "wins": 76,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.6,
+          "expectedProfileDamagePerExchange": 267.5,
+          "attemptedDamagePerExchange": 267.2,
+          "landedDamagePerExchange": 247.4,
+          "netStuffingLostPerWonFight": 276.6,
+          "netStuffingLostSharePct": 38.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 117.4,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_4": {
+      "bear_clubs_shield": {
+        "withoutRelics": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.1,
+          "expectedProfileDamagePerExchange": 327,
+          "attemptedDamagePerExchange": 327.5,
+          "landedDamagePerExchange": 313,
+          "netStuffingLostPerWonFight": 472.4,
+          "netStuffingLostSharePct": 55.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 51.8,
+          "wins": 43,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.5,
+          "expectedProfileDamagePerExchange": 325.3,
+          "attemptedDamagePerExchange": 325.6,
+          "landedDamagePerExchange": 311.9,
+          "netStuffingLostPerWonFight": 410.1,
+          "netStuffingLostSharePct": 48,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 27.7,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf_spears_2h": {
+        "withoutRelics": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 324.9,
+          "attemptedDamagePerExchange": 325.3,
+          "landedDamagePerExchange": 293.2,
+          "netStuffingLostPerWonFight": 694.8,
+          "netStuffingLostSharePct": 83.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 84.1,
+          "wins": 212,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 6.4,
+          "expectedProfileDamagePerExchange": 292.8,
+          "attemptedDamagePerExchange": 294.3,
+          "landedDamagePerExchange": 269.8,
+          "netStuffingLostPerWonFight": 132.6,
+          "netStuffingLostSharePct": 15.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 519,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat_needles_dual": {
+        "withoutRelics": {
+          "winRate": 67.2,
+          "wins": 82,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.5,
+          "expectedProfileDamagePerExchange": 516.4,
+          "attemptedDamagePerExchange": 506.6,
+          "landedDamagePerExchange": 475.7,
+          "netStuffingLostPerWonFight": 331.7,
+          "netStuffingLostSharePct": 42.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 4.3,
+          "expectedProfileDamagePerExchange": 489,
+          "attemptedDamagePerExchange": 466.3,
+          "landedDamagePerExchange": 445,
+          "netStuffingLostPerWonFight": 11.2,
+          "netStuffingLostSharePct": 1.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 355.1,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny_foils_mender": {
+        "withoutRelics": {
+          "winRate": 70.4,
+          "wins": 95,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.5,
+          "expectedProfileDamagePerExchange": 398.2,
+          "attemptedDamagePerExchange": 398.2,
+          "landedDamagePerExchange": 383.4,
+          "netStuffingLostPerWonFight": 258.3,
+          "netStuffingLostSharePct": 32,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 176.3,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 5.5,
+          "expectedProfileDamagePerExchange": 368.6,
+          "attemptedDamagePerExchange": 369.6,
+          "landedDamagePerExchange": 347,
+          "netStuffingLostPerWonFight": 3,
+          "netStuffingLostSharePct": 0.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 311.5,
+            "menders": 186.5,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn_batons_mender": {
+        "withoutRelics": {
+          "winRate": 54.5,
+          "wins": 48,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.2,
+          "expectedProfileDamagePerExchange": 309.3,
+          "attemptedDamagePerExchange": 306.6,
+          "landedDamagePerExchange": 298.4,
+          "netStuffingLostPerWonFight": 430.8,
+          "netStuffingLostSharePct": 52.7,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 155.9,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 54.5,
+          "wins": 48,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.2,
+          "expectedProfileDamagePerExchange": 311,
+          "attemptedDamagePerExchange": 308.1,
+          "landedDamagePerExchange": 298.9,
+          "netStuffingLostPerWonFight": 430.8,
+          "netStuffingLostSharePct": 52.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 155.9,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    },
+    "chapter_5": {
+      "bear_clubs_shield": {
+        "withoutRelics": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.7,
+          "expectedProfileDamagePerExchange": 416.7,
+          "attemptedDamagePerExchange": 415.5,
+          "landedDamagePerExchange": 382.2,
+          "netStuffingLostPerWonFight": 617.5,
+          "netStuffingLostSharePct": 62.9,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.2,
+          "expectedProfileDamagePerExchange": 409,
+          "attemptedDamagePerExchange": 407.4,
+          "landedDamagePerExchange": 377.3,
+          "netStuffingLostPerWonFight": 542.6,
+          "netStuffingLostSharePct": 55,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 33,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "wolf_spears_2h": {
+        "withoutRelics": {
+          "winRate": 47.4,
+          "wins": 36,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 409.7,
+          "attemptedDamagePerExchange": 411.9,
+          "landedDamagePerExchange": 378.8,
+          "netStuffingLostPerWonFight": 889.3,
+          "netStuffingLostSharePct": 92.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 78.8,
+          "wins": 149,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 6.6,
+          "expectedProfileDamagePerExchange": 362.4,
+          "attemptedDamagePerExchange": 364.6,
+          "landedDamagePerExchange": 339.3,
+          "netStuffingLostPerWonFight": 208,
+          "netStuffingLostSharePct": 21.4,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 640.1,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "cat_needles_dual": {
+        "withoutRelics": {
+          "winRate": 66.4,
+          "wins": 79,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 3.4,
+          "expectedProfileDamagePerExchange": 633.1,
+          "attemptedDamagePerExchange": 634.3,
+          "landedDamagePerExchange": 603.7,
+          "netStuffingLostPerWonFight": 423.3,
+          "netStuffingLostSharePct": 46.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 100,
+          "wins": 400,
+          "defeats": 0,
+          "chainsCompleted": 40,
+          "exchangesPerEncounter": 4.2,
+          "expectedProfileDamagePerExchange": 621.2,
+          "attemptedDamagePerExchange": 604.3,
+          "landedDamagePerExchange": 582.6,
+          "netStuffingLostPerWonFight": 18,
+          "netStuffingLostSharePct": 2,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 428.1,
+            "menders": 0,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "bunny_foils_mender": {
+        "withoutRelics": {
+          "winRate": 67.2,
+          "wins": 82,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 4.7,
+          "expectedProfileDamagePerExchange": 482.2,
+          "attemptedDamagePerExchange": 480.6,
+          "landedDamagePerExchange": 438.1,
+          "netStuffingLostPerWonFight": 376.3,
+          "netStuffingLostSharePct": 39.1,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 235.3,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 99.8,
+          "wins": 399,
+          "defeats": 1,
+          "chainsCompleted": 39,
+          "exchangesPerEncounter": 6,
+          "expectedProfileDamagePerExchange": 459.9,
+          "attemptedDamagePerExchange": 459.5,
+          "landedDamagePerExchange": 411,
+          "netStuffingLostPerWonFight": 14.2,
+          "netStuffingLostSharePct": 1.5,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 407.6,
+            "menders": 262.7,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      },
+      "unicorn_batons_mender": {
+        "withoutRelics": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.2,
+          "expectedProfileDamagePerExchange": 396.4,
+          "attemptedDamagePerExchange": 395.4,
+          "landedDamagePerExchange": 365,
+          "netStuffingLostPerWonFight": 648.9,
+          "netStuffingLostSharePct": 66.6,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 189.3,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        },
+        "withRelicsR3": {
+          "winRate": 50,
+          "wins": 40,
+          "defeats": 40,
+          "chainsCompleted": 0,
+          "exchangesPerEncounter": 5.2,
+          "expectedProfileDamagePerExchange": 398.5,
+          "attemptedDamagePerExchange": 397.4,
+          "landedDamagePerExchange": 366.1,
+          "netStuffingLostPerWonFight": 648.9,
+          "netStuffingLostSharePct": 66.3,
+          "healingBySource": {
+            "mend": 0,
+            "relics": 0,
+            "menders": 189.9,
+            "traits": 0
+          },
+          "startPluckAvg": 0
+        }
+      }
+    }
+  }
+}
