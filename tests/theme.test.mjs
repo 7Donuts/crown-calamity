@@ -105,7 +105,7 @@ test('original content identities and combat values survive the campaign economy
   assert.deepEqual(Object.values(STORY_CONTRACTS).filter(c=>(c.chapterId||1)===1).map(c=>c.id), ['proof_of_trouble', 'drainage_inspection', 'permit_with_teeth', 'runic_research', 'bent_gate', 'shell_repairs', 'someone_expendable', 'floodgate_watch', 'municipal_works']);
   assert.deepEqual(Object.values(STORY_CONTRACTS).filter(c=>(c.chapterId||1)===1).map(c => c.reward.xp), [32, 88, 120, 34, 142, 38, 168, 58, 240]);
   assert.deepEqual(Object.keys(VENDORS), ['weaponsmith', 'armorer', 'curio']);
-  assert.deepEqual(Object.values(RACES).map(r => Object.values(r.stats).join(' ')), ['10 10 10 10 10 9 9', '12 8 8 13 10 9 8', '8 12 10 8 9 13 8', '8 9 13 8 12 9 9', '8 12 8 9 9 10 12']);
+  assert.deepEqual(Object.values(RACES).map(r => Object.values(r.stats).join(' ')), ['10 8 8 13 13 8 8', '14 8 8 12 9 9 8', '8 13 8 9 9 13 8', '8 8 14 9 12 9 8', '8 12 8 8 8 10 14']);
   assert.deepEqual(Object.values(RACES).map(r => Object.values(r.passive).join(' ')), ['4 4 4 0 0 0', '12 0 0 1 0 0', '0 0 8 0 0 2', '0 8 0 0 1 0', '0 4 4 0 0 1']);
   assert.equal(G.VERSION, 6);
   assert.equal(G.ACTION_DELAY_MS, 650);

@@ -10,9 +10,19 @@ test('five stuffie kinds have legal 68 point starter spreads and modest passives
     assert.equal(Object.keys(race.stats).length, 7);
     assert.ok(Object.values(race.stats).every(value => value >= 8));
     assert.ok(race.passiveName && race.passiveDescription);
+    assert.ok(race.trait && race.traitDescription);
+    assert.ok(race.pluckHook);
+    assert.ok(race.affinity);
+    assert.ok(race.homeLayer);
+    assert.ok(race.playsAs);
   }
-  assert.deepEqual(RACES.cat.stats, { mig: 8, fin: 12, int: 8, vit: 9, wil: 9, ins: 10, lck: 12 });
+  assert.deepEqual(RACES.cat.stats, { mig: 8, fin: 12, int: 8, vit: 8, wil: 8, ins: 10, lck: 14 });
   assert.deepEqual(RACES.cat.passive, { hp: 0, mp: 4, sp: 4, armor: 0, ward: 0, evasion: 1 });
+  assert.equal(RACES.bear.affinity, 'clubs');
+  assert.equal(RACES.wolf.affinity, 'mauls');
+  assert.equal(RACES.bunny.affinity, 'foils');
+  assert.equal(RACES.unicorn.affinity, 'batons');
+  assert.equal(RACES.cat.affinity, 'needles');
 });
 
 test('legacy IDs and display names resolve to canonical kinds', () => {

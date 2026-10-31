@@ -12,7 +12,7 @@ const ACTION_MS = 700;
 const MAX_SEEDS = 10000;
 const MAX_CHAIN = 50;
 const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'weaponMastery', 'save', 'rulesPreview']);
-const NON_MEASURED = ['raceTraits'];
+const NON_MEASURED = [];
 const round1 = n => Math.round(n * 10) / 10;
 
 function prepare(fixture) {
@@ -225,7 +225,7 @@ export function runCell(options) {
   if (template.level < enemyRow.level - 2) throw new Error(`Fixture level ${template.level} is too low for ${enemy} (requires ${enemyRow.level - 2})`);
   const fixed = { level: template.level, xp: template.xp, points: template.points, stats: structuredClone(template.stats), mastery: structuredClone(template.mastery) };
   const fixedTotals = G.totals(template);
-  const sums = { wins: 0, defeats: 0, encounters: 0, chainsCompleted: 0, exchanges: 0, expected: 0, attempted: 0, landed: 0, overkill: 0, netLost: 0, lostShare: 0, maxLostShare: 0, mend: 0, relics: 0, menders: 0, starts: { hp: 0, mp: 0, sp: 0, pluck: 0 }, actions: Object.create(null) };
+  const sums = { wins: 0, defeats: 0, encounters: 0, chainsCompleted: 0, exchanges: 0, expected: 0, attempted: 0, landed: 0, overkill: 0, netLost: 0, lostShare: 0, maxLostShare: 0, mend: 0, relics: 0, menders: 0, traits: 0, starts: { hp: 0, mp: 0, sp: 0, pluck: 0 }, actions: Object.create(null) };
   for (const seed of seeds) {
     const s = structuredClone(template);
     s.hp = fixedTotals.hp; s.mp = fixedTotals.mp; s.sp = fixedTotals.sp;
@@ -255,7 +255,8 @@ export function runCell(options) {
         const loggedAttack = attackDamageFromLogs(addedLogs);
         const measuredOverkill = res.overkill ?? (res.defeat ? Math.max(0, loggedAttack - barrierSoakFromLogs(addedLogs) - Math.max(0, before.enemyHp)) : 0);
         sums.overkill += Math.max(0, measuredOverkill - Math.max(0, -before.enemyHp));
-        sums.mend += res.healed || 0;
+        sums.traits += res.traitHealed || 0;
+        sums.mend += (res.healed || 0) - (res.traitHealed || 0);
         sums.relics += res.relicHealed || 0;
         sums.menders += res.mendHealed || 0;
         sums.exchanges++;
@@ -306,7 +307,7 @@ export function runCell(options) {
       mend: encounters ? sums.mend / encounters : 0,
       relics: encounters ? sums.relics / encounters : 0,
       menders: encounters ? sums.menders / encounters : 0,
-      traits: 'not measured'
+      traits: encounters ? sums.traits / encounters : 0
     },
     actionCounts: sums.actions, nonMeasured: [...NON_MEASURED]
   };
@@ -314,7 +315,7 @@ export function runCell(options) {
 
 export function renderMarkdown(rows, { command }) {
   const fmt = n => n === null ? '—' : typeof n === 'number' ? round1(n).toString() : n;
-  const lines = ['# Balance simulation', '', `Command: \`${command}\``, '', 'Each seed starts one independent chain at full Stuffing, Sparkle and Bounce; within a chain those resources and relic Pluck carry forward. There is no rest or between-fight refill. The table shows average HP/MP/SP/Pluck at encounter start so carried resources are visible. Fixture XP is normalized to zero on the clone; any victory that levels the fixed fixture is rejected. Level, stats, points, and mastery are reset to fixture values after each victory; HP/MP/SP and Pluck carry remain as resolved by the engine. Chapter-one scripted boss fixtures use the valid municipal delve node; its production auto-rest is excluded only from the net Stuffing-loss metric. Later scripted bosses use valid synthetic finale contracts and are single encounters because the production contract cannot be farmed. Defeats end a chain. Seed lists and chain length are shown per row.', '', 'Damage columns distinguish the expected shared `actionProfile` estimate, engine-reported attempted damage, HP actually removed (including logged relic reflection), and overkill. Mend and relic values are realized engine heal values; chapter victory relic healing is read from the corresponding actual log receipt. Menders and race traits are listed as not measured because the engine has no implementation for them.', '', '| Fixture | Enemy / context | Policy | Seeds / chain | Encounters | Wins | Defeats | Completed chains | Win rate | Net Stuffing lost / won fight | Max lost | Avg HP/MP/SP/Pluck at start | Exchanges / encounter | Expected profile damage / exchange | Attempted / exchange | Landed / exchange | Overkill / exchange | Mend / encounter | Relics / encounter | Menders | Traits |', '|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|'];
+  const lines = ['# Balance simulation', '', `Command: \`${command}\``, '', 'Each seed starts one independent chain at full Stuffing, Sparkle and Bounce; within a chain those resources and relic Pluck carry forward. There is no rest or between-fight refill. The table shows average HP/MP/SP/Pluck at encounter start so carried resources are visible. Fixture XP is normalized to zero on the clone; any victory that levels the fixed fixture is rejected. Level, stats, points, and mastery are reset to fixture values after each victory; HP/MP/SP and Pluck carry remain as resolved by the engine. Chapter-one scripted boss fixtures use the valid municipal delve node; its production auto-rest is excluded only from the net Stuffing-loss metric. Later scripted bosses use valid synthetic finale contracts and are single encounters because the production contract cannot be farmed. Defeats end a chain. Seed lists and chain length are shown per row.', '', 'Damage columns distinguish the expected shared `actionProfile` estimate, engine-reported attempted damage, HP actually removed (including logged relic reflection), and overkill. Mend, relic and trait values are realized engine heal values; chapter victory relic healing is read from the corresponding actual log receipt. Menders are listed as not measured when twoHands is inactive; weapon family traits are not yet implemented.', '', '| Fixture | Enemy / context | Policy | Seeds / chain | Encounters | Wins | Defeats | Completed chains | Win rate | Net Stuffing lost / won fight | Max lost | Avg HP/MP/SP/Pluck at start | Exchanges / encounter | Expected profile damage / exchange | Attempted / exchange | Landed / exchange | Overkill / exchange | Mend / encounter | Relics / encounter | Menders | Traits |', '|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|'];
   for (const r of rows) lines.push(`| ${r.fixture} | ${r.enemy} (${r.context}) | ${r.policy} | ${r.trials} × ${r.chainLength} | ${r.encounters} | ${r.wins} | ${r.defeats} | ${r.chainsCompleted} | ${fmt(r.winRate * 100)}% of encounters | ${fmt(r.netStuffingLostShareOfMax === null ? null : r.netStuffingLostShareOfMax * 100)}% max (${fmt(r.netStuffingLostPerWonFight)}) | ${fmt(r.maxStuffingLostShareOfMax === null ? null : r.maxStuffingLostShareOfMax * 100)}% | ${['hp', 'mp', 'sp', 'pluck'].map(key => fmt(r.averageResourcesAtEncounterStart[key])).join('/')} | ${fmt(r.exchangesPerEncounter)} | ${fmt(r.expectedProfileDamagePerExchange)} | ${fmt(r.attemptedDamagePerExchange)} | ${fmt(r.landedDamagePerExchange)} | ${fmt(r.overkillPerExchange)} | ${fmt(r.healingBySource.mend)} | ${fmt(r.healingBySource.relics)} | ${r.healingBySource.menders} | ${r.healingBySource.traits} |`);
   for (const r of rows) lines.push('', `Seeds for ${r.fixture}/${r.enemy}/${r.policy}: ${r.seeds.join(', ')}`);
   return lines.join('\n') + '\n';

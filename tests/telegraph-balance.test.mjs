@@ -8,7 +8,7 @@ function mulberry(seed) {
   let a = seed | 0;
   return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 }
-const KITS = { breaker: ['cobblekin', 'mig', 'ironsword'], duelist: ['reedling', 'fin', 'glassblade'], caster: ['emberling', 'int', 'floodrod'] };
+const KITS = { breaker: ['cobblekin', 'mig', 'ironsword'], duelist: ['stonekin', 'fin', 'glassblade'], caster: ['emberling', 'int', 'floodrod'] };
 const ENEMIES = G.ENEMIES.filter(e => G.enemyChapter(e.id) === 1 && e.id !== 'boss');
 const TRIALS = 120;
 
@@ -183,19 +183,19 @@ test('Sidestep is the blade-and-charm combined action and follows weapon and off
   assert.equal(sidestepEligible('precision', undefined), true);
   assert.equal(sidestepEligible('precision', 'shield'), false);
   assert.equal(sidestepEligible('heavy', 'charm'), false);
-  const duelist = G.createCharacter({ kit: 'duelist', race: 'reedling' });
+  const duelist = G.createCharacter({ kit: 'duelist', race: 'stonekin' });
   assert.deepEqual(G.primaryActions(duelist), { skill: 'driving', combined: 'sidestep', skillLabel: 'Driving Strike', combinedLabel: 'Sidestep' });
   assert.equal(G.ABILITIES.driving.sidestepSp, 12);
   assert.equal(G.abilityCost('driving', undefined, 'sidestep').sp, 12);
   const info = G.actionInfo(duelist, 'sidestep');
   assert.equal(info.sp, 12); assert.equal(info.mp, 0); assert.equal(info.cost, '12 stamina');
   assert.match(info.desc, /0\.80×/); assert.match(info.desc, /65%/); assert.match(info.desc, /Opening/);
-  const shielded = G.createCharacter({ kit: 'duelist', race: 'reedling' }); shielded.gear.offhand = 'shield'; shielded.bag.push('shield');
+  const shielded = G.createCharacter({ kit: 'duelist', race: 'stonekin' }); shielded.gear.offhand = 'shield'; shielded.bag.push('shield');
   assert.equal(G.primaryActions(shielded).combined, 'guardstrike', 'a precision weapon with a shield uses Guardstrike');
   G.startFight(shielded, 'rats'); assert.match(G.actionInfo(shielded, 'sidestep').reason, /no shield/);
   const heavy = G.createCharacter({ kit: 'breaker', race: 'cobblekin' }); heavy.gear.offhand = 'charm';
   assert.equal(G.primaryActions(heavy).combined, 'guardstrike', 'a heavy weapon never offers Sidestep');
-  const unlearned = G.createCharacter({ kit: 'duelist', race: 'reedling' }); unlearned.equippedAbilities = [];
+  const unlearned = G.createCharacter({ kit: 'duelist', race: 'stonekin' }); unlearned.equippedAbilities = [];
   assert.deepEqual(G.primaryActions(unlearned), { skill: 'attack', combined: 'guard', skillLabel: 'Attack', combinedLabel: 'Hunker down' });
   unlearned.fight = null; G.startFight(unlearned, 'rats'); assert.match(G.actionInfo(unlearned, 'sidestep').reason, /Driving Strike is not equipped/);
 });

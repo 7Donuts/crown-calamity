@@ -238,7 +238,7 @@ test('Wardcast counts as a spell for Paperwork shortcut, and a rejected input sp
 });
 
 test('Union rules: Shake it off also restores Stuffing, shown in the hint, with a per-fight window and ceiling',()=>{
-  const {s,t}=openShift('union');giveBoon(s.shift,'union_rules');const c=s.character,max=G.totals(c);let now=t;
+  const {s,t}=openShift('union');giveBoon(s.shift,'union_rules');const c=s.character;c.raceId='wolf';const max=G.totals(c);let now=t;
   assert.equal(Lab.labShiftFight(s,'rats',now),true);
   assert.match(Lab.labActionInfo(s,'recover').desc,/Union rules: after the enemy responds, also restore up to 25 Stuffing \(Health\) \(2 uses left/);
   assert.equal(G.actionInfo(c,'recover').desc.includes('Union rules'),false,'the engine text is unchanged outside a Shift');

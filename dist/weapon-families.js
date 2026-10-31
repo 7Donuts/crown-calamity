@@ -1,7 +1,8 @@
 // Pure weapon family and mastery rules (Spec 47).
 // No DOM, no storage, no clock. Calculations are shared between engine, inspector, and UI.
 import { WEAPON_FAMILIES } from './gear.js';
-import { RACES } from './races.js';
+import { RACES, raceAffinity } from './races.js';
+export { raceAffinity };
 
 export const WEAPON_FAMILY_IDS = Object.freeze([
   'clubs', 'mauls', 'spears', 'needles', 'foils', 'stilettos', 'wands', 'scepters', 'batons'
@@ -139,33 +140,6 @@ export const RACE_AFFINITIES = Object.freeze({
   bunny: 'foils',
   unicorn: 'batons'
 });
-
-/**
- * Checks if the character's race has affinity for this family,
- * or returns the affinity family for the race if familyId is omitted.
- */
-export function raceAffinity(raceOrState, familyId = null) {
-  if (!raceOrState) return familyId ? false : null;
-  let raceId = null;
-  if (typeof raceOrState === 'string') {
-    raceId = raceOrState;
-  } else if (typeof raceOrState === 'object') {
-    raceId = raceOrState.raceId || raceOrState.race;
-  }
-  if (raceId && typeof raceId === 'string') {
-    const lower = raceId.toLowerCase();
-    if (lower.includes('bear')) raceId = 'bear';
-    else if (lower.includes('wolf')) raceId = 'wolf';
-    else if (lower.includes('cat')) raceId = 'cat';
-    else if (lower.includes('bunny')) raceId = 'bunny';
-    else if (lower.includes('unicorn')) raceId = 'unicorn';
-  }
-  const aff = RACE_AFFINITIES[raceId] || null;
-  if (familyId) {
-    return aff === familyId;
-  }
-  return aff;
-}
 
 /**
  * Mastery cap: default 3, or 5 if race has affinity.

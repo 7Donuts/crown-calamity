@@ -107,7 +107,7 @@ test('a previously failing earned Caster C1 route now reaches all receipts with 
 });
 
 test('an earned Caster C1 defeat permits one real-rest retry and preserves the loss ledger', () => {
-  const result = runCampaignWalkthrough({ kit: 'caster', seed: 4, buyUpgrades: true });
+  const result = runCampaignWalkthrough({ kit: 'caster', seed: 2, buyUpgrades: true });
   assert.equal(result.status, 'completed', result.error);
   assert.equal(result.receipts.length, 5);
   assert.equal(result.retryCount, 1);
