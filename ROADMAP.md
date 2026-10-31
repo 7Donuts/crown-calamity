@@ -24,7 +24,12 @@ Status: planning document, 30 October 2026. This is the order in which the new d
 | D9 | Target age rating and legal review outcome | Required before any player data | Open |
 | D10 | Platform stack: hosting, runtime, database, identity provider, real-time channel | None chosen | Open |
 | D11 | Notice Board bounties leaving the lab (pricing v2, rotation, placement) | Parked (FUTURE-DEVELOPMENT.md) | Parked |
-| D12 | Story weapon and armor price curves | Trial: T10 10,000; T15 15,000; T20 30,000; T25 60,000; armor body T6/T8/T10 3,750/7,500/15,000. Post-story entry target 1,100 wins, best remains 2,000. | CP1 approved as trial values; CP4 fit pending |
+| D12 | Story weapon and armor price curves | T10 10,000; T15 15,000; T20 30,000; T25 60,000; armor body T6/T8/T10 3,750/7,500/15,000. Post-story entry target 1,100 wins, best remains 2,000. | Story prices confirmed final 31 Oct 2026 (CP4). Post-story curves stay provisional (D13) |
+| D13 | Post-story curves from G3-3 (`xpNeeded` (100 + 5R)(20 + 12E), enemy hit round(35 + 2.6E)) | Provisional | 31 Oct 2026: not made permanent. The G3-3 fit used synthetic gear that players could not own; re-fit against real post-story gear (D14) before approval |
+| D14 | Post-story gear past tier 25 | Add post-story gear tiers (design 50, Tempering) | Approved 31 Oct 2026 |
+| D15 | Build power versus the curve | Strong builds must feel powerful and be rewarded; the game must never feel like only keeping up with math. A slog is anti-fun | Approved 31 Oct 2026 as a standing balance principle (design 44, design 50 balance gates) |
+| D16 | Felt Vampire Fang plus Darned Patch past the story (near-zero loss in G3-3) | Tone down the Fang's healing past the story, keeping it among the strongest sustain choices (D15) | Approved 31 Oct 2026 |
+| D17 | Echoes of the Underfoot victory tracking | Echo kills are tracked separately from the base enemy's kills, story events, Special Edition meters and records | Approved 31 Oct 2026 |
 
 Decisions D1 to D8 were approved by the owner on 30 October 2026, choosing every recommended option; D9 and D10 remain open and D11 is parked. D12's CP1 anchors are owner-authorized trial values, not a claim that G1 or CP4 balance has passed. The owner also authorized proceeding with the CP2 two-hands choice as built, subject to later modification, and approved the CP3 direction; these are build-path approvals, not evidence that either gate has been implemented or passed. Also decided on 30 October 2026 and recorded in AGENTS.md: multiplayer is core; races are build identity; progression is open-ended; the story is the introduction; the world has exploration, locations and layers; land ownership needs a gameplay purpose; the stuffie theme and story stay.
 
@@ -33,7 +38,8 @@ Decisions D1 to D8 were approved by the owner on 30 October 2026, choosing every
 - CP1: the owner delegated selection of a price trial based on measured income, with substantial grinding and long-term play as requirements. D12 records the selected trial; full G1 validation remains pending.
 - CP2: the owner approved bringing the two-hand system into the campaign as built, with later adjustment allowed. The lab prototype and technical acceptance checks still must run; no further owner approval pause is required.
 - CP3: the owner approved the combined combat direction and interim “Echoes of the Underfoot” hunting proposal. Integrated balance testing still must run; this is prospective authorization, not a claim of successful results.
-- CP4: pending measured results and a recommendation on final post-story values. The 1,100-entry/2,000-best win targets remain starting values for that fit.
+- CP4 (31 Oct 2026): the owner confirmed the D12 story prices as final and kept the post-story curves provisional (D13) because the G3-3 fit assumed gear that did not exist. Next: post-story gear tiers (D14), the Fang adjustment (D16), then a re-fit against real gear under the D15 principle. The 1,100-entry/2,000-best win targets remain starting values for that fit.
+- Art (31 Oct 2026): the ten campaign menders reuse relic artwork. The owner will have them illustrated separately; the request is in `handoffs/reports/art-debt.md`. Leave the placeholder crops until replacement art arrives.
 
 ## Milestones
 

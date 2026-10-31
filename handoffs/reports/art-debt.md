@@ -28,3 +28,35 @@ Three dynamic trial enemies (`trial_stitch`, `trial_memory`, `trial_real`, built
 | `trial_stitch` | The Heavy Seam-Tester | 1 (The Stitch-Test) | `crab` |
 | `trial_memory` | Unclaimed Memory Keeper | 2 (The Memory-Test) | `attic_hugger` |
 | `trial_real` | The Realness Examiner | 3 (The Real-Test) | `fair_boss` |
+
+## Replacement art request: campaign menders (owner, 31 October 2026)
+
+Status: open. The owner will have these illustrated separately. Leave the placeholder crops in place until the new art is delivered; do not draw, recolor or substitute art in code.
+
+Why: each mender currently shows the exact same pixels as a relic (for example, the Thread-and-Thimble Kit is identical to the Seal). That breaks the AGENTS.md and design 54 rule that every equipment ID has its own generated illustration, and it makes a mender and a relic look like the same item in the satchel and shop.
+
+What to produce: one new illustration per mender, following the canonical positive and negative prompts and approved references in `ART-DIRECTION.md` (soft-pixel stuffie style), reviewed at actual rendered size in `dist/art-catalog.html`. Each is a small handheld sewing or repair object a plush could carry in the second hand. None may resemble an existing relic.
+
+| Item ID | Name | Tier | Subject (from the item description) | Must not resemble |
+| --- | --- | --- | --- | --- |
+| `threadThimbleKit` | Thread-and-Thimble Kit | 1 | A stuffie-scale sewing kit: thimble, short thread | Seal |
+| `bandageRoll` | Bandage Roll | 2 | A roll of clean linen bandage | Signet |
+| `patchSatchel` | Patch Satchel | 3 | A snug felt pouch packed with patches | Thread Spool |
+| `darningEgg` | Darning Egg | 4 | A smooth polished wooden darning egg | Patchwork Heart |
+| `sewingTin` | Sewing Tin | 5 | A painted tin with needles and strong thread | Lucky Button |
+| `buttonPouch` | Button Pouch | 6 | A velvet drawstring pouch of buttons | Dream Bell |
+| `secondChancesSpool` | Spool of Second Chances | 7 | A large spool of high-tensile thread | Thimble Guard |
+| `feltPatchBook` | Felt Patch Book | 8 | A bound book of wool felt swatches | Felt Fang |
+| `mendingHoop` | Mending Hoop | 9 | An embroidery hoop holding taut fabric | Darned Patch |
+| `goldenNeedleCase` | Golden Needle Case | 10 | A fine golden needle case | Stuffing Satchel |
+
+Visual progression: tiers 1 to 10 should read as a clear quality ladder (plain cloth and wood at tier 1; velvet, brass and gold by tiers 8 to 10), matching how the weapon and armor art escalates by chapter.
+
+Integration checklist (per AGENTS.md "Unique item art"):
+1. Keep the generated source RGBA pixels; add them to an equipment sprite atlas, not `relic-collection.png`.
+2. Replace each mender's crop in `dist/item-art-data.js` (currently the `"menders"` group) with its own measured region.
+3. Record measured dimensions, alpha/crop bounds and hashes in `dist/art-manifest.json`; never guess.
+4. Keep readable text labels; offline PNG embedding must still work (`python scripts-package.py`).
+5. Add a test that no mender crop equals any relic crop (a pixel or region comparison), so the reuse cannot come back.
+
+The lab-only menders `mender_kit` and `bandage_roll` (Playtest Lab only, not sold in the campaign) have no crop; include them if the lab should show art.

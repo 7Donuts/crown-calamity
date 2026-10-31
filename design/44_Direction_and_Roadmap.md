@@ -24,6 +24,7 @@ An improved take on Race War Kingdoms: a fast, repeatable fight loop; builds tha
 These turn the decisions into tests for any new system.
 
 - **Your build is a plan.** Race, hands, relics and mastery should combine into a recognizable way to fight, and preparing well should matter more than grinding longer.
+- **Power you can feel (owner decision, 31 October 2026, D15).** Strong builds must feel powerful, and the game should reward them. Enemy curves set the pace for an ordinary build; a well-planned build should clearly beat that pace, not merely keep up with it. If improvement only ever cancels out the next enemy's numbers, choices feel meaningless (the Race War Kingdoms trap). A slog is anti-fun: balance passes fix slow, punishing fights for ordinary builds rather than flattening strong ones. Strong is not invulnerable: no build should make fights free of risk.
 - **Every click is a choice, and repetition is still fine.** Keep the telegraph combat and one input per exchange. A player who repeats a good action is playing correctly.
 - **The world opens up.** The story is the front door; exploration, layers and land are what lies beyond it.
 - **Online is the destination.** New rules are written as pure, shared modules that a server can run unchanged, so solo work now is not thrown away later.
