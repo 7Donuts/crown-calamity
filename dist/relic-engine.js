@@ -144,14 +144,17 @@ export function lifestealRate(f, strength, rank) {
 
 /**
  * After the player's own action resolves, before any victory or enemy response.
- * `ctx`: { key, damaging, damageApplied, streak, exposed (Expose was taken), maxHp }.
- * Returns the Stuffing to restore now (the engine caps it at missing health).
+ * `ctx`: { key, damaging, damageApplied, streak, exposed (Expose was taken), maxHp, pluckAtStart }.
+ * `pluckAtStart` is the Pluck held when the exchange began; the Brass-Stamp Ring judges "holding 0 Pluck" on it, so a
+ * race hook that adds Pluck earlier in the same Recover (Well Loved) cannot cost the Ring its trigger.
+ * Returns the Stuffing to restore now (the engine caps it at missing health), plus the Fang's `rate` and per-exchange
+ * `cap` so damage landed later in the same exchange (a foil riposte) heals under the same cap.
  */
 export function afterPlayerAction(f, ctx, strength, notes, rank) {
   if (ctx.damaging && ctx.damageApplied > 0 && ctx.streak >= 2) gainPluck(f, scaled(1, strength('encoreRibbon')), 'encoreRibbon', notes);
   if (ctx.key === 'expose') gainPluck(f, scaled(safeRank(rank, 'musicBox') >= 3 ? 3 : 2, strength('musicBox')), 'musicBox', notes);
   if (ctx.key === 'recover') {
-    const startPluck = f?.pluck || 0;
+    const startPluck = ctx.pluckAtStart ?? (f?.pluck || 0);
     if (startPluck === 0 && strength('signet') > 0) {
       gainPluck(f, scaled(safeRank(rank, 'signet') >= 3 ? 2 : 1, strength('signet')), 'signet', notes);
     }
@@ -159,12 +162,20 @@ export function afterPlayerAction(f, ctx, strength, notes, rank) {
   }
   let heal = 0;
   const rate = lifestealRate(f, strength, rank);
-  if (rate > 0 && ctx.damageApplied > 0) {
-    const capRate = safeRank(rank, 'feltFang') >= 3 ? 0.13 : FANG_EXCHANGE_CAP;
-    const cap = Math.floor(ctx.maxHp * capRate * Math.min(1.5, strength('feltFang')));
-    heal = Math.min(cap, Math.floor(ctx.damageApplied * rate));
-  }
-  return { heal };
+  const capRate = safeRank(rank, 'feltFang') >= 3 ? 0.13 : FANG_EXCHANGE_CAP;
+  const cap = rate > 0 ? Math.floor(ctx.maxHp * capRate * Math.min(1.5, strength('feltFang'))) : 0;
+  if (rate > 0 && ctx.damageApplied > 0) heal = Math.min(cap, Math.floor(ctx.damageApplied * rate));
+  return { heal, rate, cap };
+}
+
+/**
+ * Fang heal for damage that landed later in the exchange (the foil riposte), under the same per-exchange cap.
+ * `landedTotal` is all damage that landed this exchange across both hands and the riposte (never overkill);
+ * `alreadyHealed` is the heal afterPlayerAction already returned. Returns the additional Stuffing to restore.
+ */
+export function fangHealForLaterDamage(fang, landedTotal, alreadyHealed) {
+  if (!fang || !(fang.rate > 0) || !(landedTotal > 0)) return 0;
+  return Math.max(0, Math.min(fang.cap, Math.floor(landedTotal * fang.rate)) - alreadyHealed);
 }
 
 /** A successful Disrupt: Pluck and a Rattle for the enemy's next attack. */

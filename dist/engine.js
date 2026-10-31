@@ -133,9 +133,9 @@ export function recoverProfile(s){
   const mainItem=effectiveItem(s,s.gear?.weapon);
   if(mainItem?.twoHanded)return base;
   const offItem=effectiveItem(s,s.gear?.offhand);
-  let mend=menderMendAmount(s,offItem,'recover');
+  let mend=menderMendAmount(s,offItem,'recover',t);
   if(!mend&&offItem?.family==='batons'){
-    mend=batonsSecondHandMend(s,offItem,'recover');
+    mend=batonsSecondHandMend(s,offItem,'recover',t);
   }
   return mend>0?{...base,mend}:base;
 }
@@ -158,7 +158,7 @@ export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
  if(w?.family==='stilettos'&&(bonus.bonus>0||f?.exposed||f?.opening))raw*=1+unpickDamageBonus(s,w,true);
  if(w?.family==='spears'&&!f?.damagingActionUsed)raw*=1+reachDamageBonus(s,w,f);
  const rs=strengthOf(s),rk=rankOf(s);raw*=RE.damageMultiplier(f,rs,rk);const boxNoGlance=!!f?.exposed&&rs('musicBox')>0,bunnyNoGlance=!!f?.shuffleNoGlance;
- const isWolfHeavy=s.raceId==='wolf'&&w.channel==='heavy'&&s.hp<t.hp*0.5;
+ const isWolfHeavy=s.raceId==='wolf'&&channel==='physical'&&w.channel==='heavy'&&s.hp<t.hp*0.5;
  if(isWolfHeavy)raw*=1+(isHomeLayerActive(s)?0.15:0.10)*raceRefinementMultiplier(s);
  let defense=channel==='arcane'?e.ward:e.armor;
  if(i?.warded&&channel==='arcane')defense+=25;
@@ -171,7 +171,7 @@ export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
  if(e.id==='boss'&&f&&f.hp/e.hp<.3&&((f.round%3===0&&channel==='physical')||(f.round%3===1&&channel==='arcane')))raw*=1.2;
  if(e.id==='trial_real'&&f&&f.hp/e.hp<.5&&f.round%3===0)raw*=1.2;
  let critChance=t.critChance;
- if(w?.family==='needles')critChance=clamp(critChance+pinpointCritBonus(s,w),.05,.25);
+ if(w?.family==='needles'&&channel==='physical')critChance=clamp(critChance+pinpointCritBonus(s,w),.05,.25);
  const reduced=raw*(1-mitigation(defense,effectiveLevel(s)));
  let solidHit=bonus.noGlance||boxNoGlance||bunnyNoGlance?1:hitChance(accuracy,18+e.level*3);
  if(w?.family==='spears'&&key==='disrupt'&&!bonus.noGlance&&!boxNoGlance&&!bunnyNoGlance)solidHit=clamp(solidHit+reachDisruptHitBonus(s,w,key),.65,.98);
@@ -261,10 +261,10 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  const retryAfterMs=actionDelayRemaining(s,now);if(retryAfterMs)return {ok:false,reason:'Brief action delay. Tap again when ready.',retryAfterMs};
  s.nextActionAt=now+ACTION_DELAY_MS;countExchange(f);
  const relicNotes=[],rs=strengthOf(s),rk=rankOf(s),flushRelics=()=>{if(relicNotes.length)addLog(s,(s.raceId?'Relics and traits · ':'Relics · ')+relicNotes.splice(0).join(' · ')+'.','special');};let relicHealed=0;
- const e=fightEnemy(f),t=totals(s),i=intent(s),w=effectiveItem(s,s.gear.weapon),oldCharge=f.charge||0,profile=actionProfile(s,key,e.id);
+ const e=fightEnemy(f),t=totals(s),i=intent(s),w=effectiveItem(s,s.gear.weapon),oldCharge=f.charge||0,profile=actionProfile(s,key,e.id),pluckAtStart=f.pluck||0;
  f.charge=0;const opening=f.opening===true;f.opening=false;s.mp-=info.mp;s.sp-=info.sp;
  let guarded=GUARD_ACTIONS.includes(key),interrupted=false,damage=0,damageApplied=0,overkill=0,channel=null,critical=false,healed=0,traitHealed=0;
- let offhandDamage=0,offhandDamageApplied=0,offhandOverkill=0,mendHealed=0;
+ let offhandDamage=0,offhandDamageApplied=0,offhandOverkill=0,mendHealed=0,fang=null;const mendRoom=()=>Math.max(0,Math.floor(t.hp*0.06)-mendHealed);
  if(DAMAGING_ACTIONS.includes(key)){
   f.damagingActionUsed=true;
   channel=profile.channel;let glance=rng()>profile.hitChance;if(f.shuffleNoGlance){glance=false;f.shuffleNoGlance=false;}critical=!glance&&rng()<profile.critChance;damage=glance?profile.glance:critical?profile.critical:profile.normal;
@@ -275,7 +275,7 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
   if(damageApplied>0&&w?.family)recordDamagingFamily(f,w.family);
   if(key==='sidestep'&&w?.family==='foils'){const spGain=riposteStaminaRestore(s,w,key);if(spGain>0){s.sp=Math.min(t.sp,s.sp+spGain);addLog(s,`Riposte restored ${spGain} Bounce (stamina).`,'heal');}}
   const offItem=effectiveItem(s,s.gear?.offhand);
-  const kind=classifySecondHand(offItem);
+  const kind=GUARD_ACTIONS.includes(key)?'none':classifySecondHand(offItem);
   if((kind==='weapon'||kind==='focus')&&profile?.offhand){
    if(f.hp>0){
     const offP=profile.offhand;
@@ -292,13 +292,13 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
     if(offSoaked>0)addLog(s,`Static-charged barrier soaked ${offSoaked} of that.`,'special');
    }
    if(offItem?.family==='batons'&&!w?.twoHanded){
-    const rawMend=batonsSecondHandMend(s,offItem,'strike');
-    const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
+    const rawMend=batonsSecondHandMend(s,offItem,'strike',t);
+    const mendGain=Math.min(rawMend,mendRoom(),Math.max(0,t.hp-s.hp));
     if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
    }
   }else if(kind==='mender'){
-   const rawMend=menderMendAmount(s,offItem,'strike');
-   const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
+   const rawMend=menderMendAmount(s,offItem,'strike',t);
+   const mendGain=Math.min(rawMend,mendRoom(),Math.max(0,t.hp-s.hp));
    if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
   }
   if(damage>0){const mark=['driving','guardstrike','sidestep'].includes(key)?'driving':channel==='arcane'?'arc':null;if(mark&&!f.used.includes(mark))f.used.push(mark);if(f.exposed&&!profile.opening&&!f.used.includes('expose'))f.used.push('expose');if(f.exposed){f.exposed=false;f.exposedRound=null;}}
@@ -316,14 +316,14 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
   if(s.raceId==='bear'){const bearRate=(isHomeLayerActive(s)?0.075:0.05)*raceRefinementMultiplier(s),bearHeal=Math.min(t.hp-s.hp,Math.floor(t.hp*bearRate));if(bearHeal>0){s.hp+=bearHeal;healed+=bearHeal;traitHealed+=bearHeal;addLog(s,`Well Loved restored ${bearHeal} Stuffing (health).`,'heal');}RE.gainPluck(f,1,'Well Loved',relicNotes);}
   const offItem=effectiveItem(s,s.gear?.offhand);
   if(!w?.twoHanded){
-   const rawMend=classifySecondHand(offItem)==='mender'?menderMendAmount(s,offItem,'recover'):offItem?.family==='batons'?batonsSecondHandMend(s,offItem,'recover'):0;
-   const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
+   const rawMend=classifySecondHand(offItem)==='mender'?menderMendAmount(s,offItem,'recover',t):offItem?.family==='batons'?batonsSecondHandMend(s,offItem,'recover',t):0;
+   const mendGain=Math.min(rawMend,mendRoom(),Math.max(0,t.hp-s.hp));
    if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
   }
  }else if(key==='vent'){
   f.vented=true;addLog(s,'Lid popped. The Spin Cycle’s pressure damage reduced by 30%.','special');journal(s,'A little less pressure','You popped the lid by hand. The pressure system is contained, and the suds are only mildly offended.');
  }else{f.streak=0;addLog(s,key==='withdraw'?'You go very still and look for a safe way out.':'You hunker down.','defend');}
- {const after=RE.afterPlayerAction(f,{key,damaging:DAMAGING_ACTIONS.includes(key),damageApplied:damageApplied+offhandDamageApplied,streak:f.streak,maxHp:t.hp},rs,relicNotes,rk);const heal=Math.min(after.heal,Math.max(0,t.hp-s.hp));if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Fang restored ${heal} Stuffing`);}}
+ {const after=RE.afterPlayerAction(f,{key,damaging:DAMAGING_ACTIONS.includes(key),damageApplied:damageApplied+offhandDamageApplied,streak:f.streak,maxHp:t.hp,pluckAtStart},rs,relicNotes,rk);fang=after;const heal=Math.min(after.heal,Math.max(0,t.hp-s.hp));if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Fang restored ${heal} Stuffing`);}}
  const actualManaRegenerated=info.mp===0?Math.min(MANA_REGEN_PER_EXCHANGE,Math.max(0,t.mp-s.mp)):0;
  if(actualManaRegenerated>0){s.mp+=actualManaRegenerated;addLog(s,`Caught your breath · +${actualManaRegenerated} Sparkle (mana).`,'heal');}
  if(opening&&!DAMAGING_ACTIONS.includes(key))addLog(s,'Opening closed unused. It only lasts for one exchange and needs a damaging action.','special');
@@ -340,13 +340,13 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  let incoming=interrupted?0:Math.floor(i.damage*(enemyGlance?.55:1)*(1-clamp((e.id==='wisp'?t.ward:t.armor)/((e.id==='wisp'?t.ward:t.armor)+100+8*e.level),0,.65))*(f.vented&&e.id==='boss'?.7:1));
  const declared=i.damage*(enemyGlance?.55:1)*(f.vented&&e.id==='boss'?.7:1),afterArmor=incoming,steadyBonus=steadyGuardBonus(s,w,guarded),wardingBonus=wardingGuardBonus(s,w,key),totalGuardRate=guarded?Math.min(TELEGRAPH.preventionCeiling,guardRate(i.heavy)+steadyBonus+wardingBonus):0,hitInput={declared,afterArmor,guardRate:totalGuardRate,withdraw:key==='withdraw'};
  let hit=resolveHit({...hitInput,barrier:f.barrier}),prevented=hit.prevented;
- if(guarded&&prevented>=20){s.usefulGuards=(s.usefulGuards||0)+1;if(!w?.twoHanded){const offItem=effectiveItem(s,s.gear?.offhand);const rawMend=classifySecondHand(offItem)==='mender'?menderMendAmount(s,offItem,'guard'):offItem?.family==='batons'?batonsSecondHandMend(s,offItem,'guard'):0;if(rawMend>0){const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}}if(offItem?.family==='scepters'){const barrierAdd=sceptersSecondHandBarrier(s,offItem);if(barrierAdd>0){const cap=Math.floor(t.hp*.3);f.barrier=Math.min(cap,f.barrier+barrierAdd);f.barrierTurns=Math.max(f.barrierTurns,1);addLog(s,`Second hand (${offItem.name}) raised ${barrierAdd} barrier.`,'defend');}}if(offItem?.family==='foils'){const ripProfile=foilsRiposteProfile(s,offItem,e,t,i,RE.damageMultiplier(f,rs,rk));if(ripProfile&&f.hp>0){const ripGlance=rng()>ripProfile.hitChance,ripCrit=!ripGlance&&rng()<ripProfile.critChance,ripDmg=ripGlance?ripProfile.glance:ripCrit?ripProfile.critical:ripProfile.normal,ripSoaked=variantSoak(f,ripDmg),ripBefore=f.hp;f.hp=Math.max(0,f.hp-(ripDmg-ripSoaked));const ripApplied=ripBefore-f.hp;addLog(s,`Second hand (${offItem.name}) riposte${ripCrit?' · critical':''}${ripGlance?' · glancing hit':''}: ${ripDmg} physical damage${f.hp===0?` · only ${ripApplied} needed`:''}.`,'attack');if(ripApplied>0)recordDamagingFamily(f,'foils');}}}{const lock=RE.onUsefulGuard(f,{heavy:i.heavy,prevented,enemyHp:f.hp},rs,relicNotes,rk);if(lock.reflect>0){f.hp-=lock.reflect;relicNotes.push(`Locket sent back ${lock.reflect} damage`);}}if(i.heavy)s.guardCount++;if(s.passive==='reservoir'){f.charge=1;if(!s.discoveries.includes('reservoir')){s.discoveries.push('reservoir');journal(s,'Interaction discovered · Stored Pressure','A useful Guard stores one charge. Your next Arc Bolt or Wardcast gains 10% raw spell damage. One charge, expires after the next exchange. “The shield is not an approved charging station. Procurement has been informed.”','discovery');}addLog(s,'Reservoir charged. Next spell +10% (expires next exchange).','special');}if(rs('seal')>0&&!f.sealUsed){const barrier=Math.floor(t.hp*.04*rs('seal')),cap=Math.floor(t.hp*.3);f.barrier=Math.max(f.barrier,Math.min(cap,barrier));f.barrierTurns=Math.max(f.barrierTurns,1);f.sealUsed=true;RE.gainPluck(f,RE.scaled(rk('seal')>=3?2:1,rs('seal')),'seal',relicNotes);addLog(s,`${ITEMS.seal.name} grants ${Math.min(cap,barrier)} barrier.`,'defend');}if(!f.threadSpoolUsed&&rs('threadSpool')>0){const gain=Math.min(t.sp-s.sp,Math.floor(t.sp*.05*rs('threadSpool')));s.sp+=gain;f.threadSpoolUsed=true;RE.gainPluck(f,RE.scaled(rk('threadSpool')>=3?2:1,rs('threadSpool')),'threadSpool',relicNotes);if(gain)addLog(s,`Spare Thread restored ${gain} Bounce (stamina).`,'heal');}if(!f.thimbleUsed&&rs('thimbleGuard')>0){const pluck=RE.clampInt(f.pluck,0,RE.pluckCapFor(f)),rate=(.02+(rk('thimbleGuard')>=3?.00625:.005)*pluck)*rs('thimbleGuard'),barrier=Math.floor(t.hp*rate),added=Math.max(0,Math.min(Math.floor(t.hp*.3)-f.barrier,barrier));f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,1);f.thimbleUsed=true;if(added)addLog(s,`Thimble Guard added ${added} barrier.`,'defend');}if(s.guardCount>=3)achievement(s,'citizen','Load-Bearing Citizen','“You have discovered the tactical applications of remaining upright. Engineering has been informed.”',15);}
+ if(guarded&&prevented>=20){s.usefulGuards=(s.usefulGuards||0)+1;if(!w?.twoHanded){const offItem=effectiveItem(s,s.gear?.offhand);const rawMend=classifySecondHand(offItem)==='mender'?menderMendAmount(s,offItem,'guard',t):offItem?.family==='batons'?batonsSecondHandMend(s,offItem,'guard',t):0;if(rawMend>0){const mendGain=Math.min(rawMend,mendRoom(),Math.max(0,t.hp-s.hp));if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}}if(offItem?.family==='scepters'){const barrierAdd=sceptersSecondHandBarrier(s,offItem);if(barrierAdd>0){const cap=Math.floor(t.hp*.3);f.barrier=Math.min(cap,f.barrier+barrierAdd);f.barrierTurns=Math.max(f.barrierTurns,1);addLog(s,`Second hand (${offItem.name}) raised ${barrierAdd} barrier.`,'defend');}}if(offItem?.family==='foils'){const ripProfile=foilsRiposteProfile(s,offItem,e,t,i,RE.damageMultiplier(f,rs,rk));if(ripProfile&&f.hp>0){const ripGlance=rng()>ripProfile.hitChance,ripCrit=!ripGlance&&rng()<ripProfile.critChance,ripDmg=ripGlance?ripProfile.glance:ripCrit?ripProfile.critical:ripProfile.normal,ripSoaked=variantSoak(f,ripDmg),ripBefore=f.hp;f.hp=Math.max(0,f.hp-(ripDmg-ripSoaked));const ripApplied=ripBefore-f.hp;addLog(s,`Second hand (${offItem.name}) riposte${ripCrit?' · critical':''}${ripGlance?' · glancing hit':''}: ${ripDmg} physical damage${f.hp===0?` · only ${ripApplied} needed`:''}.`,'attack');if(ripApplied>0){recordDamagingFamily(f,'foils');const fangExtra=Math.min(RE.fangHealForLaterDamage(fang,damageApplied+offhandDamageApplied+ripApplied,fang?.heal||0),Math.max(0,t.hp-s.hp));if(fangExtra>0){s.hp+=fangExtra;relicHealed+=fangExtra;relicNotes.push(`Fang restored ${fangExtra} Stuffing (riposte)`);}}}}}{const lock=RE.onUsefulGuard(f,{heavy:i.heavy,prevented,enemyHp:f.hp},rs,relicNotes,rk);if(lock.reflect>0){f.hp-=lock.reflect;relicNotes.push(`Locket sent back ${lock.reflect} damage`);}}if(i.heavy)s.guardCount++;if(s.passive==='reservoir'){f.charge=1;if(!s.discoveries.includes('reservoir')){s.discoveries.push('reservoir');journal(s,'Interaction discovered · Stored Pressure','A useful Guard stores one charge. Your next Arc Bolt or Wardcast gains 10% raw spell damage. One charge, expires after the next exchange. “The shield is not an approved charging station. Procurement has been informed.”','discovery');}addLog(s,'Reservoir charged. Next spell +10% (expires next exchange).','special');}if(rs('seal')>0&&!f.sealUsed){const barrier=Math.floor(t.hp*.04*rs('seal')),cap=Math.floor(t.hp*.3);f.barrier=Math.max(f.barrier,Math.min(cap,barrier));f.barrierTurns=Math.max(f.barrierTurns,1);f.sealUsed=true;RE.gainPluck(f,RE.scaled(rk('seal')>=3?2:1,rs('seal')),'seal',relicNotes);addLog(s,`${ITEMS.seal.name} grants ${Math.min(cap,barrier)} barrier.`,'defend');}if(!f.threadSpoolUsed&&rs('threadSpool')>0){const gain=Math.min(t.sp-s.sp,Math.floor(t.sp*.05*rs('threadSpool')));s.sp+=gain;f.threadSpoolUsed=true;RE.gainPluck(f,RE.scaled(rk('threadSpool')>=3?2:1,rs('threadSpool')),'threadSpool',relicNotes);if(gain)addLog(s,`Spare Thread restored ${gain} Bounce (stamina).`,'heal');}if(!f.thimbleUsed&&rs('thimbleGuard')>0){const pluck=RE.clampInt(f.pluck,0,RE.pluckCapFor(f)),rate=(.02+(rk('thimbleGuard')>=3?.00625:.005)*pluck)*rs('thimbleGuard'),barrier=Math.floor(t.hp*rate),added=Math.max(0,Math.min(Math.floor(t.hp*.3)-f.barrier,barrier));f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,1);f.thimbleUsed=true;if(added)addLog(s,`Thimble Guard added ${added} barrier.`,'defend');}if(s.guardCount>=3)achievement(s,'citizen','Load-Bearing Citizen','“You have discovered the tactical applications of remaining upright. Engineering has been informed.”',15);}
  hit=resolveHit({...hitInput,barrier:f.barrier});prevented=hit.prevented;incoming=hit.incoming;const absorbed=hit.absorbed;f.barrier-=absorbed;if(f.hp<=0){flushRelics();victory(s,e,rng);return {ok:true,victory:true,relicHealed,damage,damageApplied,overkill,critical,incoming:0,heavy:false,absorbed,prevented,healed,traitHealed,manaRegenerated:actualManaRegenerated,openingUsed:opening,offhandDamage,offhandDamageApplied,mendHealed};}
  if(absorbed>0){if(key==='brace'&&!f.used.includes('brace'))f.used.push('brace');if(key==='aegis'&&!f.used.includes('aegis'))f.used.push('aegis');}
  const playerHPBefore=s.hp;countDamageTaken(f,incoming);s.hp=Math.max(0,s.hp-incoming);const incomingApplied=playerHPBefore-s.hp,incomingOverkill=s.hp===0?Math.max(0,incoming-playerHPBefore):0;f.healDeficit=(f.healDeficit||0)+incoming;if(!interrupted)addLog(s,`${i.name}${enemyGlance?' · glancing hit':''}: ${incoming} damage${prevented?` · ${prevented} guarded`:''}${absorbed?` · ${absorbed} absorbed`:''}${incomingOverkill?` · only ${incomingApplied} needed`:''}.`,'enemy');
  if(s.raceId==='wolf'&&incoming>0)RE.gainPluck(f,1,'Reinforced Seams',relicNotes);
  if(s.raceId==='cat'&&!f.nineLivesUsed&&s.hp<=0&&incomingApplied>0){f.nineLivesUsed=true;s.hp=1;const catPluck=isHomeLayerActive(s)?3:2;RE.gainPluck(f,catPluck,'Nine Lives',relicNotes);addLog(s,'Nine Lives: Cheated defeat and stayed at 1 Stuffing.','special');}
- if(s.raceId==='bear'&&!f.cuddleReserveUsed&&s.hp>0&&s.hp<t.hp*0.3){f.cuddleReserveUsed=true;const barrierRate=(isHomeLayerActive(s)?0.15:0.10)*raceRefinementMultiplier(s),barrierAmt=Math.floor(t.hp*barrierRate),cap=Math.floor(t.hp*0.3);const added=Math.max(0,Math.min(cap-f.barrier,barrierAmt));if(added>0){f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,2);addLog(s,`Cuddle Reserve granted a ${added}-point barrier for the next response.`,'defend');}}
+ if(s.raceId==='bear'&&!f.cuddleReserveUsed&&s.hp>0&&s.hp<t.hp*0.3&&playerHPBefore>=t.hp*0.3){f.cuddleReserveUsed=true;const barrierRate=(isHomeLayerActive(s)?0.15:0.10)*raceRefinementMultiplier(s),barrierAmt=Math.floor(t.hp*barrierRate),cap=Math.floor(t.hp*0.3);const added=Math.max(0,Math.min(cap-f.barrier,barrierAmt));if(added>0){f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,2);addLog(s,`Cuddle Reserve granted a ${added}-point barrier for the next response.`,'defend');}}
  {const after=RE.afterEnemyResponse(f,{key,hurt:incoming>0,heavy:i.heavy&&!interrupted,interrupted,alive:s.hp>0,maxHp:t.hp},rs,relicNotes,rk);const heal=s.hp>0?Math.min(after.heal,Math.max(0,t.hp-s.hp)):0;if(heal>0){s.hp+=heal;relicHealed+=heal;relicNotes.push(`Seed-Packet Heart restored ${heal} Stuffing`);}}
  flushRelics();
  const variantNote=variantResponse(f,i,interrupted);if(variantNote)addLog(s,variantNote,'special');

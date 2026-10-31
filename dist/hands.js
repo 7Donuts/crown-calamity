@@ -36,23 +36,45 @@ export function classifySecondHand(item) {
 }
 
 /**
+ * How the second hand takes part in a verb (Spec 46 table): 'guard' | 'strike' | 'recover' | null.
+ * Guard verbs (Guard, Brace, Guardstrike, Sidestep, Wardcast) use the Guard column only, even though some of them
+ * also strike with the main hand, so one exchange never runs both the strike and the Guard behaviour of the second hand.
+ */
+export function secondHandMode(key) {
+  if (GUARD_ACTIONS.includes(key)) return 'guard';
+  if (DAMAGING_ACTIONS.includes(key)) return 'strike';
+  if (key === 'recover') return 'recover';
+  return null;
+}
+
+/** Mend never exceeds 6% of maximum Stuffing per exchange (Spec 46), summed over every second-hand mend source. */
+export const mendExchangeCap = maxHp => Math.floor(Math.max(0, maxHp) * 0.06);
+
+/**
+ * Total Will and maximum Stuffing for the mend rules. Callers pass the engine's totals(s), so Will from gear, echoes
+ * and race counts and the maximum is the real one. The formula fallback is only for callers that have no totals.
+ */
+export function mendInputs(s, t = null) {
+  const wil = t?.wil ?? s?.stats?.wil ?? 8;
+  const maxHp = t?.hp ?? s?.totals?.hp ?? Math.floor(200 + 12 * effectiveLevel(s) + 10 * (s?.stats?.vit || 8) + 4 * wil);
+  return { wil, maxHp };
+}
+
+/** Mend on a useful Guard is 50% of the (already capped) mend on strike, floored. */
+export const guardMendFromStrike = strikeMend => Math.floor(0.5 * strikeMend);
+
+/**
  * Calculates mender healing value for a given mode ('strike', 'guard', 'recover').
  * Mend on strike / recover: Math.floor(mend + 0.5 * Will), capped at 6% of max HP.
- * Mend on useful Guard: 50% of mend on strike (floored), capped at 6% of max HP.
+ * Mend on useful Guard: floor(50% of the capped mend on strike).
+ * `t` is the engine's totals(s) (total Will and real maximum Stuffing).
  */
-export function menderMendAmount(s, offItem, mode = 'strike') {
+export function menderMendAmount(s, offItem, mode = 'strike', t = null) {
   if (!offItem || classifySecondHand(offItem) !== 'mender') return 0;
-  const wil = s?.stats?.wil ?? 8;
+  const { wil, maxHp } = mendInputs(s, t);
   const rawMend = Math.floor((offItem.mend || 0) + 0.5 * wil);
-  const hp = s?.hp || 200;
-  // Use character's actual max HP from totals or estimate
-  const maxHp = s?.totals?.hp || Math.floor(200 + 12 * effectiveLevel(s) + 10 * ((s.stats?.vit || 8)) + 4 * wil);
-  const maxCap = Math.floor(maxHp * 0.06);
-  const strikeMend = Math.min(rawMend, maxCap);
-  if (mode === 'guard') {
-    return Math.min(Math.floor(0.5 * rawMend), maxCap);
-  }
-  return strikeMend;
+  const strikeMend = Math.min(rawMend, mendExchangeCap(maxHp));
+  return mode === 'guard' ? guardMendFromStrike(strikeMend) : strikeMend;
 }
 
 /**
@@ -61,7 +83,7 @@ export function menderMendAmount(s, offItem, mode = 'strike') {
  * Spell weapon / focus: 30% of standalone spell hit
  */
 export function secondHandProfile(s, enemy, key, t = null, intent = null, extraMultiplier = 1) {
-  if (!s || !enemy || !DAMAGING_ACTIONS.includes(key)) return null;
+  if (!s || !enemy || secondHandMode(key) !== 'strike') return null;
   const mainItem = effectiveItem(s, s.gear?.weapon);
   if (mainItem?.twoHanded) return null;
   const offItem = effectiveItem(s, s.gear?.offhand);
@@ -135,7 +157,10 @@ export function secondHandProfile(s, enemy, key, t = null, intent = null, extraM
 }
 
 /**
- * Returns full verb contribution for second hand.
+ * Returns full verb contribution for second hand (Spec 46 table).
+ * Strike verbs: off-hand hit and mend on strike. Guard verbs (including Sidestep, which also strikes with the main
+ * hand): the second hand's Guard behaviour only, so `mend` is the mend on a useful Guard and there is no off-hand hit.
+ * `t` is the engine's totals(s); it supplies total Will and real maximum Stuffing to the mend rules.
  */
 export function secondHandVerbContribution(s, key, enemy, t = null, intent = null, extraMultiplier = 1) {
   const mainItem = effectiveItem(s, s.gear?.weapon);
@@ -144,30 +169,19 @@ export function secondHandVerbContribution(s, key, enemy, t = null, intent = nul
   }
   const offItem = effectiveItem(s, s.gear?.offhand);
   const kind = classifySecondHand(offItem);
+  const mode = secondHandMode(key);
   let offhand = null;
   let mend = 0;
 
   if (kind === 'weapon' || kind === 'focus') {
-    if (DAMAGING_ACTIONS.includes(key)) {
+    if (mode === 'strike') {
       offhand = secondHandProfile(s, enemy, key, t, intent, extraMultiplier);
     }
-    if (offItem.family === 'batons') {
-      if (DAMAGING_ACTIONS.includes(key)) {
-        mend = batonsSecondHandMend(s, offItem, 'strike');
-      } else if (GUARD_ACTIONS.includes(key)) {
-        mend = batonsSecondHandMend(s, offItem, 'guard');
-      } else if (key === 'recover') {
-        mend = batonsSecondHandMend(s, offItem, 'recover');
-      }
+    if (offItem.family === 'batons' && mode) {
+      mend = batonsSecondHandMend(s, offItem, mode, t);
     }
-  } else if (kind === 'mender') {
-    if (DAMAGING_ACTIONS.includes(key)) {
-      mend = menderMendAmount(s, offItem, 'strike');
-    } else if (GUARD_ACTIONS.includes(key)) {
-      mend = menderMendAmount(s, offItem, 'guard');
-    } else if (key === 'recover') {
-      mend = menderMendAmount(s, offItem, 'recover');
-    }
+  } else if (kind === 'mender' && mode) {
+    mend = menderMendAmount(s, offItem, mode, t);
   }
 
   return {
@@ -188,20 +202,21 @@ export function secondHandActionHint(s, key) {
   if (mainItem?.twoHanded) return '';
   const offItem = effectiveItem(s, s.gear?.offhand);
   const kind = classifySecondHand(offItem);
+  const mode = secondHandMode(key);
   if (kind === 'weapon') {
-    if (DAMAGING_ACTIONS.includes(key)) return '+ off-hand strike';
+    if (mode === 'strike') return '+ off-hand strike';
     if (offItem.family === 'foils' && GUARD_ACTIONS.includes(key)) return '+ riposte on block';
   } else if (kind === 'focus') {
     if (offItem.family === 'batons') {
-      if (DAMAGING_ACTIONS.includes(key)) return '+ off-hand bolt & mend';
-      if (GUARD_ACTIONS.includes(key)) return '+ mend on block';
+      if (mode === 'strike') return '+ off-hand bolt & mend';
+      if (mode === 'guard') return '+ mend on block';
       if (key === 'recover') return '+ mend';
     }
     if (offItem.family === 'scepters' && GUARD_ACTIONS.includes(key)) return '+ barrier on block';
-    if (DAMAGING_ACTIONS.includes(key)) return '+ off-hand bolt';
+    if (mode === 'strike') return '+ off-hand bolt';
   } else if (kind === 'mender') {
-    if (DAMAGING_ACTIONS.includes(key)) return '+ mend';
-    if (GUARD_ACTIONS.includes(key)) return '+ mend on block';
+    if (mode === 'strike') return '+ mend';
+    if (mode === 'guard') return '+ mend on block';
     if (key === 'recover') return '+ mend';
   } else if (kind === 'shield') {
     if (GUARD_ACTIONS.includes(key)) return '+ shield guard';

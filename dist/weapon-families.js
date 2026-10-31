@@ -351,22 +351,21 @@ export function sceptersSecondHandBarrier(s, offItem) {
 /**
  * Batons (second hand): Adds 25% to a mender-like mend if no mender is held.
  * Mend on strike/recover: Math.floor(0.5 * Will * 1.25 * mult), capped at 6% of max HP.
- * Mend on useful Guard: 50% of mend on strike.
+ * Mend on useful Guard: floor(50% of the capped mend on strike).
+ * `t` is the engine's totals(s): total Will and real maximum Stuffing. The formula fallback only serves
+ * callers without totals. Same rules as menderMendAmount in hands.js (which imports this module).
  */
-export function batonsSecondHandMend(s, offItem, mode = 'strike') {
+export function batonsSecondHandMend(s, offItem, mode = 'strike', t = null) {
   if (offItem?.family !== 'batons') return 0;
   const rank = weaponMasteryRank(s, 'batons');
-  const wil = s?.stats?.wil ?? 8;
+  const wil = t?.wil ?? s?.stats?.wil ?? 8;
   const mult = traitEffectMultiplier(rank);
   const rawMend = Math.floor(0.5 * wil * 1.25 * mult);
   const el = effectiveLevel(s);
-  const maxHp = s?.totals?.hp || Math.floor(200 + 12 * el + 10 * (s?.stats?.vit || 8) + 4 * wil);
+  const maxHp = t?.hp ?? s?.totals?.hp ?? Math.floor(200 + 12 * el + 10 * (s?.stats?.vit || 8) + 4 * wil);
   const maxCap = Math.floor(maxHp * 0.06);
   const strikeMend = Math.min(rawMend, maxCap);
-  if (mode === 'guard') {
-    return Math.min(Math.floor(0.5 * rawMend), maxCap);
-  }
-  return strikeMend;
+  return mode === 'guard' ? Math.floor(0.5 * strikeMend) : strikeMend;
 }
 
 /**

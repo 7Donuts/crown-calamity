@@ -287,7 +287,7 @@ test('Batons (Lullaby) increases Mend healing by 15% and off-hand baton heals on
   s.hp = 250;
   s.fight.round = 1; // Clawback Crab heavy wind-up (damage > 100, guard prevents >= 20)
   const guardRes = G.exchange(s, 'guard', () => 0.5, 4000);
-  const expectedGuardMend = G.batonsSecondHandMend(s, offBaton, 'guard');
+  const expectedGuardMend = G.batonsSecondHandMend(s, offBaton, 'guard', G.totals(s));
   assert.ok(expectedGuardMend > 0);
   assert.equal(guardRes.mendHealed, expectedGuardMend, 'exchange useful guard should apply off-hand baton mend');
 });
