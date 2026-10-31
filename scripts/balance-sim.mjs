@@ -11,7 +11,7 @@ const KITS = new Set(['breaker', 'duelist', 'caster']);
 const ACTION_MS = 700;
 const MAX_SEEDS = 10000;
 const MAX_CHAIN = 50;
-const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'weaponMastery', 'save', 'rulesPreview']);
+const FIXTURE_KEYS = new Set(['id', 'kit', 'level', 'realness', 'realnessChoices', 'race', 'gear', 'relics', 'relicRanks', 'echoes', 'mastery', 'abilities', 'weaponMastery', 'save', 'rulesPreview', 'customItems', 'stats']);
 const NON_MEASURED = [];
 const round1 = n => Math.round(n * 10) / 10;
 
@@ -23,10 +23,11 @@ function prepare(fixture) {
     }
     if (!FIXTURE_KEYS.has(key)) throw new Error(`Unknown fixture field: ${key}`);
   }
-  const { kit = 'breaker', level, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], weaponMastery, save, rulesPreview } = fixture;
+  const { kit = 'breaker', level, realness, realnessChoices, race, gear = {}, relics = [], relicRanks = {}, echoes = [], mastery = {}, abilities = [], weaponMastery, save, rulesPreview, customItems, stats } = fixture;
   if (save !== undefined && Object.hasOwn(fixture, 'kit')) throw new Error('Captured-save fixtures cannot also specify kit');
   if (!KITS.has(kit) && !save) throw new Error(`Unknown kit: ${kit}`);
   if (level !== undefined && (!Number.isInteger(level) || level < 1 || level > G.LEVEL_CAP)) throw new Error(`Fixture level must be an integer from 1 to ${G.LEVEL_CAP}`);
+  if (realness !== undefined && (!Number.isInteger(realness) || realness < 0)) throw new Error('Fixture realness must be a non-negative integer');
   if (race !== undefined && !Object.values(G.RACES).some(row => row.id === race || row.name === race)) throw new Error(`Unknown race: ${race}`);
   if (!gear || typeof gear !== 'object' || Array.isArray(gear)) throw new Error('Fixture gear must be a slot-to-item object');
   let s;
@@ -34,9 +35,13 @@ function prepare(fixture) {
     const raw = typeof save === 'string' ? save : JSON.stringify(save);
     s = G.loadSave(raw);
     if (!s || s.fight || s.delve) throw new Error('Fixture save must be a valid idle character save');
-  } else s = hero(kit, level || 1, { race: race || 'wolf' });
+  } else s = hero(kit, level || 1, { race: race || 'wolf', realness: realness || 0 });
   if (rulesPreview) s.rulesPreview = structuredClone(rulesPreview);
+  if (customItems) s.customItems = structuredClone(customItems);
   if (level !== undefined) s.level = level;
+  if (realness !== undefined) s.realness = realness;
+  if (Array.isArray(realnessChoices)) s.realnessChoices = [...realnessChoices];
+  if (stats && typeof stats === 'object') s.stats = { ...s.stats, ...stats };
   if (race !== undefined && !save) { /* hero already applied the requested race */ }
   else if (race !== undefined && save) throw new Error('Do not override race on a captured save; use its stored race');
 
@@ -51,7 +56,7 @@ function prepare(fixture) {
       if (s.gear[slot] && !G.unequip(s, slot)) throw new Error(`Cannot clear gear slot: ${slot}`);
       continue;
     }
-    const item = ITEMS[id] || G.LAB_MENDERS?.[id];
+    const item = s.customItems?.[id] || ITEMS[id] || G.LAB_MENDERS?.[id];
     if (!item) throw new Error(`Unknown item: ${id}`);
     if ((rawSlot === 'secondHand' || slot === 'offhand') && item.twoHanded) {
       throw new Error(`Unsupported second-hand weapon: ${id} is two-handed`);
@@ -146,7 +151,11 @@ function selectAction(s, policy) {
   throw new Error(`Sustain policy has no available action: ${mainInfo.reason}`);
 }
 
-function syntheticContext(s, enemy, chapter) {
+function syntheticContext(s, enemy, chapter, postStoryEnemyObj = null) {
+  if (postStoryEnemyObj) {
+    s.story.completed = G.CHAPTERS.map(row => row.finale);
+    return { context: 'post-story curve hunt', start: now => G.startFight(s, postStoryEnemyObj, 'hunt', now) };
+  }
   const meta = G.CHAPTERS.find(row => row.id === chapter);
   if (enemy !== meta.bossId) {
     s.story.completed = G.CHAPTERS.slice(0, chapter - 1).map(row => row.finale);
@@ -216,14 +225,16 @@ export function runCell(options) {
   if (!Array.isArray(seeds) || !seeds.length || seeds.length > MAX_SEEDS || seeds.some(seed => !Number.isSafeInteger(seed))) throw new Error(`Seeds must be a non-empty array of at most ${MAX_SEEDS} safe integers`);
   if (new Set(seeds).size !== seeds.length) throw new Error('Seeds must be unique independent values');
   if (!Number.isInteger(chainLength) || chainLength < 1 || chainLength > MAX_CHAIN) throw new Error(`Chain length must be an integer from 1 to ${MAX_CHAIN}`);
-  if (!G.ENEMIES.some(row => row.id === enemy)) throw new Error(`Unknown enemy: ${enemy}`);
+  const postMatch = typeof enemy === 'string' ? enemy.match(/^post_story_(\d+)(?:_(balanced|brute|warded))?$/) : null;
+  const postStoryEnemyObj = postMatch ? G.postStoryEnemy(Number(postMatch[1]), postMatch[2] || 'balanced') : null;
+  if (!postStoryEnemyObj && !G.ENEMIES.some(row => row.id === enemy)) throw new Error(`Unknown enemy: ${enemy}`);
   if (!['strike', 'respond', 'disrupt', 'sustain'].includes(policy)) throw new Error(`Unknown policy: ${policy}`);
-  const template = prepare(fixture), chapter = G.enemyChapter(enemy);
+  const template = prepare(fixture), chapter = postStoryEnemyObj ? 5 : G.enemyChapter(enemy);
   if (chapter === null) throw new Error(`Enemy has no campaign chapter: ${enemy}`);
-  const enemyRow = G.ENEMIES.find(row => row.id === enemy), isBoss = G.CHAPTERS.find(row => row.id === chapter).bossId === enemy;
+  const enemyRow = postStoryEnemyObj || G.ENEMIES.find(row => row.id === enemy), isBoss = !postStoryEnemyObj && G.CHAPTERS.find(row => row.id === chapter).bossId === enemy;
   if (isBoss && chainLength > 1) throw new Error('Scripted bosses are one-time chapter encounters; set chainLength to 1');
-  if (template.level < enemyRow.level - 2) throw new Error(`Fixture level ${template.level} is too low for ${enemy} (requires ${enemyRow.level - 2})`);
-  const fixed = { level: template.level, xp: template.xp, points: template.points, stats: structuredClone(template.stats), mastery: structuredClone(template.mastery) };
+  if (G.effectiveLevel(template) < enemyRow.level - 2) throw new Error(`Fixture level ${G.effectiveLevel(template)} is too low for ${enemy} (requires ${enemyRow.level - 2})`);
+  const fixed = { level: template.level, realness: template.realness || 0, xp: template.xp, points: template.points, stats: structuredClone(template.stats), mastery: structuredClone(template.mastery) };
   const fixedTotals = G.totals(template);
   const sums = { wins: 0, defeats: 0, encounters: 0, chainsCompleted: 0, exchanges: 0, expected: 0, attempted: 0, landed: 0, overkill: 0, netLost: 0, lostShare: 0, maxLostShare: 0, mend: 0, relics: 0, menders: 0, traits: 0, starts: { hp: 0, mp: 0, sp: 0, pluck: 0 }, actions: Object.create(null) };
   for (const seed of seeds) {
@@ -233,14 +244,14 @@ export function runCell(options) {
     const rng = mulberry(seed);
     const clock = { now: 1_000_000_000_000 + Math.abs(seed % 100000) * 100000 };
     for (let encounter = 0; encounter < chainLength; encounter++) {
-      const context = syntheticContext(s, enemy, chapter);
-      if (!context.start(clock.now)) throw new Error(`Cannot start valid ${context.context} fixture ${fixture.id || fixture.kit} against ${enemy} at level ${s.level}`);
+      const context = syntheticContext(s, enemy, chapter, postStoryEnemyObj);
+      if (!context.start(clock.now)) throw new Error(`Cannot start valid ${context.context} fixture ${fixture.id || fixture.kit} against ${enemy} at level ${G.effectiveLevel(s)}`);
       sums.encounters++; chainEncounters++;
       sums.starts.hp += s.hp; sums.starts.mp += s.mp; sums.starts.sp += s.sp; sums.starts.pluck += s.fight.pluck || 0;
       const encounterStartHp = s.hp;
       let count = 0;
       while (s.fight && count < 100) {
-        const key = selectAction(s, policy), profile = G.actionProfile(s, key, enemy);
+        const key = selectAction(s, policy), profile = G.actionProfile(s, key, enemyRow.id);
         const before = { hp: s.hp, enemyHp: s.fight.hp, fight: s.fight };
         const priorLogs = structuredClone(s.log);
         clock.now += ACTION_MS; count++;
@@ -290,7 +301,7 @@ export function runCell(options) {
   const wins = sums.wins, encounters = sums.encounters, exchanges = sums.exchanges;
   return {
     fixture: fixture.id || (fixture.save ? 'captured-save' : fixture.kit), enemy, policy,
-    context: isBoss ? syntheticContext(structuredClone(template), enemy, chapter).context : 'ordinary hunt',
+    context: postStoryEnemyObj ? 'post-story curve hunt' : isBoss ? syntheticContext(structuredClone(template), enemy, chapter).context : 'ordinary hunt',
     trials: seeds.length, seeds: [...seeds], chainLength: isBoss ? 1 : chainLength,
     encounters, wins, defeats: sums.defeats, chainsCompleted: sums.chainsCompleted,
     winRate: encounters ? wins / encounters : 0,

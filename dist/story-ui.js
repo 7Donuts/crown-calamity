@@ -14,7 +14,7 @@ function bossReady(s,c){
 }
 function contractCard(s,c){
  const actions=c.ready?`<div class="story-buttons">${button(`story-claim:${c.id}:coins`,`Report to ${esc(c.employer)} · collect reward`,'primary',!safe(s))}${c.id==='drainage_inspection'?button(`story-claim:${c.id}:materials`,'Help repairs · 10 coins + 3 Patches','subtle',!safe(s)):''}</div>`:c.available?button('story-accept:'+c.id,'Accept this '+c.kind+' contract','primary',!safe(s)):'';
- const hunts=c.active&&!c.ready?[...new Set(G.STORY_CONTRACTS[c.id].objectives.filter(o=>o.source==='victories').map(o=>o.enemy))].filter(id=>!id.endsWith('_boss')&&id!=='boss').map(id=>{const e=G.ENEMIES.find(v=>v.id===id);return e?button('hunt:'+id,`Hunt ${esc(e.name)} →`,'subtle',!!s.fight||!!s.delve||e.level>s.level+2||s.hp<=0):'';}).join(''):'';
+ const hunts=c.active&&!c.ready?[...new Set(G.STORY_CONTRACTS[c.id].objectives.filter(o=>o.source==='victories').map(o=>o.enemy))].filter(id=>!id.endsWith('_boss')&&id!=='boss').map(id=>{const e=G.ENEMIES.find(v=>v.id===id);return e?button('hunt:'+id,`Hunt ${esc(e.name)} →`,'subtle',!!s.fight||!!s.delve||e.level>G.effectiveLevel(s)+2||s.hp<=0):'';}).join(''):'';
  return `<article class="panel story-contract ${c.kind}"><div class="panel-label"><span>${c.kind==='major'?'MAJOR STORY MILESTONE':'MINOR CONTRACT'}</span><span>${c.ready?'READY TO REPORT':c.active?'IN PROGRESS':'AVAILABLE'}</span></div><h3>${esc(c.title)}</h3><p class="story-employer">${esc(c.employer)} · ${esc(c.chapter)}</p><p>${esc(c.text)}</p>${objectives(c)}<div class="story-reward">Reward: ${esc(rewardText(c.reward))}</div>${c.available?'<p class="story-hint">Progress counts after you accept. Completed hunts pay their own rewards as well.</p>':''}${actions}${hunts?`<div class="story-buttons">${hunts}</div>`:''}${c.id==='municipal_works'&&c.active?button('story-delve','Prepare a descent →','subtle',!safe(s)):''}${bossReady(s,c)?button(`story-boss:${c.chapterId}`,'Face the chapter finale →','primary',!safe(s)):''}</article>`;
 }
 export function renderStorySummary(s){
@@ -39,7 +39,7 @@ export function getStoryNudge(s) {
  const next=state.available.find(c=>c.kind==='major')||state.available[0];
  if(next)return {key:'accept:'+next.id,kind:'accept',title:next.title,text:next.text,label:'Take the next story contract →',contract:next};
  const active=state.active.find(c=>c.kind==='major')||state.active[0];
- if(active){const objective=active.objectives.find(o=>!o.done),source=G.STORY_CONTRACTS[active.id].objectives.find(o=>o.id===objective?.id),enemy=source?.source==='victories'?G.ENEMIES.find(e=>e.id===source.enemy&&e.id!=='boss'&&e.level<=s.level+2):null;return {key:'progress:'+active.id,kind:'progress',title:active.title,text:objective?`${objective.label}: ${objective.current} / ${objective.target}.`:active.text,contract:active,hunt:enemy};}
+ if(active){const objective=active.objectives.find(o=>!o.done),source=G.STORY_CONTRACTS[active.id].objectives.find(o=>o.id===objective?.id),enemy=source?.source==='victories'?G.ENEMIES.find(e=>e.id===source.enemy&&e.id!=='boss'&&e.level<=G.effectiveLevel(s)+2):null;return {key:'progress:'+active.id,kind:'progress',title:active.title,text:objective?`${objective.label}: ${objective.current} / ${objective.target}.`:active.text,contract:active,hunt:enemy};}
  return null;
 }
 export function renderStoryNudge(s) {

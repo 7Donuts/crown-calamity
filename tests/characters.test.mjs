@@ -235,6 +235,7 @@ test('G2-4: Home Layer gating - inactive when realness < 1, active when realness
   bear.realness = 1;
   bear.layer = 'Dreamside';
   assert.equal(isHomeLayerActive(bear), false, 'inactive in different layer');
+  const tR1Away = G.totals(bear);
 
   // Realness 1 in home layer: active with +50% bonus
   bear.layer = 'The Underfoot (deep locations)';
@@ -242,17 +243,18 @@ test('G2-4: Home Layer gating - inactive when realness < 1, active when realness
   t = G.totals(bear);
   assert.equal(t.racePassive.homeActive, true);
   // Base bear passive is hp: 4, mp: 4, sp: 4. With +50%: +6 each
-  assert.equal(t.hp - tBase.hp, 2, '+2 extra HP from +50% passive (4 -> 6)');
-  assert.equal(t.mp - tBase.mp, 2, '+2 extra MP from +50% passive (4 -> 6)');
-  assert.equal(t.sp - tBase.sp, 2, '+2 extra SP from +50% passive (4 -> 6)');
+  assert.equal(t.hp - tR1Away.hp, 2, '+2 extra HP from +50% passive (4 -> 6)');
+  assert.equal(t.mp - tR1Away.mp, 2, '+2 extra MP from +50% passive (4 -> 6)');
+  assert.equal(t.sp - tR1Away.sp, 2, '+2 extra SP from +50% passive (4 -> 6)');
 
   // Wolf home layer test
   const wolf = G.createCharacter({ race: 'wolf', kit: 'breaker' });
   wolf.realness = 1;
+  wolf.layer = 'Dreamside';
+  const tWolfBase = G.totals(wolf);
   wolf.layer = 'Inside the Walls';
   assert.equal(isHomeLayerActive(wolf), true);
   const tWolf = G.totals(wolf);
-  const tWolfBase = G.totals(G.createCharacter({ race: 'wolf', kit: 'breaker' }));
   assert.equal(tWolf.hp - tWolfBase.hp, 6, '+6 extra HP from +50% passive (12 -> 18)');
   assert.equal(tWolf.armor - tWolfBase.armor, 0.5, '+0.5 extra armor from +50% passive (1 -> 1.5)');
 });

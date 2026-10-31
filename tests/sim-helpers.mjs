@@ -10,11 +10,15 @@ export function mulberry(seed) {
 export const KITS = { breaker: ['cobblekin', 'mig', 'ironsword'], duelist: ['reedling', 'fin', 'glassblade'], caster: ['emberling', 'int', 'floodrod'] };
 
 /** A level-appropriate character: the kit's attribute raised four points per level, the matching weapon and body gear at level 6+. */
-export function hero(kit, level, { race } = {}) {
+export function hero(kit, level, { race, realness = 0 } = {}) {
   const [defaultRace, attr, weapon] = KITS[kit];
   const s = G.createCharacter({ name: 'Tester', race: race || defaultRace, kit });
-  s.level = level; s.stats[attr] += 4 * (level - 1); s.quest = 3;
-  if (level >= 6) { s.bag.push(weapon, 'oilskin'); G.equip(s, weapon); G.equip(s, 'oilskin'); }
+  s.level = level;
+  s.realness = realness;
+  const el = G.effectiveLevel(s);
+  s.stats[attr] += 4 * (el - 1);
+  s.quest = 3;
+  if (level >= 6 || el >= 6) { s.bag.push(weapon, 'oilskin'); G.equip(s, weapon); G.equip(s, 'oilskin'); }
   if (G.abilityStatus(s, 'disrupt').eligible) { G.learnAbility(s, 'disrupt'); G.equipAbility(s, 'disrupt'); }
   const t = G.totals(s); s.hp = t.hp; s.mp = t.mp; s.sp = t.sp;
   return s;

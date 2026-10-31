@@ -2,6 +2,7 @@
 // No DOM, no storage, no clock. Calculations are shared between engine, inspector, and lab.
 import { ITEMS, effectiveItem } from './gear.js';
 import { DAMAGING_ACTIONS, GUARD_ACTIONS } from './telegraph.js';
+import { effectiveLevel } from './growth.js';
 import { weaponMasteryRank, secondHandStrikeShare, pinpointCritBonus, batonsSecondHandMend } from './weapon-families.js';
 
 export const SECOND_HAND_KINDS = Object.freeze(['weapon', 'focus', 'shield', 'mender', 'none']);
@@ -45,7 +46,7 @@ export function menderMendAmount(s, offItem, mode = 'strike') {
   const rawMend = Math.floor((offItem.mend || 0) + 0.5 * wil);
   const hp = s?.hp || 200;
   // Use character's actual max HP from totals or estimate
-  const maxHp = s?.totals?.hp || Math.floor(200 + 12 * (s.level || 1) + 10 * ((s.stats?.vit || 8)) + 4 * wil);
+  const maxHp = s?.totals?.hp || Math.floor(200 + 12 * effectiveLevel(s) + 10 * ((s.stats?.vit || 8)) + 4 * wil);
   const maxCap = Math.floor(maxHp * 0.06);
   const strikeMend = Math.min(rawMend, maxCap);
   if (mode === 'guard') {
@@ -68,13 +69,14 @@ export function secondHandProfile(s, enemy, key, t = null, intent = null, extraM
   const kind = classifySecondHand(offItem);
   if (kind !== 'weapon' && kind !== 'focus') return null;
 
+  const el = effectiveLevel(s);
   const totals = t || (s.totals || {
-    level: s.level || 1,
-    heavyPower: 2 * (s.stats?.mig || 8) + (s.level || 1),
-    precisionPower: 2 * (s.stats?.fin || 8) + (s.level || 1),
-    spellPower: 2 * (s.stats?.int || 8) + (s.level || 1),
-    physicalAcc: 2 * (s.stats?.fin || 8) + (s.stats?.ins || 8) + 2 * (s.level || 1),
-    spellAcc: 2 * (s.stats?.ins || 8) + (s.stats?.wil || 8) + 2 * (s.level || 1),
+    level: el,
+    heavyPower: 2 * (s.stats?.mig || 8) + el,
+    precisionPower: 2 * (s.stats?.fin || 8) + el,
+    spellPower: 2 * (s.stats?.int || 8) + el,
+    physicalAcc: 2 * (s.stats?.fin || 8) + (s.stats?.ins || 8) + 2 * el,
+    spellAcc: 2 * (s.stats?.ins || 8) + (s.stats?.wil || 8) + 2 * el,
     critChance: 0.05,
     critMultiplier: 1.25
   });
@@ -102,7 +104,7 @@ export function secondHandProfile(s, enemy, key, t = null, intent = null, extraM
 
   raw *= extraMultiplier;
 
-  const mit = offhandMitigation(defense, s.level || 1);
+  const mit = offhandMitigation(defense, effectiveLevel(s));
   const reduced = raw * (1 - mit);
   const evasion = 18 + (enemy.level || 1) * 3;
   const solidHit = offhandHitChance(accuracy, evasion);

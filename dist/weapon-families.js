@@ -2,6 +2,7 @@
 // No DOM, no storage, no clock. Calculations are shared between engine, inspector, and UI.
 import { WEAPON_FAMILIES } from './gear.js';
 import { RACES, raceAffinity } from './races.js';
+import { effectiveLevel } from './growth.js';
 export { raceAffinity };
 
 export const WEAPON_FAMILY_IDS = Object.freeze([
@@ -143,13 +144,25 @@ export const RACE_AFFINITIES = Object.freeze({
 
 /**
  * Mastery cap: default 3, or 5 if race has affinity.
+ * Each Becoming Real rank adds +1 to every cap, plus any 'practicedHands' Realness choice.
  * Supports either (raceOrState, familyId) or (familyId, raceOrState).
  */
 export function weaponMasteryCap(arg1, arg2) {
+  let stateOrRace = arg1;
+  let familyId = arg2;
   if (WEAPON_FAMILY_IDS.includes(arg1) && !WEAPON_FAMILY_IDS.includes(arg2)) {
-    return raceAffinity(arg2, arg1) ? 5 : 3;
+    stateOrRace = arg2;
+    familyId = arg1;
   }
-  return raceAffinity(arg1, arg2) ? 5 : 3;
+  const baseCap = raceAffinity(stateOrRace, familyId) ? 5 : 3;
+  if (stateOrRace && typeof stateOrRace === 'object') {
+    const r = Math.max(0, Math.floor(Number(stateOrRace.realness) || 0));
+    const practiced = Array.isArray(stateOrRace.realnessChoices)
+      ? stateOrRace.realnessChoices.filter(c => c === 'practicedHands').length
+      : 0;
+    return baseCap + r + practiced;
+  }
+  return baseCap;
 }
 
 export function weaponMasteryRank(s, familyId) {
@@ -346,7 +359,8 @@ export function batonsSecondHandMend(s, offItem, mode = 'strike') {
   const wil = s?.stats?.wil ?? 8;
   const mult = traitEffectMultiplier(rank);
   const rawMend = Math.floor(0.5 * wil * 1.25 * mult);
-  const maxHp = s?.totals?.hp || Math.floor(200 + 12 * (s?.level || 1) + 10 * (s?.stats?.vit || 8) + 4 * wil);
+  const el = effectiveLevel(s);
+  const maxHp = s?.totals?.hp || Math.floor(200 + 12 * el + 10 * (s?.stats?.vit || 8) + 4 * wil);
   const maxCap = Math.floor(maxHp * 0.06);
   const strikeMend = Math.min(rawMend, maxCap);
   if (mode === 'guard') {
@@ -362,10 +376,11 @@ export function foilsRiposteProfile(s, offItem, enemy, t, intent, extraMultiplie
   if (!s || !offItem || offItem.family !== 'foils' || !enemy) return null;
   const rank = weaponMasteryRank(s, 'foils');
   const share = 0.5 * secondHandStrikeShare('foils', rank, 'weapon');
+  const el = effectiveLevel(s);
   const totals = t || (s.totals || {
-    level: s.level || 1,
-    precisionPower: 2 * (s.stats?.fin || 8) + (s.level || 1),
-    physicalAcc: 2 * (s.stats?.fin || 8) + (s.stats?.ins || 8) + 2 * (s.level || 1),
+    level: el,
+    precisionPower: 2 * (s.stats?.fin || 8) + el,
+    physicalAcc: 2 * (s.stats?.fin || 8) + (s.stats?.ins || 8) + 2 * el,
     critChance: 0.05,
     critMultiplier: 1.25
   });
@@ -377,7 +392,7 @@ export function foilsRiposteProfile(s, offItem, enemy, t, intent, extraMultiplie
   if (intent?.guarded) raw *= 0.65;
   raw *= extraMultiplier;
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-  const mit = clamp(defense / (defense + 100 + 8 * (s.level || 1)), 0, 0.65);
+  const mit = clamp(defense / (defense + 100 + 8 * el), 0, 0.65);
   const reduced = raw * (1 - mit);
   const evasion = 18 + (enemy.level || 1) * 3;
   const solidHit = clamp(0.85 + 0.30 * (accuracy - evasion) / (accuracy + evasion + 40), 0.65, 0.98);

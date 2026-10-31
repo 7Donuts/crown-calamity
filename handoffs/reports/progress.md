@@ -14,8 +14,9 @@ Updated 30 October 2026. Milestone G1 (`G1-A`, `G1-B`, `G1-C`) is complete and v
 | G2-2 campaign two hands | Complete; 10 menders (164 items), 40-seed C1–C5 B0 matrix, and independent review PASS | [PR #19](https://github.com/7Donuts/crown-calamity/pull/19); `g2-2-two-hands-campaign.md`, `g2-2-review.md` |
 | G2-3 weapon families & mastery | Complete; 9 families, traits, second-hand rules, mastery marks/ranks, 40-seed B0 matrix, and independent review PASS | `g2-3-weapon-families.md`, `g2-3-review.md` |
 | G2-4 race identity rework | Complete; 5 plush races, 68-pt spreads, combat traits, Pluck hooks, weapon affinities, home layer gating, 40-seed B0 matrix, and independent review PASS | `g2-4-race-identity.md`, `g2-4-review.md` |
-| G2-6 integrated balance | In progress | Cross-system B0 matrix (`design/46`–`49`) |
-| G3-1 / G3-2 / G3-3 | Not started | Awaiting G2 and CP4 owner checkpoint |
+| G2-6 integrated balance | Complete; 40-seed × 10-fight cross-system B0 matrix (`design/46`–`49`) and independent review PASS | `g2-6-integrated-balance.md`, `g2-6-review.md` |
+| G3-1 effective level & curves | Complete; `dist/growth.js`, `effectiveLevel(s)` audit across all scaling sites, and independent review PASS | `g3-1-effective-level.md`, `g3-1-review.md` |
+| G3-2 / G3-3 | In progress | Becoming Real trials/choices (`G3-2`) and post-story balance fit / CP4 (`G3-3`) |
 
 ## Review history and correction
 
