@@ -36,7 +36,7 @@ function assertNoOverlaps(group) {
 test('reviewed packs contain one bounded, separate crop for every gear ID and material save key', async () => {
   assert.deepEqual(Object.keys(ITEM_ART).sort(), Object.keys(ITEMS).sort());
   assert.deepEqual(Object.keys(MATERIAL_ART).sort(), Object.keys(MATERIAL_LABELS).sort());
-  assert.equal(Object.keys(ITEM_ART).length, 154);
+  assert.equal(Object.keys(ITEM_ART).length, 164);
   assert.equal(Object.keys(MATERIAL_ART).length, 32);
   assert.equal(new Set(Object.values(ITEM_ART).map(art => `${art.src}:${art.frame.x},${art.frame.y},${art.frame.width},${art.frame.height}`)).size, 154,
     'all gear IDs map to distinct generated regions');

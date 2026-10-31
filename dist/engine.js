@@ -118,12 +118,9 @@ export function totals(s){
 }
 export function recoverProfile(s){
   const base={mana:RECOVER_MANA_RESTORE+Math.floor(2*relicEffectStrength(s,'signet')),stamina:10,passiveMana:MANA_REGEN_PER_EXCHANGE};
-  if(s?.rulesPreview?.twoHands){
-    const offItem=effectiveItem(s,s.gear?.offhand);
-    const mend=menderMendAmount(s,offItem,'recover');
-    return {...base,mend};
-  }
-  return base;
+  const offItem=effectiveItem(s,s.gear?.offhand);
+  const mend=menderMendAmount(s,offItem,'recover');
+  return mend>0?{...base,mend}:base;
 }
 export function attributePreview(s,key){
  if(!Object.hasOwn(ATTRS,key))return null;
@@ -154,11 +151,8 @@ export function actionProfile(s,key,enemyId=s.fight?.enemy||'rats'){
  const baseProfile={channel,raw,defense,opening:bonus.source==='opening',openingBonus:bonus.source==='opening'?bonus.bonus:0,noGlance:bonus.noGlance||boxNoGlance,lifesteal:RE.lifestealRate(f,rs),hitChance:solidHit,critChance:t.critChance,normal,critical,glance,
  average:solidHit*((1-t.critChance)*normal+t.critChance*critical)+(1-solidHit)*glance,
  available:available&&(!['combo','guardstrike'].includes(key)||isShield(s.gear.offhand))&&(key!=='sidestep'||sidestepEligible(w.channel,s.gear.offhand)),live:!!f,variantBarrier:f?.variantState?.barrier||0};
- if(s?.rulesPreview?.twoHands){
-  const contrib=secondHandVerbContribution(s,key,e,t,i,RE.damageMultiplier(f,rs));
-  return {...baseProfile,secondHand:contrib.kind,offhand:contrib.offhand,offhandDamage:contrib.offhand?.average||0,mend:contrib.mend,totalAverage:baseProfile.average+(contrib.offhand?.average||0)};
- }
- return baseProfile;
+ const contrib=secondHandVerbContribution(s,key,e,t,i,RE.damageMultiplier(f,rs));
+ return {...baseProfile,secondHand:contrib.kind,offhand:contrib.offhand,offhandDamage:contrib.offhand?.average||0,mend:contrib.mend,totalAverage:baseProfile.average+(contrib.offhand?.average||0)};
 }
 export function restore(s){if(s.fight||s.delve)return false;let t=totals(s);s.hp=t.hp;s.mp=t.mp;s.sp=t.sp;s.restReadyAt=0;RE.clearCarry(s);return true;}
 export function restStatus(s,now=Date.now()){return recoveryStatus(s,now);}
@@ -227,29 +221,27 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
   channel=profile.channel;const glance=rng()>profile.hitChance;critical=!glance&&rng()<t.critChance;damage=glance?profile.glance:critical?profile.critical:profile.normal;
   if(!f.amberMarbleUsed&&Math.floor(3*relicEffectStrength(s,'amberMarble'))>0)f.amberMarbleUsed=true;
   const soaked=variantSoak(f,damage),hpBefore=f.hp;f.hp=Math.max(0,f.hp-(damage-soaked));damageApplied=hpBefore-f.hp;overkill=f.hp===0?Math.max(0,damage-soaked-hpBefore):0;addLog(s,`${info.label}${critical?' · critical':''}${glance?' · glancing hit':''}: ${damage} ${channel} damage${oldCharge&&channel==='arcane'?' · Reservoir +10%':''}${f.exposed?' · exposed':''}${opening?profile.opening?` · Opening ${openingPercent()}`:' · Opening (no glance)':''}${overkill?` · only ${damageApplied} needed`:''}.`,'attack');if(soaked>0)addLog(s,`Static-charged barrier soaked ${soaked} of that.`,'special');
-  if(s?.rulesPreview?.twoHands){
-   const offItem=effectiveItem(s,s.gear?.offhand);
-   const kind=classifySecondHand(offItem);
-   if((kind==='weapon'||kind==='focus')&&profile?.offhand){
-    if(f.hp>0){
-     const offP=profile.offhand;
-     const offGlance=rng()>offP.hitChance;
-     const offCrit=!offGlance&&rng()<t.critChance;
-     const offDmg=offGlance?offP.glance:offCrit?offP.critical:offP.normal;
-     const offSoaked=variantSoak(f,offDmg);
-     const offHpBefore=f.hp;
-     f.hp=Math.max(0,f.hp-(offDmg-offSoaked));
-     offhandDamageApplied=offHpBefore-f.hp;
-     offhandOverkill=f.hp===0?Math.max(0,offDmg-offSoaked-offHpBefore):0;
-     offhandDamage=offDmg;
-     addLog(s,`Second hand (${offItem.name})${offCrit?' · critical':''}${offGlance?' · glancing hit':''}: ${offDmg} ${offP.channel} damage${offhandOverkill?` · only ${offhandDamageApplied} needed`:''}.`,'attack');
-     if(offSoaked>0)addLog(s,`Static-charged barrier soaked ${offSoaked} of that.`,'special');
-    }
-   }else if(kind==='mender'){
-    const rawMend=menderMendAmount(s,offItem,'strike');
-    const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
-    if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
+  const offItem=effectiveItem(s,s.gear?.offhand);
+  const kind=classifySecondHand(offItem);
+  if((kind==='weapon'||kind==='focus')&&profile?.offhand){
+   if(f.hp>0){
+    const offP=profile.offhand;
+    const offGlance=rng()>offP.hitChance;
+    const offCrit=!offGlance&&rng()<t.critChance;
+    const offDmg=offGlance?offP.glance:offCrit?offP.critical:offP.normal;
+    const offSoaked=variantSoak(f,offDmg);
+    const offHpBefore=f.hp;
+    f.hp=Math.max(0,f.hp-(offDmg-offSoaked));
+    offhandDamageApplied=offHpBefore-f.hp;
+    offhandOverkill=f.hp===0?Math.max(0,offDmg-offSoaked-offHpBefore):0;
+    offhandDamage=offDmg;
+    addLog(s,`Second hand (${offItem.name})${offCrit?' · critical':''}${offGlance?' · glancing hit':''}: ${offDmg} ${offP.channel} damage${offhandOverkill?` · only ${offhandDamageApplied} needed`:''}.`,'attack');
+    if(offSoaked>0)addLog(s,`Static-charged barrier soaked ${offSoaked} of that.`,'special');
    }
+  }else if(kind==='mender'){
+   const rawMend=menderMendAmount(s,offItem,'strike');
+   const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
+   if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
   }
   if(damage>0){const mark=['driving','guardstrike','sidestep'].includes(key)?'driving':channel==='arcane'?'arc':null;if(mark&&!f.used.includes(mark))f.used.push(mark);if(f.exposed&&!profile.opening&&!f.used.includes('expose'))f.used.push('expose');if(f.exposed){f.exposed=false;f.exposedRound=null;}}
   if(key==='disrupt'&&i.interruptible&&!glance&&f.interruptImmune<=f.round){if(!f.used.includes('disrupt'))f.used.push('disrupt');interrupted=true;f.interruptImmune=f.round+(s.mastery?.disrupt?.choice==='immunity'?3:4);addLog(s,`${i.name} interrupted. The enemy loses its response.`,'special');RE.onInterrupt(f,rs,relicNotes);if(e.id==='boss')achievement(s,'maintenance','Percussive Maintenance','“The approved shutdown procedure was unavailable. Apparently you were available.”',20);}
@@ -263,13 +255,11 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
   f.exposed=true;f.exposedRound=f.round+(rs('musicBox')>0?2:1);f.streak=0;addLog(s,'The enemy is exposed. Your next damaging action in the following exchange gains a bonus.','special');
  }else if(key==='recover'){
   const recover=recoverProfile(s),manaRecovered=Math.min(recover.mana,Math.max(0,t.mp-s.mp)),staminaRecovered=Math.min(recover.stamina,Math.max(0,t.sp-s.sp));s.mp+=manaRecovered;s.sp+=staminaRecovered;f.streak=0;addLog(s,`Shake it off · recovered ${manaRecovered} Sparkle (mana) and ${staminaRecovered} Bounce (stamina).`,'heal');
-  if(s?.rulesPreview?.twoHands){
-   const offItem=effectiveItem(s,s.gear?.offhand);
-   if(classifySecondHand(offItem)==='mender'){
-    const rawMend=menderMendAmount(s,offItem,'recover');
-    const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
-    if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
-   }
+  const offItem=effectiveItem(s,s.gear?.offhand);
+  if(classifySecondHand(offItem)==='mender'){
+   const rawMend=menderMendAmount(s,offItem,'recover');
+   const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));
+   if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}
   }
  }else if(key==='vent'){
   f.vented=true;addLog(s,'Lid popped. The Spin Cycle’s pressure damage reduced by 30%.','special');journal(s,'A little less pressure','You popped the lid by hand. The pressure system is contained, and the suds are only mildly offended.');
@@ -285,12 +275,12 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  }
  if(key==='disrupt')f.cooldowns.disrupt=f.round+4;
  if(key==='mend')f.cooldowns.mend=f.round+(s.mastery?.mend?.choice==='recovery'?2:3);
- s.totalExchanges++;if(f.hp<=0){flushRelics();victory(s,e,rng);return {ok:true,victory:true,relicHealed,damage,damageApplied,overkill,critical,incoming:0,heavy:false,absorbed:0,prevented:0,healed,manaRegenerated:actualManaRegenerated,openingUsed:opening,...(s.rulesPreview?.twoHands?{offhandDamage,offhandDamageApplied,mendHealed}:{})};}
+ s.totalExchanges++;if(f.hp<=0){flushRelics();victory(s,e,rng);return {ok:true,victory:true,relicHealed,damage,damageApplied,overkill,critical,incoming:0,heavy:false,absorbed:0,prevented:0,healed,manaRegenerated:actualManaRegenerated,openingUsed:opening,offhandDamage,offhandDamageApplied,mendHealed};}
  const enemyAcc=25+4*e.level,playerEvasion=t.evasion,enemyHit=clamp(.85+.3*(enemyAcc-playerEvasion)/(enemyAcc+playerEvasion+40),.65,.98),enemyGlance=!interrupted&&rng()>enemyHit;
  let incoming=interrupted?0:Math.floor(i.damage*(enemyGlance?.55:1)*(1-clamp((e.id==='wisp'?t.ward:t.armor)/((e.id==='wisp'?t.ward:t.armor)+100+8*e.level),0,.65))*(f.vented&&e.id==='boss'?.7:1));
  const declared=i.damage*(enemyGlance?.55:1)*(f.vented&&e.id==='boss'?.7:1),afterArmor=incoming,hitInput={declared,afterArmor,guardRate:guarded?guardRate(i.heavy):0,withdraw:key==='withdraw'};
  let hit=resolveHit({...hitInput,barrier:f.barrier}),prevented=hit.prevented;
- if(guarded&&prevented>=20){s.usefulGuards=(s.usefulGuards||0)+1;if(s?.rulesPreview?.twoHands){const offItem=effectiveItem(s,s.gear?.offhand);if(classifySecondHand(offItem)==='mender'){const rawMend=menderMendAmount(s,offItem,'guard');const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}}}{const lock=RE.onUsefulGuard(f,{heavy:i.heavy,prevented,enemyHp:f.hp},rs,relicNotes);if(lock.reflect>0){f.hp-=lock.reflect;relicNotes.push(`Locket sent back ${lock.reflect} damage`);}}if(i.heavy)s.guardCount++;if(s.passive==='reservoir'){f.charge=1;if(!s.discoveries.includes('reservoir')){s.discoveries.push('reservoir');journal(s,'Interaction discovered · Stored Pressure','A useful Guard stores one charge. Your next Arc Bolt or Wardcast gains 10% raw spell damage. One charge, expires after the next exchange. “The shield is not an approved charging station. Procurement has been informed.”','discovery');}addLog(s,'Reservoir charged. Next spell +10% (expires next exchange).','special');}if(relicEffectStrength(s,'seal')>0&&!f.sealUsed){const barrier=Math.floor(15*relicEffectStrength(s,'seal'));f.barrier=Math.max(f.barrier,Math.min(Math.floor(t.hp*.3),barrier));f.barrierTurns=Math.max(f.barrierTurns,1);f.sealUsed=true;addLog(s,`${ITEMS.seal.name} grants ${Math.min(Math.floor(t.hp*.3),barrier)} barrier.`,'defend');}if(!f.threadSpoolUsed&&relicEffectStrength(s,'threadSpool')>0){const gain=Math.min(t.sp-s.sp,Math.floor(2*relicEffectStrength(s,'threadSpool')));s.sp+=gain;f.threadSpoolUsed=true;if(gain)addLog(s,`Spare Thread restored ${gain} Bounce (stamina).`,'heal');}if(!f.thimbleUsed&&relicEffectStrength(s,'thimbleGuard')>0){const barrier=Math.floor(4*relicEffectStrength(s,'thimbleGuard')),added=Math.max(0,Math.min(Math.floor(t.hp*.3)-f.barrier,barrier));f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,1);f.thimbleUsed=true;if(added)addLog(s,`Thimble Guard added ${added} barrier.`,'defend');}if(s.guardCount>=3)achievement(s,'citizen','Load-Bearing Citizen','“You have discovered the tactical applications of remaining upright. Engineering has been informed.”',15);}
+ if(guarded&&prevented>=20){s.usefulGuards=(s.usefulGuards||0)+1;const offItem=effectiveItem(s,s.gear?.offhand);if(classifySecondHand(offItem)==='mender'){const rawMend=menderMendAmount(s,offItem,'guard');const mendGain=Math.min(rawMend,Math.max(0,t.hp-s.hp));if(mendGain>0){s.hp+=mendGain;mendHealed+=mendGain;addLog(s,`Second hand (${offItem.name}) mended ${mendGain} Stuffing (health).`,'heal');}}{const lock=RE.onUsefulGuard(f,{heavy:i.heavy,prevented,enemyHp:f.hp},rs,relicNotes);if(lock.reflect>0){f.hp-=lock.reflect;relicNotes.push(`Locket sent back ${lock.reflect} damage`);}}if(i.heavy)s.guardCount++;if(s.passive==='reservoir'){f.charge=1;if(!s.discoveries.includes('reservoir')){s.discoveries.push('reservoir');journal(s,'Interaction discovered · Stored Pressure','A useful Guard stores one charge. Your next Arc Bolt or Wardcast gains 10% raw spell damage. One charge, expires after the next exchange. “The shield is not an approved charging station. Procurement has been informed.”','discovery');}addLog(s,'Reservoir charged. Next spell +10% (expires next exchange).','special');}if(relicEffectStrength(s,'seal')>0&&!f.sealUsed){const barrier=Math.floor(15*relicEffectStrength(s,'seal'));f.barrier=Math.max(f.barrier,Math.min(Math.floor(t.hp*.3),barrier));f.barrierTurns=Math.max(f.barrierTurns,1);f.sealUsed=true;addLog(s,`${ITEMS.seal.name} grants ${Math.min(Math.floor(t.hp*.3),barrier)} barrier.`,'defend');}if(!f.threadSpoolUsed&&relicEffectStrength(s,'threadSpool')>0){const gain=Math.min(t.sp-s.sp,Math.floor(2*relicEffectStrength(s,'threadSpool')));s.sp+=gain;f.threadSpoolUsed=true;if(gain)addLog(s,`Spare Thread restored ${gain} Bounce (stamina).`,'heal');}if(!f.thimbleUsed&&relicEffectStrength(s,'thimbleGuard')>0){const barrier=Math.floor(4*relicEffectStrength(s,'thimbleGuard')),added=Math.max(0,Math.min(Math.floor(t.hp*.3)-f.barrier,barrier));f.barrier+=added;f.barrierTurns=Math.max(f.barrierTurns,1);f.thimbleUsed=true;if(added)addLog(s,`Thimble Guard added ${added} barrier.`,'defend');}if(s.guardCount>=3)achievement(s,'citizen','Load-Bearing Citizen','“You have discovered the tactical applications of remaining upright. Engineering has been informed.”',15);}
  hit=resolveHit({...hitInput,barrier:f.barrier});prevented=hit.prevented;incoming=hit.incoming;const absorbed=hit.absorbed;f.barrier-=absorbed;
  if(absorbed>0){if(key==='brace'&&!f.used.includes('brace'))f.used.push('brace');if(key==='aegis'&&!f.used.includes('aegis'))f.used.push('aegis');}
  const playerHPBefore=s.hp;countDamageTaken(f,incoming);s.hp=Math.max(0,s.hp-incoming);const incomingApplied=playerHPBefore-s.hp,incomingOverkill=s.hp===0?Math.max(0,incoming-playerHPBefore):0;f.healDeficit=(f.healDeficit||0)+incoming;if(!interrupted)addLog(s,`${i.name}${enemyGlance?' · glancing hit':''}: ${incoming} damage${prevented?` · ${prevented} guarded`:''}${absorbed?` · ${absorbed} absorbed`:''}${incomingOverkill?` · only ${incomingApplied} needed`:''}.`,'enemy');
@@ -299,9 +289,9 @@ export function exchange(s,key,rng=Math.random,now=Date.now()){
  const variantNote=variantResponse(f,i,interrupted);if(variantNote)addLog(s,variantNote,'special');
  let openingGranted=false;if(guarded&&i.heavy&&!interrupted&&s.hp>0){f.opening=true;openingGranted=true;addLog(s,`Opening: ${i.name} overreached. Your next damaging action cannot glance and deals ${openingPercent()} damage.`,'special');}
  if(key==='guard')s.sp=Math.min(t.sp,s.sp+2);if(f.barrierTurns>0&&--f.barrierTurns===0)f.barrier=0;if(f.exposed&&(f.exposedRound??f.round)<=f.round){f.exposed=false;f.exposedRound=null;}f.round++;
- if(s.hp<=0){s.fight=null;s.delve=null;RE.clearCarry(s);const penalty=applyDeathPenalty(s,now);s.last={type:'defeat',enemy:e.id,...penalty};journal(s,'Back on the shelf',`A kind paw put you back on the shelf. ${penalty.coinsLost} coins covered the call-out. Your levels and gear are safe. Fluff up at the Quay (Rest) once you have finished drying off.`);return {ok:true,defeat:true,relicHealed,critical,incoming,incomingApplied,incomingOverkill,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,manaRegenerated:actualManaRegenerated,...penalty,...(s.rulesPreview?.twoHands?{offhandDamage,offhandDamageApplied,mendHealed}:{})};}
- if(key==='withdraw'){s.fight=null;RE.clearCarry(s);s.last={type:'withdraw',enemy:e.id};if(s.delve)s.delve=null;return {ok:true,withdraw:true,relicHealed,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,manaRegenerated:actualManaRegenerated,...(s.rulesPreview?.twoHands?{offhandDamage,offhandDamageApplied,mendHealed}:{})};}
- return {ok:true,damage,damageApplied,relicHealed,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,interrupted,manaRegenerated:actualManaRegenerated,opening:openingGranted,openingUsed:opening&&DAMAGING_ACTIONS.includes(key),...(s.rulesPreview?.twoHands?{offhandDamage,offhandDamageApplied,mendHealed}:{})};
+ if(s.hp<=0){s.fight=null;s.delve=null;RE.clearCarry(s);const penalty=applyDeathPenalty(s,now);s.last={type:'defeat',enemy:e.id,...penalty};journal(s,'Back on the shelf',`A kind paw put you back on the shelf. ${penalty.coinsLost} coins covered the call-out. Your levels and gear are safe. Fluff up at the Quay (Rest) once you have finished drying off.`);return {ok:true,defeat:true,relicHealed,critical,incoming,incomingApplied,incomingOverkill,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,manaRegenerated:actualManaRegenerated,...penalty,offhandDamage,offhandDamageApplied,mendHealed};}
+ if(key==='withdraw'){s.fight=null;RE.clearCarry(s);s.last={type:'withdraw',enemy:e.id};if(s.delve)s.delve=null;return {ok:true,withdraw:true,relicHealed,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,manaRegenerated:actualManaRegenerated,offhandDamage,offhandDamageApplied,mendHealed};}
+ return {ok:true,damage,damageApplied,relicHealed,critical,incoming,heavy:i.heavy&&!enemyGlance,absorbed,prevented,healed,interrupted,manaRegenerated:actualManaRegenerated,opening:openingGranted,openingUsed:opening&&DAMAGING_ACTIONS.includes(key),offhandDamage,offhandDamageApplied,mendHealed};
 }
 export function allocate(s,k){if(s.fight||s.delve||s.points<1||!Object.hasOwn(ATTRS,k))return false;s.stats[k]++;s.points--;capResources(s);return true;}
 export function capResources(s){const t=totals(s);s.hp=Math.min(s.hp,t.hp);s.mp=Math.min(s.mp,t.mp);s.sp=Math.min(s.sp,t.sp);}

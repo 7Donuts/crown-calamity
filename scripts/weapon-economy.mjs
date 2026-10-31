@@ -107,7 +107,10 @@ function buyNextUsefulEquipment(s, channel) {
 
 function canSafelyFinish(s, key) {
   const profile = G.actionProfile(s, key);
-  return !!profile && (profile.glance >= s.fight.hp || (profile.noGlance && profile.normal >= s.fight.hp) || (profile.hitChance >= 1 && profile.normal >= s.fight.hp));
+  if (!profile) return false;
+  const glanceDmg = (profile.glance || 0) + (profile.offhand?.glance || 0);
+  const normalDmg = (profile.normal || 0) + (profile.offhand?.normal || 0);
+  return glanceDmg >= s.fight.hp || (profile.noGlance && normalDmg >= s.fight.hp) || (profile.hitChance >= 1 && normalDmg >= s.fight.hp);
 }
 
 function heavyCouldBeLethalIfDisruptMisses(s) {
@@ -749,14 +752,23 @@ export function catalogAudit() {
     const keepsakes = relics.filter(item => item.keepsake && item.finale === chapter);
     if (keepsakes.length !== 1 || keepsakes.some(item => item.price || item.chapter !== chapter)) errors.push(`chapter ${chapter} needs exactly one unstocked finale keepsake`);
   }
-  for (const slot of ['offhand', 'head', 'body', 'hands', 'feet', 'accessory']) {
-    const rows = catalog.filter(item => item.slot === slot).sort((a, b) => a.tier - b.tier);
-    if (rows.length !== 10 || rows.some((item, index) => item.tier !== index + 1)) errors.push(`${slot} catalog does not contain tiers 1–10`);
-    for (let i = 1; i < rows.length; i++) if (rows[i].price <= rows[i - 1].price) errors.push(`${slot} price does not rise at tier ${rows[i].tier}`);
+  const nonweaponGroups = [
+    { label: 'offhand', filter: item => item.slot === 'offhand' && item.kind !== 'mender' },
+    { label: 'offhand:mender', filter: item => item.slot === 'offhand' && item.kind === 'mender' },
+    { label: 'head', filter: item => item.slot === 'head' },
+    { label: 'body', filter: item => item.slot === 'body' },
+    { label: 'hands', filter: item => item.slot === 'hands' },
+    { label: 'feet', filter: item => item.slot === 'feet' },
+    { label: 'accessory', filter: item => item.slot === 'accessory' }
+  ];
+  for (const { label, filter } of nonweaponGroups) {
+    const rows = catalog.filter(filter).sort((a, b) => a.tier - b.tier);
+    if (rows.length !== 10 || rows.some((item, index) => item.tier !== index + 1)) errors.push(`${label} catalog does not contain tiers 1–10`);
+    for (let i = 1; i < rows.length; i++) if (rows[i].price <= rows[i - 1].price) errors.push(`${label} price does not rise at tier ${rows[i].tier}`);
     for (const item of rows) {
       const expectedChapter = Math.ceil(item.tier / 2);
       if (item.chapter !== expectedChapter) errors.push(`${item.id} chapter ${item.chapter} mismatches tier ${item.tier}`);
-      if (item.price !== Math.round(rows[0].price * expectedArmorMultiplier(item.tier))) errors.push(`${item.id} price mismatches ${slot} scaling formula`);
+      if (item.price !== Math.round(rows[0].price * expectedArmorMultiplier(item.tier))) errors.push(`${item.id} price mismatches ${label} scaling formula`);
     }
   }
   for (const enemy of G.ENEMIES) {
